@@ -6,8 +6,10 @@ public class ZCComponent  {
 
 	public static final String FORM = "form"; //No I18N
 	public static final String VIEW = "view"; //No I18N
+	public static final String REPORT = "view"; //No I18N
 	public static final String CALENDAR = "calendar"; //No I18N
 	public static final String HTML_VIEW = "html"; //No I18N
+	public static final String PAGE = "html"; //No I18N
 	
 	
 	private String appOwner = null;
