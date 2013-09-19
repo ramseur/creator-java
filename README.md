@@ -1,4 +1,3 @@
-
 **[Download latest build] (https://docs.zoho.com/file/z1g2048e9c8a4c2c044d283f69773dcf86892)**
 ====
 
@@ -27,6 +26,7 @@ Note: ZCAPIDemo.java and dependant Jars are included in the above build zip
 * [ZCCustomAction] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCCustomAction.html) 
 * [ZCHtmlView] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCHtmlView.html) 
 * [ZCNavList] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCNavList.html) 
+* [ZOHOUser] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZOHOUser.html) 
 
 
 **Login**
