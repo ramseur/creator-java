@@ -163,12 +163,10 @@ public class ZCAPIDemo {
 			//System.out.println("Selected COmp : " + selComp);
 			if(selComp.getType().equals(ZCComponent.FORM)) {
 				printForm();
-			} else if(selComp.getType().equals(ZCComponent.VIEW)) {
 			} else if(selComp.getType().equals(ZCComponent.REPORT)) {
 				printView();
 			} else if(selComp.getType().equals(ZCComponent.CALENDAR)) {
 				printCalendar();
-			} else if(selComp.getType().equals(ZCComponent.HTML_VIEW)) {
 			} else if(selComp.getType().equals(ZCComponent.PAGE)) {
 				printHtmlView();
 			}

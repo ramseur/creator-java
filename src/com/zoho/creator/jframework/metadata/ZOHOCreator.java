@@ -394,10 +394,8 @@ public class ZOHOCreator {
 
 
 	public static ZCView getView(ZCComponent comp) {
-		if(comp.getType().equals(ZCComponent.VIEW) || comp.getType().equals(ZCComponent.CALENDAR)) {
 		if(comp.getType().equals(ZCComponent.REPORT) || comp.getType().equals(ZCComponent.CALENDAR)) {
 			List<NameValuePair> params = new ArrayList<NameValuePair>(); //URLConstructor.getDefaultParams(comp.getAppOwner());
-			if(comp.getType().equals(ZCComponent.VIEW)) {
 			if(comp.getType().equals(ZCComponent.REPORT)) {
 				params.add(new BasicNameValuePair("startIndex", "1"));//No I18N
 				params.add(new BasicNameValuePair("pageSize", ZCView.PAGE_SIZE+"")); //No I18N
@@ -431,7 +429,6 @@ public class ZOHOCreator {
 
 
 	private static ZCHtmlView getHtmlView(ZCComponent comp) {
-		if(comp.getType().equals(ZCComponent.HTML_VIEW)) {
 		if(comp.getType().equals(ZCComponent.PAGE)) {
 			URLPair htmlViewURLPair = ZCURL.htmlViewURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner());
 			//params.addAll(viewURLPair.getNvPair());
