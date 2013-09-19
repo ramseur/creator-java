@@ -5,28 +5,10 @@
 **Zoho Creator Java API**
 
 * [ZCAPIDemo.java - Reference Implementation] (https://raw.github.com/zohocreator/java/master/ZCAPIDemo.java)
+* [Javadoc] (http://zohocreator.github.io/java/docs/index.html)
+
 
 Note: ZCAPIDemo.java and dependant Jars are included in the above build zip
-
-
-**Javadoc of objects used below**
-
-* [Index] (http://zohocreator.github.io/java/docs/index.html)
-* [ZCApplication] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCApplication.html) 
-* [ZCSection] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCSection.html) 
-* [ZCComponent] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCComponent.html) 
-* [ZCForm] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCForm.html) 
-* [ZCField] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCField.html) 
-* [FieldType] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/FieldType.html) 
-* [ZCButton] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCButton.html) 
-* [ZCView] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCView.html) 
-* [ZCFilter] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCFilter.html) 
-* [ZCGroup] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCGroup.html) 
-* [ZCRecord] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCRecord.html) 
-* [ZCCustomAction] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCCustomAction.html) 
-* [ZCHtmlView] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCHtmlView.html) 
-* [ZCNavList] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCNavList.html) 
-* [ZOHOUser] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZOHOUser.html) 
 
 
 **Login**
@@ -142,4 +124,22 @@ Note: ZCAPIDemo.java and dependant Jars are included in the above build zip
 	List<String> sharedWithWorkSpaceList = navList.getSharedWithWorkSpaceList(); 
 	// Fetches the List of Workspaces in which user is a developer
 
+
+**Javadoc of objects used above**
+
+* [ZCApplication] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCApplication.html) 
+* [ZCSection] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCSection.html) 
+* [ZCComponent] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCComponent.html) 
+* [ZCForm] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCForm.html) 
+* [ZCField] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCField.html) 
+* [FieldType] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/FieldType.html) 
+* [ZCButton] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCButton.html) 
+* [ZCView] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCView.html) 
+* [ZCFilter] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCFilter.html) 
+* [ZCGroup] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCGroup.html) 
+* [ZCRecord] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCRecord.html) 
+* [ZCCustomAction] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCCustomAction.html) 
+* [ZCHtmlView] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCHtmlView.html) 
+* [ZCNavList] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCNavList.html) 
+* [ZOHOUser] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZOHOUser.html) 
 		
