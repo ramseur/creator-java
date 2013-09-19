@@ -11,7 +11,7 @@ Note: ZCAPIDemo.java and dependant Jars are included in the above build zip
 
 **Javadoc of objects used below**
 
-* [Index] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/index.html)
+* [Index] (http://zohocreator.github.io/java/docs/index.html)
 * [ZCApplication] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCApplication.html) 
 * [ZCSection] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCSection.html) 
 * [ZCComponent] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCComponent.html) 
