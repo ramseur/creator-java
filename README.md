@@ -1,11 +1,7 @@
-Zoho Creator Java API
-====
+Zoho Creator Java API 
+======
 
-Usage 
-===
-
-Login
-==
+**Login**
 
 	ZOHOUser user = ZOHOCreator.getZohoUser();
 	if(user == null) {
@@ -14,24 +10,56 @@ Login
 		user = ZOHOCreator.login(username, password);
 	}
 		
-Gettting Personal Applications List
-==
-		List<ZCApplication> zcapps = ZOHOCreator.getPersonalApplicationList()); 
+
+**Personal Applications List**
+
+	List<ZCApplication> zcapps = ZOHOCreator.getPersonalApplicationList()); 
+
+**List of Sections, Forms, Reports and Pages in an Application**
+
+	List<ZCSection> zcSections = ZOHOCreator.getSectionList(ZCApplication zcApp);
+	// Fetches the list of Sections in an application
+	
+	List<ZCComponent> comps = zcSections.get(0).getComponents();
+	// lists the Forms, Reports and Pages in the first Section
+	
+	String type = comps.get(0).getType();	
+	// One of ZCComponent.FORM , ZCComponent.REPORT , ZCComponent.CALENDAR or ZCComponent.PAGE
+
+**Form**
+
+	ZCForm form = ZOHOCreator.getForm(comps.get(0));
+	List<ZCField> fields = form.getFields();
 
 
-Gettting Shared Applications List
-==
-		List<ZCApplication> sharedAppsWithMe = ZOHOCreator.getSharedApplicationList(); 
+**Report or Calendar**
+
+	ZCView view = ZOHOCreator.getView(comps.get(0));
+
+**Page**
+
+	ZCHtmlView htmlPage = ZOHOCreator.getHtmlView(comps.get(0));
+
+**Shared Applications List**
+
+	List<ZCApplication> sharedAppsWithMe = ZOHOCreator.getSharedApplicationList(); 
 
 
-Gettting Shared Applications with a particular Group
-==
-		ZCNavList navList = ZOHOCreator.getNavigationListForApps(); // Gets the Navigation for Shared Apps with Groups and Workspace Apps.
-		List<ZCSharedGroup> sharedWithGroupList = navList.getSharedWithGroupList(); // Gets the List of Groups in which user is present
-    List<ZCApplication> sharedAppsWithGroup = ZOHOCreator.getSharedApplicationList(ZCSharedGroup sharedGroup); // Gets the list of Applications in that particular Group
 
-Gettting Workspace Applications 
-==
-		List<String> sharedWithWorkSpaceList = navList.getSharedWithWorkSpaceList(); // Gets the List of Workspaces in which user is a developer
+**Shared Applications with a Group**
+
+	ZCNavList navList = ZOHOCreator.getNavigationListForApps(); 
+	// Fetches the Navigation for Shared Apps with Groups and Workspace Apps.
+	
+	List<ZCSharedGroup> sharedWithGroupList = navList.getSharedWithGroupList(); 
+	// Fetches the List of Groups in which user is present
+	
+	List<ZCApplication> sharedAppsWithGroup = ZOHOCreator.getSharedApplicationList(ZCSharedGroup sharedGroup); 
+	// Fetches the list of Applications in that particular Group
+
+**Workspace Applications**
+
+	List<String> sharedWithWorkSpaceList = navList.getSharedWithWorkSpaceList(); 
+	// Fetches the List of Workspaces in which user is a developer
 
 		
