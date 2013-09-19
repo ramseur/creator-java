@@ -14,6 +14,11 @@ Zoho Creator Java API
 * [ZCButton] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCButton.html) 
 * [ZCView] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCView.html) 
 * [ZCFilter] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCFilter.html) 
+* [ZCGroup] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCGroup.html) 
+* [ZCRecord] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCRecord.html) 
+* [ZCCustomAction] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCCustomAction.html) 
+* [ZCHtmlView] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCHtmlView.html) 
+* [ZCNavList] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCNavList.html) 
 
 
 **Login**
@@ -81,7 +86,6 @@ Zoho Creator Java API
 	
 	List<ZCRecord> records = zcView.getRecords();
 	// Gets first 50 records in Report. If it's a calendar, it will fetch all the records of current month
-	
 
 	ZCGroup firstGroup = groups.get(0);
 	List<ZCRecord> records = firstGroup.getGroupRecords();
