@@ -92,7 +92,7 @@ Note: ZCAPIDemo.java and dependant Jars are included in the above build zip
 	zcView.deleteRecords(List<Long> recordIDs);
 	zcView.duplicateRecords(List<Long> recordIDs);
 	List<ZCCustomAction> customActions = zcView.getHeaderCustomActions();
-	zcView.customAction(customActions.get(0).getId(), getRecordIdsInput());
+	zcView.customAction(customActions.get(0).getId(), List<Long> recordIDs);
 
 
 
