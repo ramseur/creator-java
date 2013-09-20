@@ -64,7 +64,26 @@ Note: ZCAPIDemo.java and dependant Jars are included in the above build zip
 			// Error, if any will be set in this Hashtable
 		}
 	}
+	
+**Deluge Events**
 
+	boolean hasOnLoad = form.hasOnLoad(); 
+	if(hasOnLoad) {
+		form.onLoad();
+	}
+	
+Client has to implement [ZCFormEvent] (http://zohocreator.github.io/java/docs/index.html?com/zoho/creator/jframework/metadata/ZCFormEvent.html) interface. 
+Response Document will be set through setResponseDocument method. After the above network call, Client will have to pass the responseDocument in the below method.
+	
+	ZOHOCreator.callFormEvents(responseDocument, form);
+	// All Deluge tasks such as Show/Hide, Enable/Disable, Set Value, Add/Append/Clear items, Alert will be called through the implemented methods
+	
+Similarly it has to be done for On User Input also
+
+	boolean hasOnUserInput = field.isHasOnUserInput();
+	if(hasOnUserInput) {
+		form.onUserInput(field);
+	}
 
 **Report or Calendar**
 
