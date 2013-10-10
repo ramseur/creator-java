@@ -11,7 +11,7 @@ public class ZCColumn extends ZCField {
 	
 	
 	ZCColumn(String fieldName, FieldType type, String displayName) {
-		super(fieldName, type, displayName, -1);
+		super(fieldName, type, displayName);
 		// TODO Auto-generated constructor stub
 	}
 	

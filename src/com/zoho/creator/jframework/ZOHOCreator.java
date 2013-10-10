@@ -344,6 +344,36 @@ public class ZOHOCreator {
 	}
 
 
+	public static ZCForm getFeedBackForm() {
+		ZCForm toReturn  = new ZCForm("zoho1", "support", "Feedback", "Feedback", 1, false, false, "Thank you for your feedback.", "dd-MMM-yyyy", false);//No I18N
+
+		ZCField platformField = new ZCField("Platform", FieldType.DROPDOWN, "Platform");//No I18N
+		List<ZCChoice> choices = new ArrayList<ZCChoice>();
+		choices.add(new ZCChoice("iOS", "iOS"));//No I18N
+		choices.add(new ZCChoice("Android", "Android"));//No I18N
+		platformField.setRecordValue(new ZCRecordValue(platformField, "Android"));//No I18N
+		platformField.setHidden(true);
+		platformField.setRebuildRequired(true);
+		platformField.addChoices(choices);
+		
+		List<ZCField> fields = new ArrayList<ZCField>();
+		fields.add(platformField);	
+		ZCField zcFieldTitle =new ZCField("Title", FieldType.SINGLE_LINE, "Title");//No I18N
+		ZCField zcFieldMessage = new ZCField("Message", FieldType.MULTI_LINE, "Message");//No I18N
+		zcFieldTitle.setRecordValue(new ZCRecordValue(zcFieldTitle, ""));
+		zcFieldMessage.setRecordValue(new ZCRecordValue(zcFieldMessage, ""));
+		fields.add(zcFieldTitle);//No I18N
+		fields.add(zcFieldMessage);//No I18N
+		
+		List<ZCButton> buttons = new ArrayList<ZCButton>();
+		buttons.add(new ZCButton("Submit", "submit", ZCButtonType.SUBMIT));//No I18N
+		buttons.add(new ZCButton("Reset", "reset", ZCButtonType.RESET));//No I18N
+
+		toReturn.addFields(fields);
+		toReturn.addButtons(buttons);
+		
+		return toReturn;
+	}
 
 	public static ZCForm getForm(String appLinkName, String formLinkName, String appOwner) throws ZCException{
 		return getForm(appLinkName, formLinkName, appOwner, null, null, ZCForm.FORM_ALONE, null, null, null, null, null);
@@ -415,11 +445,11 @@ public class ZOHOCreator {
 	}
 
 	public static ZCView getListReport(String appLinkName, String viewLinkName, String appOwner) throws ZCException{
-		return getView(new ZCComponent(appOwner, appLinkName, ZCView.REPORT, viewLinkName, viewLinkName, -1, -1L));
+		return getView(new ZCComponent(appOwner, appLinkName, ZCView.REPORT, viewLinkName, viewLinkName, -1));
 	}
 
 	public static ZCView getCalendarReport(String appLinkName, String viewLinkName, String appOwner) throws ZCException{
-		return getView(new ZCComponent(appOwner, appLinkName, ZCView.CALENDAR, viewLinkName, viewLinkName, -1, -1L));
+		return getView(new ZCComponent(appOwner, appLinkName, ZCView.CALENDAR, viewLinkName, viewLinkName, -1));
 	}
 
 	public static ZCView getView(ZCComponent comp) throws ZCException{
@@ -843,7 +873,9 @@ public class ZOHOCreator {
 	
 
 	static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-//		System.out.println(getURLString(url, params));
+
+		//System.out.println(getURLString(url, params));
+
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -974,7 +1006,7 @@ public class ZOHOCreator {
 	}
 */
 	
-	private static String getString(Document doc) {
+	private static String getString(Document doc) {	
 		try
 		{
 			DOMSource domSource = new DOMSource(doc);
@@ -991,7 +1023,4 @@ public class ZOHOCreator {
 			return null;
 		}
 	}
-
-
-
 }

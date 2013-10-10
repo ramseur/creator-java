@@ -16,16 +16,14 @@ public class ZCComponent  {
 	private String componentName = null;
 	private String componentLinkName = null;
 	private int sequenceNumber = -1;
-	private Long componentID = null;
 	
-	ZCComponent(String appOwner, String appLinkName, String type, String componentName, String componentLinkName, int sequenceNumber, Long componentID) {
+	ZCComponent(String appOwner, String appLinkName, String type, String componentName, String componentLinkName, int sequenceNumber) {
 		this.appOwner = appOwner;	
 		this.appLinkName = appLinkName;
 		this.type = type;
 		this.componentName = componentName;
 		this.componentLinkName = componentLinkName;
 		this.sequenceNumber = sequenceNumber;
-		this.componentID = componentID;
 	}
 	
 	public String toString() {
@@ -51,10 +49,6 @@ public class ZCComponent  {
 		return sequenceNumber;
 	}
 
-
-	public Long getComponentID() {
-		return componentID;
-	}
 
 	public String getAppOwner() {
 		return appOwner;

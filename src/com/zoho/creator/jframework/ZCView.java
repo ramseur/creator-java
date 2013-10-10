@@ -15,7 +15,6 @@ public class ZCView extends ZCComponent {
 
 	private String dateFormat = null;
 	private String baseFormLinkName = null;
-	private long baseFormLinkId = -1;
 	private boolean isAddAllowed = false;
 	private boolean isEditAllowed = false;
 	private boolean isDeleteAllowed = false;
@@ -64,12 +63,12 @@ public class ZCView extends ZCComponent {
 
 	
 	ZCView(String appOwner, String appLinkName, String componentType, String componentName, String componentLinkName) {
-		super(appOwner, appLinkName, componentType, componentName, componentLinkName, -1, -1L);
+		super(appOwner, appLinkName, componentType, componentName, componentLinkName, -1);
 		// TODO Auto-generated constructor stub
 	}
 
 	public String toString() {
-		return super.toString() + " - dateFormat: " + dateFormat + " - baseFormLinkName: " + baseFormLinkName + " - baseFormLinkId: " + baseFormLinkId +   //No I18N
+		return super.toString() + " - dateFormat: " + dateFormat + " - baseFormLinkName: " + baseFormLinkName +   //No I18N
 				" - isAddAllowed: " + isAddAllowed + " - isEditAllowed: " + isEditAllowed + " - isDeleteAllowed: " + isDeleteAllowed +    //No I18N
 				" - isDuplicateAllowed: " + isDuplicateAllowed + " - isBulkEditAllowed: " + isBulkEditAllowed + " - filters: " + filters +   //No I18N
 				" - headerCustomActions : " + headerCustomActions + " - recordCustomActions: " + recordCustomActions + " - columns: " + columns +  //No I18N
@@ -90,14 +89,6 @@ public class ZCView extends ZCComponent {
 
 	void setBaseFormLinkName(String baseFormLinkName) {
 		this.baseFormLinkName = baseFormLinkName;
-	}
-
-	public long getBaseFormLinkId() {
-		return baseFormLinkId;
-	}
-
-	void setBaseFormLinkId(long baseFormLinkId) {
-		this.baseFormLinkId = baseFormLinkId;
 	}
 
 	public boolean isAddAllowed() {

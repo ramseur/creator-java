@@ -296,7 +296,7 @@ class XMLParser {
 														componentID = Long.valueOf(nodeValue);
 													}
 												}
-												comps.add(new ZCComponent (appOwner, appLinkName, type, componentName, componentLinkName, sequenceNumber, componentID));
+												comps.add(new ZCComponent (appOwner, appLinkName, type, componentName, componentLinkName, sequenceNumber));
 											}
 										}
 									}
@@ -329,7 +329,7 @@ class XMLParser {
 				String dateFormat = "";
 				List<ZCField> fields = new ArrayList<ZCField>();
 				List<ZCButton> buttons = new ArrayList<ZCButton>();
-				String tableName = "";
+				boolean isStateLess = true;
 				int formLinkId = -1;
 
 				String componentName = null;
@@ -359,7 +359,8 @@ class XMLParser {
 						for(int k=0; k<resultNodes.getLength(); k++) {
 							Node resultNodeChild = resultNodes.item(k);
 							if(resultNodeChild.getNodeName().equals("tableName")) {
-								tableName = getStringValue(resultNodeChild, "");
+								String tableName = getStringValue(resultNodeChild, "");
+								isStateLess = (tableName.equals(""));
 							} else if(resultNodeChild.getNodeName().equals("formLinkId")) {
 								formLinkId = getIntValue(resultNodeChild, formLinkId);
 							} else if(resultNodeChild.getNodeName().equals("DisplayName")) {
@@ -403,7 +404,7 @@ class XMLParser {
 				Collections.sort(buttons);
 
 				// String appOwner, String appLinkName, String type, String componentName, String componentLinkName, int sequenceNumber, Long componentID, boolean hasAddOnLoad, boolean hasEditOnLoad, String successMessage, String tableName, int formLinkId
-				toReturn = new ZCForm(appOwner, appLinkName, ZCComponent.FORM, componentName, componentLinkName, sequenceNumber, componentID, hasAddOnLoad, hasEditOnLoad, successMessage, dateFormat, tableName, formLinkId);
+				toReturn = new ZCForm(appOwner, appLinkName, componentName, componentLinkName, sequenceNumber,  hasAddOnLoad, hasEditOnLoad, successMessage, dateFormat, isStateLess);
 				toReturn.addFields(fields);
 				if(buttons.size()>0) {
 					toReturn.addButtons(buttons);	
@@ -438,7 +439,6 @@ class XMLParser {
 		FieldType fieldType = FieldType.SINGLE_LINE;
 		String displayName = "";
 		String delugeType = "";
-		long compID = -1l;
 		String textValue = "";
 
 
@@ -491,8 +491,6 @@ class XMLParser {
 				//				System.out.println("displayName " + displayName);
 			} else if(fieldPropetyNode.getNodeName().equals("FieldName")) {
 				fieldName = getStringValue(fieldPropetyNode, fieldName);
-			} else if(fieldPropetyNode.getNodeName().equals("formcompid")) {
-				compID = getLongValue(fieldPropetyNode, compID);
 			} else if(fieldPropetyNode.getNodeName().equals("Text")) {
 				textValue = getStringValue(fieldPropetyNode, textValue);
 			} else if(fieldPropetyNode.getNodeName().equals("fromLocalComputer")) {
@@ -596,7 +594,7 @@ class XMLParser {
 				}
 		}	
 
-		ZCField zcField = new ZCField(fieldName, fieldType, displayName, compID);
+		ZCField zcField = new ZCField(fieldName, fieldType, displayName);
 		if(FieldType.isMultiChoiceField(fieldType)) {
 			// THis is used in Edit record for multichoice field. But in form builder there is no way to set initial value
 			initialValues = parseMultiSelectValues(initialValue, choices);
@@ -622,7 +620,7 @@ class XMLParser {
 		zcField.setUrlTitleReq(urlTitleReq);
 
 		if(refFormLinkName != null && refFormDisplayName != null && refAppLinkName != null && refFieldLinkName != null) {
-			zcField.setRefFormComponent(new ZCComponent(appOwner, refAppLinkName, ZCComponent.FORM, refFormDisplayName, refFormLinkName, -1, -1l));
+			zcField.setRefFormComponent(new ZCComponent(appOwner, refAppLinkName, ZCComponent.FORM, refFormDisplayName, refFormLinkName, -1));
 			zcField.setRefFieldLinkName(refFieldLinkName);
 			if(fieldType != FieldType.SUB_FORM) {
 				zcField.setNewEntriesAllowed(true);
@@ -632,14 +630,14 @@ class XMLParser {
 
 		// String appOwner, String appLinkName, String type, String componentName, String componentLinkName, int sequenceNumber, Long componentID, boolean hasAddOnLoad, boolean hasEditOnLoad, String successMessage, String tableName, int formLinkId
 		if(hasSubForm) { // type/sequenceNumber/componentID/formLinkId -1, hasAddOnLoad/hasEditOnLoad false,  successMessage/tableName empty string, 
-			ZCForm subForm = new ZCForm(appOwner, refAppLinkName, ZCComponent.FORM, refFormDisplayName, refFormLinkName, -1, -1L, false, false, "", "", "", -1);
+			ZCForm subForm = new ZCForm(appOwner, refAppLinkName, refFormDisplayName, refFormLinkName, -1, false, false, "", "", false);
 			subForm.addFields(subFormFields);
 			zcField.setSubForm(subForm);
 			for(int i=0; i<subFormEntries.size(); i++) {
 				zcField.addSubFormEntry(subFormEntries.get(i));
 			}
 
-			ZCForm editSubForm = new ZCForm(appOwner, refAppLinkName, ZCComponent.FORM, refFormDisplayName, refFormLinkName, -1, -1L, false, false, "", "", "", -1);
+			ZCForm editSubForm = new ZCForm(appOwner, refAppLinkName, refFormDisplayName, refFormLinkName, -1, false, false, "", "", false);
 			editSubForm.addFields(subFormEditFields);
 			zcField.setEditSubForm(editSubForm);
 		}
@@ -913,8 +911,6 @@ class XMLParser {
 										NamedNodeMap baseFormAttrMap = viewChildNode.getAttributes();
 										String baseFormLinkName = baseFormAttrMap.getNamedItem("linkname").getNodeValue(); //No I18N
 										toReturn.setBaseFormLinkName(baseFormLinkName);
-										Long baseFormLinkId = Long.parseLong(baseFormAttrMap.getNamedItem("Id").getNodeValue()); //No I18N
-										toReturn.setBaseFormLinkId(baseFormLinkId);
 									} else if(viewChildNode.getNodeName().equals("customFilters")) {
 										NodeList customFilterNodeList = viewChildNode.getChildNodes();
 										List<ZCCustomFilter> customFilters = new ArrayList<ZCCustomFilter>();

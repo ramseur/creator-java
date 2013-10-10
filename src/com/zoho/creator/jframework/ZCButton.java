@@ -74,7 +74,7 @@ public class ZCButton implements Comparable<ZCButton>{
 			//System.out.println("inside click");
 			String action = "add"; //No I18N
 			String xmlString = zcForm.getXMLStringForSubmit();
-			if(zcForm .getTableName() != null) 
+			if(!zcForm .isStateLess()) 
 			{
 				
 				List<NameValuePair> params = new ArrayList<NameValuePair>();

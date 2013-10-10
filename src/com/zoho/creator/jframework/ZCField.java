@@ -8,7 +8,6 @@ public class ZCField implements Comparable<ZCField> {
 	private String fieldName = null;
 	private FieldType type;
 	private String displayName = null;
-	private long compID = -1l;
 	private int sequenceNumber = -1;
 	
 	//private String initialValue = "";
@@ -61,16 +60,15 @@ public class ZCField implements Comparable<ZCField> {
 	
 	
 	
-	ZCField(String fieldName, FieldType type, String displayName, long compID) {
+	ZCField(String fieldName, FieldType type, String displayName) {
 		this.fieldName = fieldName;
 		this.type = type;
 		this.displayName = displayName;
-		this.compID = compID;
 	}
 	
 	public String toString() {
 		
-		String toReturn  = "fieldName:" + fieldName + " - type:" + type + " - displayName:" + displayName +  " - compID:" + compID +  //No I18N
+		String toReturn  = "fieldName:" + fieldName + " - type:" + type + " - displayName:" + displayName +  //No I18N
 				" - isUnique:" + isUnique + " - isRequired:" + isRequired + " - maxChar:" + maxChar +  //No I18N
 				" - urlTitleReq:" + urlTitleReq + " - urlLinkNameReq:" + urlLinkNameReq + " - fromZohoDoc:" + fromZohoDoc + " - fromGoogleDoc:" + fromGoogleDoc +  //No I18N
 				" - fromLocalComputer:" + fromLocalComputer + " - imgLinkReq:" + imgLinkReq + " - altTxtReq:" + altTxtReq +   //No I18N
@@ -113,10 +111,6 @@ public class ZCField implements Comparable<ZCField> {
 	
 	public String getDisplayName() {
 		return displayName;
-	}
-
-	public long getCompID() {
-		return compID;
 	}
 
 	public boolean isRequired() {

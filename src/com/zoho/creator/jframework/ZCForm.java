@@ -12,8 +12,7 @@ public class ZCForm extends ZCComponent {
 	private String dateFormat = "";
 	private List<ZCField> fields = new ArrayList<ZCField>();
 	private List<ZCButton> buttons = new ArrayList<ZCButton>();
-	private String tableName = null;
-	private int formLinkId = -1;
+	private boolean isStateLess = false;
 	private boolean fieldsAdded = false;
 	private boolean buttonsAdded = false;
 	private ZCField baseSubFormField = null;
@@ -36,21 +35,20 @@ public class ZCForm extends ZCComponent {
 
 
 
-	ZCForm(String appOwner, String appLinkName, String type, String componentName, String componentLinkName, int sequenceNumber, Long componentID,
-			boolean hasAddOnLoad, boolean hasEditOnLoad, String successMessage, String dateFormat, String tableName, int formLinkId) {
-		super( appOwner,  appLinkName,  type,  componentName,  componentLinkName,  sequenceNumber,  componentID);
+	ZCForm(String appOwner, String appLinkName, String componentName, String componentLinkName, int sequenceNumber, boolean hasAddOnLoad, boolean hasEditOnLoad, String successMessage, String dateFormat, boolean isStateLess) {
+		super( appOwner,  appLinkName,  ZCComponent.FORM,  componentName,  componentLinkName,  sequenceNumber);
 
 		this.hasAddOnLoad = hasAddOnLoad;
 		this.hasEditOnLoad = hasEditOnLoad;
 		this.successMessage = successMessage;
 		this.dateFormat = dateFormat;
-		this.tableName = tableName;
-		this.formLinkId = formLinkId;
+		this.isStateLess = isStateLess;
+
 	}
 
 	public String toString() {
 		return super.toString() + " - hasAddOnLoad:" + hasAddOnLoad + " - hasEditOnLoad:" + hasEditOnLoad + " - successMessage:" + successMessage + //No I18N
-				" - tableName:" + tableName + " - formLinkId:" + formLinkId + " - " + fields + " - Buttons : " + buttons ; //No I18N
+				" - " + fields + " - Buttons : " + buttons ; //No I18N
 	}
 
 	boolean hasOnLoad() { // unifying all the checks here itself. Otherwise client will unnecessarily check all these..
@@ -116,15 +114,6 @@ public class ZCForm extends ZCComponent {
 			throw new RuntimeException ("You cannot add more than once"); //No I18N
 		}
 	}
-
-	String getTableName() {
-		return tableName;
-	}
-
-	public int getFormLinkId() {
-		return formLinkId;
-	}
-
 
 
 	String getXMLStringForSubmit() {
@@ -406,4 +395,9 @@ public class ZCForm extends ZCComponent {
 	public void setReLoadForm(boolean reLoadForm) {
 		this.reLoadForm = reLoadForm;
 	}
+
+	public boolean isStateLess() {
+		return isStateLess;
+	}
+
 }
