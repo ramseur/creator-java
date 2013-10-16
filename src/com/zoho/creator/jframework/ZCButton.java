@@ -69,7 +69,7 @@ public class ZCButton implements Comparable<ZCButton>{
 
 	public ZCResponse click() throws ZCException {
 		ZCResponse response =  null;
-//		System.out.println("inside click");
+		//System.out.println("inside click");
 		if(!buttonType.equals(ZCButtonType.RESET)) {
 			//System.out.println("inside click");
 			String action = "add"; //No I18N
@@ -141,12 +141,12 @@ public class ZCButton implements Comparable<ZCButton>{
 			for(int i=0; i<fields.size(); i++) {
 				ZCField field = fields.get(i);
 				if(FieldType.isPhotoField(field.getType())) {
-				//	System.out.println("lkhfff");
+					//System.out.println("lkhfff");
 					ZCRecordValue recValue = field.getRecordValue();
 					File fileToUpload = recValue.getFileValue();
 					if(fileToUpload!=null)
 					{
-						//System.out.println("lkhjjjhjhk");
+					//System.out.println("lkhjjjhjhk"+ Integer.parseInt(String.valueOf(fileToUpload.length()/1024)));
 					URLPair urlPair = ZCURL.fileUploadURL(zcForm.getAppOwner());
 					List<NameValuePair> params = new ArrayList<NameValuePair>();
 					params.addAll(urlPair.getNvPair());

@@ -81,6 +81,16 @@ public class ZCRecordValue {
 		}
 	}
 
+	public void removeValue(String value)
+	{
+		for(int j=0;j<values.size();j++)
+		{
+			if(values.get(j).equals(value))
+			{
+				values.remove(j);
+			}
+		}
+	}
 	public File getFileValue() {
 		return fileValue;
 	}

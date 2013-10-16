@@ -2,11 +2,9 @@
 
 package com.zoho.creator.jframework;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -164,6 +162,10 @@ public class ZOHOCreator {
 		setCurrentApplication(new ZCApplication(appOwner, appDisplayName, appLinkName, false, null));		
 	}
 
+	public static ZCComponent getComponent(String appOwner, String appLinkName, String type, String componentLinkName,String componentName) {
+		return new ZCComponent (appOwner, appLinkName, type, componentName, componentLinkName, -1);		
+	}
+	
 	public static void setCurrentComponent(ZCComponent comp) {
 		ZOHOCreator.comp = comp;
 		setCurrentForm(null);
@@ -344,7 +346,7 @@ public class ZOHOCreator {
 	}
 
 
-	public static ZCForm getFeedBackForm() {
+	public static ZCForm getFeedBackForm(String preFilledLogMessage) {
 		ZCForm toReturn  = new ZCForm("zoho1", "support", "Feedback", "Feedback", 1, false, false, "Thank you for your feedback.", "dd-MMM-yyyy", false);//No I18N
 
 		ZCField platformField = new ZCField("Platform", FieldType.DROPDOWN, "Platform");//No I18N
@@ -356,14 +358,16 @@ public class ZOHOCreator {
 		platformField.setRebuildRequired(true);
 		platformField.addChoices(choices);
 		
+		ZCField titleField = new ZCField("Title", FieldType.SINGLE_LINE, "Title");//No I18N
+		titleField.setRecordValue(new ZCRecordValue(titleField, ""));
+
+		ZCField messageField = new ZCField("Message", FieldType.MULTI_LINE, "Message");//No I18N
+		messageField.setRecordValue(new ZCRecordValue(messageField, preFilledLogMessage));
+		
 		List<ZCField> fields = new ArrayList<ZCField>();
 		fields.add(platformField);	
-		ZCField zcFieldTitle =new ZCField("Title", FieldType.SINGLE_LINE, "Title");//No I18N
-		ZCField zcFieldMessage = new ZCField("Message", FieldType.MULTI_LINE, "Message");//No I18N
-		zcFieldTitle.setRecordValue(new ZCRecordValue(zcFieldTitle, ""));
-		zcFieldMessage.setRecordValue(new ZCRecordValue(zcFieldMessage, ""));
-		fields.add(zcFieldTitle);//No I18N
-		fields.add(zcFieldMessage);//No I18N
+		fields.add(titleField);//No I18N
+		fields.add(messageField);//No I18N
 		
 		List<ZCButton> buttons = new ArrayList<ZCButton>();
 		buttons.add(new ZCButton("Submit", "submit", ZCButtonType.SUBMIT));//No I18N
@@ -382,7 +386,7 @@ public class ZOHOCreator {
 	private static ZCForm getForm(String appLinkName, String formLinkName, String appOwner, String viewLinkName, Long recordLinkId, int formType, String refAppLinkName, String refFormLinkName, String refFieldName, Date calSelectedStartDate,Date calSelectedEndDate) throws ZCException {
 		URLPair formMetaURLPair = ZCURL.formMetaURL(appLinkName, formLinkName, appOwner, viewLinkName, recordLinkId, formType, refAppLinkName, refFormLinkName, refFieldName, calSelectedStartDate,calSelectedEndDate);
 		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
-		//System.out.println("rootdocu"+rootDocument);
+		//System.out.println("rootdocu"+rootDocument+"\n"+formMetaURLPair);
 		ZCForm toReturn = XMLParser.parseForForm(rootDocument, appLinkName, appOwner);
 		if(toReturn == null) {
 			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLString(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
@@ -495,6 +499,7 @@ public class ZOHOCreator {
 			URLPair htmlViewURLPair = ZCURL.htmlViewURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner());
 			//params.addAll(viewURLPair.getNvPair());
 			String htmlString = ZOHOCreator.postURL(htmlViewURLPair.getUrl(), htmlViewURLPair.getNvPair());
+			
 			return new ZCHtmlView( comp.getAppOwner(), comp.getAppLinkName(), comp.getType(), comp.getComponentName(), comp.getComponentLinkName(), htmlString);
 			//return ZOHOCreator.postURLXML(viewURLPair.getUrl(), params);
 		}		
@@ -716,7 +721,7 @@ public class ZOHOCreator {
 		XPath xPath = XPathFactory.newInstance().newXPath();
 		//read a string value
 		ZCResponse toReturn = new ZCResponse();
-			try {
+			try {	
 				String status = xPath.compile("/response/result/form/" + action + "/status").evaluate(rootDocument);//No I18N
 				//System.out.println("postxml responsestring"+status);
 				if(status.startsWith("Failure")) {
@@ -783,7 +788,7 @@ public class ZOHOCreator {
 	}
 
 	static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
-//		System.out.println(getURLString(url, params));
+		//System.out.println(getURLString(url, params));
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -869,8 +874,7 @@ public class ZOHOCreator {
 		}
 
 		return buff.toString();
-	}
-	
+	}	
 
 	static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
 
@@ -957,8 +961,8 @@ public class ZOHOCreator {
 			}
 		}
 
-
 		String url = buff.toString();
+
 
 		HttpPost httppost = new HttpPost(url);
 		httppost.addHeader("enctype", "multipart/form-data"); //No I18N
@@ -971,7 +975,7 @@ public class ZOHOCreator {
 		} //No I18N
 		mpEntity.addPart("file", cbFile); //No I18N
 		httppost.setEntity(mpEntity);
-//		System.out.println("executing request " + httppost.getRequestLine()); //No I18N
+		//System.out.println("executing request " + httppost.getRequestLine()); //No I18N
 		try {
 			//System.out.println("before httpresponse... ");
 			HttpResponse httpResponse = httpclient.execute(httppost);
