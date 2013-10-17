@@ -172,20 +172,26 @@ public class ZCURL {
 		return new URLPair(serverURL() + "/api/mobile/xml/" + appLinkName + "/recordcount/" + viewLinkName, params); //No I18N
 	}
 
-	static String getAuthTokenURL(String userName, String password) {
+	public static String getLoginUrl() {
+		return "https://" + ZOHOCreator.getAccountsURL() + "/login?hide_signup=true&hide_remember=true&scopes=" + ZOHOCreator.getServiceName() + "/creatorapi&appname=" + ZOHOCreator.getServiceName() + "&serviceurl=" + serverURL();//No I18N
+		}
+
+		// signInUrl = "https://accounts.zoho.com/login?hide_signup=true&hide_remember=true&scopes=ZohoCreator/creatorapi&appname=ZohoCreator&serviceurl=https://creator.zoho.com"; //No I18N
+
+		static String getAuthTokenURL(String userName, String password) {
 		return "https://" + ZOHOCreator.getAccountsURL() + "/apiauthtoken/nb/create?SCOPE=" + ZOHOCreator.getServiceName() + "/creatorapi&EMAIL_ID=" + userName + "&PASSWORD=" + password; //No I18N
-	}
+		}
 
-	static String deleteAuthToken(String authToken) {
+		static String deleteAuthToken(String authToken) {
 		return "https://" + ZOHOCreator.getAccountsURL() + "/apiauthtoken/delete?AUTHTOKEN=" + authToken; //No I18N
-	}
+		}
 
-	private static String serverURL() {
-		return "https://" + ZOHOCreator.getCreatorURL(); //"https://icreator.localzoho.com"; //No I18N
-	}
+		public static String serverURL() {
+		return ZOHOCreator.getPrefix() + "://" + ZOHOCreator.getCreatorURL(); //"https://icreator.localzoho.com"; //No I18N
+		}
 
-	public static URLPair licenseCheckURL() {
+		public static URLPair licenseCheckURL() {
 		return new URLPair(serverURL() + "/api/xml/license/mobile/", getDefaultParams()); //No I18N
-	}
+		}
 	
 }

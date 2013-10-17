@@ -74,9 +74,18 @@ public class ZOHOCreator {
 	private static String accountsURL = "accounts.zoho.com";//No I18N
 	private static String serviceName = "ZohoCreator";//No I18N
 	private static String creatorURL = "creator.zoho.com";//No I18N
+	private static String prefix = "http";//No I18N
 
 
-	static String getAccountsURL() {
+	public static String getPrefix() {
+		return prefix;
+	}
+
+	public static void setPrefix(String prefix) {
+		ZOHOCreator.prefix = prefix;
+	}
+
+	public static String getAccountsURL() {
 		return accountsURL;
 	}
 
@@ -85,7 +94,7 @@ public class ZOHOCreator {
 	}
 
 
-	static String getServiceName() {
+	public static String getServiceName() {
 		return serviceName;
 	}
 
@@ -93,7 +102,7 @@ public class ZOHOCreator {
 		ZOHOCreator.serviceName = serviceName;
 	}
 
-	static String getCreatorURL() {
+	public static String getCreatorURL() {
 		return creatorURL;
 	}
 
