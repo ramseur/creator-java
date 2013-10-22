@@ -36,10 +36,9 @@ public class ZCURL {
 		return params;
 	}
 	
-	public static String getImageURL(String filepath, String appOwner, String appLinkName, String viewLinkName) {
+	public static String getFileURL(String filepath, String appOwner, String appLinkName, String viewLinkName) {
 		return serverURL() + "/DownloadFileFromMig.do?filepath=/" + filepath + "&sharedBy=" + appOwner + "&appLinkName=" + appLinkName + "&viewLinkName=" + viewLinkName + "&authtoken=" + ZOHOCreator.getZohoUser().getAuthToken() + "&scope=creatorapi";  //No I18N
 	}
-
 	
 	static URLPair customActionURL(String appLinkName, String viewLinkName, long customActionId, String appOwner, List<Long> recordIDs) {
 		List<NameValuePair> params = getDefaultParams();
