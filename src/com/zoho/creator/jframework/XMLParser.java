@@ -1198,29 +1198,6 @@ class XMLParser {
 		}
 	}
 
-	static void parseForLicense(Document rootDocument) throws ZCException {
-		NodeList nl = rootDocument.getChildNodes();
-		for(int i=0; i<nl.getLength(); i++) {
-			Node responseNode = nl.item(i);
-			if(responseNode.getNodeName().equals("response")) { //No I18N
-				NodeList responseNodes = responseNode.getChildNodes();
-				for(int j=0; j<responseNodes.getLength(); j++) {
-					Node resultNode = responseNodes.item(j);
-					if(resultNode.getNodeName().equals("result")) { //No I18N
-						NodeList resultNodes = resultNode.getChildNodes();
-						for(int k=0; k<resultNodes.getLength(); k++) {
-							Node resultNodeChild = resultNodes.item(k);
-							if(resultNodeChild.getNodeName().equals("ENABLED")) { //No I18N
-								if(!getBooleanValue(resultNodeChild, true)) {
-									throw new ZCException("Mobile plan not enabled.", ZCException.LICENCE_ERROR); //No I18N
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
 
 	private static void printDocument(Document doc) {
 		try

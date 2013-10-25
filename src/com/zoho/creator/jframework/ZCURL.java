@@ -189,8 +189,5 @@ public class ZCURL {
 		return ZOHOCreator.getPrefix() + "://" + ZOHOCreator.getCreatorURL(); //"https://icreator.localzoho.com"; //No I18N
 		}
 
-		public static URLPair licenseCheckURL() {
-		return new URLPair(serverURL() + "/api/xml/license/mobile/", getDefaultParams()); //No I18N
-		}
 	
 }
