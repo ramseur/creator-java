@@ -157,9 +157,12 @@ class XMLParser {
 		return new ZCNavList(sharedWithGroupList, sharedWithWorkSpaceList);
 	}
 
-	static List<ZCApplication> parseForApplicationList(Document rootDocument) {
+	static List<ZCApplication> parseForApplicationList(Document rootDocument) throws ZCException {
 		List<ZCApplication> toReturn = new ArrayList<ZCApplication>();
 		NodeList nl = rootDocument.getChildNodes();
+		int remainingDays = -1;
+		boolean licenceEnabled = true;
+		String appOwner = "";
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
 			//////System.out.println("******* " + responseNode.getNodeName());
@@ -170,7 +173,6 @@ class XMLParser {
 					//////System.out.println(resultNode.getNodeName());
 					if(resultNode.getNodeName().equals("result")) {
 						NodeList resultNodes = resultNode.getChildNodes();
-						String appOwner = "";
 						for(int k=0; k<resultNodes.getLength(); k++) {
 							Node resultNodeChild = resultNodes.item(k);
 							if(resultNodeChild.getNodeName().equals("application_owner")) {
@@ -216,11 +218,19 @@ class XMLParser {
 										}
 									}
 								}
+							} else if(resultNodeChild.getNodeName().equals("license_enabled")) {
+								licenceEnabled = getBooleanValue(resultNodeChild, false);
+							} else if(resultNodeChild.getNodeName().equals("evaluationDays")) {
+								ZOHOCreator.setUserProperty("evaluationDays", getStringValue(resultNodeChild, ""));
 							}
 						}
 					}
 				}
 			}
+		}
+		
+		if(!licenceEnabled) {
+				throw new ZCException("Mobile Access not enabled for " + appOwner, ZCException.LICENCE_ERROR); //No I18N
 		}
 		return toReturn;
 	}
@@ -230,7 +240,7 @@ class XMLParser {
 
 	static List<ZCSection> parseForSectionList(Document rootDocument, String appLinkName, String appOwner) throws ZCException {
 		List<ZCSection> toReturn = new ArrayList<ZCSection>();
-
+		int remainingDays = -1;
 		NodeList nl = rootDocument.getChildNodes();
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
@@ -308,11 +318,13 @@ class XMLParser {
 						}
 					}
 				}
-			} else if(responseNode.getNodeName().equals("LicenseEnabled")) { //No I18N
-				//boolean licenceEnabled = getBooleanValue(responseNode, false); //No I18N
-				//if(!licence)
-				throw new ZCException("Mobile plan not enabled for " + appOwner, ZCException.LICENCE_ERROR); //No I18N
-			}
+			} else if(responseNode.getNodeName().equals("license_enabled")) { //No I18N
+				if(!getBooleanValue(responseNode, false)) {
+					throw new ZCException("Mobile Access not enabled for " + appOwner, ZCException.LICENCE_ERROR); //No I18N
+				}
+			} else if(responseNode.getNodeName().equals("evaluationDays")) { //No I18N
+				ZOHOCreator.setUserProperty("evaluationDays", getStringValue(responseNode, ""));
+			} 
 		}
 		return toReturn;		
 	}

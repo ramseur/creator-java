@@ -16,8 +16,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -75,7 +77,15 @@ public class ZOHOCreator {
 	private static String serviceName = "ZohoCreator";//No I18N
 	private static String creatorURL = "creator.zoho.com";//No I18N
 	private static String prefix = "http";//No I18N
+	private static Properties props = new Properties();
 
+	public static String getUserProperty(String key) {
+		return props.getProperty(key);
+	}
+
+	public static void setUserProperty(String key, String value) {
+		props.setProperty(key, value);
+	}
 
 	public static String getPrefix() {
 		return prefix;
@@ -182,8 +192,8 @@ public class ZOHOCreator {
 		setCurrentHtmlView(null);
 	}
 
-	public static void loadSelectedApplication()  throws ZCException {
-		setCurrentSectionList(getSectionList(getCurrentApplication()));
+	public static void loadSelectedApplication(List<NameValuePair> additionalParams)  throws ZCException {
+		setCurrentSectionList(getSectionList(getCurrentApplication(), additionalParams));
 	}
 
 	public static void setCurrentSectionList(List<ZCSection> sectionList) {
@@ -295,19 +305,15 @@ public class ZOHOCreator {
 		URLPair navigationListURL = ZCURL.navigationListURL();
 		Document rootDocument = ZOHOCreator.postURLXML(navigationListURL.getUrl(), navigationListURL.getNvPair());
 		return XMLParser.parseForNavigationListForApps(rootDocument);
-
 	}
 
-	private static void checkForLicense() throws ZCException {
-		URLPair licenseCheckURLPair = ZCURL.licenseCheckURL();
-		Document rootDocument = ZOHOCreator.postURLXML(licenseCheckURLPair.getUrl(), licenseCheckURLPair.getNvPair());
-		XMLParser.parseForLicense(rootDocument);
-	}
-
-	public static ZCAppList getPersonalApplicationList() throws ZCException {
-		//checkForLicense();
+	public static ZCAppList getPersonalApplicationList(List<NameValuePair> additionalParams) throws ZCException {
 		URLPair appListURLPair = ZCURL.appListURL();
-		Document rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), appListURLPair.getNvPair());
+		if(additionalParams == null) {
+			additionalParams = new ArrayList<NameValuePair>();
+		}
+		additionalParams.addAll(appListURLPair.getNvPair());
+		Document rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), additionalParams);
 		return new ZCAppList(ZCAppList.PERSONAL_APPS, XMLParser.parseForApplicationList(rootDocument));
 	}
 
@@ -327,24 +333,32 @@ public class ZOHOCreator {
 		return toReturn;
 	}
 
-	public static ZCAppList getWorkspaceApplicationList(String workspaceAppOwner) throws ZCException {
+	public static ZCAppList getWorkspaceApplicationList(String workspaceAppOwner, List<NameValuePair> additionalParams) throws ZCException {
 		//checkForLicense(workspaceAppOwner);
 		URLPair appListURLPair = ZCURL.workSpaceAppListURL(workspaceAppOwner); 
-		Document rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), appListURLPair.getNvPair());
+		if(additionalParams == null) {
+			additionalParams = new ArrayList<NameValuePair>();
+		}
+		additionalParams.addAll(appListURLPair.getNvPair());
+		Document rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), additionalParams);
 		ZCAppList toReturn = new ZCAppList(ZCAppList.WORKSPACE_APPS, XMLParser.parseForApplicationList(rootDocument));
 		toReturn.setWorkspaceAppOwner(workspaceAppOwner);
 		return toReturn;
 	}
 
 
-	public static List<ZCSection> getSectionList(String appLinkName, String appOwner) throws ZCException {
+	public static List<ZCSection> getSectionList(String appLinkName, String appOwner, List<NameValuePair> additionalParams) throws ZCException {
 		URLPair sectionListURLPair = ZCURL.sectionMetaURL(appLinkName, appOwner);
-		Document rootDocument = ZOHOCreator.postURLXML(sectionListURLPair.getUrl(), sectionListURLPair.getNvPair());
+		if(additionalParams == null) {
+			additionalParams = new ArrayList<NameValuePair>();
+		}
+		additionalParams.addAll(sectionListURLPair.getNvPair());
+		Document rootDocument = ZOHOCreator.postURLXML(sectionListURLPair.getUrl(), additionalParams);
 		return XMLParser.parseForSectionList(rootDocument, appLinkName, appOwner);
 	}
 
-	public static List<ZCSection> getSectionList(ZCApplication zcApp)  throws ZCException {
-		return getSectionList(zcApp.getAppLinkName(), zcApp.getAppOwner());
+	public static List<ZCSection> getSectionList(ZCApplication zcApp, List<NameValuePair> additionalParams)  throws ZCException {
+		return getSectionList(zcApp.getAppLinkName(), zcApp.getAppOwner(), additionalParams);
 	}
 
 	public static ZCForm getForm(ZCComponent comp) throws ZCException{
