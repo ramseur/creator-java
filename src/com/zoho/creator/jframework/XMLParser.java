@@ -546,7 +546,10 @@ class XMLParser {
 				int type = getIntValue(fieldPropetyNode, 1);				
 				fieldType = FieldType.getFieldType(type);
 				//System.out.println("Type2 " + fieldType +"  type");
-			} else if(fieldPropetyNode.getNodeName().equals("Unique")) {
+			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("islookupfield"))
+			{
+				isLookup = getBooleanValue(fieldPropetyNode, isLookup);
+			}else if(fieldPropetyNode.getNodeName().equals("Unique")) {
 				isUnique = getBooleanValue(fieldPropetyNode, isUnique);
 			} else if(fieldPropetyNode.getNodeName().equals("urlTitleReq")) {
 
