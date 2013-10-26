@@ -75,9 +75,12 @@ public class ZOHOCreator {
 	private static ZCForm subform = null;
 	private static String accountsURL = "accounts.zoho.com";//No I18N
 	private static String serviceName = "ZohoCreator";//No I18N
-	private static String creatorURL = "creator.zoho.com";//No I18N
+	private static String creatorURL = null;//No I18N
 	private static String prefix = "http";//No I18N
 	private static Properties props = new Properties();
+	private static String appOwner = null;
+	private static String appLnkName;
+	private static String appDspName;
 
 	public static String getUserProperty(String key) {
 		return props.getProperty(key);
@@ -85,6 +88,30 @@ public class ZOHOCreator {
 
 	public static void setUserProperty(String key, String value) {
 		props.setProperty(key, value);
+	}
+	
+	public static String getApplicationOwner() {
+		return appOwner;
+	}
+
+	public static void setApplicationOwner(String appOwner) {
+		ZOHOCreator.appOwner = appOwner;
+	}
+	
+	public static String getApplicationLinkName() {
+		return appLnkName;
+	}
+
+	public static void setApplicationLinkName(String appLnkName) {
+		ZOHOCreator.appLnkName = appLnkName;
+	}
+	
+	public static String getApplicationDisplayName() {
+		return appDspName;
+	}
+
+	public static void setApplicationDisplayName(String appDspName) {
+		ZOHOCreator.appDspName = appDspName;
 	}
 
 	public static String getPrefix() {
@@ -901,7 +928,7 @@ public class ZOHOCreator {
 
 	static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
 
-		//System.out.println(getURLString(url, params));
+		System.out.println(getURLString(url, params));
 
 		try
 		{
