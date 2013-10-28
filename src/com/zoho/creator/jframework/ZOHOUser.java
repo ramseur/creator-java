@@ -23,6 +23,7 @@ public class ZOHOUser {
 		}
 	}
 	
+
 	static ZOHOUser getUserObject() {
 	    if(userCredential == null && userStorage != null) {
     		String loadedAuthToken = userStorage.loadAuthToken();
@@ -32,6 +33,8 @@ public class ZOHOUser {
 	    }
 	    return userCredential;
 	}
+	
+	
 	
 	private ZOHOUser(String authToken) {
 		this.authToken = authToken;

@@ -79,8 +79,8 @@ public class ZOHOCreator {
 	private static String prefix = "http";//No I18N
 	private static Properties props = new Properties();
 	private static String appOwner = null;
-	private static String appLnkName;
-	private static String appDspName;
+	private static String appLnkName = null;
+	private static String appDspName = null;
 
 	public static String getUserProperty(String key) {
 		return props.getProperty(key);
@@ -88,30 +88,6 @@ public class ZOHOCreator {
 
 	public static void setUserProperty(String key, String value) {
 		props.setProperty(key, value);
-	}
-	
-	public static String getApplicationOwner() {
-		return appOwner;
-	}
-
-	public static void setApplicationOwner(String appOwner) {
-		ZOHOCreator.appOwner = appOwner;
-	}
-	
-	public static String getApplicationLinkName() {
-		return appLnkName;
-	}
-
-	public static void setApplicationLinkName(String appLnkName) {
-		ZOHOCreator.appLnkName = appLnkName;
-	}
-	
-	public static String getApplicationDisplayName() {
-		return appDspName;
-	}
-
-	public static void setApplicationDisplayName(String appDspName) {
-		ZOHOCreator.appDspName = appDspName;
 	}
 
 	public static String getPrefix() {

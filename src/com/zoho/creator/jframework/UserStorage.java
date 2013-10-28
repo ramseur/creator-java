@@ -1,6 +1,7 @@
 // $Id$
 package com.zoho.creator.jframework;
 
+
 public interface UserStorage {
 
 	//public String loadUserName();
@@ -11,6 +12,6 @@ public interface UserStorage {
 	public void saveAuthToken(String authToken);
 	
 	public void removeAuthToken();
-	
+
 	
 }

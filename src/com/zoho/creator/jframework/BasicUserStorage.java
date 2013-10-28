@@ -6,9 +6,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
-
-import com.zoho.creator.jframework.UserStorage;
 
 public class BasicUserStorage implements UserStorage {
 
@@ -53,5 +53,6 @@ public class BasicUserStorage implements UserStorage {
 	public void removeAuthToken() {
 		new File("/login").delete();//No I18N
 	}
-
+	
+	
 }
