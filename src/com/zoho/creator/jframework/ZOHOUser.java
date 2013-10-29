@@ -108,9 +108,7 @@ public class ZOHOUser {
                     status = 106;
                 }
             }
-        }        
-        
-        
+        }                
     }
 
     
@@ -140,15 +138,11 @@ public class ZOHOUser {
 		
 		return user;
 	}
-
-
-
-	
-	
 	
 	void logout() {
 		if(authToken != null) {
 			String delAuthTokenURL = ZCURL.deleteAuthToken(authToken);
+			
 			try {
 				String response = ZOHOCreator.postURL(delAuthTokenURL, null);
 			} catch (ZCException e) {
@@ -160,7 +154,6 @@ public class ZOHOUser {
 			userCredential = null;
 		}
 	}
-	
 	
 	String getAuthToken() {
 		return authToken;

@@ -821,7 +821,6 @@ public class ZOHOCreator {
 			HttpPost request = new HttpPost();
 			if(params != null) {
 				request.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));//No I18N
-
 			}
 			request.setURI(new URI(url));
 			ResponseHandler<byte[]> handler = new ResponseHandler<byte[]>() {
@@ -834,10 +833,8 @@ public class ZOHOCreator {
 					}
 				}
 			};
-
 			byte[] response = client.execute(request, handler);
 			return new String(response);
-
 		} catch(UnknownHostException uhe) {
 			throw new ZCException("No network connection.", ZCException.NETWORK_ERROR);//No I18N
 		} catch(HttpHostConnectException uhe) {

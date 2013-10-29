@@ -160,7 +160,7 @@ class XMLParser {
 	static List<ZCApplication> parseForApplicationList(Document rootDocument) throws ZCException {
 		List<ZCApplication> toReturn = new ArrayList<ZCApplication>();
 		NodeList nl = rootDocument.getChildNodes();
-		int remainingDays = -1;
+		String remainingDays = "";
 		boolean licenceEnabled = true;
 		String appOwner = "";
 		for(int i=0; i<nl.getLength(); i++) {
@@ -172,7 +172,7 @@ class XMLParser {
 					Node resultNode = responseNodes.item(j);
 					//////System.out.println(resultNode.getNodeName());
 					if(resultNode.getNodeName().equals("result")) {
-						NodeList resultNodes = resultNode.getChildNodes();
+						NodeList resultNodes = resultNode.getChildNodes();						
 						for(int k=0; k<resultNodes.getLength(); k++) {
 							Node resultNodeChild = resultNodes.item(k);
 							if(resultNodeChild.getNodeName().equals("application_owner")) {
@@ -221,8 +221,9 @@ class XMLParser {
 							} else if(resultNodeChild.getNodeName().equals("license_enabled")) {
 								licenceEnabled = getBooleanValue(resultNodeChild, false);
 							} else if(resultNodeChild.getNodeName().equals("evaluationDays")) {
-								ZOHOCreator.setUserProperty("evaluationDays", getStringValue(resultNodeChild, ""));
+								remainingDays = getStringValue(resultNodeChild, "");					
 							}
+							ZOHOCreator.setUserProperty("evaluationDays", remainingDays);
 						}
 					}
 				}
