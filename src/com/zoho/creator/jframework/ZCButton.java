@@ -69,9 +69,9 @@ public class ZCButton implements Comparable<ZCButton>{
 
 	public ZCResponse click() throws ZCException {
 		ZCResponse response =  null;
-		//System.out.println("inside click");
+		////System.out.println("inside click");
 		if(!buttonType.equals(ZCButtonType.RESET)) {
-			//System.out.println("inside click");
+			////System.out.println("inside click");
 			String action = "add"; //No I18N
 			String xmlString = zcForm.getXMLStringForSubmit();
 			if(!zcForm .isStateLess()) 
@@ -124,16 +124,18 @@ public class ZCButton implements Comparable<ZCButton>{
 				}
 				
 				response =  ZOHOCreator.postXMLString(zcForm.getAppOwner(), xmlString, action, params, zcForm);
-				//System.out.println("inside response"+response.getErrorMessagesTable().size());
+				//System.out.println("inside responseee"+response.getErrorMessagesTable().size());
 				
 			} else {
-				URLPair urlPair = ZCURL.buttonOnClick(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), linkName, zcForm.getAppOwner(), xmlString);
+				//URLPair urlPair = ZCURL.buttonOnClick(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), linkName, zcForm.getAppOwner(), xmlString);
+				URLPair urlPair = ZCURL.buttonOnClick(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), linkName, zcForm.getAppOwner(), zcForm.getFieldParamValues());
 				response = ZOHOCreator.parseResponseDocumentForXMLString(ZOHOCreator.postURLXML(urlPair.getUrl(), urlPair.getNvPair()), action, zcForm);
+				//System.out.println("inside cli");
 			}
-			//System.out.println("inside cli");
+			////System.out.println("inside cli");
 			Hashtable<ZCField, String> errorMessagesTable = response.getErrorMessagesTable();
 			if(response.isError()) {
-				//System.out.println("inside responsesss");
+				////System.out.println("inside responsesss");
 				return response;
 			}
 
@@ -141,12 +143,12 @@ public class ZCButton implements Comparable<ZCButton>{
 			for(int i=0; i<fields.size(); i++) {
 				ZCField field = fields.get(i);
 				if(FieldType.isPhotoField(field.getType())) {
-					//System.out.println("lkhfff");
+					////System.out.println("lkhfff");
 					ZCRecordValue recValue = field.getRecordValue();
 					File fileToUpload = recValue.getFileValue();
 					if(fileToUpload!=null)
 					{
-					//System.out.println("lkhjjjhjhk"+ Integer.parseInt(String.valueOf(fileToUpload.length()/1024)));
+					////System.out.println("lkhjjjhjhk"+ Integer.parseInt(String.valueOf(fileToUpload.length()/1024)));
 					URLPair urlPair = ZCURL.fileUploadURL(zcForm.getAppOwner());
 					List<NameValuePair> params = new ArrayList<NameValuePair>();
 					params.addAll(urlPair.getNvPair());

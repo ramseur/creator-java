@@ -45,7 +45,8 @@ public class ZCField implements Comparable<ZCField> {
 	private ZCRecordValue recordValue = null;
 	private boolean isLookup = false; // This is purely for display checks....
 	private boolean newEntriesAllowed = false; // This is purely for display checks....
-	
+	private boolean isOnAddRowExists = false;
+	private boolean isOnDeleteRowExists = false;
 	
 	private List<ZCRecord> subFormEntries = new ArrayList<ZCRecord>();
 	private List<ZCRecord> removedSubFormEntries = new ArrayList<ZCRecord>();
@@ -189,13 +190,8 @@ public class ZCField implements Comparable<ZCField> {
 		return choices;
 	}
 
-	void addChoices(List<ZCChoice> choices) {
-		if(!choicesAdded) {
-			this.choices.addAll(choices);
-			choicesAdded = true;
-		} else {
-			throw new RuntimeException("Can add choices list only once"); //No I18N
-		}
+	public void addChoices(List<ZCChoice> choices) {
+		this.choices = choices;		
 	}
 	
 	void clearChoices() {
@@ -306,11 +302,25 @@ public class ZCField implements Comparable<ZCField> {
 	public ZCForm getSubForm() {
 		return subForm;
 	}
+	
+	private boolean subFormSet = false;
 	void setSubForm(ZCForm subForm) {
-		this.subForm = subForm;
-		subForm.setBaseSubFormField(this);
+		if(!subFormSet) {
+			subFormSet = true;
+			this.subForm = subForm;
+			subForm.setBaseSubFormField(this);
+		}
 	}
 	//List<HashMap<ZCField, List<String>>> subFormEntries
+	/*
+	public ZCForm getNewSubForm()
+	{
+		ZCForm newSubForm = new ZCForm(subForm.getAppOwner(),subForm.getAppLinkName(),subForm.getComponentName(),subForm.getComponentLinkName(),-1,false,false,"","",false);
+		//System.out.println("zcfff"+subForm.getAppOwner()+subForm.getAppLinkName()+subForm.getComponentName()+subForm.getComponentLinkName());
+		//setSubForm(newSubForm);
+		return newSubForm;
+	}
+	*/
 	
 	public void addSubFormEntry(ZCRecord record) {
 		subFormEntries.add(record);
@@ -424,12 +434,17 @@ public class ZCField implements Comparable<ZCField> {
 		this.isDisabled = isDisabled;
 	}
 	
-	public void onUserInput() throws ZCException{
-		ZOHOCreator.callFieldOnUser(baseForm, fieldName);
+	public void onUserInput(List<ZCRecordValue> subFormTempRecordValues) throws ZCException{
+		
+			//System.out.println("inside ifonuserrr");
+		ZOHOCreator.callFieldOnUser(baseForm, fieldName, false);
+		
+		
 	}
 	
-	public void onUserInputForFormula() throws ZCException{
-		ZOHOCreator.callFieldOnUserForFormula(baseForm, fieldName);
+	
+	public void onUserInputForFormula(List<ZCRecordValue> subFormTempRecordValues) throws ZCException{
+		ZOHOCreator.callFieldOnUser(baseForm, fieldName, true);
 	}
 
 	public void setTextValue(String textValue) {
@@ -439,5 +454,21 @@ public class ZCField implements Comparable<ZCField> {
 	public String getTextValue() {
 		return textValue;
 	}
+    
+	public boolean isOnAddRowExists()
+	{
+	return isOnAddRowExists;	
+	}
 
+	public void setOnAddRowExists(boolean isOnAddRowExists) {
+		this.isOnAddRowExists = isOnAddRowExists;
+	}
+
+	public boolean isOnDeleteRowExists() {
+		return isOnDeleteRowExists;
+	}
+
+	public void setOnDeleteRowExists(boolean isOnDeleteRowExists) {
+		this.isOnDeleteRowExists = isOnDeleteRowExists;
+	}
 }

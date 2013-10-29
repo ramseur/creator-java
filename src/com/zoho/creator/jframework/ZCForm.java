@@ -4,6 +4,9 @@ package com.zoho.creator.jframework;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
 public class ZCForm extends ZCComponent {
 
 	private boolean hasAddOnLoad = false;
@@ -32,6 +35,23 @@ public class ZCForm extends ZCComponent {
 	public static final int VIEW_EDIT_FORM =3;
 	public static final int VIEW_BULK_EDIT_FORM =4;
 	public static final int FORM_LOOKUP_ADD_FORM =5;
+
+
+	public static final int task_reloadForm = 1;
+	public static final int task_clear = 9;
+	public static final int task_hide = 10;
+	public static final int task_show = 11;
+	public static final int task_setValue = 12;
+	public static final int task_enable = 14;
+	public static final int task_disable = 15;
+
+	public static final int task_select = 1001;
+	public static final int task_deselect = 1002;
+	public static final int task_selectAll = 1003;
+	public static final int task_deselectAll = 1004;
+	public static final int task_addValue = 1005;
+	public static final int task_alert = 1302;
+
 
 
 
@@ -91,6 +111,7 @@ public class ZCForm extends ZCComponent {
 
 
 	void addButtons(List<ZCButton> buttons) {
+		//System.out.println("booleannn"+buttonsAdded);
 		if(!buttonsAdded) {
 			this.buttons.addAll(buttons);
 			buttonsAdded = true;
@@ -122,7 +143,8 @@ public class ZCForm extends ZCComponent {
 
 		String listTag = "formlist";//No I18N
 		String compTag = "form";//No I18N
-		String compLinkNameValue = getComponentLinkName(); 
+		String compLinkNameValue = getComponentLinkName();
+		//System.out.println("compliiiiiii"+compLinkNameValue);
 		String actionTag = "add";//No I18N
 		String newValuesOpenTag = "";//No I18N
 		String newValuesCloseTag = "";//No I18N
@@ -198,7 +220,7 @@ public class ZCForm extends ZCComponent {
 				if(FieldType.isMultiChoiceField(field.getType())) 
 				{
 					List<String> values = recordValue.getValues();
-					//System.out.println("values"+values.size()+values.get(0));
+					////System.out.println("values"+values.size()+values.get(0));
 
 					if(values.size()!=0)
 					{
@@ -225,24 +247,24 @@ public class ZCForm extends ZCComponent {
 					buff.append(getXMLStringForSubFormEntries(field.getUpdatedSubFormEntries(), "update"));//No I18N
 					buff.append(getXMLStringForSubFormEntries(field.getRemovedSubFormEntries(), "delete"));//No I18N
 					buff.append("</field>");//No I18N
-				} else if( !FieldType.isPhotoField(field.getType()) && !field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES)) {
-						if(!(recordValue.getValue().equals("")))
-						{
-							buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
-							buff.append("<value>");//No I18N
-							buff.append("<![CDATA[");//No I18N
-							buff.append(recordValue.getValue());
-							buff.append("]]>");//No I18N
-							buff.append("</value>");//No I18N
-							buff.append("</field>");//No I18N
-						}
-		
-						
-					
+				} else if(!FieldType.isPhotoField(field.getType()) && !field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES)) {
+					if(!(recordValue.getValue().equals("")))
+					{
+						buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
+						buff.append("<value>");//No I18N
+						buff.append("<![CDATA[");//No I18N
+						buff.append(recordValue.getValue());
+						buff.append("]]>");//No I18N
+						buff.append("</value>");//No I18N
+						buff.append("</field>");//No I18N
+					}
+
+
+
 				}
 			}
 		}
-		//System.out.println("response stringgg"+buff.toString());
+		////System.out.println("response stringgg"+buff.toString());
 		return buff.toString();
 	}
 
@@ -289,6 +311,49 @@ public class ZCForm extends ZCComponent {
 		}
 		return buff.toString();
 	}
+	//	private List<NameValuePair>  getParamsForSubFormEntries(List<ZCRecord> subFormEntries, String actionTag) {
+	//		StringBuffer buff = new StringBuffer();
+	//		for(int j=0; j<subFormEntries.size(); j++) {
+	//			ZCRecord subFormRecord = subFormEntries.get(j);
+	//			buff.append("<");//No I18N
+	//			buff.append(actionTag);
+	//			if(actionTag.equals("update") || actionTag.equals("delete")) {//No I18N
+	//				buff.append(" ID=\"" + subFormRecord.getRecordId() + "\"");//No I18N
+	//			}
+	//			buff.append(">");//No I18N
+	//			if(!actionTag.equals("delete")) {//No I18N
+	//				List<ZCRecordValue> subFormRecordValues = subFormRecord.getValues();
+	//				for(int k=0; k<subFormRecordValues.size(); k++) {
+	//					ZCRecordValue subFormRecordValue = subFormRecordValues.get(k);
+	//					ZCField subFormField = subFormRecordValue.getField();
+	//					buff.append("<field name='" + subFormField.getFieldName() + "'>");//No I18N
+	//					if(FieldType.isMultiChoiceField(subFormField.getType())) {
+	//						List<String> subFormValues = subFormRecordValue.getValues();
+	//						buff.append("<options>");//No I18N
+	//						for(int l=0; l<subFormValues.size(); l++) {
+	//							buff.append("<option>");//No I18N
+	//							buff.append("<![CDATA[");//No I18N
+	//							buff.append(subFormValues.get(l));
+	//							buff.append("]]>");//No I18N
+	//							buff.append("</option>");//No I18N
+	//						}
+	//						buff.append("</options>");//No I18N
+	//					} else if(!FieldType.isPhotoField(subFormField.getType())) {
+	//						buff.append("<value>");//No I18N
+	//						buff.append("<![CDATA[");//No I18N
+	//						buff.append(subFormRecordValue.getValue());
+	//						buff.append("]]>");//No I18N	
+	//						buff.append("</value>");//No I18N
+	//					}
+	//					buff.append("</field>");//No I18N
+	//				}
+	//			}
+	//			buff.append("</");//No I18N
+	//			buff.append(actionTag);
+	//			buff.append(">");//No I18N
+	//		}
+	//		return params;
+	//	}
 
 
 	String getXMLStringForDeluge() {
@@ -296,22 +361,156 @@ public class ZCForm extends ZCComponent {
 		buff.append("<fields>");//No I18N
 		buff.append(getXMLStringForFields());
 		buff.append("</fields>");//No I18N
-		//System.out.println("form"+buff.toString());
+		////System.out.println("form"+buff.toString());
 		return buff.toString();
 	}
 
+	List<NameValuePair> getFieldParamValues() {
+		StringBuffer buff = new StringBuffer();
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		List<ZCField> fieldsToIterate = fields;
+		for(int i=0; i<fieldsToIterate.size(); i++) {//No I18N
+			ZCField field = fieldsToIterate.get(i);
+			ZCRecordValue recordValue = field.getRecordValue();
+			//System.out.println("inside fieldtype"+field.getType());
+			if(recordValue != null) 
+			{
+				if(FieldType.isMultiChoiceField(field.getType())) 
+				{
+					List<String> values = recordValue.getValues();
+					if(values.size()!=0)
+					{
+						if(!values.get(0).equals(""))
+						{
+							for(int j=0;j<values.size();j++)
+								params.add(new BasicNameValuePair(field.getFieldName(), values.get(j)));
+						}
+					}
+				}
+				else if(field.getType().equals(FieldType.SUB_FORM)) {
+					//System.out.println("inside subfoem"+field.getType());
+					params.addAll(getParamsForSubFormEntries(field.getAddedSubFormEntries(),field.getFieldName()));
+//					params.add(new BasicNameValuePair("SF(SubForm).FD(t::row_1).SV(record::status)","added"));
+//					params.add(new BasicNameValuePair("SF(SubForm).FD(t::row_1).SV(subformSingle_Line)","vic"));
+//					params.add(new BasicNameValuePair("SF(SubForm).FD(t::row_1).SV(Multi_Line)","aaa"));
+//					params.add(new BasicNameValuePair("SF(SubForm).FD(t::row_1).MV(Multi_Select)","Choice 1"));
+//					params.add(new BasicNameValuePair("SF(SubForm).FD(t::row_1).MV(Multi_Select)","Choice 2"));
+//					params.add(new BasicNameValuePair("SF(SubForm).FD(t::row_1).SV(Radio)","Choice 3"));
+				} else if(!FieldType.isPhotoField(field.getType()) && !field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES)) {
+					params.add(new BasicNameValuePair(field.getFieldName(),recordValue.getValue()));
+				}
+			}
+		}
+		return params;
+	}
+	List<NameValuePair> getFieldParamValues(List<ZCRecordValue> recordValues) {
+		StringBuffer buff = new StringBuffer();
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		List<ZCField> fieldsToIterate = fields;
+		for(int i=0; i<fieldsToIterate.size(); i++) {//No I18N
+			ZCField field = fieldsToIterate.get(i);
+			ZCRecordValue recordValue = field.getRecordValue();
+			//System.out.println("inside fieldtype"+field.getType());
+			if(recordValue != null) 
+			{
+				if(FieldType.isMultiChoiceField(field.getType())) 
+				{
+					List<String> values = recordValue.getValues();
+					if(values.size()!=0)
+					{
+						if(!values.get(0).equals(""))
+						{
+							for(int j=0;j<values.size();j++)
+								params.add(new BasicNameValuePair(field.getFieldName(), values.get(j)));
+						}
+					}
+				}
+				else if(field.getType().equals(FieldType.SUB_FORM)) {
+					//System.out.println("inside subfoem"+field.getType());
+					params.addAll(getParamsForSubFormEntries(field.getAddedSubFormEntries(),field.getFieldName()));
+					params.addAll(getTempRecordParams(recordValues,field.getFieldName(),field.getAddedSubFormEntries().size()+1));
+//					params.add(new BasicNameValuePair("SF(SubForm).FD(t::row_1).SV(record::status)","added"));
+//					params.add(new BasicNameValuePair("SF(SubForm).FD(t::row_1).SV(subformSingle_Line)","vic"));
+//					params.add(new BasicNameValuePair("SF(SubForm).FD(t::row_1).SV(Multi_Line)","aaa"));
+//					params.add(new BasicNameValuePair("SF(SubForm).FD(t::row_1).MV(Multi_Select)","Choice 1"));
+//					params.add(new BasicNameValuePair("SF(SubForm).FD(t::row_1).MV(Multi_Select)","Choice 2"));
+//					params.add(new BasicNameValuePair("SF(SubForm).FD(t::row_1).SV(Radio)","Choice 3"));
+				} else if(!FieldType.isPhotoField(field.getType()) && !field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES)) {
+					params.add(new BasicNameValuePair(field.getFieldName(),recordValue.getValue()));
+				}
+			}
+		}
+		return params;
+	}
+	private List<NameValuePair> getTempRecordParams(List<ZCRecordValue> zcRecordValues,String fieldName,int rowPosition)
+	{
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		//System.out.println("recooooor  "+zcRecordValues.size());
+		params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+rowPosition+").SV(record::status)","added"));
+		for(int i=0;i<zcRecordValues.size();i++)
+		{
+			ZCRecordValue recordValue = zcRecordValues.get(i);
+			ZCField field = recordValue.getField();
+			if(FieldType.isMultiChoiceField(field.getType()))
+			{
+				for(int j=0;j<recordValue.getValues().size();j++)
+				{
+					params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+rowPosition+").SV("+field.getFieldName()+")",recordValue.getValues().get(j)));
+					//System.out.println("recooooormulti  "+recordValue.getValues().get(j));
+				}
+			}
+			else if(!FieldType.isPhotoField(field.getType()) && !field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES))
+			{
+				params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+rowPosition+").SV("+field.getFieldName()+")",recordValue.getValue()));
+				//System.out.println("recooooorsingle  "+recordValue.getValue());
+			}
+		}
+		return params;
+	}
+	private List<NameValuePair> getParamsForSubFormEntries(List<ZCRecord> subFormEntries,String fieldName)
+	{
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		//System.out.println("inside fieldtypeff");
+		for(int i=0;i<subFormEntries.size();i++)
+		{	
+			//System.out.println("inside fieldtypef");
+			ZCRecord subFormRecord = subFormEntries.get(i);	
+			List<ZCRecordValue> subFormRecordValues = subFormRecord.getValues();
+			params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV(record::status)", "added"));
+			for(int k=0; k<subFormRecordValues.size(); k++) {
+				ZCRecordValue subFormRecordValue = subFormRecordValues.get(k);
+				ZCField subFormField = subFormRecordValue.getField();
+				if(FieldType.isMultiChoiceField(subFormField.getType())) {
+					List<String> subFormValues = subFormRecordValue.getValues();
+					for(int l=0; l<subFormValues.size(); l++) {
+						//params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+0+").SV("+subFormField.getFieldName()+")",));
+					}
 
-	public void onAddRowForSubForm(ZCField field) throws ZCException{
-		ZOHOCreator.callSubFormAddRow(this, field.getFieldName());
+				} else if(!FieldType.isPhotoField(subFormField.getType())) {
+					//System.out.println("inside fieldtypefff");
+
+					//params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+0+").SV("+subFormField.getFieldName()+")",subFormField.getValue()));
+					params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+i+1+").SV("+subFormField.getFieldName()+")", ""));
+				}
+
+			}
+		}
+		return params;
+	}
+	
+
+
+	public void onAddRowForSubForm(ZCField field,List<ZCRecordValue> recordValues) throws ZCException{
+		ZOHOCreator.callSubFormAddRow(this, field.getFieldName(),recordValues);
 	}
 
-	public void onDeleteRowForSubForm(ZCField field) throws ZCException{
-		ZOHOCreator.callSubFormDeleteRow(this, field.getFieldName());
+	public void onDeleteRowForSubForm(ZCField field,List<ZCRecordValue> recordValues) throws ZCException{
+		ZOHOCreator.callSubFormDeleteRow(this, field.getFieldName(),recordValues);
 	}
 
-	public void onUserInputForSubFormField(ZCField subFormField, ZCField onUserInputField) throws ZCException{
-		ZOHOCreator.callSubFormFieldOnUser(this, subFormField.getFieldName() , onUserInputField.getFieldName());
-	}
+		public void onUserInputForSubFormField(ZCField onUserInputField, ZCField subFormField,List<ZCRecordValue> recordValues) throws ZCException{
+			ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , subFormField.getFieldName(),recordValues);
+		}
 
 	public ZCField getBaseSubFormField() {
 		return baseSubFormField;
@@ -385,7 +584,9 @@ public class ZCForm extends ZCComponent {
 	}
 
 	public void setAlertMessages(List<String> alertMessages) {
+
 		this.alertMessages = alertMessages;
+		//System.out.println("inside eeeee"+this.alertMessages);
 	}
 
 	public boolean isReLoadForm() {

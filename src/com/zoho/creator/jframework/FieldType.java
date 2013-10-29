@@ -8,7 +8,7 @@ import java.util.Map;
 
 public enum FieldType   {
 	
-	SINGLE_LINE (1), MULTI_LINE (3), EMAIL (4), NUMBER(5), CURRENCY(6), PERCENTAGE(7), DECISION_CHECK_BOX(9), DATE(10), NOTES(14), FORMULA(15), FILE_UPLOAD(18), DECIMAL(19), IMAGE(20), URL(21), DATE_TIME(22), SUB_FORM(23), RICH_TEXT(24), AUTO_NUMBER(31), DROPDOWN(100), RADIO(101) , MULTISELECT(102), CHECKBOXES(103), NEW_PICKLIST(1100), NEW_RADIO(1101), UNKNOWN(-1);
+	SINGLE_LINE (1), MULTI_LINE (3), EMAIL (4), NUMBER(5), CURRENCY(6), PERCENTAGE(7), DECISION_CHECK_BOX(9), DATE(10), NOTES(14), FORMULA(15), FILE_UPLOAD(18), DECIMAL(19), IMAGE(20), URL(21), DATE_TIME(22), SUB_FORM(23), RICH_TEXT(24), AUTO_NUMBER(31), DROPDOWN(100), RADIO(101) , MULTISELECT(102), CHECKBOXES(103), NEW_PICKLIST(1100), NEW_RADIO(1101),ZOHO_CRM(25),ZOHO_CRM_LINK(26),UNKNOWN(-1);
 
 	private static Map<Integer, FieldType> typeMap;
 
@@ -88,6 +88,115 @@ public enum FieldType   {
     	if(toReturn == null) {
     		toReturn = FieldType.UNKNOWN;
     	}
+    	return toReturn;
+    }
+    static FieldType getFieldTypeNew(int type) {
+    	FieldType toReturn = null;
+    	System.out.println("newwww");
+    	if(type == 1)
+    	{
+    		toReturn = FieldType.SINGLE_LINE;
+    	}
+    	else if(type == 2)
+    	{
+    		toReturn = FieldType.MULTI_LINE;
+    	}
+    	else if(type == 3)
+    	{
+    		toReturn = FieldType.EMAIL;
+    	}
+    	else if(type == 4)
+    	{
+    		toReturn = FieldType.RICH_TEXT;
+    	}
+    	else if(type == 5)
+    	{
+    		toReturn = FieldType.NUMBER;
+    	}
+    	else if(type == 6)
+    	{
+    		toReturn = FieldType.DECIMAL;
+    	}
+    	else if(type == 7)
+    	{
+    		toReturn = FieldType.PERCENTAGE;
+    	}
+    	else if(type == 8)
+    	{
+    		toReturn = FieldType.CURRENCY;
+    	}
+    	else if(type == 9)
+    	{
+    		toReturn = FieldType.AUTO_NUMBER;
+    	}
+    	else if(type == 10)
+    	{
+    		System.out.println("date....");
+    		toReturn = FieldType.DATE;
+    	}
+    	else if(type == 11)
+    	{
+    		toReturn = FieldType.DATE_TIME;
+    	}
+    	else if(type == 12)
+    	{
+    		System.out.println("drppppp");
+    		toReturn = FieldType.DROPDOWN;
+    	}
+    	else if(type == 13)
+    	{
+    		toReturn = FieldType.RADIO;
+    	}
+    	else if(type == 14)
+    	{
+    		toReturn = FieldType.MULTISELECT;
+    	}
+    	
+    	else if(type == 15)
+    	{
+    		toReturn = FieldType.CHECKBOXES;
+    	}
+    	else if(type == 16)
+    	{
+    		toReturn = FieldType.DECISION_CHECK_BOX;
+    	}
+    	else if(type == 17)
+    	{
+    		toReturn = FieldType.URL;
+    	}
+    	else if(type == 18)
+    	{
+    		toReturn = FieldType.IMAGE;
+    	}
+    	else if(type == 19)
+    	{
+    		toReturn = FieldType.FILE_UPLOAD;
+    	}
+    	else if(type == 20)
+    	{
+    		toReturn = FieldType.FORMULA;
+    	}
+    	else if(type == 21)
+    	{
+    		toReturn = FieldType.SUB_FORM;
+    	}
+    	else if(type == 22)
+    	{
+    		toReturn = FieldType.ZOHO_CRM;
+    	}
+    	else if(type == 23)
+    	{
+    		toReturn = FieldType.ZOHO_CRM_LINK;
+    	}
+    	else if(type == 24)
+    	{
+    		toReturn = FieldType.NOTES;
+    	}
+    	else if(type>0&&type<=24)
+    	{
+    		toReturn = FieldType.UNKNOWN;
+    	}
+    	System.out.println("torrrrr"+toReturn);
     	return toReturn;
     }
     
