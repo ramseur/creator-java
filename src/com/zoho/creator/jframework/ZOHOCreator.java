@@ -422,10 +422,10 @@ public class ZOHOCreator {
 	}
 
 	private static ZCForm getForm(String appLinkName, String formLinkName, String appOwner, String viewLinkName, Long recordLinkId, int formType, String refAppLinkName, String refFormLinkName, String refFieldName, Date calSelectedStartDate,Date calSelectedEndDate) throws ZCException {
-		URLPair formMetaURLPair = ZCURL.formMetaURLNew(appLinkName, formLinkName, appOwner, viewLinkName, recordLinkId, formType, refAppLinkName, refFormLinkName, refFieldName, calSelectedStartDate,calSelectedEndDate);
+		URLPair formMetaURLPair = ZCURL.formMetaURL(appLinkName, formLinkName, appOwner, viewLinkName, recordLinkId, formType, refAppLinkName, refFormLinkName, refFieldName, calSelectedStartDate,calSelectedEndDate);
 		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
 		//System.out.println("rootdocu"+rootDocument);
-		ZCForm toReturn = XMLParser.parseForFormNew(rootDocument, appLinkName, appOwner);
+		ZCForm toReturn = XMLParser.parseForForm(rootDocument, appLinkName, appOwner);
 		//System.out.println("toreturn   " +getURLString(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair()));
 		if(toReturn == null) {
 			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLString(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
@@ -453,7 +453,7 @@ public class ZOHOCreator {
 		//Document rootDocument = ZOHOCreator.postURLXML(formOnAddOnLoadURL.getUrl(), formOnAddOnLoadURL.getNvPair());
 		String response = ZOHOCreator.postURL(formOnAddOnLoadURL.getUrl(), formOnAddOnLoadURL.getNvPair());
 		//System.out.println("onload response " + response);
-		XMLParser.parseAndCallFormEventsNew(response, zcForm,null);
+		XMLParser.parseAndCallFormEvents(response, zcForm,null);
 	}
 
 	static void callFormEditOnAddOnLoad(ZCForm zcForm,Long recordLinkId) throws ZCException{
@@ -461,14 +461,14 @@ public class ZOHOCreator {
 		URLPair formEditOnAddOnLoadURL = ZCURL.formEditOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), zcForm.getXMLStringForDeluge(),recordLinkId);
 		//Document rootDocument = ZOHOCreator.postURLXML(formEditOnAddOnLoadURL.getUrl(), formEditOnAddOnLoadURL.getNvPair());
 		String response = ZOHOCreator.postURL(formEditOnAddOnLoadURL.getUrl(), formEditOnAddOnLoadURL.getNvPair());
-		XMLParser.parseAndCallFormEventsNew(response, zcForm,null);
+		XMLParser.parseAndCallFormEvents(response, zcForm,null);
 	}
 
 	private static void callDelugeEvents(ZCForm zcForm, URLPair urlPair,List<ZCRecordValue> recordValues) throws ZCException{
 		//Document rootDocument = ZOHOCreator.postURLXML(urlPair.getUrl(), urlPair.getNvPair());
 		//System.out.println("calldelugeevents");
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
-		XMLParser.parseAndCallFormEventsNew(response, zcForm,recordValues);
+		XMLParser.parseAndCallFormEvents(response, zcForm,recordValues);
 	}
 
 

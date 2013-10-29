@@ -104,37 +104,9 @@ public class ZCURL {
 
 	}
 
-	static URLPair formMetaURL(String appLinkName, String formLinkName, String appOwner, String viewLinkName, Long recordLinkId, int formType, String refAppLinkName, String refFormLinkName, String refFieldName, Date calSelectedStartDate,Date calSelectedEndDate) {
-		List<NameValuePair> params = getParamsWithOwner(appOwner);
-		params.add(new BasicNameValuePair("complete", "true"));//No I18N
-		params.add(new BasicNameValuePair("combinedLookup", "true"));//No I18N
-		if(viewLinkName != null && recordLinkId != null) {
-			params.add(new BasicNameValuePair("viewLinkName", viewLinkName));//No I18N
-			if(recordLinkId != null) {
-				params.add(new BasicNameValuePair("recLinkID", String.valueOf(recordLinkId)));//No I18N
-			}
-		}
-		if(refAppLinkName != null && refFormLinkName != null && refFieldName != null) {
-			params.add(new BasicNameValuePair("refAppLinkName", refAppLinkName));//No I18N
-			params.add(new BasicNameValuePair("refFormLinkName", refFormLinkName));//No I18N
-			params.add(new BasicNameValuePair("refFieldName", refFieldName));//No I18N
-		}
-		if(calSelectedStartDate != null) {			
-			////System.out.println(calSelectedStartDate+"start"+calSelectedEndDate+"end");
-			Calendar startDateCal = Calendar.getInstance();
-			startDateCal.setTime(calSelectedStartDate);
-			Calendar endDateCal = Calendar.getInstance();
-			endDateCal.setTime(calSelectedEndDate);
-			params.add(new BasicNameValuePair("dateJsonObject", "{\"startDate\":{\"day\":" + startDateCal.get(Calendar.DAY_OF_MONTH) + ",\"month\":" + startDateCal.get(Calendar.MONTH) + ",\"year\":" + startDateCal.get(Calendar.YEAR) + ",\"hours\":"+ startDateCal.get(Calendar.HOUR_OF_DAY)  +",\"minutes\":"+ startDateCal.get(Calendar.MINUTE) +",\"seconds\":" + startDateCal.get(Calendar.SECOND) +"}," +  //No I18N
-																"\"endDate\":{\"day\":" +endDateCal.get(Calendar.DAY_OF_MONTH) + ",\"month\":" + endDateCal.get(Calendar.MONTH) + ",\"year\":" + endDateCal.get(Calendar.YEAR) + ",\"hours\":"+ endDateCal.get(Calendar.HOUR_OF_DAY)  +",\"minutes\":"+ endDateCal.get(Calendar.MINUTE) +",\"seconds\":" + endDateCal.get(Calendar.SECOND) + "}};"));//No I18N
-		}
-		params.add(new BasicNameValuePair("formAccessType", String.valueOf(formType)));//No I18N
-		
-		return new URLPair(serverURL() + "/api/xml/" + appLinkName + "/" + formLinkName + "/fields/", params);//No I18N
-
-	}
 	
-	static URLPair formMetaURLNew(String appLinkName, String formLinkName, String appOwner, String viewLinkName, Long recordLinkId, int formType, String refAppLinkName, String refFormLinkName, String refFieldName, Date calSelectedStartDate,Date calSelectedEndDate) {
+	
+	static URLPair formMetaURL(String appLinkName, String formLinkName, String appOwner, String viewLinkName, Long recordLinkId, int formType, String refAppLinkName, String refFormLinkName, String refFieldName, Date calSelectedStartDate,Date calSelectedEndDate) {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);
 		params.add(new BasicNameValuePair("metaData","complete"));//No I18N
 		if(recordLinkId != null) {
