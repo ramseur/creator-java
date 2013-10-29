@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -322,9 +321,9 @@ public class ZOHOCreator {
 			additionalParams = new ArrayList<NameValuePair>();
 		}
 		additionalParams.addAll(appListURLPair.getNvPair());
+		String str = ZOHOCreator.postURL(appListURLPair.getUrl(), additionalParams);
 		Document rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), additionalParams);
 		return new ZCAppList(ZCAppList.PERSONAL_APPS, XMLParser.parseForApplicationList(rootDocument));
-
 	}
 
 	public static ZCAppList getSharedApplicationList() throws ZCException {

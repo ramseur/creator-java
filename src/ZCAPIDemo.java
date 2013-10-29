@@ -13,6 +13,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import com.zoho.creator.jframework.FieldType;
+import com.zoho.creator.jframework.ZCAppList;
 import com.zoho.creator.jframework.ZCApplication;
 import com.zoho.creator.jframework.ZCButton;
 import com.zoho.creator.jframework.ZCButtonType;
@@ -29,7 +30,6 @@ import com.zoho.creator.jframework.ZCRecord;
 import com.zoho.creator.jframework.ZCResponse;
 import com.zoho.creator.jframework.ZCSection;
 import com.zoho.creator.jframework.ZCSharedGroup;
-import com.zoho.creator.jframework.ZCURL;
 import com.zoho.creator.jframework.ZCView;
 import com.zoho.creator.jframework.ZOHOCreator;
 import com.zoho.creator.jframework.ZOHOUser;
@@ -476,6 +476,8 @@ public class ZCAPIDemo {
         			ZOHOCreator.setCreatorURL(value);
         		} else if(key.equals("ServiceName")) {
         			ZOHOCreator.setServiceName(value);
+        		} else if(key.equals("prefix")) {
+        			ZOHOCreator.setPrefix(value);
         		}
         	}
         } catch (IOException e) {
@@ -516,7 +518,9 @@ public class ZCAPIDemo {
 		
 		
 		try {
-			ZOHOCreator.setCurrentAppList(ZOHOCreator.getPersonalApplicationList(null));
+			ZCAppList personalAppList = ZOHOCreator.getPersonalApplicationList(null);
+			//System.out.println("Personal Apps" + personalAppList.getApps());
+			ZOHOCreator.setCurrentAppList(personalAppList);
 		} catch (ZCException e) {
 			System.out.println(e.getMessage());
 			return;
