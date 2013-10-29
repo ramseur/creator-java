@@ -631,13 +631,7 @@ class XMLParser {
 					}
 				}
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("Choices")) {
-				NodeList choiceNodes = fieldPropetyNode.getChildNodes();
-				for(int m=0; m<choiceNodes.getLength(); m++) {
-					Node choiceNode = choiceNodes.item(m);
-					String key = choiceNode.getAttributes().getNamedItem("value").getNodeValue();
-					String value = getStringValue(choiceNode, "");
-					choices.add(new ZCChoice(key, value));
-				}
+				choices.addAll(parseLookUpChoices(fieldPropetyNode));
 			}
 		}
 		if(isParentSubForm) {
@@ -666,6 +660,11 @@ class XMLParser {
 		}
 		zcField.setTextValue(textValue);
 		zcField.addChoices(choices);
+		if(isLookup) {
+			if(choices.size() < 50) {
+				zcField.setLastReachedForChoices(true);
+			}
+		}
 		zcField.setOnAddRowExists(onAddRowExists);
 		zcField.setOnDeleteRowExists(onDeleteRowExists);
 		zcField.setLookup(isLookup);
@@ -702,9 +701,21 @@ class XMLParser {
 		}
 		return zcField;
 	}
+	
+	private static List<ZCChoice> parseLookUpChoices(Node fieldPropetyNode) {
+		List<ZCChoice> choices = new ArrayList<ZCChoice>();
+		NodeList choiceNodes = fieldPropetyNode.getChildNodes();
+		for(int m=0; m<choiceNodes.getLength(); m++) {
+			Node choiceNode = choiceNodes.item(m);
+			String key = choiceNode.getAttributes().getNamedItem("value").getNodeValue();
+			String value = getStringValue(choiceNode, "");
+			choices.add(new ZCChoice(key, value));
+		}
+		return choices;
+	}
+	
 	static List<ZCChoice> getLookUpChoices(Document rootDocument)
 	{
-		List<ZCChoice> choices = new ArrayList<ZCChoice>();
 		NodeList nl = rootDocument.getChildNodes();
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
@@ -727,15 +738,7 @@ class XMLParser {
 									//System.out.println("in choices"+choicesNode.getNodeName());
 									if(choicesNode.getNodeName().equals("choices"))
 									{
-										NodeList choiceNodes = choicesNode.getChildNodes();
-										//System.out.println("choicesss"+choiceNodes.getLength());
-										for(int m=0; m<choiceNodes.getLength(); m++) {
-											Node choiceNode = choiceNodes.item(m);
-											String key = choiceNode.getAttributes().getNamedItem("value").getNodeValue();
-											String value = getStringValue(choiceNode, "");
-											choices.add(new ZCChoice(key, value));
-										}
-
+										return parseLookUpChoices(choicesNode);
 									}
 								}
 							}
@@ -747,7 +750,7 @@ class XMLParser {
 		}
 
 
-		return choices;
+		return new ArrayList<ZCChoice>();
 	}
 
 	private static String getInitialValueForSingleChoiceField(String initialValue, FieldType ftype, List<ZCChoice> choices) {

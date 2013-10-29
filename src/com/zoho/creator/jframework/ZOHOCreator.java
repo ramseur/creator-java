@@ -408,14 +408,7 @@ public class ZOHOCreator {
 		toReturn.addButtons(buttons);
 		return toReturn;
 	}
-	public static List<ZCChoice> getLookUpChoices(String appLinkName,String formLinkName,String appOwner,String lookupFieldName)throws ZCException
-	{
-
-		URLPair getLookUpChoiceURL = ZCURL.getLookUpChoices(appLinkName, formLinkName, appOwner, lookupFieldName);
-		Document rootDocument = ZOHOCreator.postURLXML(getLookUpChoiceURL.getUrl(), getLookUpChoiceURL.getNvPair());
-		//System.out.println("onload response " +rootDocument);
-		return XMLParser.getLookUpChoices(rootDocument);
-	}
+	
 
 	public static ZCForm getForm(String appLinkName, String formLinkName, String appOwner) throws ZCException{
 		return getForm(appLinkName, formLinkName, appOwner, null, null, ZCForm.FORM_ALONE, null, null, null, null, null);
@@ -544,6 +537,16 @@ public class ZOHOCreator {
 			//return ZOHOCreator.postURLXML(viewURLPair.getUrl(), params);
 		}		
 		throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Trying to fetch view details. But not a view"); //No I18N
+	}
+
+	static List<ZCChoice> loadMoreChoices(ZCField field) throws ZCException {
+		ZCForm baseForm = field.getBaseForm();
+		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), field.getFieldName(), field.getChoices().size(), field.getSearchForChoices());
+		
+		Document rootDocument = ZOHOCreator.postURLXML(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair());
+		//System.out.println("onload response " +rootDocument);
+		return XMLParser.getLookUpChoices(rootDocument);
+		
 	}
 
 

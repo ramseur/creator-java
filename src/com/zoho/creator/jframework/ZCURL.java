@@ -140,9 +140,14 @@ public class ZCURL {
 
 	}
 	
-	static URLPair getLookUpChoices(String appLinkName, String formLinkName, String appOwner,String lookupFieldName)
-	{
-		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName +"/lookup/"+lookupFieldName+ "/options/",getParamsWithOwner(appOwner));//No I18N
+	static URLPair lookupChoices(String appLinkName, String formLinkName, String appOwner,String lookupFieldName, int startIndex, String searchString) {
+		List<NameValuePair> params = getDefaultParams();
+		params.add(new BasicNameValuePair("appnedRows", "true"));
+		params.add(new BasicNameValuePair("limit", startIndex + ""));
+		if(searchString != null && !"".equals(searchString)) {
+			params.add(new BasicNameValuePair("searchValue", searchString));
+		}
+		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName +"/lookup/"+lookupFieldName+ "/options/", params);//No I18N
 	}
 	
 

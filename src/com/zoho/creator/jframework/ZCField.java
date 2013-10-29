@@ -40,7 +40,6 @@ public class ZCField implements Comparable<ZCField> {
 
 	
 	private List<ZCChoice> choices  = new ArrayList<ZCChoice>(); 
-	private boolean choicesAdded = false;
 	
 	private ZCRecordValue recordValue = null;
 	private boolean isLookup = false; // This is purely for display checks....
@@ -58,6 +57,8 @@ public class ZCField implements Comparable<ZCField> {
 	private boolean isDisabled = false;
 	private boolean isRebuildRequired = false;
 	private String textValue = "";
+	private boolean isLastReachedForChoices = false;
+	private String searchStringForChoices = null;
 	
 	
 	
@@ -303,13 +304,9 @@ public class ZCField implements Comparable<ZCField> {
 		return subForm;
 	}
 	
-	private boolean subFormSet = false;
 	void setSubForm(ZCForm subForm) {
-		if(!subFormSet) {
-			subFormSet = true;
-			this.subForm = subForm;
-			subForm.setBaseSubFormField(this);
-		}
+		this.subForm = subForm;
+		subForm.setBaseSubFormField(this);
 	}
 	//List<HashMap<ZCField, List<String>>> subFormEntries
 	/*
@@ -470,5 +467,39 @@ public class ZCField implements Comparable<ZCField> {
 
 	public void setOnDeleteRowExists(boolean isOnDeleteRowExists) {
 		this.isOnDeleteRowExists = isOnDeleteRowExists;
+	}
+
+	void setLastReachedForChoices(boolean isLastReachedForChoices) {
+			this.isLastReachedForChoices = isLastReachedForChoices;
+	}
+	
+	public boolean isLastReachedForChoices() {
+		return isLastReachedForChoices;
+	}
+	
+	public List<ZCChoice> loadMoreChoices() throws ZCException {
+		if(!isLastReachedForChoices) {
+			List<ZCChoice> moreChoices = ZOHOCreator.loadMoreChoices(this);
+			choices.addAll(moreChoices);
+			if(moreChoices.size()<200) {
+				isLastReachedForChoices = true;
+			}
+			return moreChoices;
+		}
+		return new ArrayList<ZCChoice>();
+	}
+	
+	public void reloadChoices() throws ZCException {
+		choices.clear();
+		isLastReachedForChoices = false;
+		loadMoreChoices();
+	}
+	
+	public void setSearchForChoices(String searchStringForChoices) {
+		this.searchStringForChoices  = searchStringForChoices;
+	}
+	
+	public String getSearchForChoices() {
+		return searchStringForChoices;
 	}
 }
