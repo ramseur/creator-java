@@ -311,50 +311,7 @@ public class ZCForm extends ZCComponent {
 		}
 		return buff.toString();
 	}
-	//	private List<NameValuePair>  getParamsForSubFormEntries(List<ZCRecord> subFormEntries, String actionTag) {
-	//		StringBuffer buff = new StringBuffer();
-	//		for(int j=0; j<subFormEntries.size(); j++) {
-	//			ZCRecord subFormRecord = subFormEntries.get(j);
-	//			buff.append("<");//No I18N
-	//			buff.append(actionTag);
-	//			if(actionTag.equals("update") || actionTag.equals("delete")) {//No I18N
-	//				buff.append(" ID=\"" + subFormRecord.getRecordId() + "\"");//No I18N
-	//			}
-	//			buff.append(">");//No I18N
-	//			if(!actionTag.equals("delete")) {//No I18N
-	//				List<ZCRecordValue> subFormRecordValues = subFormRecord.getValues();
-	//				for(int k=0; k<subFormRecordValues.size(); k++) {
-	//					ZCRecordValue subFormRecordValue = subFormRecordValues.get(k);
-	//					ZCField subFormField = subFormRecordValue.getField();
-	//					buff.append("<field name='" + subFormField.getFieldName() + "'>");//No I18N
-	//					if(FieldType.isMultiChoiceField(subFormField.getType())) {
-	//						List<String> subFormValues = subFormRecordValue.getValues();
-	//						buff.append("<options>");//No I18N
-	//						for(int l=0; l<subFormValues.size(); l++) {
-	//							buff.append("<option>");//No I18N
-	//							buff.append("<![CDATA[");//No I18N
-	//							buff.append(subFormValues.get(l));
-	//							buff.append("]]>");//No I18N
-	//							buff.append("</option>");//No I18N
-	//						}
-	//						buff.append("</options>");//No I18N
-	//					} else if(!FieldType.isPhotoField(subFormField.getType())) {
-	//						buff.append("<value>");//No I18N
-	//						buff.append("<![CDATA[");//No I18N
-	//						buff.append(subFormRecordValue.getValue());
-	//						buff.append("]]>");//No I18N	
-	//						buff.append("</value>");//No I18N
-	//					}
-	//					buff.append("</field>");//No I18N
-	//				}
-	//			}
-	//			buff.append("</");//No I18N
-	//			buff.append(actionTag);
-	//			buff.append(">");//No I18N
-	//		}
-	//		return params;
-	//	}
-
+	
 
 	String getXMLStringForDeluge() {
 		StringBuffer buff = new StringBuffer();
@@ -490,7 +447,7 @@ public class ZCForm extends ZCComponent {
 					//System.out.println("inside fieldtypefff");
 
 					//params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+0+").SV("+subFormField.getFieldName()+")",subFormField.getValue()));
-					params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+i+1+").SV("+subFormField.getFieldName()+")", ""));
+					params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV("+subFormField.getFieldName()+")", ""));
 				}
 
 			}
@@ -508,10 +465,12 @@ public class ZCForm extends ZCComponent {
 		ZOHOCreator.callSubFormDeleteRow(this, field.getFieldName(),recordValues);
 	}
 
-		public void onUserInputForSubFormField(ZCField onUserInputField, ZCField subFormField,List<ZCRecordValue> recordValues) throws ZCException{
-			ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , subFormField.getFieldName(),recordValues);
+		public void onUserInputForSubFormField(ZCField onUserInputField, ZCField subFormField, List<ZCRecordValue> recordValues) throws ZCException{
+			ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , subFormField.getFieldName(),recordValues,false);
 		}
-
+		public void onUserInputForSubFormFieldForFormula(ZCField onUserInputField, ZCField subFormField, List<ZCRecordValue> recordValues) throws ZCException{
+			ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , subFormField.getFieldName(),recordValues,true);
+		}
 	public ZCField getBaseSubFormField() {
 		return baseSubFormField;
 	}

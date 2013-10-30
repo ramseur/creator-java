@@ -176,14 +176,18 @@ public class ZCURL {
 		//return new URLPair(serverURL() + "/api/mobile/xml/" + appLinkName + "/" + formLinkName + "/OnEditLoad/", getParamsWithOwnerAndXMLString(appOwner, xmlString)); //No I18N
 	}
 
-	static URLPair subFormOnUser(String appLinkName, String formLinkName, String subFormFieldLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params) {
+	static URLPair subFormOnUser(String appLinkName, String formLinkName, String subFormFieldLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params,boolean isFormula) {
 		params.addAll(getDefaultParams());
+		if(isFormula) {
+			params.add(new BasicNameValuePair("isFormula", "true"));
+			params.add(new BasicNameValuePair("isSubForm", "true"));
+		}
 		params.add(new BasicNameValuePair("sharedBy", appOwner));
 		params.add(new BasicNameValuePair("appLinkName", appLinkName));
 		params.add(new BasicNameValuePair("formLinkName", formLinkName));
 	    params.add(new BasicNameValuePair("linkNameBased", "true"));
-	   // params.add(new BasicNameValuePair("fieldName", "SubForm"));
 	    params.add(new BasicNameValuePair("fieldName", fieldLinkName));
+	    
 	    params.add(new BasicNameValuePair("subformFieldName", subFormFieldLinkName));
 	   params.add(new BasicNameValuePair("subfcname","SF(SubForm).FD(t::row_1).SV("+subFormFieldLinkName+")"));
 	   params.add(new BasicNameValuePair("rowseqid","t::row_1"));
@@ -191,7 +195,6 @@ public class ZCURL {
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 		//return new URLPair(serverURL() + "/api/mobile/xml/" + appLinkName + "/" + formLinkName + "/SubOnUser/" + subFormFieldLinkName + "/" + fieldLinkName + "/", getParamsWithOwnerAndXMLString(appOwner, xmlString)); //No I18N
 	}
-	
 
 
 	static URLPair fieldOnUser(String appLinkName, String formLinkName, String fieldLinkName, String appOwner, String xmlString) {
@@ -226,10 +229,7 @@ public class ZCURL {
 
 	static URLPair subFormAddRow(String appLinkName, String formLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params) {
 		params.addAll(getDefaultParams());
-		params.add(new BasicNameValuePair("SF(SubForm).FD(t::row_1).SV(record::status)","added"));
-//				params.add(new BasicNameValuePair(SF(SubForm).FD(t::row_1).SV(subformSingle_Line):vickyyy
-//						params.add(new BasicNameValuePair(SF(SubForm).FD(t::row_1).SV(Multi_Line):
-//							params.add(new BasicNameValuePair(SF(SubForm).FD(t::row_1).SV(Radio):-Select
+		params.add(new BasicNameValuePair("SF(SubForm).FD(t::row_"+(ZOHOCreator.getCurrentForm().getField(fieldLinkName).getAddedSubFormEntries().size()+1)+").SV(record::status)","added"));
 		params.add(new BasicNameValuePair("sharedBy", appOwner));
 		params.add(new BasicNameValuePair("appLinkName", appLinkName));
 		params.add(new BasicNameValuePair("formLinkName", formLinkName));
