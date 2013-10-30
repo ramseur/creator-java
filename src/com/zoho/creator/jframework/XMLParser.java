@@ -230,9 +230,9 @@ class XMLParser {
 				}
 			}
 		}
-		
+
 		if(!licenceEnabled) {
-				throw new ZCException("Mobile Access not enabled for " + appOwner, ZCException.LICENCE_ERROR); //No I18N
+			throw new ZCException("Mobile Access not enabled for " + appOwner, ZCException.LICENCE_ERROR); //No I18N
 		}
 		return toReturn;
 	}
@@ -564,9 +564,9 @@ class XMLParser {
 				maxChar = getIntValue(fieldPropetyNode, maxChar);
 			} else if(fieldPropetyNode.getNodeName().equals("ref_formdispname")) {
 				refFormDisplayName = getStringValue(fieldPropetyNode, "");
-			} else if(fieldPropetyNode.getNodeName().equals("ref_formname")) {
+			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("refform")) {
 				refFormLinkName = getStringValue(fieldPropetyNode, "");
-			} else if(fieldPropetyNode.getNodeName().equals("ref_appname")) {
+			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("refapplication")) {
 				refAppLinkName = getStringValue(fieldPropetyNode, "");
 			} else if(fieldPropetyNode.getNodeName().equals("ref_fieldname")) {
 				refFieldLinkName = getStringValue(fieldPropetyNode, "");
@@ -680,8 +680,9 @@ class XMLParser {
 		{
 			zcField.setNewEntriesAllowed(true);
 		}
-		if(refFormLinkName != null && refFormDisplayName != null && refAppLinkName != null && refFieldLinkName != null) {
-			zcField.setRefFormComponent(new ZCComponent(appOwner, refAppLinkName, ZCComponent.FORM, refFormDisplayName, refFormLinkName, -1));
+		if(refFormLinkName != null && refAppLinkName != null ) {
+			System.out.println("refformlinkkkm");
+			zcField.setRefFormComponent(new ZCComponent(appOwner, refAppLinkName, ZCComponent.FORM, "", refFormLinkName, -1));
 			zcField.setRefFieldLinkName(refFieldLinkName);
 			if(fieldType != FieldType.SUB_FORM) {
 				zcField.setNewEntriesAllowed(true);
@@ -1158,21 +1159,26 @@ class XMLParser {
 
 	static void parseAndCallFormEvents(String response, ZCForm form,List<ZCRecordValue> subFormTempRecordValues) throws ZCException
 	{
+		if(subFormTempRecordValues!=null&&subFormTempRecordValues.size()>0)
+		{
+			System.out.println("subformmmmmmmmmmmm"+subFormTempRecordValues.get(0).getValue());
+		}
 		List<String> alertMessages = new ArrayList<String>();
 		int type = -1;
-		String formName=null;
-		String fieldName=null;
-		ZCField field=null;
-		ZCField subFormField = null;
-		ZCRecordValue recordValue=null;
-		String alertMessage=null;
-		String value = null;
+
 		//System.out.println("resssspo"+response);
 		try {
 			JSONArray jArray = new JSONArray(response);
 			for (int i=0; i < jArray.length(); i++) {
 				List<String> values=new ArrayList<String>();
 				String subFormName = null;
+				String fieldName=null;
+				ZCField field=null;
+				ZCRecordValue recordValue=null;
+				ZCField subFormField = null;
+				String formName=null;
+				String alertMessage=null;
+				String value = null;
 				int rowNo = -1;
 				JSONObject jsonObj = jArray.getJSONObject(i); // Pulling items from the array 
 				if(jsonObj.has("task"))
@@ -1211,6 +1217,7 @@ class XMLParser {
 				{
 
 					rowNo = Integer.parseInt(jsonObj.getString("rowNo").substring(7));
+					System.out.println("rownoooo"+rowNo);
 				}
 				if(fieldName!=null&& subFormName ==null)
 				{
@@ -1248,10 +1255,10 @@ class XMLParser {
 					}
 					field.appendChoices(moreChoices);
 				} else if(type==ZCForm.task_select) {
-
 					if(FieldType.isMultiChoiceField(field.getType())) {
-						recordValue.addToValues(values);
-						//System.out.println("Valueeeeaaa"+values+recordValue.getValues());
+						if(subFormName==null)
+							recordValue.addToValues(values);
+						System.out.println("Valueeeeaaa"+values+recordValue.getValues());
 					} else {
 						recordValue.setValue(values.get(0));
 					}
@@ -1282,7 +1289,7 @@ class XMLParser {
 					form.setReLoadForm(true);
 					break;
 				} else if(type==ZCForm.task_setValue) {
-					////System.out.println("setva"+value+values);
+
 					if(FieldType.isMultiChoiceField(field.getType())) {
 						if(rowNo>0&&subFormField.getAddedSubFormEntries().size()>=rowNo)
 						{
@@ -1293,7 +1300,7 @@ class XMLParser {
 								ZCRecordValue subFormRecordValue = zcRecordValues.get(l);
 								if(subFormRecordValue.getField().getFieldName().equals(field.getFieldName()))
 								{
-									subFormRecordValue.addToValues(values);
+									subFormRecordValue.setValues(values);
 									break;
 								}
 							}	
@@ -1302,23 +1309,23 @@ class XMLParser {
 						{
 							for(int l=0;l<subFormTempRecordValues.size();l++)
 							{
-								ZCRecordValue subFormRecordValue =subFormTempRecordValues.get(l);
-								if(subFormRecordValue.getField().getFieldName().equals(field.getFieldName()))
+								//ZCRecordValue subFormRecordValue =subFormTempRecordValues.get(l);
+								if(ZOHOCreator.getSubFormRecordValueParams().get(l).getField().getFieldName().equals(field.getFieldName()))
 								{
-									subFormRecordValue.addToValues(values);
+									ZOHOCreator.getSubFormRecordValueParams().get(l).addToValues(values);
 									break;
 								}
 							}
-							
+
 						}
 						else
 						{
 							recordValue.addToValues(values);
-							//System.out.println("setarecordvalueee"+values);
+							System.out.println("setarecordvalueeeforbaseform"+values);
 						}
 						//System.out.println("setaoutside"+values);
 					} else {
-						//System.out.println("sea"+rowNo+values);
+						System.out.println("sea"+rowNo+values);
 
 						if(rowNo>0&&subFormField.getAddedSubFormEntries().size()>=rowNo)
 						{
@@ -1341,14 +1348,17 @@ class XMLParser {
 						{
 							for(int l=0;l<subFormTempRecordValues.size();l++)
 							{
-								ZCRecordValue subFormRecordValue =subFormTempRecordValues.get(l);
-								if(subFormRecordValue.getField().getFieldName().equals(field.getFieldName()))
+								//ZCRecordValue subFormRecordValue =subFormTempRecordValues.get(l);
+								System.out.println("setva1"+value+values);
+
+								if(ZOHOCreator.getSubFormRecordValueParams().get(l).getField().getFieldName().equals(field.getFieldName()))
 								{
-									subFormRecordValue.setValue(value);
+									ZOHOCreator.getSubFormRecordValueParams().get(l).setValue(value);
+									System.out.println("setvale"+ZOHOCreator.getSubFormRecordValueParams().get(l).getValue());
 									break;
 								}
 							}
-							
+
 						}
 						else
 						{
@@ -1356,17 +1366,20 @@ class XMLParser {
 						}
 					}
 				}
-				ZOHOCreator.setSubFormRecordValueParams(subFormTempRecordValues);
-				if(field != null && type==ZCForm.task_setValue|| type==ZCForm.task_deselectAll ||type==ZCForm.task_deselect || type==ZCForm.task_selectAll || type==ZCForm.task_select) {
-					if(field.isHasOnUserInputForFormula()) {
-						field.onUserInputForFormula(subFormTempRecordValues);
-					}
-					if(field.isHasOnUserInput()) {
-						field.onUserInput(subFormTempRecordValues);
+				if(subFormName==null)
+				{
+					if(field != null && type==ZCForm.task_setValue|| type==ZCForm.task_deselectAll ||type==ZCForm.task_deselect || type==ZCForm.task_selectAll || type==ZCForm.task_select) {
+						if(field.isHasOnUserInputForFormula()) {
+							field.onUserInputForFormula(subFormTempRecordValues);
+						}
+						if(field.isHasOnUserInput()) {
+							field.onUserInput(subFormTempRecordValues);
+						}
 					}
 				}
-				
+
 			}
+
 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
