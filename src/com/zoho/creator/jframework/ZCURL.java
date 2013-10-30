@@ -146,6 +146,7 @@ public class ZCURL {
 			params.add(new BasicNameValuePair("limit", 50 + ""));
 			params.add(new BasicNameValuePair("appendRows", "true"));
 			params.add(new BasicNameValuePair("startindex", startIndex + ""));
+			params.add(new BasicNameValuePair("zcRefValue", true+""));
 		if(searchString != null && !"".equals(searchString)) {
 			
 			params.add(new BasicNameValuePair("searchValue", searchString));

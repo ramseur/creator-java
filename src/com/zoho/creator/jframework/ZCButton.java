@@ -78,6 +78,7 @@ public class ZCButton implements Comparable<ZCButton>{
 			{
 				
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				params.add(new BasicNameValuePair("zcRefValue", true+""));
 				params.add(new BasicNameValuePair("formAccessType", String.valueOf(zcForm.getFormType())));//No I18N
 				params.add(new BasicNameValuePair("errorLog" , "true"));//No I18N
 
