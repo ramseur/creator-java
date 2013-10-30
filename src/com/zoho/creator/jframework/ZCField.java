@@ -191,8 +191,9 @@ public class ZCField implements Comparable<ZCField> {
 		return choices;
 	}
 
-	public void addChoices(List<ZCChoice> choices) {
+	void addChoices(List<ZCChoice> choices) {
 		this.choices = choices;		
+		System.out.println("setting in zcfield "+ choices.size());
 	}
 	
 	void clearChoices() {
@@ -481,7 +482,7 @@ public class ZCField implements Comparable<ZCField> {
 		if(!isLastReachedForChoices) {
 			List<ZCChoice> moreChoices = ZOHOCreator.loadMoreChoices(this);
 			choices.addAll(moreChoices);
-			if(moreChoices.size()<200) {
+			if(moreChoices.size()<50) {
 				isLastReachedForChoices = true;
 			}
 			return moreChoices;

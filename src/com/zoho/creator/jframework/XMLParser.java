@@ -98,7 +98,7 @@ class XMLParser {
 					Node resultNodeChild = resultNodes.item(j);
 					////////System.out.println(resultNodeChild.getNodeName());
 					if(resultNodeChild.getNodeName().equals("allworkspaces")) {
-						NodeList workspacesNodes = resultNodeChild.getChildNodes();
+						NodeList workspacesNodes = resultNodeChild.getChildNodes(); 
 						for(int k=0; k<workspacesNodes.getLength(); k++) {
 							Node workspacesNode = workspacesNodes.item(k);
 							////////System.out.println(workspacesNode.getNodeName());
@@ -115,7 +115,8 @@ class XMLParser {
 											if(workspaceownerNode.getNodeName().equals("workspaceowner")) {
 												String workspaceowner = getStringValue(workspaceownerNode, null);
 												sharedWithWorkSpaceList.add(workspaceowner);
-											}
+				
+						}
 										}
 									}
 								}
@@ -659,11 +660,10 @@ class XMLParser {
 			zcField.setHidden(true);
 		}
 		zcField.setTextValue(textValue);
+		
 		zcField.addChoices(choices);
-		if(isLookup) {
-			if(choices.size() < 50) {
-				zcField.setLastReachedForChoices(true);
-			}
+		if(isLookup && choices.size() < 50 || !isLookup) {
+			zcField.setLastReachedForChoices(true);
 		}
 		zcField.setOnAddRowExists(onAddRowExists);
 		zcField.setOnDeleteRowExists(onDeleteRowExists);
@@ -709,8 +709,10 @@ class XMLParser {
 			Node choiceNode = choiceNodes.item(m);
 			String key = choiceNode.getAttributes().getNamedItem("value").getNodeValue();
 			String value = getStringValue(choiceNode, "");
+			
 			choices.add(new ZCChoice(key, value));
 		}
+		
 		return choices;
 	}
 	
@@ -1243,6 +1245,7 @@ class XMLParser {
 					field.setDisabled(true);
 				} else if(type==ZCForm.task_clear) {
 					field.clearChoices();
+					field.setLastReachedForChoices(true);
 				} else if(type==ZCForm.task_addValue) {
 					List<ZCChoice> moreChoices = new ArrayList<ZCChoice>();
 					for(int k=0; k<values.size(); k++) {
@@ -1250,6 +1253,7 @@ class XMLParser {
 						moreChoices.add(choice);
 					}
 					field.appendChoices(moreChoices);
+					field.setLastReachedForChoices(true);
 				} else if(type==ZCForm.task_select) {
 
 					if(FieldType.isMultiChoiceField(field.getType())) {
@@ -1358,6 +1362,7 @@ class XMLParser {
 							recordValue.setValue(value);
 						}
 					}
+					field.setLastReachedForChoices(true);
 				}
 				ZOHOCreator.setSubFormRecordValueParams(subFormTempRecordValues);
 				if(field != null && type==ZCForm.task_setValue|| type==ZCForm.task_deselectAll ||type==ZCForm.task_deselect || type==ZCForm.task_selectAll || type==ZCForm.task_select) {

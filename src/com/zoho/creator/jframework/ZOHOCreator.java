@@ -562,7 +562,7 @@ public class ZOHOCreator {
 
 			startCalendar.set(Calendar.DAY_OF_MONTH, startCalendar.getActualMinimum(Calendar.DAY_OF_MONTH));
 			startCalendar.set(Calendar.HOUR_OF_DAY, 0);
-			startCalendar.set(Calendar.MINUTE, 0);
+			startCalendar.set(Calendar.MINUTE, 0);     
 			startCalendar.set(Calendar.SECOND, 0);
 			startCalendar.set(Calendar.MILLISECOND, 0);
 			SimpleDateFormat startDateFormat = new SimpleDateFormat("yyyy-MM-dd");//No I18N
