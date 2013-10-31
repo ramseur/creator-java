@@ -539,9 +539,13 @@ public class ZOHOCreator {
 		throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Trying to fetch view details. But not a view"); //No I18N
 	}
 
-	static List<ZCChoice> loadMoreChoices(ZCField field) throws ZCException {
+	static List<ZCChoice> loadMoreChoices(ZCField field, ZCField subFormField) throws ZCException {
 		ZCForm baseForm = field.getBaseForm();
-		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), field.getFieldName(), field.getChoices().size(), field.getSearchForChoices());
+		String subformComponent = null;
+		if(subFormField != null) {
+			subformComponent = subFormField.getFieldName();
+		}
+		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), field.getFieldName(), field.getChoices().size(), field.getSearchForChoices(), subformComponent);
 		
 		Document rootDocument = ZOHOCreator.postURLXML(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair());
 		//System.out.println("onload response " +rootDocument);

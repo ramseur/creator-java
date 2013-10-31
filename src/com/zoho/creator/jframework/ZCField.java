@@ -480,7 +480,7 @@ public class ZCField implements Comparable<ZCField> {
 	
 	public List<ZCChoice> loadMoreChoices() throws ZCException {
 		if(!isLastReachedForChoices) {
-			List<ZCChoice> moreChoices = ZOHOCreator.loadMoreChoices(this);
+			List<ZCChoice> moreChoices = ZOHOCreator.loadMoreChoices(this, getBaseForm().getBaseSubFormField());
 			choices.addAll(moreChoices);
 			if(moreChoices.size()<50) {
 				isLastReachedForChoices = true;
