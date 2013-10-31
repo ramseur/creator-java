@@ -129,7 +129,7 @@ public class ZCButton implements Comparable<ZCButton>{
 				
 			} else {
 				//URLPair urlPair = ZCURL.buttonOnClick(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), linkName, zcForm.getAppOwner(), xmlString);
-				URLPair urlPair = ZCURL.buttonOnClick(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), linkName, zcForm.getAppOwner(), zcForm.getFieldParamValues());
+				URLPair urlPair = ZCURL.buttonOnClick(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), linkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(null));
 				response = ZOHOCreator.parseResponseDocumentForXMLString(ZOHOCreator.postURLXML(urlPair.getUrl(), urlPair.getNvPair()), action, zcForm);
 				//System.out.println("inside cli");
 			}

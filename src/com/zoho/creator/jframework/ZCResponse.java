@@ -7,7 +7,7 @@ public class ZCResponse {
 	
 	private Hashtable<ZCField, String> errorMessagesTable = new Hashtable<ZCField, String>();
 	private long successRecordID = -1l;
-	private String successLookUpValue = null;
+	private ZCChoice successLookUpChoiceValue = null;
 	private boolean error = false;
 	private String mainErrorMessage = "";
 	private String successMessage = "";
@@ -27,13 +27,13 @@ public class ZCResponse {
 		this.successRecordID = successRecordID;
 	}
 
-	public String getSuccessLookUpValue() {
-		return successLookUpValue;
+	public ZCChoice getSuccessLookUpChoiceValue() {
+		return successLookUpChoiceValue;
 	}
 
 
-	void setSuccessLookUpValue(String successLookUpValue) {
-		this.successLookUpValue = successLookUpValue;
+	void setSuccessLookUpChoiceValue(ZCChoice successLookUpChoiceValue) {
+		this.successLookUpChoiceValue = successLookUpChoiceValue;
 	}
 
 	public boolean isError() {

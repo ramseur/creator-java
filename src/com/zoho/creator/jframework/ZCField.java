@@ -204,14 +204,14 @@ public class ZCField implements Comparable<ZCField> {
 		choices.addAll(moreChoices);
 	}
 	
-	public void addToLookupChoice(String value) {
-		choices.add(new ZCChoice(value, value));
+	public void addToLookupChoice(ZCChoice choice) {
+		choices.add(choice);
 		if(FieldType.isMultiChoiceField(type)) {
-			ArrayList<String> values = new ArrayList<String>();
-			values.add(value);
+			ArrayList<ZCChoice> values = new ArrayList<ZCChoice>();
+			values.add(choice);
 			recordValue.addToValues(values);
 		} else {
-			recordValue.setValue(value);
+			recordValue.setChoiceValue(choice);
 		}
 	}
 
@@ -278,7 +278,7 @@ public class ZCField implements Comparable<ZCField> {
 				ZCField recordValueField = recordValue.getField();
 				if(recordValueField.getFieldName().equals(subFormRecordValue.getField().getFieldName())) {
 					if(FieldType.isMultiChoiceField(recordValueField.getType())) {
-						subFormRecordValue.setValues(recordValue.getValues());
+						subFormRecordValue.setChoiceValues(recordValue.getChoiceValues());
 					} 
 					else if(FieldType.isSingleChoiceField(recordValueField.getType()))
 					{

@@ -232,9 +232,11 @@ public class ZCAPIDemo {
 			}
 			
 			if(FieldType.isMultiChoiceField(zcField.getType())) {
-				toAsk = toAsk + "\n" + zcField.getRecordValue().getValues();
+				toAsk = toAsk + "\n" + zcField.getRecordValue().getChoiceValues();
 			} else if(FieldType.isPhotoField(zcField.getType())) {
 				
+			} else if(FieldType.isSingleChoiceField(zcField.getType())) {
+				toAsk = toAsk + "\n" + zcField.getRecordValue().getChoiceValue();
 			} else {
 				toAsk = toAsk + "\n" + zcField.getRecordValue().getValue();
 			}

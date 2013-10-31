@@ -482,7 +482,8 @@ class XMLParser {
 		String formLinkName = formlinkName;
 
 		String initialValue = "";
-		List<String> initialValues = new ArrayList<String>(); 		
+		List<String> initialChoiceValues = new ArrayList<String>(); 		
+		ZCChoice initialChoiceValue = null;	
 
 		boolean isUnique = false;
 		boolean isRequired = false;
@@ -552,13 +553,11 @@ class XMLParser {
 						Node recordNode = recordsList.item(k);
 						if(recordNode.getNodeName().equals("record")) {
 							parseAndSetRecord(null, recordNode, subFormEntries, subFormFields);
-							//							//////System.out.println("initial valueinside sub"+initialValue);
 						}
 					}
 				} else {
-					//					//System.out.println("initial value"+initialValue);
 					initialValue = getStringValue(fieldPropetyNode, "");
-					initialValues.add(getStringValue(fieldPropetyNode, ""));
+					initialChoiceValues.add(initialValue);
 					//				//System.out.println("initial value"+initialValue);
 				}
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("maxChar")) {
@@ -644,14 +643,42 @@ class XMLParser {
 		ZCField zcField = new ZCField(fieldName, fieldType, displayName);
 		if(FieldType.isMultiChoiceField(fieldType)) {
 			// THis is used in Edit record for multichoice field. But in form builder there is no way to set initial value
-			//initialValues = parseMultiSelectValues(initialValue, choices);
-			zcField.setRecordValue(new ZCRecordValue(zcField, initialValues)); 
+			List<ZCChoice> selectedChoices = new ArrayList<ZCChoice>();
+			for(int j=0; j<initialChoiceValues.size(); j++) {
+				String initValue = initialChoiceValues.get(j);
+				ZCChoice toAdd = null;
+				for(int i=0; i<choices.size(); i++) {
+					ZCChoice choice = choices.get(i);
+					if(choice.getKey().equals(initValue)) {
+						toAdd = choice;
+						break;
+					}
+				}
+				if(toAdd == null) {
+					toAdd = new ZCChoice(initValue, initValue);
+				}
+				selectedChoices.add(toAdd);
+			}
+			zcField.setRecordValue(new ZCRecordValue(zcField, selectedChoices)); 
+			
 			//////System.out.println("initialvalues"+initialValue+zcField.getRecordValue().getValues());
 		} else if(FieldType.isPhotoField(fieldType)) {
 			File file = null;
 			zcField.setRecordValue(new ZCRecordValue(zcField, file));
+		} else if(FieldType.isSingleChoiceField(fieldType)) {
+			ZCChoice toAdd = null;
+			for(int i=0; i<choices.size(); i++) {
+				ZCChoice choice = choices.get(i);
+				if(choice.getKey().equals(initialValue)) {
+					toAdd = choice;
+					break;
+				}
+			}
+			if(toAdd == null) {
+				toAdd = new ZCChoice(initialValue, initialValue);
+			}
+			zcField.setRecordValue(new ZCRecordValue(zcField, toAdd));
 		} else {
-			initialValue = getInitialValueForSingleChoiceField(initialValue, fieldType, choices);
 			zcField.setRecordValue(new ZCRecordValue(zcField, initialValue));
 		}
 
@@ -755,18 +782,19 @@ class XMLParser {
 		return new ArrayList<ZCChoice>();
 	}
 
-	private static String getInitialValueForSingleChoiceField(String initialValue, FieldType ftype, List<ZCChoice> choices) {
-		if(FieldType.isSingleChoiceField(ftype)) {
+	private static ZCChoice parseSingleSelectValue(String value, List<ZCChoice> choices) {
+		if(choices != null) {
 			for(int i=0; i<choices.size(); i++) {
-				if(choices.get(i).getKey().equals(initialValue)) {
-					initialValue = choices.get(i).getValue();
+				if(choices.get(i).getKey().equals(value)) {
+					return choices.get(i);
 				}
 			}
 		}
-		return initialValue;
+		return new ZCChoice(value, value);
 	}
-	private static List<String> parseMultiSelectValues(String value, List<ZCChoice> choices) {
-		List<String> multSelVals = new ArrayList<String>();
+	
+	private static List<ZCChoice> parseMultiSelectValues(String value, List<ZCChoice> choices) {
+		List<ZCChoice> multSelVals = new ArrayList<ZCChoice>();
 		if(value.startsWith("[") && value.endsWith("]")) {
 			value = value.substring(1, value.length()-1);
 		}
@@ -782,12 +810,19 @@ class XMLParser {
 			if(!(tokens[m].equals("")))
 			{
 				String initialValue = tokens[m];
-				for(int i=0; i<choices.size(); i++) {
-					if(choices.get(i).getKey().equals(initialValue)) {
-						initialValue = choices.get(i).getValue();
+				boolean added = false;
+				if(choices != null) {
+					for(int i=0; i<choices.size(); i++) {
+						if(choices.get(i).getKey().equals(initialValue)) {
+							multSelVals.add(choices.get(i));
+							added = true;
+							break;
+						}
 					}
 				}
-				multSelVals.add(initialValue);
+				if(!added) {
+					multSelVals.add(new ZCChoice(initialValue, initialValue));
+				}
 			}
 
 		}		
@@ -974,12 +1009,17 @@ class XMLParser {
 			String value = getStringValue(valueNode, "");
 			//			//System.out.println("radioo"+value);
 			ZCRecordValue zcValue = null;
+			List<ZCChoice> choices = null;
+			if(zcView == null) {
+				choices = zcField.getChoices();
+			}
 			if(zcField!=null)
 			{
 				if(FieldType.isMultiChoiceField(zcField.getType())) {
-					zcValue = new ZCRecordValue(zcField, parseMultiSelectValues(value, zcField.getChoices()));
+					zcValue = new ZCRecordValue(zcField, parseMultiSelectValues(value, choices));
+				} else if(FieldType.isSingleChoiceField(zcField.getType())) {
+					zcValue = new ZCRecordValue(zcField, parseSingleSelectValue(value, choices));
 				} else {
-					value = getInitialValueForSingleChoiceField(value, zcField.getType(), zcField.getChoices());
 					zcValue = new ZCRecordValue(zcField, value);
 				}
 				zcField.setRecordValue(zcValue);
@@ -1163,10 +1203,6 @@ class XMLParser {
 
 	static void parseAndCallFormEvents(String response, ZCForm form,List<ZCRecordValue> subFormTempRecordValues) throws ZCException
 	{
-		if(subFormTempRecordValues!=null&&subFormTempRecordValues.size()>0)
-		{
-			System.out.println("subformmmmmmmmmmmm"+subFormTempRecordValues.get(0).getValue());
-		}
 		List<String> alertMessages = new ArrayList<String>();
 		int type = -1;
 
@@ -1174,7 +1210,8 @@ class XMLParser {
 		try {
 			JSONArray jArray = new JSONArray(response);
 			for (int i=0; i < jArray.length(); i++) {
-				List<String> values=new ArrayList<String>();
+				List<ZCChoice> choiceValues = new ArrayList<ZCChoice>();
+				ZCChoice choiceValue = null;
 				String subFormName = null;
 				String fieldName=null;
 				ZCField field=null;
@@ -1202,11 +1239,12 @@ class XMLParser {
 					try {
 						JSONArray jsonArray = (JSONArray) jsonObj.get("fieldValue");
 						for (int j=0; j<jsonArray.length(); j++) {
-							values.add( jsonArray.getString(j) );
+							choiceValues.add(new ZCChoice(jsonArray.getString(j), jsonArray.getString(j)));
 						}
 					}
 					catch(ClassCastException e) {
 						value = (String)jsonObj.get("fieldValue");
+						choiceValue = new ZCChoice(value, value);
 					}
 				}
 				if(jsonObj.has("alertValue"))
@@ -1238,7 +1276,7 @@ class XMLParser {
 					recordValue = field.getRecordValue();
 					field.setRebuildRequired(true);
 				}
-				//System.out.println("type  "+type+" formName "+formName+" fieldname "+fieldName+" arrayList "+values);
+				//System.out.println("type  "+type+" formName "+formName+" fieldname "+fieldName+" arrayList "+choiceValues);
 				if(type==ZCForm.task_hide) {
 					//System.out.println("inside hide");
 					field.setHidden(true);
@@ -1251,40 +1289,42 @@ class XMLParser {
 					field.setDisabled(true);
 				} else if(type==ZCForm.task_clear) {
 					field.clearChoices();
+					field.setLastReachedForChoices(true);
 				} else if(type==ZCForm.task_addValue) {
 					List<ZCChoice> moreChoices = new ArrayList<ZCChoice>();
-					for(int k=0; k<values.size(); k++) {
-						ZCChoice choice = new ZCChoice(values.get(k), values.get(k));
+					for(int k=0; k<choiceValues.size(); k++) {
+						ZCChoice choice = new ZCChoice(choiceValues.get(k).getKey(), choiceValues.get(k).getValue());
 						moreChoices.add(choice);
 					}
 					field.appendChoices(moreChoices);
+					field.setLastReachedForChoices(true);
 				} else if(type==ZCForm.task_select) {
 					if(FieldType.isMultiChoiceField(field.getType())) {
-						if(subFormName==null)
-							recordValue.addToValues(values);
-						System.out.println("Valueeeeaaa"+values+recordValue.getValues());
-					} else {
-						recordValue.setValue(values.get(0));
+						if(subFormName==null) {
+							recordValue.addToValues(choiceValues);
+						}
+					} else if(FieldType.isSingleChoiceField(field.getType())) {
+						recordValue.setChoiceValue(choiceValues.get(0));
 					}
 				} 
 				else if(type==ZCForm.task_selectAll) {
 					if(FieldType.isMultiChoiceField(field.getType())) {
 						List<ZCChoice> choices = field.getChoices();
-						values = new ArrayList<String>();
+						choiceValues = new ArrayList<ZCChoice>();
 						for(int k=0; k<choices.size(); k++) {
-							values.add(choices.get(k).getValue());
+							choiceValues.add(choices.get(k));
 						}
-						recordValue.setValues(values);
+						recordValue.setChoiceValues(choiceValues);
 					} 
 				} else if(type==ZCForm.task_deselect) {
 					if(FieldType.isMultiChoiceField(field.getType())) {
-						recordValue.removeFromValues(values);
+						recordValue.removeFromValues(choiceValues);
 					} else {
 						recordValue.setValue(null);
 					}
 				} else if(type==ZCForm.task_deselectAll) {
 					if(FieldType.isMultiChoiceField(field.getType())) {
-						recordValue.setValues(values);
+						recordValue.setChoiceValues(null);
 					}
 				} else if(type==ZCForm.task_alert) {
 					alertMessages.add(alertMessage);
@@ -1304,7 +1344,7 @@ class XMLParser {
 								ZCRecordValue subFormRecordValue = zcRecordValues.get(l);
 								if(subFormRecordValue.getField().getFieldName().equals(field.getFieldName()))
 								{
-									subFormRecordValue.setValues(values);
+									subFormRecordValue.setChoiceValues(choiceValues);
 									break;
 								}
 							}	
@@ -1316,7 +1356,7 @@ class XMLParser {
 								//ZCRecordValue subFormRecordValue =subFormTempRecordValues.get(l);
 								if(ZOHOCreator.getSubFormRecordValueParams().get(l).getField().getFieldName().equals(field.getFieldName()))
 								{
-									ZOHOCreator.getSubFormRecordValueParams().get(l).addToValues(values);
+									ZOHOCreator.getSubFormRecordValueParams().get(l).addToValues(choiceValues);
 									break;
 								}
 							}
@@ -1324,12 +1364,10 @@ class XMLParser {
 						}
 						else
 						{
-							recordValue.addToValues(values);
-							System.out.println("setarecordvalueeeforbaseform"+values);
+							recordValue.addToValues(choiceValues);
 						}
 						//System.out.println("setaoutside"+values);
 					} else {
-						System.out.println("sea"+rowNo+values);
 
 						if(rowNo>0&&subFormField.getAddedSubFormEntries().size()>=rowNo)
 						{
@@ -1353,7 +1391,6 @@ class XMLParser {
 							for(int l=0;l<subFormTempRecordValues.size();l++)
 							{
 								//ZCRecordValue subFormRecordValue =subFormTempRecordValues.get(l);
-								System.out.println("setva1"+value+values);
 
 								if(ZOHOCreator.getSubFormRecordValueParams().get(l).getField().getFieldName().equals(field.getFieldName()))
 								{
@@ -1369,6 +1406,7 @@ class XMLParser {
 							recordValue.setValue(value);
 						}
 					}
+					field.setLastReachedForChoices(true);
 				}
 				if(subFormName==null)
 				{
