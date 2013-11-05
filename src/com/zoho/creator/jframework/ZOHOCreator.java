@@ -383,9 +383,11 @@ public class ZOHOCreator {
 
 		ZCField platformField = new ZCField("Platform", FieldType.DROPDOWN, "Platform");//No I18N
 		List<ZCChoice> choices = new ArrayList<ZCChoice>();
-		choices.add(new ZCChoice("iOS", "iOS"));//No I18N
-		choices.add(new ZCChoice("Android", "Android"));//No I18N
-		platformField.setRecordValue(new ZCRecordValue(platformField, "Android"));//No I18N
+		//choices.add(new ZCChoice("iOS", "iOS"));//No I18N
+		ZCChoice choice = new ZCChoice("Android", "Android");
+		choices.add(choice);//No I18N
+		
+		platformField.setRecordValue(new ZCRecordValue(platformField, choice));//No I18N
 		platformField.setHidden(true);
 		platformField.setRebuildRequired(true);
 		platformField.addChoices(choices);
