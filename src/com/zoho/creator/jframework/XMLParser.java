@@ -654,10 +654,10 @@ class XMLParser {
 						break;
 					}
 				}
-				if(toAdd == null) {
-					toAdd = new ZCChoice(initValue, initValue);
+				if(toAdd != null) {
+					selectedChoices.add(toAdd);
 				}
-				selectedChoices.add(toAdd);
+				
 			}
 			zcField.setRecordValue(new ZCRecordValue(zcField, selectedChoices)); 
 			
