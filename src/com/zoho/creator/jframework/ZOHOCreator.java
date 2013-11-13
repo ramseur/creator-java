@@ -219,11 +219,11 @@ public class ZOHOCreator {
 		setCurrentView(getView(getCurrentComponent()));
 	}	
 	
-	static void setUserInfo(ZCUserInfo userInfo){
+	static void setCurrentUserInfo(ZCUserInfo userInfo){
 		ZOHOCreator.userInfo = userInfo;
 	}
 	
-	public static ZCUserInfo getUserInfo(){
+	public static ZCUserInfo getCurrentUserInfo(){
 		return userInfo;
 	}
 	
@@ -329,7 +329,7 @@ public class ZOHOCreator {
 		URLPair userPersonalInfoURL = ZCURL.userPersonalInfoURL();
 		Document rootDocument = ZOHOCreator.postURLXML(userPersonalInfoURL.getUrl(), userPersonalInfoURL.getNvPair());
 		ZCUserInfo userInfo = XMLParser.parseForUserPersonalInfo(rootDocument);
-		setUserInfo(userInfo);
+		setCurrentUserInfo(userInfo);
 		return userInfo;
 	}
 	

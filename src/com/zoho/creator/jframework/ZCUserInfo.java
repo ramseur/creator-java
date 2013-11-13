@@ -1,6 +1,7 @@
 package com.zoho.creator.jframework;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ZCUserInfo {
@@ -8,14 +9,14 @@ public class ZCUserInfo {
 	private String country;
 	private String language;
 	private String timeZone;
-	private List<String> eMailAddress = new ArrayList<String>();
+	private List<String> eMailAddresses = new ArrayList<String>();
 	private int gender;
 	private String displayName;
 	private String id;
 	private String fullName;
-	private Object photoBitmap;
+	private HashMap<String,Object> userObject = new HashMap<String, Object>();
 	
-	ZCUserInfo(String displayName ,String fullName,String id ,String country , String language , String timeZone , int gender ,  List<String> eMailAddress) {
+	ZCUserInfo(String displayName ,String fullName,String id ,String country , String language , String timeZone , int gender ,  List<String> eMailAddresses) {
 		
 		this.displayName = displayName;
 		this.id = id;
@@ -23,17 +24,17 @@ public class ZCUserInfo {
 		this.country = country;
 		this.gender = gender;
 		this.timeZone = timeZone;
-		this.eMailAddress = eMailAddress;
+		this.eMailAddresses = eMailAddresses;
 		this.language = language;
 	}
 	
 	
-	public void setPersonalPhotoBitmap(Object photoBitmap){
-		this.photoBitmap = photoBitmap;
+	public void setUserObject(String key,Object object){
+		userObject.put(key, object);
 	}
 	
-	public Object getPersonalPhotoBitmap(){
-		return photoBitmap;
+	public Object getUserObject(String key){
+		return userObject.get(key);
 	}
 	
 	public String getDisplayName(){
@@ -64,8 +65,8 @@ public class ZCUserInfo {
 		return timeZone;
 	}
 	
-	public List<String> getEmailAddress(){
-		return eMailAddress;
+	public List<String> getEmailAddresses(){
+		return eMailAddresses;
 	}
 	
 	
