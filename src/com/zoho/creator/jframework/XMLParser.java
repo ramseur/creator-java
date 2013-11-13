@@ -682,16 +682,18 @@ class XMLParser {
 			zcField.setRecordValue(new ZCRecordValue(zcField, initialValue));
 		}
 
-		if(isAdminOnly)
-		{
-			zcField.setHidden(true);
-		}
+		zcField.setHidden(isAdminOnly);
 		zcField.setTextValue(textValue);
 		
-		zcField.addChoices(choices);
+		if(!isLookup) {
+			zcField.addChoices(choices);
+			zcField.setLastReachedForChoices(true);
+		}
+		/*
 		if(isLookup && choices.size() < 50 || !isLookup) {
 			zcField.setLastReachedForChoices(true);
 		}
+		*/
 		zcField.setOnAddRowExists(onAddRowExists);
 		zcField.setOnDeleteRowExists(onDeleteRowExists);
 		zcField.setLookup(isLookup);
