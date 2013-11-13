@@ -79,6 +79,7 @@ public class ZOHOCreator {
 	private static Properties props = new Properties();
 
 	private static List<ZCRecordValue> subFormRecordValueParams = null;
+	private static ZCUserInfo userInfo;
 
 	public static String getUserProperty(String key) {
 		return props.getProperty(key);
@@ -217,6 +218,15 @@ public class ZOHOCreator {
 	public static void loadSelectedView() throws ZCException{
 		setCurrentView(getView(getCurrentComponent()));
 	}	
+	
+	static void setUserInfo(ZCUserInfo userInfo){
+		ZOHOCreator.userInfo = userInfo;
+	}
+	
+	public static ZCUserInfo getUserInfo(){
+		return userInfo;
+	}
+	
 
 	public static void loadSelectedForm() throws ZCException {
 		setCurrentForm(getForm(getCurrentComponent()));
@@ -314,6 +324,17 @@ public class ZOHOCreator {
 		Document rootDocument = ZOHOCreator.postURLXML(navigationListURL.getUrl(), navigationListURL.getNvPair());
 		return XMLParser.parseForNavigationListForApps(rootDocument);
 	}
+	
+	public static ZCUserInfo getUserPersonalInfo() throws ZCException{
+		URLPair userPersonalInfoURL = ZCURL.userPersonalInfoURL();
+		Document rootDocument = ZOHOCreator.postURLXML(userPersonalInfoURL.getUrl(), userPersonalInfoURL.getNvPair());
+		ZCUserInfo userInfo = XMLParser.parseForUserPersonalInfo(rootDocument);
+		setUserInfo(userInfo);
+		return userInfo;
+	}
+	
+	
+	
 
 	public static ZCAppList getPersonalApplicationList(List<NameValuePair> additionalParams) throws ZCException {
 		URLPair appListURLPair = ZCURL.appListURL();
