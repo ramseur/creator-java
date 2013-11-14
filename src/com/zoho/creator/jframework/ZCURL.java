@@ -290,7 +290,6 @@ public class ZCURL {
 	}
 	
 	public static String getURLForPersonalPhoto(){
-		return "https://contacts.zoho.com/file/download?fs=thumb&t=user&ID=" + ZOHOCreator.getCurrentUserInfo().getId() + "&authtoken=" + ZOHOCreator.getZohoUser().getAuthToken() + "&scope=creatorapi";
+		return "https://contacts.zoho.com/file/download?fs=thumb&t=user&ID=" + ZOHOCreator.getCurrentUserInfo().getId() + "&authtoken=" + ZOHOCreator.getZohoUser().getAuthToken();
 	}
-	
 }

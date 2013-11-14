@@ -198,6 +198,10 @@ public class ZOHOCreator {
 		setCurrentView(null);
 		setCurrentHtmlView(null);
 	}
+	
+	public static ZCComponent getComponent(String appOwner, String appLinkName, String type, String componentLinkName,String componentName) {
+        return new ZCComponent (appOwner, appLinkName, type, componentName, componentLinkName, -1);        
+    }
 
 	public static void loadSelectedApplication(List<NameValuePair> additionalParams)  throws ZCException {
 		setCurrentSectionList(getSectionList(getCurrentApplication(), additionalParams));
