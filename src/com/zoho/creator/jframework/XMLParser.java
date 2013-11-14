@@ -669,6 +669,7 @@ class XMLParser {
 				if(toAdd != null) {
 					selectedChoices.add(toAdd);
 				}
+
 			}
 			zcField.setRecordValue(new ZCRecordValue(zcField, selectedChoices)); 
 		} else if(FieldType.isPhotoField(fieldType)) {
@@ -688,13 +689,26 @@ class XMLParser {
 		} else {
 			zcField.setRecordValue(new ZCRecordValue(zcField, initialValue));
 		}
+
 	
 		zcField.setHidden(isAdminOnly);
 		zcField.setTextValue(textValue);
 		zcField.addChoices(choices);
+
+
+		zcField.setHidden(isAdminOnly);
+		zcField.setTextValue(textValue);
+		
+		if(!isLookup) {
+			zcField.addChoices(choices);
+			zcField.setLastReachedForChoices(true);
+		}
+		/*
+>>>>>>> 121bb57e8153b3ceedcb098828b833c01a140c6b
 		if(isLookup && choices.size() < 50 || !isLookup) {
 			zcField.setLastReachedForChoices(true);
 		}
+		*/
 		zcField.setOnAddRowExists(onAddRowExists);
 		zcField.setOnDeleteRowExists(onDeleteRowExists);
 		zcField.setLookup(isLookup);
@@ -1550,6 +1564,72 @@ class XMLParser {
 			ex.printStackTrace();
 			return null;
 		}
+	}
+
+	public static ZCUserInfo parseForUserPersonalInfo(Document rootDocument) {
+		// TODO Auto-generated method stub
+		NodeList nl = rootDocument.getChildNodes();
+		String displayName = "";
+		String id = "";
+		String fullName = "";
+		int gender = 0;
+		List<String> emailAddress = new ArrayList<String>();
+		String language = "";
+		String country = "";
+		String timeZone = "";
+		
+		
+		for(int i=0; i<nl.getLength(); i++) {
+			Node responseNode = nl.item(i);
+			////////System.out.println("******* " + responseNode.getNodeName());
+			if(responseNode.getNodeName().equals("response")) {
+				NodeList responseNodes = responseNode.getChildNodes();
+				for(int j=0; j<responseNodes.getLength(); j++) {
+					Node resultNode = responseNodes.item(j);
+					////////System.out.println(resultNode.getNodeName());
+					if(resultNode.getNodeName().equals("result")) {
+						NodeList resultNodes = resultNode.getChildNodes();		
+				for(int k=0; k<resultNodes.getLength(); k++) {
+					Node resultNodeChild = resultNodes.item(k);
+					
+					if(resultNodeChild.getNodeName().equals("DISPLAY_NAME")) {
+						displayName = getStringValue(resultNodeChild, ""); //No I18N
+					}
+					if(resultNodeChild.getNodeName().equals("ZUID")) {
+						id = getStringValue(resultNodeChild, ""); //No I18N
+					}
+					if(resultNodeChild.getNodeName().equals("FULL_NAME")) {
+						fullName = getStringValue(resultNodeChild, ""); //No I18N
+					}
+					if(resultNodeChild.getNodeName().equals("GENDER")) {
+						gender = getIntValue(resultNodeChild, 0); //No I18N
+						
+					}
+					if(resultNodeChild.getNodeName().equals("EMAIL_ID")) {
+						String eMailList = getStringValue(resultNodeChild, ""); //No I18N
+						String[] tokens = eMailList.split(",");
+						for(int m =0 ;m<tokens.length;m++){
+							emailAddress.add(tokens[m]);
+						}
+						
+					}
+					if(resultNodeChild.getNodeName().equals("LOCALE_INFO")) {
+						String localeInfo = getStringValue(resultNodeChild, ""); //No I18N
+						String[] tokens = localeInfo.split("|");
+						language = tokens[1];
+						country = tokens[0];
+						timeZone = tokens[2];
+						
+					}
+				}
+			}
+				}
+			}
+		}
+		
+		
+		
+		return new ZCUserInfo(displayName,fullName,id,country,language,timeZone,gender,emailAddress);
 	}
 
 

@@ -61,11 +61,15 @@ public class ZCField implements Comparable<ZCField> {
 	private String textValue = "";
 	private boolean isLastReachedForChoices = false;
 	private String searchStringForChoices = null;
+
 	private int lookupCount = 0;
 	
 	private List<ZCField> lookUpFields = new ArrayList<ZCField>();
 	
 	
+
+	private boolean lookupLoadingStarted = false;
+
 	
 	
 	ZCField(String fieldName, FieldType type, String displayName) {
@@ -514,6 +518,7 @@ public class ZCField implements Comparable<ZCField> {
 		return new ArrayList<ZCChoice>();
 	}
 	
+	
 	public void reloadChoices() throws ZCException {
 		choices.clear();
 		isLastReachedForChoices = false;
@@ -527,6 +532,7 @@ public class ZCField implements Comparable<ZCField> {
 	public String getSearchForChoices() {
 		return searchStringForChoices;
 	}
+
 	
 	public void setLookUpCount(int lookUpCount){
 		if(lookUpCount!=0)
@@ -559,4 +565,12 @@ public class ZCField implements Comparable<ZCField> {
 		 lookUpFields = new ArrayList<ZCField>();
 	 }
 
+
+	public boolean isLookupLoadingStarted() {
+		return lookupLoadingStarted;
+	}
+
+	public void setLookupLoadingStarted(boolean lookupLoadingStarted) {
+		this.lookupLoadingStarted = lookupLoadingStarted;
+	}
 }

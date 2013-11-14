@@ -38,10 +38,13 @@ public class ZCURL {
 		return params;
 	}
 	
-	public static String getImageURL(String filepath, String appOwner, String appLinkName, String viewLinkName) {
+	public static String getFileUploadURL(String filepath, String appOwner, String appLinkName, String viewLinkName) {
 		return serverURL() + "/DownloadFileFromMig.do?filepath=/" + filepath + "&sharedBy=" + appOwner + "&appLinkName=" + appLinkName + "&viewLinkName=" + viewLinkName + "&authtoken=" + ZOHOCreator.getZohoUser().getAuthToken() + "&scope=creatorapi";  //No I18N
 	}
 
+	public static String getImageURL(String filePath) {
+		return serverURL() + filePath + "&authtoken=" + ZOHOCreator.getZohoUser().getAuthToken() + "&scope=creatorapi";  //No I18N
+	}
 	
 	static URLPair customActionURL(String appLinkName, String viewLinkName, long customActionId, String appOwner, List<Long> recordIDs) {
 		List<NameValuePair> params = getDefaultParams();
@@ -312,7 +315,7 @@ public class ZCURL {
 	}
 
 	public static String getLoginUrl() {
-		return "https://" + ZOHOCreator.getAccountsURL() + "/login?hide_signup=true&hide_remember=true&scopes=" + ZOHOCreator.getServiceName() + "/creatorapi&appname=" + ZOHOCreator.getServiceName()  + "&serviceurl=" + serverURL();
+		return "https://" + ZOHOCreator.getAccountsURL() + "/login?hide_signup=true&hide_remember=true&scopes=" + ZOHOCreator.getServiceName() + "/creatorapi,ZohoContacts/photoapi&appname=" + ZOHOCreator.getServiceName()  + "&serviceurl=" + serverURL();
 	}
 	
 	// 		signInUrl = "https://accounts.zoho.com/login?hide_signup=true&hide_remember=true&scopes=ZohoCreator/creatorapi&appname=ZohoCreator&serviceurl=https://creator.zoho.com";  //No I18N
@@ -327,5 +330,14 @@ public class ZCURL {
 
 	public static String serverURL() {
 		return ZOHOCreator.getPrefix() + "://" + ZOHOCreator.getCreatorURL(); //"https://icreator.localzoho.com"; //No I18N
-	}	
+	}
+
+	public static URLPair userPersonalInfoURL() {
+		// TODO Auto-generated method stub		
+		return new URLPair(serverURL() + "/api/xml/user/", getDefaultParams());
+	}
+	
+	public static String getURLForPersonalPhoto(){
+		return "https://contacts.zoho.com/file/download?fs=thumb&t=user&ID=" + ZOHOCreator.getCurrentUserInfo().getId() + "&authtoken=" + ZOHOCreator.getZohoUser().getAuthToken();
+	}
 }

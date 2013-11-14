@@ -80,7 +80,10 @@ public class ZOHOCreator {
 	private static Properties props = new Properties();
 	private static boolean isPersonalApps = true;
 
-	//private static List<ZCRecordValue> subFormRecordValueParams = null;
+
+	private static List<ZCRecordValue> subFormRecordValueParams = null;
+	private static ZCUserInfo userInfo;
+
 
 	public static String getUserProperty(String key) {
 		return props.getProperty(key);
@@ -217,6 +220,10 @@ public class ZOHOCreator {
 		setCurrentView(null);
 		setCurrentHtmlView(null);
 	}
+	
+	public static ZCComponent getComponent(String appOwner, String appLinkName, String type, String componentLinkName,String componentName) {
+        return new ZCComponent (appOwner, appLinkName, type, componentName, componentLinkName, -1);        
+    }
 
 	public static void loadSelectedApplication(List<NameValuePair> additionalParams)  throws ZCException {
 		setCurrentSectionList(getSectionList(getCurrentApplication(), additionalParams));
@@ -237,6 +244,15 @@ public class ZOHOCreator {
 	public static void loadSelectedView() throws ZCException{
 		setCurrentView(getView(getCurrentComponent()));
 	}	
+	
+	static void setCurrentUserInfo(ZCUserInfo userInfo){
+		ZOHOCreator.userInfo = userInfo;
+	}
+	
+	public static ZCUserInfo getCurrentUserInfo(){
+		return userInfo;
+	}
+	
 
 	public static void loadSelectedForm() throws ZCException {
 		setCurrentForm(getForm(getCurrentComponent()));
@@ -343,6 +359,17 @@ public class ZOHOCreator {
 		Document rootDocument = ZOHOCreator.postURLXML(navigationListURL.getUrl(), navigationListURL.getNvPair());
 		return XMLParser.parseForNavigationListForApps(rootDocument);
 	}
+	
+	public static ZCUserInfo getUserPersonalInfo() throws ZCException{
+		URLPair userPersonalInfoURL = ZCURL.userPersonalInfoURL();
+		Document rootDocument = ZOHOCreator.postURLXML(userPersonalInfoURL.getUrl(), userPersonalInfoURL.getNvPair());
+		ZCUserInfo userInfo = XMLParser.parseForUserPersonalInfo(rootDocument);
+		setCurrentUserInfo(userInfo);
+		return userInfo;
+	}
+	
+	
+	
 
 	public static ZCAppList getPersonalApplicationList(List<NameValuePair> additionalParams) throws ZCException {
 		URLPair appListURLPair = ZCURL.appListURL();
