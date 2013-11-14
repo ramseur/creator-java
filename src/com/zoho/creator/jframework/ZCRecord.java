@@ -38,7 +38,8 @@ public class ZCRecord implements Comparable<ZCRecord> {
 			if(i != 0) {
 				buff.append(", ");
 			}
-			buff.append(recValues.get(i).getValue());
+			ZCRecordValue recValue = recValues.get(i);
+			buff.append(recValue.getDisplayValue());
 		}
 		return buff.toString();
 	}

@@ -8,72 +8,96 @@ import java.util.List;
 public class ZCRecordValue {
 	private ZCField field = null;
 	private String value = null;
-	private List<String> values = null;
+	private ZCChoice choiceValue = null;
+	private List<ZCChoice> choiceValues = null;
 	private File fileValue = null;
 
 	
 	public ZCRecordValue(ZCField field, String value) {
-		this.field = field;
-		if(value == null) {
-			value = "";
-		}
-		
+		this.field = field;		
 		setValue(value); 
 	}
 
-	
-	public ZCRecordValue(ZCField field, List<String> values) {
+	public ZCRecordValue(ZCField field, ZCChoice choiceValue) {
 		this.field = field;
-		
-		if(values == null) {
-			values = new ArrayList<String>();
-		}
-		setValues(values);
+		setChoiceValue(choiceValue); 
 	}
-
+	
+	public ZCRecordValue(ZCField field, List<ZCChoice> choiceValues) {
+		this.field = field;
+		setChoiceValues(choiceValues);
+		System.out.println("choiceeeesizeee"+choiceValues.size());
+	}
 
 	public ZCRecordValue(ZCField field, File fileValue) {
 		this.field = field;
 		setFileValue(fileValue);
 	}
 
-
 	public String toString() {
 		return field.getDisplayName() + " : " + value;  //No I18N
 	}
 
 	public String getValue() {
-		if(FieldType.isMultiChoiceField(field.getType())) {
-			String valuesString = values.toString();
-			return valuesString.toString().substring(1, valuesString.length() - 1);
+		if(FieldType.isChoiceField(field.getType())) {
+			throw new RuntimeException("Cannot use this one for this field type");//No I18N
 		}
 		return value;
 	}
+	
+	public String getDisplayValue() {
+		if(FieldType.isMultiChoiceField(field.getType())) {
+			StringBuffer buff = new StringBuffer();
+			for(int i=0; i<choiceValues.size(); i++) {
+				ZCChoice choice = choiceValues.get(i);
+				buff.append(choice.getValue());
+				if(i != choiceValues.size() -1) {
+					buff.append(", ");
+				}
+			}
+			return buff.toString();
+		} else if(FieldType.isSingleChoiceField(field.getType())) {
+			if(choiceValue==null)
+			{
+				return "";
+			}
+			else
+				return choiceValue.getValue();
+        }
+        return value;
+	}
 
-	public List<String> getValues() {
-		final List<String> toReturn = new ArrayList<String>(values);
+	public ZCChoice getChoiceValue() {
+		if(!FieldType.isSingleChoiceField(field.getType())) {
+			throw new RuntimeException("Cannot use this one for this field type");//No I18N
+		}
+		return choiceValue;
+	}
+	
+	public List<ZCChoice> getChoiceValues() {
+		final List<ZCChoice> toReturn = new ArrayList<ZCChoice>(choiceValues);
 		return toReturn;
 	}
 	
-	void addToValues(List<String> valuesToAdd) {
+	void addToValues(List<ZCChoice> valuesToAdd) {
 		if(!FieldType.isMultiChoiceField(field.getType())) {
 			throw new RuntimeException("Cannot use this one for this field type");//No I18N
 		}
-		values.addAll(valuesToAdd);
+		choiceValues.addAll(valuesToAdd);
 	}
 	
-	void removeFromValues(List<String> valuesToRemove) {
+	void removeFromValues(List<ZCChoice> valuesToRemove) {
 		if(!FieldType.isMultiChoiceField(field.getType())) {
 			throw new RuntimeException("Cannot use this one for this field type");//No I18N
 		}
-		for(int i=0;i<values.size();i++)
+		for(int i=0;i<choiceValues.size();i++)
 		{
 			for(int j=0;j<valuesToRemove.size();j++)
 			{
-				//System.out.println("Values111111"+values.get(i)+valuesToRemove.get(j));
-				if(values.get(i).equals(valuesToRemove.get(j)))
+				//System.out.println("Values111111"+choiceValues.get(i)+valuesToRemove.get(j));
+				if(choiceValues.get(i).equals(valuesToRemove.get(j)))
 				{
-					values.remove(i);
+					choiceValues.remove(i);
 					i--;
 					break;
 				}
@@ -81,13 +105,13 @@ public class ZCRecordValue {
 		}
 	}
 
-	public void removeValue(String value)
+	public void removeValue(ZCChoice value)
 	{
-		for(int j=0;j<values.size();j++)
+		for(int j=0;j<choiceValues.size();j++)
 		{
-			if(values.get(j).equals(value))
+			if(choiceValues.get(j).equals(value))
 			{
-				values.remove(j);
+				choiceValues.remove(j);
 			}
 		}
 	}
@@ -96,17 +120,25 @@ public class ZCRecordValue {
 	}
 	
 	public void setValue(String value) {
-		if(FieldType.isMultiChoiceField(field.getType())) {
+		if(FieldType.isChoiceField(field.getType())) {
 			throw new RuntimeException("Use the other one");//No I18N
 		}
 		this.value = value;
 	}
 
-	public void setValues(List<String> values) {
+	public void setChoiceValue(ZCChoice choiceValue) {
+		if(!FieldType.isSingleChoiceField(field.getType())) {
+			throw new RuntimeException("Use the other one");//No I18N
+		}
+		this.choiceValue = choiceValue;
+	}
+
+	public void setChoiceValues(List<ZCChoice> choiceValues) {
 		if(!FieldType.isMultiChoiceField(field.getType())) {
 			throw new RuntimeException("Use the other one");//No I18N
 		}
-		this.values = new ArrayList<String>(values);
+		this.choiceValues = new ArrayList<ZCChoice>(choiceValues);
+		System.out.println("size..."+this.choiceValues.size()+choiceValues);
 	}
 
 	public void setFileValue(File fileValue) {

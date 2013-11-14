@@ -8,7 +8,7 @@ import java.util.Map;
 
 public enum FieldType   {
 	
-	SINGLE_LINE (1), MULTI_LINE (3), EMAIL (4), NUMBER(5), CURRENCY(6), PERCENTAGE(7), DECISION_CHECK_BOX(9), DATE(10), NOTES(14), FORMULA(15), FILE_UPLOAD(18), DECIMAL(19), IMAGE(20), URL(21), DATE_TIME(22), SUB_FORM(23), RICH_TEXT(24), AUTO_NUMBER(31), DROPDOWN(100), RADIO(101) , MULTISELECT(102), CHECKBOXES(103), NEW_PICKLIST(1100), NEW_RADIO(1101),ZOHO_CRM(25),ZOHO_CRM_LINK(26),UNKNOWN(-1);
+	SINGLE_LINE (1), MULTI_LINE (2), EMAIL (3), NUMBER(5), CURRENCY(8), PERCENTAGE(7), DECISION_CHECK_BOX(16), DATE(10), NOTES(24), FORMULA(20), FILE_UPLOAD(19), DECIMAL(6), IMAGE(18), URL(17), DATE_TIME(11), SUB_FORM(21), RICH_TEXT(4), AUTO_NUMBER(9), DROPDOWN(12), RADIO(13) , MULTISELECT(14), CHECKBOXES(15), NEW_PICKLIST(1100), NEW_RADIO(1101),ZOHO_CRM(22),ZOHO_CRM_LINK(23),UNKNOWN(-1);
 
 	private static Map<Integer, FieldType> typeMap;
 
@@ -80,7 +80,7 @@ public enum FieldType   {
 		}
     }
      
-    static FieldType getFieldType(int type) {
+    static FieldType getFieldTypeeeee(int type) {
     	if(type == 97 || type == 98 || type == 99) {
     		type = 23;
     	}
@@ -90,7 +90,7 @@ public enum FieldType   {
     	}
     	return toReturn;
     }
-    static FieldType getFieldTypeNew(int type) {
+    static FieldType getFieldType(int type) {
     	FieldType toReturn = null;
     	System.out.println("newwww");
     	if(type == 1)
@@ -131,7 +131,7 @@ public enum FieldType   {
     	}
     	else if(type == 10)
     	{
-    		System.out.println("date....");
+    		
     		toReturn = FieldType.DATE;
     	}
     	else if(type == 11)
@@ -140,7 +140,7 @@ public enum FieldType   {
     	}
     	else if(type == 12)
     	{
-    		System.out.println("drppppp");
+    		
     		toReturn = FieldType.DROPDOWN;
     	}
     	else if(type == 13)

@@ -18,6 +18,7 @@ public class ZCButton implements Comparable<ZCButton>{
 	private ZCButtonType buttonType = null;
 	private ZCForm zcForm = null;
 	private boolean formIsSet = false;
+	private boolean onClickExists = false;
 
 
 
@@ -66,6 +67,16 @@ public class ZCButton implements Comparable<ZCButton>{
 			throw new RuntimeException ("You cannot set more than once"); //No I18N
 		}
 	}
+	
+	void setOnClickExists(boolean onClickExists)
+	{
+		this.onClickExists = onClickExists;
+	}
+	
+	public boolean isOnClickExists()
+	{
+		return onClickExists;
+	}
 
 	public ZCResponse click() throws ZCException {
 		ZCResponse response =  null;
@@ -78,6 +89,7 @@ public class ZCButton implements Comparable<ZCButton>{
 			{
 				
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				params.add(new BasicNameValuePair("zcRefValue", true+""));
 				params.add(new BasicNameValuePair("formAccessType", String.valueOf(zcForm.getFormType())));//No I18N
 				params.add(new BasicNameValuePair("errorLog" , "true"));//No I18N
 
@@ -88,23 +100,25 @@ public class ZCButton implements Comparable<ZCButton>{
 					} else if (zcForm.getViewForEdit() != null) {
 						params.add(new BasicNameValuePair("viewLinkName" , zcForm.getViewForEdit().getComponentLinkName()));//No I18N
 					}
-				}
+				} 
+				
 				ZCField baseLookupField = zcForm.getBaseLookupField();
 
 				if(baseLookupField != null) {
 					ZCForm baseForm = baseLookupField.getBaseForm();
 					params.add(new BasicNameValuePair("childAppLinkName" , baseForm.getAppLinkName()));//No I18N
 					params.add(new BasicNameValuePair("childFormLinkName" , baseForm.getComponentLinkName()));//No I18N
-
 					params.add(new BasicNameValuePair("childFieldLabelName" , baseLookupField.getFieldName()));//No I18N
 				}
 
+				
 
 				List<List<String>> fieldList = new ArrayList<List<String>>(); 
+				ZCForm baseForm = null;
 				while(baseLookupField != null) 
 				{
 					List<String> fieldRowList = new ArrayList<String>();
-					ZCForm baseForm = baseLookupField.getBaseForm();
+					baseForm = baseLookupField.getBaseForm();
 					fieldRowList.add(baseForm.getAppLinkName());
 					fieldRowList.add(baseForm.getComponentLinkName());
 					fieldRowList.add(baseLookupField.getFieldName());
@@ -113,6 +127,10 @@ public class ZCButton implements Comparable<ZCButton>{
 				}
 				if(fieldList.size()>0)
 				{
+					ZCView viewForAdd = baseForm.getViewForAdd();
+					if(viewForAdd != null) {
+						params.add(new BasicNameValuePair("viewLinkName" , viewForAdd.getComponentLinkName()));//No I18N
+					}
 					params.add(new BasicNameValuePair("zc_lookupCount", fieldList.size() + ""));//No I18N
 					int fieldListSize = fieldList.size();
 					for(int i=0; i<fieldListSize; i++) {
@@ -128,17 +146,18 @@ public class ZCButton implements Comparable<ZCButton>{
 				
 			} else {
 				//URLPair urlPair = ZCURL.buttonOnClick(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), linkName, zcForm.getAppOwner(), xmlString);
-				URLPair urlPair = ZCURL.buttonOnClick(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), linkName, zcForm.getAppOwner(), zcForm.getFieldParamValues());
-				response = ZOHOCreator.parseResponseDocumentForXMLString(ZOHOCreator.postURLXML(urlPair.getUrl(), urlPair.getNvPair()), action, zcForm);
-				//System.out.println("inside cli");
+				URLPair urlPair = ZCURL.buttonOnClick(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), linkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(null));
+				response = ZOHOCreator.parseResponseDocumentForJSONString(urlPair, zcForm);
+				System.out.println("inside clickkk"+response);
+				
 			}
-			////System.out.println("inside cli");
 			Hashtable<ZCField, String> errorMessagesTable = response.getErrorMessagesTable();
 			if(response.isError()) {
 				////System.out.println("inside responsesss");
 				return response;
 			}
 
+			
 			List<ZCField> fields = zcForm.getFields();
 			for(int i=0; i<fields.size(); i++) {
 				ZCField field = fields.get(i);
