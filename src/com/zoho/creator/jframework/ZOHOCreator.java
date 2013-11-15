@@ -82,49 +82,49 @@ public class ZOHOCreator {
 
 	private static List<ZCRecordValue> subFormRecordValueParams = null;
 
-	
+
 	public static String getLoginURL() {
 		return ZCURL.getURLString(ZCURL.getLoginUrl());
 	}
-	
+
 	public static String getPersonalPhotoURL() {
 		return ZCURL.getURLString(ZCURL.getURLForPersonalPhoto());
 	}
-	
+
 	public static String getFileUploadURL(String filepath, String appOwner, String appLinkName, String viewLinkName) {
 		return ZCURL.getURLString(ZCURL.getFileUploadURL(filepath, appOwner, appLinkName, viewLinkName));
 	}
-	
+
 	public static String getImageURL(String filePath) {
 		return ZCURL.getURLString(ZCURL.getImageURL(filePath));
 	}
-	
+
 	public static String getUserProperty(String key) {
 		return props.getProperty(key);
 	}
-	
+
 	public static void setBaseLookUpField(ZCField baseLookUpField)
 	{
 		ZOHOCreator.baseLookUpField = baseLookUpField;
 	}
-	
+
 	public static ZCField getBaseLookUPField()
 	{
 		return baseLookUpField;
 	}
-	
+
 	public static void setUserProperty(String key, String value) {
 		props.setProperty(key, value);
 	}
 
-//	public static void setSubFormRecordValueParams(List<ZCRecordValue> subFormRecordValueParams)
-//	{
-//		ZOHOCreator.subFormRecordValueParams = subFormRecordValueParams;
-//	}
-//	public static List<ZCRecordValue> getSubFormRecordValueParams()
-//	{
-//		return subFormRecordValueParams;
-//	}
+	//	public static void setSubFormRecordValueParams(List<ZCRecordValue> subFormRecordValueParams)
+	//	{
+	//		ZOHOCreator.subFormRecordValueParams = subFormRecordValueParams;
+	//	}
+	//	public static List<ZCRecordValue> getSubFormRecordValueParams()
+	//	{
+	//		return subFormRecordValueParams;
+	//	}
 	public static String getPrefix() {
 		return prefix;
 	}
@@ -226,10 +226,10 @@ public class ZOHOCreator {
 		setCurrentView(null);
 		setCurrentHtmlView(null);
 	}
-	
+
 	public static ZCComponent getComponent(String appOwner, String appLinkName, String type, String componentLinkName,String componentName) {
-        return new ZCComponent (appOwner, appLinkName, type, componentName, componentLinkName, -1);        
-    }
+		return new ZCComponent (appOwner, appLinkName, type, componentName, componentLinkName, -1);        
+	}
 
 	public static void loadSelectedApplication(List<NameValuePair> additionalParams)  throws ZCException {
 		setCurrentSectionList(getSectionList(getCurrentApplication(), additionalParams));
@@ -250,8 +250,8 @@ public class ZOHOCreator {
 	public static void loadSelectedView() throws ZCException{
 		setCurrentView(getView(getCurrentComponent()));
 	}	
-	
-	
+
+
 
 	public static void loadSelectedForm() throws ZCException {
 		setCurrentForm(getForm(getCurrentComponent()));
@@ -280,34 +280,10 @@ public class ZOHOCreator {
 		}
 	}
 
-	public static void loadFormForAddToLookup(ZCForm zcForm, ZCField lookupField) throws ZCException {
+	public static void loadFormForAddToLookup(ZCField lookupField) throws ZCException {
 		ZCComponent refComponent = lookupField.getRefFormComponent();
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		ZCField baseLookupField = lookupField;
-		List<List<String>> fieldList = new ArrayList<List<String>>(); 
-		ZCForm baseForm = null;
-		while(baseLookupField != null) 
-		{
-			List<String> fieldRowList = new ArrayList<String>();
-			baseForm = baseLookupField.getBaseForm();
-			fieldRowList.add(baseForm.getAppLinkName());
-			fieldRowList.add(baseForm.getComponentLinkName());
-			fieldRowList.add(baseLookupField.getFieldName());
-			fieldList.add(fieldRowList);
-			baseLookupField = baseForm.getBaseLookupField();
-		}
-		if(fieldList.size()>0)
-		{
-			params.add(new BasicNameValuePair("zc_lookupCount", fieldList.size() + ""));//No I18N
-			int fieldListSize = fieldList.size();
-			for(int i=0; i<fieldListSize; i++) {
-				List<String> fieldRowList = fieldList.get(i);
-				params.add(new BasicNameValuePair("zc_childappname_" + (fieldListSize -i) , fieldRowList.get(0) + ""));//No I18N
-				params.add(new BasicNameValuePair("zc_childformname_" + (fieldListSize -i) , fieldRowList.get(1) + ""));//No I18N
-				params.add(new BasicNameValuePair("zc_childlabelname_" + (fieldListSize -i) , fieldRowList.get(2) + ""));//No I18N
-			}
-		}
-		ZCForm lookupForm =  getForm(refComponent.getAppLinkName(), refComponent.getComponentLinkName(), refComponent.getAppOwner(), getViewLinkName(), null, ZCForm.FORM_LOOKUP_ADD_FORM, zcForm.getAppLinkName(), zcForm.getComponentLinkName(), lookupField.getFieldName(), null, null,params);
+		ZCForm zcForm = lookupField.getBaseForm();
+		ZCForm lookupForm =  getForm(refComponent.getAppLinkName(), refComponent.getComponentLinkName(), refComponent.getAppOwner(), null,null, ZCForm.FORM_LOOKUP_ADD_FORM, zcForm.getAppLinkName(), zcForm.getComponentLinkName(), lookupField.getFieldName(), null, null,getAdditionalParamsForForm(zcForm, lookupField));
 		lookupField.setLookupForm(lookupForm);
 	}
 
@@ -318,7 +294,54 @@ public class ZOHOCreator {
 		setCurrentForm(form);
 	}
 
+	static List<NameValuePair> getAdditionalParamsForForm(ZCForm zcForm, ZCField baseLookupField)
+	{
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		ZCForm baseForm = null;
+		if(baseLookupField == null)
+		{
+			baseForm = zcForm;
+		}
+		else 
+		{
+			List<List<String>> fieldList = new ArrayList<List<String>>(); 
+			while(baseLookupField != null) 
+			{
+				List<String> fieldRowList = new ArrayList<String>();
+				baseForm = baseLookupField.getBaseForm();
+				fieldRowList.add(baseForm.getAppLinkName());
+				fieldRowList.add(baseForm.getComponentLinkName());
+				fieldRowList.add(baseLookupField.getFieldName());
+				fieldList.add(fieldRowList);
+				baseLookupField = baseForm.getBaseLookupField();
+			}
+			if(fieldList.size()>0)
+			{
+				params.add(new BasicNameValuePair("zc_lookupCount", fieldList.size() + ""));//No I18N
+				int fieldListSize = fieldList.size();
+				for(int i=0; i<fieldListSize; i++) {
+					List<String> fieldRowList = fieldList.get(i);
+					params.add(new BasicNameValuePair("zc_childappname_" + (fieldListSize -i) , fieldRowList.get(0) + ""));//No I18N
+					params.add(new BasicNameValuePair("zc_childformname_" + (fieldListSize -i) , fieldRowList.get(1) + ""));//No I18N
+					params.add(new BasicNameValuePair("zc_childlabelname_" + (fieldListSize -i) , fieldRowList.get(2) + ""));//No I18N
+				}
+			}
+		}
 
+		
+		ZCView viewForAdd = baseForm.getViewForAdd();
+		ZCView viewForEdit = baseForm.getViewForEdit(); 
+		if(viewForAdd != null) {
+			params.add(new BasicNameValuePair("viewLinkName" , viewForAdd.getComponentLinkName()));//No I18N
+		}
+		else if(viewForEdit != null) {
+			params.add(new BasicNameValuePair("viewLinkName" , viewForEdit.getComponentLinkName()));
+		}else if(zcForm.getViewForBulkEdit() != null) {
+			params.add(new BasicNameValuePair("viewLinkName" , zcForm.getViewForBulkEdit().getComponentLinkName()));//No I18N
+		} 
+		return params;
+	}
+	
 
 	public static void setCurrentForm(ZCForm form) {
 		ZOHOCreator.form = form;
@@ -372,8 +395,8 @@ public class ZOHOCreator {
 		Document rootDocument = ZOHOCreator.postURLXML(navigationListURL.getUrl(), navigationListURL.getNvPair());
 		return XMLParser.parseForNavigationListForApps(rootDocument);
 	}
-	
-	
+
+
 
 	public static ZCAppList getPersonalApplicationList(List<NameValuePair> additionalParams) throws ZCException {
 		URLPair appListURLPair = ZCURL.appListURL();
@@ -469,18 +492,9 @@ public class ZOHOCreator {
 		toReturn.addButtons(buttons);
 		return toReturn;
 	}
-	
-   private static String getViewLinkName()
-    {
-	   String viewLinkName = null;
-	    ZCView currentView = getCurrentView();
-		if(currentView!=null)
-		{
-			viewLinkName = currentView.getComponentLinkName();
-		}
-		return viewLinkName;
-    }
-	
+
+
+
 	public static ZCForm getForm(String appLinkName, String formLinkName, String appOwner) throws ZCException{
 		return getForm(appLinkName, formLinkName, appOwner, null, null, ZCForm.FORM_ALONE, null, null, null, null, null,null);
 	}
@@ -512,18 +526,18 @@ public class ZOHOCreator {
 
 
 	private static void callFormOnAddOnLoad(ZCForm zcForm) throws ZCException{
-		URLPair formOnAddOnLoadURL = ZCURL.formOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), zcForm.getXMLStringForDeluge(),getViewLinkName());
+		URLPair formOnAddOnLoadURL = ZCURL.formOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), zcForm.getXMLStringForDeluge(),getAdditionalParamsForForm(zcForm, null));
 		//Document rootDocument = ZOHOCreator.postURLXML(formOnAddOnLoadURL.getUrl(), formOnAddOnLoadURL.getNvPair());
 		String response = ZOHOCreator.postURL(formOnAddOnLoadURL.getUrl(), formOnAddOnLoadURL.getNvPair());
 		System.out.println("onload response " + response);
-		XMLParser.parseAndCallFormEvents(response, zcForm,null);
+		JSONParser.parseAndCallFormEvents(response, zcForm,null);
 	}
 
 	static void callFormEditOnAddOnLoad(ZCForm zcForm,Long recordLinkId) throws ZCException{
-		URLPair formEditOnAddOnLoadURL = ZCURL.formEditOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), zcForm.getXMLStringForDeluge(),recordLinkId,getViewLinkName());
+		URLPair formEditOnAddOnLoadURL = ZCURL.formEditOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), zcForm.getXMLStringForDeluge(),recordLinkId,getAdditionalParamsForForm(zcForm, null));
 		//Document rootDocument = ZOHOCreator.postURLXML(formEditOnAddOnLoadURL.getUrl(), formEditOnAddOnLoadURL.getNvPair());
 		String response = ZOHOCreator.postURL(formEditOnAddOnLoadURL.getUrl(), formEditOnAddOnLoadURL.getNvPair());
-		XMLParser.parseAndCallFormEvents(response, zcForm,null);
+		JSONParser.parseAndCallFormEvents(response, zcForm,null);
 	}
 
 	private static void callDelugeEvents(ZCForm zcForm, URLPair urlPair,List<ZCRecordValue> recordValues) throws ZCException{
@@ -531,33 +545,33 @@ public class ZOHOCreator {
 		//System.out.println("calldelugeevents");
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
 		System.out.println("deluge response " + response);
-		XMLParser.parseAndCallFormEvents(response, zcForm,recordValues);
+		JSONParser.parseAndCallFormEvents(response, zcForm,recordValues);
 	}
-	
-	
+
+
 	static ZCResponse parseResponseDocumentForJSONString(URLPair urlPair, ZCForm zcForm) throws ZCException {
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
 		System.out.println("responseee"+response);
-		return XMLParser.parseAndCallFormEvents(response, zcForm, null);
-	    
+		return JSONParser.parseAndCallFormEvents(response, zcForm, null);
+
 	}
 
 
 	static void callFieldOnUser(ZCForm zcForm, String fieldLinkName, boolean isFormula) throws ZCException {
-		callDelugeEvents(zcForm, ZCURL.fieldOnUser(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), fieldLinkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(null), isFormula,getViewLinkName()),null);
+		callDelugeEvents(zcForm, ZCURL.fieldOnUser(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), fieldLinkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(null), isFormula,getAdditionalParamsForForm(zcForm, null)),null);
 	}
 
 	static void callSubFormFieldOnUser(ZCForm zcForm, String subFormFieldLinkName, String fieldLinkName,List<ZCRecordValue> tempRecordValues,boolean isFormula) throws ZCException{
-		callDelugeEvents(zcForm, ZCURL.subFormOnUser(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, fieldLinkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(tempRecordValues),isFormula,getViewLinkName()),tempRecordValues);
+		callDelugeEvents(zcForm, ZCURL.subFormOnUser(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, fieldLinkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(tempRecordValues),isFormula,getAdditionalParamsForForm(zcForm, null)),tempRecordValues);
 	}
-     
-    
+
+
 	public static void callSubFormAddRow(ZCForm zcForm, String subFormFieldLinkName,List<ZCRecordValue> tempRecordValues) throws ZCException{
-		callDelugeEvents(zcForm, ZCURL.subFormAddRow(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(null),getViewLinkName()),tempRecordValues);
+		callDelugeEvents(zcForm, ZCURL.subFormAddRow(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(null),getAdditionalParamsForForm(zcForm, null)),tempRecordValues);
 	}
 
 	public static void callSubFormDeleteRow(ZCForm zcForm, String subFormFieldLinkName,List<ZCRecordValue> tempRecordValues) throws ZCException{
-		callDelugeEvents(zcForm, ZCURL.subFormDeleteRow(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(null),getViewLinkName()),tempRecordValues);
+		callDelugeEvents(zcForm, ZCURL.subFormDeleteRow(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(null),getAdditionalParamsForForm(zcForm, null)),tempRecordValues);
 	}
 
 	public static ZCView getListReport(String appLinkName, String viewLinkName, String appOwner) throws ZCException{
@@ -629,11 +643,11 @@ public class ZOHOCreator {
 			viewLinkName = getCurrentView().getComponentLinkName();
 		}
 		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), field.getFieldName(), field.getChoices().size(), field.getSearchForChoices(), subformComponent,viewLinkName);
-		
+
 		Document rootDocument = ZOHOCreator.postURLXML(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair());
 		//System.out.println("onload response " +rootDocument);
 		return XMLParser.getLookUpChoices(rootDocument);
-		
+
 	}
 
 
@@ -827,7 +841,7 @@ public class ZOHOCreator {
 		return toReturn;
 	}
 
-	
+
 
 	static ZCResponse postXMLString(String appOwner, String xmlString, String action, List<NameValuePair> params, ZCForm form) throws ZCException{
 		URLPair xmlWriteURLPair = ZCURL.xmlWriteURL(appOwner, xmlString);
@@ -837,7 +851,7 @@ public class ZOHOCreator {
 		params.addAll(xmlWriteURLPair.getNvPair());
 		//		System.out.println(getURLString(xmlWriteURLPair.getUrl(), params)); 
 		Document rootDocument = ZOHOCreator.postURLXML(xmlWriteURLPair.getUrl(), params);
-			System.out.println("postxmlstirng " + getString(rootDocument));
+		System.out.println("postxmlstirng " + getString(rootDocument));
 
 		//System.out.println("response " + getString(rootDocument));
 		XPath xPath = XPathFactory.newInstance().newXPath();
@@ -999,7 +1013,7 @@ public class ZOHOCreator {
 	 */
 
 	private static String getURLString(String url, List<NameValuePair> params) {
-		StringBuffer buff = new StringBuffer(url + "?");
+		StringBuffer buff = new StringBuffer(url + "/");
 		if(params != null) {
 			for(int i=0; i<params.size(); i++) {
 				NameValuePair nvPair = params.get(i);
@@ -1084,7 +1098,7 @@ public class ZOHOCreator {
 	}
 
 	static void postFile(String urlParam, File fileToUpload, List<NameValuePair> paramsList) throws ZCException {
-
+		System.out.println("fileurl.."+getURLString(urlParam, paramsList));
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpParams httpParameters = httpclient.getParams();
 		httpParameters.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
@@ -1121,11 +1135,11 @@ public class ZOHOCreator {
 		} //No I18N
 		mpEntity.addPart("file", cbFile); //No I18N
 		httppost.setEntity(mpEntity);
-		//System.out.println("executing request " + httppost.getRequestLine()); //No I18N
+		System.out.println("executing request " + httppost.getRequestLine()); //No I18N
 		try {
 			//System.out.println("before httpresponse... ");
 			HttpResponse httpResponse = httpclient.execute(httppost);
-			//System.out.println("after httpresponse... ");
+			System.out.println("after httpresponse... ");
 		} catch(UnknownHostException uhe) {
 			throw new ZCException("No network connection.", ZCException.NETWORK_ERROR);//No I18N
 		} catch(HttpHostConnectException uhe) {

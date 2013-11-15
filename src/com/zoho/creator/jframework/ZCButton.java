@@ -95,11 +95,6 @@ public class ZCButton implements Comparable<ZCButton>{
 
 				if(zcForm.getViewForBulkEdit() != null || zcForm.getViewForEdit() != null) {
 					action = "update"; //No I18N
-					if(zcForm.getViewForBulkEdit() != null) {
-						params.add(new BasicNameValuePair("viewLinkName" , zcForm.getViewForBulkEdit().getComponentLinkName()));//No I18N
-					} else if (zcForm.getViewForEdit() != null) {
-						params.add(new BasicNameValuePair("viewLinkName" , zcForm.getViewForEdit().getComponentLinkName()));//No I18N
-					}
 				} 
 				ZCField baseLookupField = zcForm.getBaseLookupField();
 				if(baseLookupField != null) {
@@ -108,39 +103,9 @@ public class ZCButton implements Comparable<ZCButton>{
 					params.add(new BasicNameValuePair("childFormLinkName" , baseForm.getComponentLinkName()));//No I18N
 					params.add(new BasicNameValuePair("childFieldLabelName" , baseLookupField.getFieldName()));//No I18N
 				}
-				List<List<String>> fieldList = new ArrayList<List<String>>(); 
-				ZCForm baseForm = null;
-				while(baseLookupField != null) 
-				{
-					List<String> fieldRowList = new ArrayList<String>();
-					baseForm = baseLookupField.getBaseForm();
-					fieldRowList.add(baseForm.getAppLinkName());
-					fieldRowList.add(baseForm.getComponentLinkName());
-					fieldRowList.add(baseLookupField.getFieldName());
-					fieldList.add(fieldRowList);
-					baseLookupField = baseForm.getBaseLookupField();
-				}
-				if(fieldList.size()>0)
-				{
-					ZCView viewForAdd = baseForm.getViewForAdd();
-					if(viewForAdd != null) {
-						params.add(new BasicNameValuePair("viewLinkName" , viewForAdd.getComponentLinkName()));//No I18N
-					}
-					params.add(new BasicNameValuePair("zc_lookupCount", fieldList.size() + ""));//No I18N
-					int fieldListSize = fieldList.size();
-					for(int i=0; i<fieldListSize; i++) {
-						List<String> fieldRowList = fieldList.get(i);
-						params.add(new BasicNameValuePair("zc_childappname_" + (fieldListSize -i) , fieldRowList.get(0) + ""));//No I18N
-						params.add(new BasicNameValuePair("zc_childformname_" + (fieldListSize -i) , fieldRowList.get(1) + ""));//No I18N
-						params.add(new BasicNameValuePair("zc_childlabelname_" + (fieldListSize -i) , fieldRowList.get(2) + ""));//No I18N
-					}
-				}
-				
-				response =  ZOHOCreator.postXMLString(zcForm.getAppOwner(), xmlString, action, params, zcForm);
-				//System.out.println("inside responseee"+response.getErrorMessagesTable().size());
-				
+				params.addAll(ZOHOCreator.getAdditionalParamsForForm(zcForm, baseLookupField));
+				response =  ZOHOCreator.postXMLString(zcForm.getAppOwner(), xmlString, action, params, zcForm);		
 			} else {
-				//URLPair urlPair = ZCURL.buttonOnClick(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), linkName, zcForm.getAppOwner(), xmlString);
 				URLPair urlPair = ZCURL.buttonOnClick(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), linkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(null));
 				response = ZOHOCreator.parseResponseDocumentForJSONString(urlPair, zcForm);
 				System.out.println("inside clickkk"+response);
@@ -157,12 +122,11 @@ public class ZCButton implements Comparable<ZCButton>{
 			for(int i=0; i<fields.size(); i++) {
 				ZCField field = fields.get(i);
 				if(FieldType.isPhotoField(field.getType())) {
-					////System.out.println("lkhfff");
 					ZCRecordValue recValue = field.getRecordValue();
 					File fileToUpload = recValue.getFileValue();
 					if(fileToUpload!=null)
 					{
-					////System.out.println("lkhjjjhjhk"+ Integer.parseInt(String.valueOf(fileToUpload.length()/1024)));
+					System.out.println("lkhjjjhjhk"+ Integer.parseInt(String.valueOf(fileToUpload.length()/1024)));
 					URLPair urlPair = ZCURL.fileUploadURL(zcForm.getAppOwner());
 					List<NameValuePair> params = new ArrayList<NameValuePair>();
 					params.addAll(urlPair.getNvPair());
@@ -172,6 +136,7 @@ public class ZCButton implements Comparable<ZCButton>{
 					params.add(new BasicNameValuePair("recordId", response.getSuccessRecordID() + ""));//No I18N
 					params.add(new BasicNameValuePair("filename", fileToUpload.getName()));//No I18N
 					ZOHOCreator.postFile(urlPair.getUrl(), fileToUpload, params);
+					System.out.println("");
 					}
 				}
 			}

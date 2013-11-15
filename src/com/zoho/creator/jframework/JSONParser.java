@@ -9,14 +9,18 @@ import org.json.JSONObject;
 
  class JSONParser {
 
-		static void parseAndCallFormEvents(String response, ZCForm form,List<ZCRecordValue> subFormTempRecordValues) throws ZCException
+	 static ZCResponse parseAndCallFormEvents(String response, ZCForm form,List<ZCRecordValue> subFormTempRecordValues) throws ZCException
 		{
 			if(subFormTempRecordValues!=null&&subFormTempRecordValues.size()>0)
 			{
 				System.out.println("subformmmmmmmmmmmm"+subFormTempRecordValues.get(0).getValue());
 			}
 			List<String> alertMessages = new ArrayList<String>();
+			List<String> infoValues = new ArrayList<String>();
 			int type = -1;
+			boolean hasError = false;
+			ZCResponse toReturn = new ZCResponse();
+			String openUrlString = null;
 
 			//System.out.println("resssspo"+response);
 			try {
@@ -32,6 +36,8 @@ import org.json.JSONObject;
 					String formName=null;
 					String alertMessage=null;
 					String value = null;
+					
+					
 					int rowNo = -1;
 					JSONObject jsonObj = jArray.getJSONObject(i); // Pulling items from the array 
 					if(jsonObj.has("task"))
@@ -69,16 +75,40 @@ import org.json.JSONObject;
 					}
 					if(jsonObj.has("rowNo"))
 					{
-
+	                    
 						rowNo = Integer.parseInt(jsonObj.getString("rowNo").substring(7));
 						System.out.println("rownoooo"+rowNo);
+					}
+					if(jsonObj.has("infoValue"))
+					{
+						
+							JSONArray jsonArray = (JSONArray) jsonObj.get("infoValue");
+							for (int j=0; j<jsonArray.length(); j++) {
+							infoValues.add(jsonArray.getString(j));
+							}
+					}
+					if(jsonObj.has("urlString"))
+					{
+						openUrlString = jsonObj.getString("urlString");
+						form.setOpenUrl(openUrlString);
+					}
+					if(jsonObj.has("errors"))
+					{
+						toReturn.setError(true);
+						hasError = true;
+						toReturn.setMainErrorMessage("Invalid entries found. Please correct and submit again.");//No I18N	
+							JSONArray jsonArray = (JSONArray) jsonObj.get("errors");
+							for (int j=0; j<jsonArray.length(); j++) {
+								String[] errorMessageField = jsonArray.getString(j).split(",");
+								toReturn.addErrorMessage(form.getField(errorMessageField[0]),errorMessageField[1] );
+							}		
 					}
 					if(fieldName!=null&& subFormName ==null)
 					{
 						field=form.getField(fieldName);
 						field.setRebuildRequired(true);
 						recordValue = field.getRecordValue();
-						//System.out.println("inside fieldsss");
+						System.out.println("inside fieldsss22");
 					}
 					else if(subFormName!=null)
 					{
@@ -87,6 +117,7 @@ import org.json.JSONObject;
 						field = subForm.getField(fieldName);
 						recordValue = field.getRecordValue();
 						field.setRebuildRequired(true);
+						System.out.println("inside fieldsss111");
 					}
 					//System.out.println("type  "+type+" formName "+formName+" fieldname "+fieldName+" arrayList "+choiceValues);
 					if(type==ZCForm.task_hide) {
@@ -171,7 +202,6 @@ import org.json.JSONObject;
 									//ZCRecordValue subFormRecordValue =subFormTempRecordValues.get(l);
 									if(subFormTempRecordValues.get(l).getField().getFieldName().equals(field.getFieldName()))
 									{
-
 										subFormTempRecordValues.get(l).addToValues(choiceValues);
 										break;
 									}
@@ -183,7 +213,48 @@ import org.json.JSONObject;
 								recordValue.addToValues(choiceValues);
 							}
 							//System.out.println("setaoutside"+values);
-						} else {
+						} 
+						else if(FieldType.isSingleChoiceField(field.getType()))
+						{
+							if(rowNo>0&&subFormField.getAddedSubFormEntries().size()>=rowNo)
+							{
+								if(subFormField.getAddedSubFormEntries().size()>0)
+								{
+									ZCRecord zcRecord =  subFormField.getAddedSubFormEntries().get(rowNo-1);
+									List<ZCRecordValue> zcRecordValues = zcRecord.getValues();
+									for(int l=0;l<zcRecordValues.size();l++)
+									{
+										ZCRecordValue subFormRecordValue = zcRecordValues.get(l);
+										if(subFormRecordValue.getField().getFieldName().equals(field.getFieldName()))
+										{
+											subFormRecordValue.setChoiceValue(new ZCChoice(value,value));
+											break;
+										}
+									}
+								}
+							}
+							else if(rowNo>0)
+							{
+								for(int l=0;l<subFormTempRecordValues.size();l++)
+								{
+									//ZCRecordValue subFormRecordValue =subFormTempRecordValues.get(l);
+
+									if(subFormTempRecordValues.get(l).getField().getFieldName().equals(field.getFieldName()))
+									{
+										subFormTempRecordValues.get(l).setChoiceValue(new ZCChoice(value,value));
+										System.out.println("setvale"+subFormTempRecordValues.get(l).getValue());
+										break;
+									}
+								}
+
+							}
+							else
+							{
+								recordValue.setChoiceValue(new ZCChoice(value,value));
+							}
+						 
+						}
+						else {
 							if(rowNo>0&&subFormField.getAddedSubFormEntries().size()>=rowNo)
 							{
 								if(subFormField.getAddedSubFormEntries().size()>0)
@@ -214,14 +285,13 @@ import org.json.JSONObject;
 										break;
 									}
 								}
-
 							}
 							else
 							{
 								recordValue.setValue(value);
 							}
 						}
-						field.setLastReachedForChoices(true);
+						field.setLastReachedForChoices(true); 
 					}
 					if(subFormName==null)
 					{
@@ -246,5 +316,15 @@ import org.json.JSONObject;
 				//System.out.println("inside alerrr");
 				form.setAlertMessages(alertMessages);
 			}
+			if(infoValues.size()>0)
+			{
+				form.setInfos(infoValues);
+			}
+			if(openUrlString!=null)
+			{
+				form.setOpenUrl(openUrlString);
+			}
+
+			return toReturn;
 		}
 }
