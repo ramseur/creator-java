@@ -9,7 +9,7 @@ public class ZCField implements Comparable<ZCField> {
 	private FieldType type;
 	private String displayName = null;
 	private int sequenceNumber = -1;
-	
+
 	//private String initialValue = "";
 	private boolean isUnique = false;
 	private boolean isRequired = false;
@@ -28,31 +28,31 @@ public class ZCField implements Comparable<ZCField> {
 	private boolean imgLinkReq = false;
 	private boolean imgTitleReq = false;
 	private boolean altTxtReq = false;
-	
+
 	private boolean hasOnUserInput = false;
 
 	private ZCForm baseForm = null;
 	private ZCForm subForm = null;
 	private ZCForm editSubForm = null;
 	private ZCForm lookupForm = null;
-	
+
 	private ZCComponent refFormComponent = null;
 	private String refFieldLinkName = null;
 	private String currencyType = null;
 
-	
+
 	private List<ZCChoice> choices  = new ArrayList<ZCChoice>(); 
-	
+
 	private ZCRecordValue recordValue = null;
 	private boolean isLookup = false; // This is purely for display checks....
 	private boolean newEntriesAllowed = false; // This is purely for display checks....
 	private boolean isOnAddRowExists = false;
 	private boolean isOnDeleteRowExists = false;
-	
+
 	private List<ZCRecord> subFormEntries = new ArrayList<ZCRecord>();
 	private List<ZCRecord> removedSubFormEntries = new ArrayList<ZCRecord>();
 	private boolean hasOnUserInputForFormula = false;
-	
+
 
 	//public static final String STRING = "STRING"; //No I18N
 	private boolean isHidden = false;
@@ -63,23 +63,23 @@ public class ZCField implements Comparable<ZCField> {
 	private String searchStringForChoices = null;
 
 	private int lookupCount = 0;
-	
+
 	private List<ZCField> lookUpFields = new ArrayList<ZCField>();
-	
-	
+
+
 
 	private boolean lookupLoadingStarted = false;
 
-	
-	
+
+
 	ZCField(String fieldName, FieldType type, String displayName) {
 		this.fieldName = fieldName;
 		this.type = type;
 		this.displayName = displayName;
 	}
-	
+
 	public String toString() {
-		
+
 		String toReturn  = "fieldName:" + fieldName + " - type:" + type + " - displayName:" + displayName +  //No I18N
 				" - isUnique:" + isUnique + " - isRequired:" + isRequired + " - maxChar:" + maxChar +  //No I18N
 				" - urlTitleReq:" + urlTitleReq + " - urlLinkNameReq:" + urlLinkNameReq + " - fromZohoDoc:" + fromZohoDoc + " - fromGoogleDoc:" + fromGoogleDoc +  //No I18N
@@ -90,7 +90,7 @@ public class ZCField implements Comparable<ZCField> {
 		}
 		return toReturn;
 	}
-	
+
 	public int getMaxChar() {
 		return maxChar;
 	}
@@ -103,15 +103,15 @@ public class ZCField implements Comparable<ZCField> {
 	void setUnique(boolean isUnique) {
 		this.isUnique = isUnique;
 	}
-	
+
 	public String getCurrencyType() {
 		return currencyType;
 	}
-	
+
 	void setCurrencyType(String currencyType) {
-	   this.currencyType = currencyType;	
+		this.currencyType = currencyType;	
 	}
-	
+
 	public String getFieldName() {
 		return fieldName;
 	}
@@ -120,7 +120,7 @@ public class ZCField implements Comparable<ZCField> {
 		return type;
 	}
 
-	
+
 	public String getDisplayName() {
 		return displayName;
 	}
@@ -151,12 +151,12 @@ public class ZCField implements Comparable<ZCField> {
 	{
 		return urlTitleValue;
 	}
-	
+
 	void setUrlTitleValue(String urlTitleValue)
 	{
 		this.urlTitleValue=urlTitleValue;
 	}
-	
+
 	public String getUrlLinkNameValue()
 	{
 		return urlLinkNameValue;
@@ -209,7 +209,7 @@ public class ZCField implements Comparable<ZCField> {
 	public boolean isAltTxtReq() {
 		return altTxtReq;
 	}
-	
+
 	void setAltTxtReq(boolean altTxtReq) {
 		this.altTxtReq = altTxtReq;
 	}
@@ -223,15 +223,15 @@ public class ZCField implements Comparable<ZCField> {
 		this.choices = choices;		
 		System.out.println("setting in zcfield "+ choices.size());
 	}
-	
+
 	void clearChoices() {
 		choices.clear();
 	}
-	
+
 	public void appendChoices(List<ZCChoice> moreChoices) {
 		choices.addAll(moreChoices);
 	}
-	
+
 	public void addToLookupChoice(ZCChoice choice) {
 		choices.add(choice);
 		if(FieldType.isMultiChoiceField(type)) {
@@ -243,7 +243,7 @@ public class ZCField implements Comparable<ZCField> {
 		}
 	}
 
-	
+
 	public int getSequenceNumber() {
 		return sequenceNumber;
 	}
@@ -257,8 +257,8 @@ public class ZCField implements Comparable<ZCField> {
 		if(arg0 instanceof ZCField) {
 			ZCField toCompare = (ZCField)arg0;
 			return getSequenceNumber()>toCompare.getSequenceNumber() ? 1 
-				: toCompare.getSequenceNumber() > getSequenceNumber() ? -1 
-				: 0;
+					: toCompare.getSequenceNumber() > getSequenceNumber() ? -1 
+							: 0;
 		}
 		return -1;
 	}
@@ -294,7 +294,7 @@ public class ZCField implements Comparable<ZCField> {
 	void setRefFieldLinkName(String refFieldLinkName) {
 		this.refFieldLinkName = refFieldLinkName;
 	}
-	
+
 	public ZCForm getEditSubForm(ZCRecord record) {
 		List<ZCField> subFormFields = editSubForm.getFields();
 		List<ZCRecordValue> recordValues = record.getValues();
@@ -312,9 +312,9 @@ public class ZCField implements Comparable<ZCField> {
 					{
 						subFormRecordValue.setChoiceValue(recordValue.getChoiceValue());
 					}
-//					else if(recordValueField.getType().equals(FieldType.FILE_UPLOAD) || recordValueField.getType().equals(FieldType.IMAGE)) {
-//						
-//					} 
+					//					else if(recordValueField.getType().equals(FieldType.FILE_UPLOAD) || recordValueField.getType().equals(FieldType.IMAGE)) {
+					//						
+					//					} 
 					else {
 						subFormRecordValue.setValue(recordValue.getValue());
 					}
@@ -323,7 +323,7 @@ public class ZCField implements Comparable<ZCField> {
 		}
 		return editSubForm;
 	}
-	
+
 	void setEditSubForm(ZCForm editSubForm) {
 		this.editSubForm = editSubForm;
 		editSubForm.setBaseSubFormField(this);
@@ -332,7 +332,7 @@ public class ZCField implements Comparable<ZCField> {
 	public ZCForm getSubForm() {
 		return subForm;
 	}
-	
+
 	void setSubForm(ZCForm subForm) {
 		this.subForm = subForm;
 		subForm.setBaseSubFormField(this);
@@ -346,24 +346,24 @@ public class ZCField implements Comparable<ZCField> {
 		//setSubForm(newSubForm);
 		return newSubForm;
 	}
-	*/
-	
+	 */
+
 	public void addSubFormEntry(ZCRecord record) {
 		subFormEntries.add(record);
 	}
-	
+
 	public ZCRecord getSubFormEntry(int position) {
 		return subFormEntries.get(position);
 	}
-	
+
 	public int getSubFormEntriesSize() {
 		return subFormEntries.size();
 	}
-	
+
 	public void removeSubFormEntry(int position) {
 		removedSubFormEntries.add(subFormEntries.remove(position));
 	}
-	
+
 
 	List<ZCRecord> getUpdatedSubFormEntries() {
 		List<ZCRecord> updatedEntries = new ArrayList<ZCRecord>();
@@ -376,12 +376,12 @@ public class ZCField implements Comparable<ZCField> {
 		final List<ZCRecord> toReturn = new ArrayList<ZCRecord>(updatedEntries);
 		return toReturn;
 	}
-	
+
 	List<ZCRecord> getRemovedSubFormEntries() {
 		final List<ZCRecord> toReturn = new ArrayList<ZCRecord>(removedSubFormEntries);
 		return toReturn;
 	}
-	
+
 	List<ZCRecord> getAddedSubFormEntries() {
 		List<ZCRecord> addedEntries = new ArrayList<ZCRecord>();
 		for(int i=0; i<subFormEntries.size(); i++) {
@@ -433,7 +433,7 @@ public class ZCField implements Comparable<ZCField> {
 
 	void setHasOnUserInputForFormula(boolean hasOnUserInputForFormula) {
 		this.hasOnUserInputForFormula = hasOnUserInputForFormula;
-		
+
 	}
 
 	public boolean isRebuildRequired() {
@@ -459,16 +459,16 @@ public class ZCField implements Comparable<ZCField> {
 	public void setDisabled(boolean isDisabled) {
 		this.isDisabled = isDisabled;
 	}
-	
+
 	public void onUserInput(List<ZCRecordValue> subFormTempRecordValues) throws ZCException{
-		
-			//System.out.println("inside ifonuserrr");
+
+		//System.out.println("inside ifonuserrr");
 		ZOHOCreator.callFieldOnUser(baseForm, fieldName, false);
-		
-		
+
+
 	}
-	
-	
+
+
 	public void onUserInputForFormula(List<ZCRecordValue> subFormTempRecordValues) throws ZCException{
 		ZOHOCreator.callFieldOnUser(baseForm, fieldName, true);
 	}
@@ -476,14 +476,14 @@ public class ZCField implements Comparable<ZCField> {
 	public void setTextValue(String textValue) {
 		this.textValue  =  textValue;
 	}
-	
+
 	public String getTextValue() {
 		return textValue;
 	}
-    
+
 	public boolean isOnAddRowExists()
 	{
-	return isOnAddRowExists;	
+		return isOnAddRowExists;	
 	}
 
 	public void setOnAddRowExists(boolean isOnAddRowExists) {
@@ -499,13 +499,13 @@ public class ZCField implements Comparable<ZCField> {
 	}
 
 	void setLastReachedForChoices(boolean isLastReachedForChoices) {
-			this.isLastReachedForChoices = isLastReachedForChoices;
+		this.isLastReachedForChoices = isLastReachedForChoices;
 	}
-	
+
 	public boolean isLastReachedForChoices() {
 		return isLastReachedForChoices;
 	}
-	
+
 	public List<ZCChoice> loadMoreChoices() throws ZCException {
 		if(!isLastReachedForChoices) {
 			List<ZCChoice> moreChoices = ZOHOCreator.loadMoreChoices(this, getBaseForm().getBaseSubFormField());
@@ -517,54 +517,21 @@ public class ZCField implements Comparable<ZCField> {
 		}
 		return new ArrayList<ZCChoice>();
 	}
-	
-	
+
+
 	public void reloadChoices() throws ZCException {
 		choices.clear();
 		isLastReachedForChoices = false;
 		loadMoreChoices();
 	}
-	
+
 	public void setSearchForChoices(String searchStringForChoices) {
 		this.searchStringForChoices  = searchStringForChoices;
 	}
-	
+
 	public String getSearchForChoices() {
 		return searchStringForChoices;
 	}
-
-	
-	public void setLookUpCount(int lookUpCount){
-		if(lookUpCount!=0)
-		{		
-		this.lookupCount++;
-		}
-		else
-		{
-			this.lookupCount=0;
-		}
-	}
-	
-	public int getLookUpCount()
-	{
-		return lookupCount;
-	}
-	
-	public void addZCFieldForLookup(ZCField zcfield)
-	{
-		lookUpFields.add(zcfield);
-	}
-	 
-	 List<ZCField> getListOfZCFieldForLookup()
-	{
-		return lookUpFields;
-	}
-	 
-	 public void setLookUpFieldsempty()
-	 {
-		 lookUpFields = new ArrayList<ZCField>();
-	 }
-
 
 	public boolean isLookupLoadingStarted() {
 		return lookupLoadingStarted;

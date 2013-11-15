@@ -103,16 +103,12 @@ public class ZCButton implements Comparable<ZCButton>{
 				} 
 				
 				ZCField baseLookupField = zcForm.getBaseLookupField();
-
 				if(baseLookupField != null) {
 					ZCForm baseForm = baseLookupField.getBaseForm();
 					params.add(new BasicNameValuePair("childAppLinkName" , baseForm.getAppLinkName()));//No I18N
 					params.add(new BasicNameValuePair("childFormLinkName" , baseForm.getComponentLinkName()));//No I18N
 					params.add(new BasicNameValuePair("childFieldLabelName" , baseLookupField.getFieldName()));//No I18N
 				}
-
-				
-
 				List<List<String>> fieldList = new ArrayList<List<String>>(); 
 				ZCForm baseForm = null;
 				while(baseLookupField != null) 

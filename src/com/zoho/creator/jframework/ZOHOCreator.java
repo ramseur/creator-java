@@ -78,7 +78,6 @@ public class ZOHOCreator {
 	private static String creatorURL = "creator.zoho.com";//No I18N
 	private static String prefix = "https";//No I18N
 	private static Properties props = new Properties();
-	private static boolean isPersonalApps = true;
 
 
 	private static List<ZCRecordValue> subFormRecordValueParams = null;
@@ -88,10 +87,7 @@ public class ZOHOCreator {
 	public static String getUserProperty(String key) {
 		return props.getProperty(key);
 	}
-	public static boolean isPersonalApps()
-	{
-		return isPersonalApps;
-	}
+	
 	public static void setBaseLookUpField(ZCField baseLookUpField)
 	{
 		ZOHOCreator.baseLookUpField = baseLookUpField;
@@ -102,11 +98,6 @@ public class ZOHOCreator {
 		return baseLookUpField;
 	}
 	
-	public static void setIspersonalApps(boolean isPersonalApps)
-	{
-		ZOHOCreator.isPersonalApps = isPersonalApps;
-	}
-
 	public static void setUserProperty(String key, String value) {
 		props.setProperty(key, value);
 	}
@@ -281,27 +272,41 @@ public class ZOHOCreator {
 		}
 	}
 
-	public static void loadFormForAddToLookup(ZCForm baseForm, ZCField lookupField) throws ZCException {
+	public static void loadFormForAddToLookup(ZCForm zcForm, ZCField lookupField) throws ZCException {
 		ZCComponent refComponent = lookupField.getRefFormComponent();
-		//System.out.println("refff"+refComponent+"  klkk   "+baseForm+baseForm+"  klkk   "+lookupField);
-		
-		ZCForm lookupForm =  getForm(refComponent.getAppLinkName(), refComponent.getComponentLinkName(), refComponent.getAppOwner(), getViewLinkName(), null, ZCForm.FORM_LOOKUP_ADD_FORM, baseForm.getAppLinkName(), baseForm.getComponentLinkName(), lookupField.getFieldName(), null, null);
-		
-		//ZCForm lookupForm =  getForm(baseForm.getAppLinkName(), "simple_form", baseForm.getAppOwner(), null, null, ZCForm.FORM_LOOKUP_ADD_FORM, baseForm.getAppLinkName(), baseForm.getComponentLinkName(), lookupField.getFieldName(), null, null);
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		ZCField baseLookupField = lookupField;
+		List<List<String>> fieldList = new ArrayList<List<String>>(); 
+		ZCForm baseForm = null;
+		while(baseLookupField != null) 
+		{
+			List<String> fieldRowList = new ArrayList<String>();
+			baseForm = baseLookupField.getBaseForm();
+			fieldRowList.add(baseForm.getAppLinkName());
+			fieldRowList.add(baseForm.getComponentLinkName());
+			fieldRowList.add(baseLookupField.getFieldName());
+			fieldList.add(fieldRowList);
+			baseLookupField = baseForm.getBaseLookupField();
+		}
+		if(fieldList.size()>0)
+		{
+			params.add(new BasicNameValuePair("zc_lookupCount", fieldList.size() + ""));//No I18N
+			int fieldListSize = fieldList.size();
+			for(int i=0; i<fieldListSize; i++) {
+				List<String> fieldRowList = fieldList.get(i);
+				params.add(new BasicNameValuePair("zc_childappname_" + (fieldListSize -i) , fieldRowList.get(0) + ""));//No I18N
+				params.add(new BasicNameValuePair("zc_childformname_" + (fieldListSize -i) , fieldRowList.get(1) + ""));//No I18N
+				params.add(new BasicNameValuePair("zc_childlabelname_" + (fieldListSize -i) , fieldRowList.get(2) + ""));//No I18N
+			}
+		}
+		ZCForm lookupForm =  getForm(refComponent.getAppLinkName(), refComponent.getComponentLinkName(), refComponent.getAppOwner(), getViewLinkName(), null, ZCForm.FORM_LOOKUP_ADD_FORM, zcForm.getAppLinkName(), zcForm.getComponentLinkName(), lookupField.getFieldName(), null, null,params);
 		lookupField.setLookupForm(lookupForm);
 	}
-//	public static void loadFormForAddToLookupForSharedAndWorkSpace(ZCForm baseForm, ZCField lookupField) throws ZCException {
-//		ZCComponent refComponent = lookupField.getRefFormComponent();
-//		//System.out.println("refff"+refComponent+"  klkk   "+baseForm+baseForm+"  klkk   "+lookupField);
-//		ZCForm lookupForm =  getForm(refComponent.getAppLinkName(), refComponent.getComponentLinkName(), refComponent.getAppOwner(), null, null, ZCForm.FORM_LOOKUP_ADD_FORM, baseForm.getAppLinkName(), baseForm.getComponentLinkName(), lookupField.getFieldName(), null, null);
-//		//ZCForm lookupForm =  getForm(baseForm.getAppLinkName(), "simple_form", baseForm.getAppOwner(), null, null, ZCForm.FORM_LOOKUP_ADD_FORM, baseForm.getAppLinkName(), baseForm.getComponentLinkName(), lookupField.getFieldName(), null, null);
-//		lookupField.setLookupForm(lookupForm);
-//	}
 
 	private static void loadFormForView(Long recordLinkId, int formType, Date calSelectedStartDate ,Date calSelectedEndDate) throws ZCException {
 		ZCView currentView = getCurrentView();
 		String formLinkName = currentView.getBaseFormLinkName();
-		ZCForm form = getForm(currentView.getAppLinkName(), formLinkName, currentView.getAppOwner(), currentView.getComponentLinkName(), recordLinkId, formType, null, null, null, calSelectedStartDate,calSelectedEndDate);
+		ZCForm form = getForm(currentView.getAppLinkName(), formLinkName, currentView.getAppOwner(), currentView.getComponentLinkName(), recordLinkId, formType, null, null, null, calSelectedStartDate,calSelectedEndDate,null);
 		setCurrentForm(form);
 	}
 
@@ -428,7 +433,7 @@ public class ZOHOCreator {
 
 	public static ZCForm getForm(ZCComponent comp) throws ZCException{
 		if(comp.getType().equals(ZCComponent.FORM)) {
-			return getForm(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner(), null, null, ZCForm.FORM_ALONE, null, null, null, null, null);
+			return getForm(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner(), null, null, ZCForm.FORM_ALONE, null, null, null, null, null,null);
 		}
 		throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Trying to fetch form details. But not a form. " + comp); //No I18N
 	}
@@ -478,11 +483,11 @@ public class ZOHOCreator {
     }
 	
 	public static ZCForm getForm(String appLinkName, String formLinkName, String appOwner) throws ZCException{
-		return getForm(appLinkName, formLinkName, appOwner, null, null, ZCForm.FORM_ALONE, null, null, null, null, null);
+		return getForm(appLinkName, formLinkName, appOwner, null, null, ZCForm.FORM_ALONE, null, null, null, null, null,null);
 	}
 
-	private static ZCForm getForm(String appLinkName, String formLinkName, String appOwner, String viewLinkName, Long recordLinkId, int formType, String refAppLinkName, String refFormLinkName, String refFieldName, Date calSelectedStartDate,Date calSelectedEndDate) throws ZCException {
-		URLPair formMetaURLPair = ZCURL.formMetaURL(appLinkName, formLinkName, appOwner, viewLinkName, recordLinkId, formType, refAppLinkName, refFormLinkName, refFieldName, calSelectedStartDate,calSelectedEndDate);
+	private static ZCForm getForm(String appLinkName, String formLinkName, String appOwner, String viewLinkName, Long recordLinkId, int formType, String refAppLinkName, String refFormLinkName, String refFieldName, Date calSelectedStartDate,Date calSelectedEndDate,List<NameValuePair> params) throws ZCException {
+		URLPair formMetaURLPair = ZCURL.formMetaURL(appLinkName, formLinkName, appOwner, viewLinkName, recordLinkId, formType, refAppLinkName, refFormLinkName, refFieldName, calSelectedStartDate,calSelectedEndDate,params);
 		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
 		//System.out.println("rootdocu"+rootDocument);
 		ZCForm toReturn = XMLParser.parseForForm(rootDocument, appLinkName, appOwner);
