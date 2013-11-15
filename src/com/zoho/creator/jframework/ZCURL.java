@@ -1,6 +1,8 @@
 // $Id$
 package com.zoho.creator.jframework;
 
+import java.net.URL;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -36,12 +38,18 @@ public class ZCURL {
 		return params;
 	}
 	
-	public static String getFileUploadURL(String filepath, String appOwner, String appLinkName, String viewLinkName) {
-		return serverURL() + "/DownloadFileFromMig.do?filepath=/" + filepath + "&sharedBy=" + appOwner + "&appLinkName=" + appLinkName + "&viewLinkName=" + viewLinkName + "&authtoken=" + ZOHOCreator.getZohoUser().getAuthToken() + "&scope=creatorapi";  //No I18N
+	static URLPair getFileUploadURL(String filepath, String appOwner, String appLinkName, String viewLinkName) {
+		List<NameValuePair> params = getDefaultParams();
+		params.add(new BasicNameValuePair("filepath", filepath));//No I18N
+		params.add(new BasicNameValuePair("sharedBy", appOwner));//No I18N
+		params.add(new BasicNameValuePair("appLinkName", appLinkName));//No I18N
+		params.add(new BasicNameValuePair("viewLinkName", viewLinkName));//No I18N
+		return new URLPair(serverURL() + "/DownloadFileFromMig.do", params);  //No I18N
 	}
 
-	public static String getImageURL(String filePath) {
-		return serverURL() + filePath + "&authtoken=" + ZOHOCreator.getZohoUser().getAuthToken() + "&scope=creatorapi";  //No I18N
+	static URLPair getImageURL(String filePath) {
+		List<NameValuePair> params = getDefaultParams();
+		return new URLPair(serverURL() + filePath, params);  //No I18N
 	}
 	
 	static URLPair customActionURL(String appLinkName, String viewLinkName, long customActionId, String appOwner, List<Long> recordIDs) {
@@ -273,29 +281,68 @@ public class ZCURL {
 		return new URLPair(serverURL() + "/api/mobile/xml/" + appLinkName + "/recordcount/" + viewLinkName, params); //No I18N
 	}
 
-	public static String getLoginUrl() {
-		return "https://" + ZOHOCreator.getAccountsURL() + "/login?hide_signup=true&hide_remember=true&scopes=" + ZOHOCreator.getServiceName() + "/creatorapi,ZohoContacts/photoapi&appname=" + ZOHOCreator.getServiceName()  + "&serviceurl=" + serverURL();
+	static URLPair getLoginUrl() {
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("scope", "creatorapi"));//No I18N		
+		params.add(new BasicNameValuePair("hide_signup", "true"));
+		params.add(new BasicNameValuePair("hide_remember", "true"));
+		params.add(new BasicNameValuePair("scopes", ZOHOCreator.getServiceName() + "/creatorapi,ZohoContacts/photoapi"));
+		params.add(new BasicNameValuePair("appname", ZOHOCreator.getServiceName()));
+		params.add(new BasicNameValuePair("serviceurl", serverURL()));
+		return new URLPair("https://" + ZOHOCreator.getAccountsURL() + "/login", params);  //No I18N
 	}
 	
 	// 		signInUrl = "https://accounts.zoho.com/login?hide_signup=true&hide_remember=true&scopes=ZohoCreator/creatorapi&appname=ZohoCreator&serviceurl=https://creator.zoho.com";  //No I18N
 
-	static String getAuthTokenURL(String userName, String password) {
-		return  "https://" + ZOHOCreator.getAccountsURL() + "/apiauthtoken/nb/create?SCOPE=" + ZOHOCreator.getServiceName() + "/creatorapi&EMAIL_ID=" + userName + "&PASSWORD=" + password; //No I18N
+
+	static URLPair deleteAuthToken(String authToken) {
+		List<NameValuePair> params = getDefaultParams();
+		params.add(new BasicNameValuePair("AUTHTOKEN", authToken));
+		return new URLPair("https://" + ZOHOCreator.getAccountsURL() + "/apiauthtoken/delete", params);
 	}
 
-	static String deleteAuthToken(String authToken) {
-		return "https://" + ZOHOCreator.getAccountsURL() + "/apiauthtoken/delete?AUTHTOKEN=" + authToken; //No I18N
-	}
-
-	public static String serverURL() {
+	private static String serverURL() {
 		return ZOHOCreator.getPrefix() + "://" + ZOHOCreator.getCreatorURL(); //"https://icreator.localzoho.com"; //No I18N
 	}
 
-	public static URLPair userPersonalInfoURL() {		
+
+	static URLPair userPersonalInfoURL() {
 		return new URLPair(serverURL() + "/api/xml/user/", getDefaultParams());
 	}
 	
-	public static String getURLForPersonalPhoto(){
-		return "https://contacts.zoho.com/file/download?fs=thumb&t=user&ID=" + ZOHOCreator.getCurrentUserInfo().getId() + "&authtoken=" + ZOHOCreator.getZohoUser().getAuthToken();
+	static URLPair getURLForPersonalPhoto() {
+		List<NameValuePair> params = getDefaultParams();
+		params.add(new BasicNameValuePair("fs", "thumb"));//No I18N
+		params.add(new BasicNameValuePair("t", "user"));//No I18N
+		params.add(new BasicNameValuePair("ID", ZOHOCreator.getZohoUser().getId()));//No I18N
+		return new URLPair("https://contacts.zoho.com/file/download", params);  //No I18N
 	}
+	
+    static URLPair getAuthTokenURL(String userName, String password) {
+    	List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("scopes", ZOHOCreator.getServiceName() + "/creatorapi,ZohoContacts/photoapi"));
+		params.add(new BasicNameValuePair("EMAIL_ID", userName));//No I18N
+		params.add(new BasicNameValuePair("PASSWORD", password));//No I18N
+        return new URLPair("https://" + ZOHOCreator.getAccountsURL() + "/apiauthtoken/nb/create", params);
+    }
+
+    
+	static String getURLString(URLPair urlPair) {
+		StringBuffer buff = new StringBuffer();
+		buff.append(urlPair.getUrl());
+		buff.append("?");
+		List<NameValuePair> nvPair = urlPair.getNvPair();
+		for(int i=0; i<nvPair.size(); i++) {
+			if(i != 0) {
+				buff.append("&");
+			}
+			buff.append(nvPair.get(i).getName());
+			buff.append("=");
+			buff.append(nvPair.get(i).getValue());
+		}
+		return buff.toString();
+	}
+
+	
 }

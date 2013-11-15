@@ -101,7 +101,6 @@ public class ZCButton implements Comparable<ZCButton>{
 						params.add(new BasicNameValuePair("viewLinkName" , zcForm.getViewForEdit().getComponentLinkName()));//No I18N
 					}
 				} 
-				
 				ZCField baseLookupField = zcForm.getBaseLookupField();
 				if(baseLookupField != null) {
 					ZCForm baseForm = baseLookupField.getBaseForm();
