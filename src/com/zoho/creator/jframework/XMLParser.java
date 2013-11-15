@@ -1231,6 +1231,7 @@ class XMLParser {
 		int type = -1;
 		boolean hasError = false;
 		ZCResponse toReturn = new ZCResponse();
+		String openUrlString = null;
 
 		//System.out.println("resssspo"+response);
 		try {
@@ -1246,7 +1247,7 @@ class XMLParser {
 				String formName=null;
 				String alertMessage=null;
 				String value = null;
-				String urlString = null;
+				
 				
 				int rowNo = -1;
 				JSONObject jsonObj = jArray.getJSONObject(i); // Pulling items from the array 
@@ -1299,7 +1300,8 @@ class XMLParser {
 				}
 				if(jsonObj.has("urlString"))
 				{
-					urlString = jsonObj.getString("urlString");
+					openUrlString = jsonObj.getString("urlString");
+					form.setOpenUrl(openUrlString);
 				}
 				if(jsonObj.has("errors"))
 				{
@@ -1524,6 +1526,14 @@ class XMLParser {
 		if(alertMessages.size() >0) {
 			//System.out.println("inside alerrr");
 			form.setAlertMessages(alertMessages);
+		}
+		if(infoValues.size()>0)
+		{
+			form.setInfos(infoValues);
+		}
+		if(openUrlString!=null)
+		{
+			form.setOpenUrl(openUrlString);
 		}
 
 		return toReturn;

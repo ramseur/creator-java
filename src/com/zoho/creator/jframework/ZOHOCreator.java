@@ -619,7 +619,12 @@ public class ZOHOCreator {
 		if(subFormField != null) {
 			subformComponent = subFormField.getFieldName();
 		}
-		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), field.getFieldName(), field.getChoices().size(), field.getSearchForChoices(), subformComponent);
+		String viewLinkName = null;
+		if(getCurrentView()!=null)
+		{
+			viewLinkName = getCurrentView().getComponentLinkName();
+		}
+		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), field.getFieldName(), field.getChoices().size(), field.getSearchForChoices(), subformComponent,viewLinkName);
 		
 		Document rootDocument = ZOHOCreator.postURLXML(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair());
 		//System.out.println("onload response " +rootDocument);

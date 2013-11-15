@@ -1,7 +1,6 @@
 // $Id$
 package com.zoho.creator.jframework;
 
-import java.io.ObjectInputStream.GetField;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -165,12 +164,16 @@ public class ZCURL {
 
 	}
 	
-	static URLPair lookupChoices(String appLinkName, String formLinkName, String appOwner,String lookupFieldName, int startIndex, String searchString, String subformComponent) {
+	static URLPair lookupChoices(String appLinkName, String formLinkName, String appOwner,String lookupFieldName, int startIndex, String searchString, String subformComponent,String viewLinkName) {
 		List<NameValuePair> params = getDefaultParams();
 			params.add(new BasicNameValuePair("limit", 50 + ""));
 			params.add(new BasicNameValuePair("appendRows", "true"));
 			params.add(new BasicNameValuePair("startindex", startIndex + ""));
 			params.add(new BasicNameValuePair("zcRefValue", true+""));
+			if(viewLinkName!=null)
+			{
+				params.add(new BasicNameValuePair("viewLinkName", viewLinkName));
+			}
 		if(searchString != null && !"".equals(searchString)) {
 			params.add(new BasicNameValuePair("searchValue", searchString));
 		}

@@ -27,6 +27,8 @@ public class ZCForm extends ZCComponent {
 	private List<ZCField> bulkEditFields = new ArrayList<ZCField>();
 	private List<String> alertMessages = null; 
 	private boolean reLoadForm = false;
+	private List<String> infos = null; 
+	private String openUrl = null;
 
 	private int formType = ZCForm.FORM_ALONE;
 
@@ -556,6 +558,22 @@ public class ZCForm extends ZCComponent {
 
 	public boolean isStateLess() {
 		return isStateLess;
+	}
+
+	public List<String> getInfos() {
+		return infos;
+	}
+
+	public void setInfos(List<String> infos) {
+		this.infos = infos;
+	}
+
+	public String getOpenUrl() {
+		return openUrl;
+	}
+
+	public void setOpenUrl(String openUrl) {
+		this.openUrl = openUrl;
 	}
 
 }
