@@ -82,9 +82,24 @@ public class ZOHOCreator {
 
 
 	private static List<ZCRecordValue> subFormRecordValueParams = null;
-	private static ZCUserInfo userInfo;
 
-
+	
+	public static String getLoginURL() {
+		return ZCURL.getURLString(ZCURL.getLoginUrl());
+	}
+	
+	public static String getPersonalPhotoURL() {
+		return ZCURL.getURLString(ZCURL.getURLForPersonalPhoto());
+	}
+	
+	public static String getFileUploadURL(String filepath, String appOwner, String appLinkName, String viewLinkName) {
+		return ZCURL.getURLString(ZCURL.getFileUploadURL(filepath, appOwner, appLinkName, viewLinkName));
+	}
+	
+	public static String getImageURL(String filePath) {
+		return ZCURL.getURLString(ZCURL.getImageURL(filePath));
+	}
+	
 	public static String getUserProperty(String key) {
 		return props.getProperty(key);
 	}
@@ -245,13 +260,6 @@ public class ZOHOCreator {
 		setCurrentView(getView(getCurrentComponent()));
 	}	
 	
-	static void setCurrentUserInfo(ZCUserInfo userInfo){
-		ZOHOCreator.userInfo = userInfo;
-	}
-	
-	public static ZCUserInfo getCurrentUserInfo(){
-		return userInfo;
-	}
 	
 
 	public static void loadSelectedForm() throws ZCException {
@@ -335,7 +343,7 @@ public class ZOHOCreator {
 		ZOHOCreator.bulkEditRecords = bulkEditRecords;
 	}
 
-	public static ZOHOUser login(String authToken) {
+	public static ZOHOUser login(String authToken) throws ZCException {
 		return ZOHOUser.getUserObject(authToken);
 	}
 
@@ -359,15 +367,6 @@ public class ZOHOCreator {
 		Document rootDocument = ZOHOCreator.postURLXML(navigationListURL.getUrl(), navigationListURL.getNvPair());
 		return XMLParser.parseForNavigationListForApps(rootDocument);
 	}
-	
-	public static ZCUserInfo getUserPersonalInfo() throws ZCException{
-		URLPair userPersonalInfoURL = ZCURL.userPersonalInfoURL();
-		Document rootDocument = ZOHOCreator.postURLXML(userPersonalInfoURL.getUrl(), userPersonalInfoURL.getNvPair());
-		ZCUserInfo userInfo = XMLParser.parseForUserPersonalInfo(rootDocument);
-		setCurrentUserInfo(userInfo);
-		return userInfo;
-	}
-	
 	
 	
 
