@@ -326,7 +326,9 @@ public class ZCURL {
 	}
 
 	static URLPair getLoginUrl() {
-		List<NameValuePair> params = getDefaultParams();
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("scope", "creatorapi"));//No I18N		
 		params.add(new BasicNameValuePair("hide_signup", "true"));
 		params.add(new BasicNameValuePair("hide_remember", "true"));
 		params.add(new BasicNameValuePair("scopes", ZOHOCreator.getServiceName() + "/creatorapi,ZohoContacts/photoapi"));
