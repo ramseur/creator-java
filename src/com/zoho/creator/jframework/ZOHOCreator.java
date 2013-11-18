@@ -504,7 +504,6 @@ public class ZOHOCreator {
 		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
 		//System.out.println("rootdocu"+rootDocument);
 		ZCForm toReturn = XMLParser.parseForForm(rootDocument, appLinkName, appOwner);
-		System.out.println("toreturn   " +getURLString(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair()));
 		if(toReturn == null) {
 			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLString(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
 		}
@@ -529,7 +528,6 @@ public class ZOHOCreator {
 		URLPair formOnAddOnLoadURL = ZCURL.formOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), zcForm.getXMLStringForDeluge(),getAdditionalParamsForForm(zcForm, null));
 		//Document rootDocument = ZOHOCreator.postURLXML(formOnAddOnLoadURL.getUrl(), formOnAddOnLoadURL.getNvPair());
 		String response = ZOHOCreator.postURL(formOnAddOnLoadURL.getUrl(), formOnAddOnLoadURL.getNvPair());
-		System.out.println("onload response " + response);
 		JSONParser.parseAndCallFormEvents(response, zcForm,null);
 	}
 
@@ -544,14 +542,14 @@ public class ZOHOCreator {
 		//Document rootDocument = ZOHOCreator.postURLXML(urlPair.getUrl(), urlPair.getNvPair());
 		//System.out.println("calldelugeevents");
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
-		System.out.println("deluge response " + response);
+		
 		JSONParser.parseAndCallFormEvents(response, zcForm,recordValues);
 	}
 
 
 	static ZCResponse parseResponseDocumentForJSONString(URLPair urlPair, ZCForm zcForm) throws ZCException {
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
-		System.out.println("responseee"+response);
+		
 		return JSONParser.parseAndCallFormEvents(response, zcForm, null);
 
 	}
@@ -851,7 +849,7 @@ public class ZOHOCreator {
 		params.addAll(xmlWriteURLPair.getNvPair());
 		//		System.out.println(getURLString(xmlWriteURLPair.getUrl(), params)); 
 		Document rootDocument = ZOHOCreator.postURLXML(xmlWriteURLPair.getUrl(), params);
-		System.out.println("postxmlstirng " + getString(rootDocument));
+		
 
 		//System.out.println("response " + getString(rootDocument));
 		XPath xPath = XPathFactory.newInstance().newXPath();
@@ -859,7 +857,6 @@ public class ZOHOCreator {
 		ZCResponse toReturn = new ZCResponse();
 		try {
 			String status = xPath.compile("/response/result/form/" + action + "/status").evaluate(rootDocument);//No I18N
-			System.out.println("postxml responsestring"+status);
 			if(status.startsWith("Failure")) {
 				toReturn.setError(true);
 				String[] failureMessages = status.split(",");
@@ -943,7 +940,6 @@ public class ZOHOCreator {
 	}
 
 	static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
-		System.out.println("getURlString"+getURLString(url, params));
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1013,7 +1009,10 @@ public class ZOHOCreator {
 	 */
 
 	private static String getURLString(String url, List<NameValuePair> params) {
-		StringBuffer buff = new StringBuffer(url + "/");
+		StringBuffer buff = new StringBuffer(url);
+		if(!url.endsWith("/")) {
+			buff.append("?");
+		}
 		if(params != null) {
 			for(int i=0; i<params.size(); i++) {
 				NameValuePair nvPair = params.get(i);
@@ -1098,7 +1097,6 @@ public class ZOHOCreator {
 	}
 
 	static void postFile(String urlParam, File fileToUpload, List<NameValuePair> paramsList) throws ZCException {
-		System.out.println("fileurl.."+getURLString(urlParam, paramsList));
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpParams httpParameters = httpclient.getParams();
 		httpParameters.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
@@ -1135,11 +1133,11 @@ public class ZOHOCreator {
 		} //No I18N
 		mpEntity.addPart("file", cbFile); //No I18N
 		httppost.setEntity(mpEntity);
-		System.out.println("executing request " + httppost.getRequestLine()); //No I18N
+		
 		try {
 			//System.out.println("before httpresponse... ");
 			HttpResponse httpResponse = httpclient.execute(httppost);
-			System.out.println("after httpresponse... ");
+		
 		} catch(UnknownHostException uhe) {
 			throw new ZCException("No network connection.", ZCException.NETWORK_ERROR);//No I18N
 		} catch(HttpHostConnectException uhe) {

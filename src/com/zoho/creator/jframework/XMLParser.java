@@ -1173,7 +1173,32 @@ class XMLParser {
 												fieldType = FieldType.IMAGE;
 											} else if(compType.equals("URL")){
 												fieldType = FieldType.URL;
+											} else if(compType.equals("TEXT_AREA")){
+												fieldType = FieldType.MULTI_LINE;
+											} else if(compType.equals("EMAIL_ADDRESS")){
+												fieldType = FieldType.EMAIL;
+											} else if(compType.equals("RICH_TEXT_AREA")){
+												fieldType = FieldType.RICH_TEXT;
+											} else if(compType.equals("DATE")){
+												fieldType = FieldType.DATE;
+											} else if(compType.equals("DATE_TIME")){
+												fieldType = FieldType.DATE_TIME;
+											} else if(compType.equals("INLINE_SINGLE_SELECT")){
+												fieldType = FieldType.DROPDOWN;
+											} else if(compType.equals("INLINE_SINGLE_SELECT")){
+												fieldType = FieldType.RADIO;
+											} else if(compType.equals("NUMBER")){
+												fieldType = FieldType.NUMBER;
+											} else if(compType.equals("PERCENTAGE")){
+												fieldType = FieldType.PERCENTAGE;
+											} else if(compType.equals("CURRENCY")){
+												fieldType = FieldType.CURRENCY;
+											} else if(compType.equals("CHECK_BOX")){
+												fieldType = FieldType.DECISION_CHECK_BOX;
+											} else if(compType.equals("SCRIPT")){
+												fieldType = FieldType.FORMULA;
 											}
+
 											int seqNo  = Integer.parseInt(fieldAttrMap.getNamedItem("SequenceNumber").getNodeValue()); //No I18N
 											ZCColumn column = new ZCColumn(fieldName, fieldType, displayName);
 											column.setSequenceNumber(seqNo);
