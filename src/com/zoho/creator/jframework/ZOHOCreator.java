@@ -254,12 +254,20 @@ public class ZOHOCreator {
 
 
 	public static void loadSelectedForm() throws ZCException {
-		setCurrentForm(getForm(getCurrentComponent()));
+		ZCForm zcForm = getForm(getCurrentComponent());
+		setCurrentForm(zcForm);
+		if (zcForm.hasOnLoad()) {
+		ZOHOCreator.callFormOnAddOnLoad(zcForm);
+		}
 	}
 
 	public static void loadFormForAddRecord(Date calSelectedStartDate , Date calSelectedEndDate) throws ZCException {
 		loadFormForView(null, ZCForm.VIEW_ADD_FORM, calSelectedStartDate , calSelectedEndDate);
 		getCurrentForm().setViewForAdd(getCurrentView());
+		System.out.println("inside setViewForadd");
+		if (getCurrentForm().hasOnLoad()) {
+			ZOHOCreator.callFormOnAddOnLoad(getCurrentForm());
+			}
 	}
 
 	public static void loadFormForEditRecord() throws ZCException {
@@ -268,6 +276,9 @@ public class ZOHOCreator {
 		ZCForm currentForm = getCurrentForm();
 		currentForm.setViewForEdit(getCurrentView());
 		currentForm.addEditRecord(record);
+		if (currentForm.hasOnLoad()) {
+			ZOHOCreator.callFormEditOnAddOnLoad(currentForm, record.getRecordId());
+			}
 	}
 
 	public static void loadFormForBulkEditRecords() throws ZCException {
@@ -285,6 +296,9 @@ public class ZOHOCreator {
 		ZCForm zcForm = lookupField.getBaseForm();
 		ZCForm lookupForm =  getForm(refComponent.getAppLinkName(), refComponent.getComponentLinkName(), refComponent.getAppOwner(), null,null, ZCForm.FORM_LOOKUP_ADD_FORM, zcForm.getAppLinkName(), zcForm.getComponentLinkName(), lookupField.getFieldName(), null, null,getAdditionalParamsForForm(zcForm, lookupField));
 		lookupField.setLookupForm(lookupForm);
+		if (lookupForm.hasOnLoad()) {
+			ZOHOCreator.callFormOnAddOnLoad(lookupForm);
+			}
 	}
 
 	private static void loadFormForView(Long recordLinkId, int formType, Date calSelectedStartDate ,Date calSelectedEndDate) throws ZCException {
@@ -331,13 +345,17 @@ public class ZOHOCreator {
 		
 		ZCView viewForAdd = baseForm.getViewForAdd();
 		ZCView viewForEdit = baseForm.getViewForEdit(); 
+		System.out.println("inside 1...");
 		if(viewForAdd != null) {
 			params.add(new BasicNameValuePair("viewLinkName" , viewForAdd.getComponentLinkName()));//No I18N
+			System.out.println("inside 2...");
 		}
 		else if(viewForEdit != null) {
 			params.add(new BasicNameValuePair("viewLinkName" , viewForEdit.getComponentLinkName()));
+			System.out.println("inside 3...");
 		}else if(zcForm.getViewForBulkEdit() != null) {
 			params.add(new BasicNameValuePair("viewLinkName" , zcForm.getViewForBulkEdit().getComponentLinkName()));//No I18N
+			System.out.println("inside 4...");
 		} 
 		return params;
 	}
@@ -513,12 +531,12 @@ public class ZOHOCreator {
 			List<ZCButton> zcButtons = new ArrayList<ZCButton>();
 			zcButtons.add(new ZCButton("Submit","Submit",ZCButtonType.SUBMIT));//No I18N
 			//toReturn.addButtons(zcButtons);
-		} else if (toReturn.hasOnLoad()) {
-			if(formType == ZCForm.FORM_ALONE || formType == ZCForm.VIEW_ADD_FORM || formType == ZCForm.FORM_LOOKUP_ADD_FORM) {
-				ZOHOCreator.callFormOnAddOnLoad(toReturn);
-			} else if(formType == ZCForm.VIEW_EDIT_FORM) {
-				ZOHOCreator.callFormEditOnAddOnLoad(toReturn,recordLinkId);
-			}
+//		} else if (toReturn.hasOnLoad()) {
+//			if(formType == ZCForm.FORM_ALONE || formType == ZCForm.VIEW_ADD_FORM || formType == ZCForm.FORM_LOOKUP_ADD_FORM) {
+//				ZOHOCreator.callFormOnAddOnLoad(toReturn);
+//			} else if(formType == ZCForm.VIEW_EDIT_FORM) {
+//				ZOHOCreator.callFormEditOnAddOnLoad(toReturn,recordLinkId);
+//			}
 		}
 		return toReturn;
 	}
@@ -632,18 +650,30 @@ public class ZOHOCreator {
 	static List<ZCChoice> loadMoreChoices(ZCField field, ZCField subFormField) throws ZCException {
 		ZCForm baseForm = field.getBaseForm();
 		String subformComponent = null;
+		int formAccessType = 0;
 		if(subFormField != null) {
 			subformComponent = subFormField.getFieldName();
 		}
-		String viewLinkName = null;
-		if(getCurrentView()!=null)
+		if(baseForm.getViewForAdd().isAddAllowed())
 		{
-			viewLinkName = getCurrentView().getComponentLinkName();
+			formAccessType = ZCForm.VIEW_ADD_FORM;
 		}
-		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), field.getFieldName(), field.getChoices().size(), field.getSearchForChoices(), subformComponent,viewLinkName);
+		else if(baseForm.getViewForEdit().isEditAllowed())
+		{
+			formAccessType = ZCForm.VIEW_EDIT_FORM;
+		}
+		else if(baseForm.getViewForBulkEdit().isBulkEditAllowed())
+		{
+			formAccessType = ZCForm.VIEW_BULK_EDIT_FORM;
+		}
+		else
+		{
+			formAccessType = ZCForm.FORM_LOOKUP_ADD_FORM;
+		}
+		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), field.getFieldName(), field.getChoices().size(), field.getSearchForChoices(), subformComponent,ZCForm.FORM_LOOKUP_ADD_FORM,getAdditionalParamsForForm(baseForm,field));
 
 		Document rootDocument = ZOHOCreator.postURLXML(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair());
-		//System.out.println("onload response " +rootDocument);
+		System.out.println("lookupchoices response " +getURLString(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair()));
 		return XMLParser.getLookUpChoices(rootDocument);
 
 	}

@@ -116,7 +116,7 @@ public class ZCURL {
 
 
 
-	static URLPair formMetaURL(String appLinkName, String formLinkName, String appOwner, String viewLinkName, Long recordLinkId, int formType, String refAppLinkName, String refFormLinkName, String refFieldName, Date calSelectedStartDate,Date calSelectedEndDate,List<NameValuePair> lookupParams) {
+	static URLPair formMetaURL(String appLinkName, String formLinkName, String appOwner, String viewLinkName, Long recordLinkId, int formType, String refAppLinkName, String refFormLinkName, String refFieldName, Date calSelectedStartDate,Date calSelectedEndDate,List<NameValuePair> additionalParams) {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);
 		params.add(new BasicNameValuePair("metaData","complete"));//No I18N
 		params.add(new BasicNameValuePair("zcRefValue","true"));//No I18N
@@ -126,8 +126,8 @@ public class ZCURL {
 			if(viewLinkName != null) {
 				params.add(new BasicNameValuePair("viewLinkName", viewLinkName));//No I18N
 			}
-			if(refAppLinkName != null && refFormLinkName != null && refFieldName != null && lookupParams!=null) {
-				params.addAll(lookupParams);
+			if(additionalParams!=null) {
+				params.addAll(additionalParams);
 			}
 			if(calSelectedStartDate != null) {			
 				Calendar startDateCal = Calendar.getInstance();
@@ -137,28 +137,31 @@ public class ZCURL {
 				params.add(new BasicNameValuePair("dateJsonObject", "{\"startDate\":{\"day\":" + startDateCal.get(Calendar.DAY_OF_MONTH) + ",\"month\":" + startDateCal.get(Calendar.MONTH) + ",\"year\":" + startDateCal.get(Calendar.YEAR) + ",\"hours\":"+ startDateCal.get(Calendar.HOUR_OF_DAY)  +",\"minutes\":"+ startDateCal.get(Calendar.MINUTE) +",\"seconds\":" + startDateCal.get(Calendar.SECOND) +"}," +  //No I18N
 						"\"endDate\":{\"day\":" +endDateCal.get(Calendar.DAY_OF_MONTH) + ",\"month\":" + endDateCal.get(Calendar.MONTH) + ",\"year\":" + endDateCal.get(Calendar.YEAR) + ",\"hours\":"+ endDateCal.get(Calendar.HOUR_OF_DAY)  +",\"minutes\":"+ endDateCal.get(Calendar.MINUTE) +",\"seconds\":" + endDateCal.get(Calendar.SECOND) + "}};"));//No I18N
 			}
+
 			params.add(new BasicNameValuePair("formAccessType", String.valueOf(formType)));//No I18N
 			return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName + "/fields/", params);//No I18N	
 		}
 	}
 
-	static URLPair lookupChoices(String appLinkName, String formLinkName, String appOwner,String lookupFieldName, int startIndex, String searchString, String subformComponent,String viewLinkName) {
+	static URLPair lookupChoices(String appLinkName, String formLinkName, String appOwner,String lookupFieldName, int startIndex, String searchString, String subformComponent,int formAccessType,List<NameValuePair> additionalParams) {
 		List<NameValuePair> params = getDefaultParams();
 		params.add(new BasicNameValuePair("limit", 50 + ""));
 		params.add(new BasicNameValuePair("appendRows", "true"));
 		params.add(new BasicNameValuePair("startindex", startIndex + ""));
 		params.add(new BasicNameValuePair("zcRefValue", true+""));
-		if(viewLinkName!=null)
-		{
-			params.add(new BasicNameValuePair("viewLinkName", viewLinkName));
-		}
+//		if(viewLinkName!=null)
+//		{
+//			params.add(new BasicNameValuePair("viewLinkName", viewLinkName));
+//		}
 		if(searchString != null && !"".equals(searchString)) {
 			params.add(new BasicNameValuePair("searchValue", searchString));
 		}
 		if(subformComponent != null) {
 			params.add(new BasicNameValuePair("subformcomponent", subformComponent));
 		}
-
+		params.add(new BasicNameValuePair("zc_ownername",appOwner));
+		params.add(new BasicNameValuePair("formAccessType", String.valueOf(formAccessType)));//No I18N
+		params.addAll(additionalParams);
 		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName +"/lookup/"+lookupFieldName+ "/options/", params);//No I18N
 	}
 
@@ -171,6 +174,7 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("recType",String.valueOf(ZCForm.VIEW_EDIT_FORM)));
 		params.add(new BasicNameValuePair("pkValue",String.valueOf(recordLinkId-2)));
 		params.addAll(additionalParams);
+		
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}
 
@@ -215,7 +219,6 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("formLinkName", formLinkName));
 		params.add(new BasicNameValuePair("linkNameBased", "true"));
 		params.addAll(additionalParams);
-
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}
 

@@ -67,12 +67,12 @@ public class ZCButton implements Comparable<ZCButton>{
 			throw new RuntimeException ("You cannot set more than once"); //No I18N
 		}
 	}
-	
+
 	void setOnClickExists(boolean onClickExists)
 	{
 		this.onClickExists = onClickExists;
 	}
-	
+
 	public boolean isOnClickExists()
 	{
 		return onClickExists;
@@ -87,7 +87,7 @@ public class ZCButton implements Comparable<ZCButton>{
 			String xmlString = zcForm.getXMLStringForSubmit();
 			if(!zcForm .isStateLess()) 
 			{
-				
+
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				params.add(new BasicNameValuePair("zcRefValue", true+""));
 				params.add(new BasicNameValuePair("formAccessType", String.valueOf(zcForm.getFormType())));//No I18N
@@ -109,41 +109,65 @@ public class ZCButton implements Comparable<ZCButton>{
 				URLPair urlPair = ZCURL.buttonOnClick(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), linkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(null));
 				response = ZOHOCreator.parseResponseDocumentForJSONString(urlPair, zcForm);
 				System.out.println("inside clickkk"+response);
-				
+
 			}
 			Hashtable<ZCField, String> errorMessagesTable = response.getErrorMessagesTable();
 			if(response.isError()) {
 				////System.out.println("inside responsesss");
 				return response;
 			}
-
-			
 			List<ZCField> fields = zcForm.getFields();
 			for(int i=0; i<fields.size(); i++) {
 				ZCField field = fields.get(i);
 				if(FieldType.isPhotoField(field.getType())) {
 					ZCRecordValue recValue = field.getRecordValue();
 					File fileToUpload = recValue.getFileValue();
-					if(fileToUpload!=null)
+					constructImageUrl(field,response,fileToUpload);	
+				}
+				System.out.println("fieldtype.."+field.getType()+"subformtype.."+FieldType.SUB_FORM);
+				if(field.getType()==FieldType.SUB_FORM)
+				{
+					List<ZCRecord> zcRecords = field.getAddedSubFormEntries();
+					System.out.println("inside subfffff1"+zcRecords.size());
+					for(int j=0;j<zcRecords.size();j++)
 					{
-					System.out.println("lkhjjjhjhk"+ Integer.parseInt(String.valueOf(fileToUpload.length()/1024)));
-					URLPair urlPair = ZCURL.fileUploadURL(zcForm.getAppOwner());
-					List<NameValuePair> params = new ArrayList<NameValuePair>();
-					params.addAll(urlPair.getNvPair());
-					params.add(new BasicNameValuePair("applinkname", zcForm.getAppLinkName()));//No I18N
-					params.add(new BasicNameValuePair("formname", zcForm.getComponentLinkName()));//No I18N
-					params.add(new BasicNameValuePair("fieldname", field.getFieldName()));//No I18N
-					params.add(new BasicNameValuePair("recordId", response.getSuccessRecordID() + ""));//No I18N
-					params.add(new BasicNameValuePair("filename", fileToUpload.getName()));//No I18N
-					ZOHOCreator.postFile(urlPair.getUrl(), fileToUpload, params);
-					System.out.println("");
-					}
+						ZCRecord zcRecord =zcRecords.get(j);
+						List<ZCRecordValue> zcRecordValues = zcRecord.getValues();
+						for(int k=0;k<zcRecordValues.size();k++)
+						{
+							ZCRecordValue recordValue = zcRecordValues.get(k);
+							if (FieldType.isPhotoField(recordValue.getField().getType()))
+							{
+								constructImageUrl(field,response,recordValue.getFileValue());
+								System.out.println("inside subfffff");
+							}
+						}
+					}	
 				}
 			}
 		}
 		return response;
 	}
 
-
+	private void constructImageUrl(ZCField field,ZCResponse response,File fileToUpload) throws ZCException
+	{
+		if(fileToUpload==null)
+		{
+			System.out.println("filetouploadisnulll...");
+		}
+		if(fileToUpload!=null)
+		{
+			System.out.println("lkhjjjhjhk"+ Integer.parseInt(String.valueOf(fileToUpload.length()/1024)));
+			URLPair urlPair = ZCURL.fileUploadURL(zcForm.getAppOwner());
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.addAll(urlPair.getNvPair());
+			params.add(new BasicNameValuePair("applinkname", zcForm.getAppLinkName()));//No I18N
+			params.add(new BasicNameValuePair("formname", zcForm.getComponentLinkName()));//No I18N
+			params.add(new BasicNameValuePair("fieldname", field.getFieldName()));//No I18N
+			params.add(new BasicNameValuePair("recordId", response.getSuccessRecordID() + ""));//No I18N
+			params.add(new BasicNameValuePair("filename", fileToUpload.getName()));//No I18N
+			ZOHOCreator.postFile(urlPair.getUrl(), fileToUpload, params);	
+		}	
+	}
 
 }

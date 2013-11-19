@@ -20,9 +20,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -375,15 +372,15 @@ class XMLParser {
 							} else if(resultNodeChild.getNodeName().equalsIgnoreCase("errorlist")) {
 								throw new ZCException(parseErrorMessage(resultNodeChild), ZCException.ACCESS_ERROR);
 							} 
-//							else if(resultNodeChild.getNodeName().equalsIgnoreCase("tableName")) {
-//								String tableName = getStringValue(resultNodeChild, "");
-//								isStateLess = (tableName.equalsIgnoreCase(""));
-//							} 
+							//							else if(resultNodeChild.getNodeName().equalsIgnoreCase("tableName")) {
+							//								String tableName = getStringValue(resultNodeChild, "");
+							//								isStateLess = (tableName.equalsIgnoreCase(""));
+							//							} 
 							else if(resultNodeChild.getNodeName().equalsIgnoreCase("type")) {
 								int type = getIntValue(resultNodeChild, 1);
 								if(type==2)
 								{
-								isStateLess = true;
+									isStateLess = true;
 								}
 							} else if(resultNodeChild.getNodeName().equalsIgnoreCase("formLinkId")) {
 								formLinkId = getIntValue(resultNodeChild, formLinkId);
@@ -495,7 +492,7 @@ class XMLParser {
 
 		String initialValue = "";
 		List<String> initialChoiceValues = new ArrayList<String>(); 		
-		ZCChoice initialChoiceValue = null;	
+		List<String> keys = new ArrayList<String>();	
 
 		boolean isUnique = false;
 		boolean isRequired = false;
@@ -567,10 +564,23 @@ class XMLParser {
 							parseAndSetRecord(null, recordNode, subFormEntries, subFormFields);
 						}
 					}
-				} else {
+				}
+				else {
+					String key ="";
+					if(fieldPropetyNode.getAttributes().getNamedItem("value")!=null)
+					{
+						key = fieldPropetyNode.getAttributes().getNamedItem("value").getNodeValue();
+					}
 					initialValue = getStringValue(fieldPropetyNode, "");
-					initialChoiceValues.add(initialValue);
-					//				//System.out.println("initial value"+initialValue);
+					System.out.println("initial value"+initialValue+"   key.."+key);
+					if(!(key.equals("")))
+					{
+						keys.add(key);
+					}
+					else
+					{
+						initialChoiceValues.add(initialValue);
+					}
 				}
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("maxChar")) {
 				maxChar = getIntValue(fieldPropetyNode, maxChar);
@@ -656,6 +666,10 @@ class XMLParser {
 		if(FieldType.isMultiChoiceField(fieldType)) {
 			// THis is used in Edit record for multichoice field. But in form builder there is no way to set initial value
 			List<ZCChoice> selectedChoices = new ArrayList<ZCChoice>();
+			if(keys.size()>0)
+			{
+				initialChoiceValues = keys;
+			}
 			for(int j=0; j<initialChoiceValues.size(); j++) {
 				String initValue = initialChoiceValues.get(j);
 				ZCChoice toAdd = null;
@@ -677,6 +691,10 @@ class XMLParser {
 			zcField.setRecordValue(new ZCRecordValue(zcField, file));
 		} else if(FieldType.isSingleChoiceField(fieldType)) {
 			ZCChoice toAdd = null;
+			if(keys.size()>0)
+			{
+				initialValue = keys.get(0);
+			}
 			for(int i=0; i<choices.size(); i++) {
 				ZCChoice choice = choices.get(i);
 				if(choice.getKey().equals(initialValue)) {
@@ -690,7 +708,7 @@ class XMLParser {
 			zcField.setRecordValue(new ZCRecordValue(zcField, initialValue));
 		}
 
-	
+
 		zcField.setHidden(isAdminOnly);
 		zcField.setTextValue(textValue);
 		zcField.addChoices(choices);
@@ -698,17 +716,12 @@ class XMLParser {
 
 		zcField.setHidden(isAdminOnly);
 		zcField.setTextValue(textValue);
-		
+
 		if(!isLookup) {
 			zcField.addChoices(choices);
 			zcField.setLastReachedForChoices(true);
 		}
-		/*
->>>>>>> 121bb57e8153b3ceedcb098828b833c01a140c6b
-		if(isLookup && choices.size() < 50 || !isLookup) {
-			zcField.setLastReachedForChoices(true);
-		}
-		*/
+
 		zcField.setOnAddRowExists(onAddRowExists);
 		zcField.setOnDeleteRowExists(onDeleteRowExists);
 		zcField.setLookup(isLookup);

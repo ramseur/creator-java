@@ -29,47 +29,47 @@ public enum FieldType   {
 		switch (fieldType) {
 		case 1:
 				return "SINGLE LINE";//No I18N
-		case 3:
+		case 2:
 			return "MULTI LINE";//No I18N
-		case 4:
+		case 3:
 			return "EMAIL";//No I18N
 		case 5:
 			return "NUMBER";//No I18N
-		case 6:
+		case 8:
 			return "CURRENCY";//No I18N
 		case 7:
 			return "PERCENTAGE";//No I18N
-		case 9:
+		case 16:
 			return "DECISION CHECK BOX";//No I18N
 		case 10:
 			return "DATE";//No I18N
-		case 14:
-			return "NOTES";//No I18N
-		case 15:
-			return "FORMULA";//No I18N
-		case 18:
-			return "FILE UPLOAD";//No I18N
-		case 19:
-			return "DECIMAL";//No I18N
-		case 20:
-			return "IMAGE";//No I18N
-		case 21:
-			return "URL";//No I18N
-		case 22:
-			return "DATE TIME";//No I18N
-		case 23:
-			return "SUB FORM";//No I18N
 		case 24:
+			return "NOTES";//No I18N
+		case 20:
+			return "FORMULA";//No I18N
+		case 19:
+			return "FILE UPLOAD";//No I18N
+		case 6:
+			return "DECIMAL";//No I18N
+		case 18:
+			return "IMAGE";//No I18N
+		case 17:
+			return "URL";//No I18N
+		case 11:
+			return "DATE TIME";//No I18N
+		case 21:
+			return "SUB FORM";//No I18N
+		case 4:
 			return "RICH TEXT";//No I18N
-		case 31:
+		case 9:
 			return "AUTO NUMBER";//No I18N
-		case 100:
+		case 12:
 			return "DROP DOWN";//No I18N
-		case 101:
+		case 13:
 			return "RADIO";//No I18N
-		case 102:
+		case 14:
 			return "MULTI SELECT";//No I18N
-		case 103:
+		case 15:
 			return "CHECKBOXES";//No I18N
 		case 1100:
 			return "DROP DOWN(NEM)";//No I18N
@@ -80,125 +80,14 @@ public enum FieldType   {
 		}
     }
      
-    static FieldType getFieldTypeeeee(int type) {
-    	if(type == 97 || type == 98 || type == 99) {
-    		type = 23;
-    	}
+    static FieldType getFieldType(int type) {
     	FieldType toReturn = typeMap.get(type);
     	if(toReturn == null) {
     		toReturn = FieldType.UNKNOWN;
     	}
     	return toReturn;
     }
-    static FieldType getFieldType(int type) {
-    	FieldType toReturn = null;
-    	System.out.println("newwww");
-    	if(type == 1)
-    	{
-    		toReturn = FieldType.SINGLE_LINE;
-    	}
-    	else if(type == 2)
-    	{
-    		toReturn = FieldType.MULTI_LINE;
-    	}
-    	else if(type == 3)
-    	{
-    		toReturn = FieldType.EMAIL;
-    	}
-    	else if(type == 4)
-    	{
-    		toReturn = FieldType.RICH_TEXT;
-    	}
-    	else if(type == 5)
-    	{
-    		toReturn = FieldType.NUMBER;
-    	}
-    	else if(type == 6)
-    	{
-    		toReturn = FieldType.DECIMAL;
-    	}
-    	else if(type == 7)
-    	{
-    		toReturn = FieldType.PERCENTAGE;
-    	}
-    	else if(type == 8)
-    	{
-    		toReturn = FieldType.CURRENCY;
-    	}
-    	else if(type == 9)
-    	{
-    		toReturn = FieldType.AUTO_NUMBER;
-    	}
-    	else if(type == 10)
-    	{
-    		
-    		toReturn = FieldType.DATE;
-    	}
-    	else if(type == 11)
-    	{
-    		toReturn = FieldType.DATE_TIME;
-    	}
-    	else if(type == 12)
-    	{
-    		
-    		toReturn = FieldType.DROPDOWN;
-    	}
-    	else if(type == 13)
-    	{
-    		toReturn = FieldType.RADIO;
-    	}
-    	else if(type == 14)
-    	{
-    		toReturn = FieldType.MULTISELECT;
-    	}
-    	
-    	else if(type == 15)
-    	{
-    		toReturn = FieldType.CHECKBOXES;
-    	}
-    	else if(type == 16)
-    	{
-    		toReturn = FieldType.DECISION_CHECK_BOX;
-    	}
-    	else if(type == 17)
-    	{
-    		toReturn = FieldType.URL;
-    	}
-    	else if(type == 18)
-    	{
-    		toReturn = FieldType.IMAGE;
-    	}
-    	else if(type == 19)
-    	{
-    		toReturn = FieldType.FILE_UPLOAD;
-    	}
-    	else if(type == 20)
-    	{
-    		toReturn = FieldType.FORMULA;
-    	}
-    	else if(type == 21)
-    	{
-    		toReturn = FieldType.SUB_FORM;
-    	}
-    	else if(type == 22)
-    	{
-    		toReturn = FieldType.ZOHO_CRM;
-    	}
-    	else if(type == 23)
-    	{
-    		toReturn = FieldType.ZOHO_CRM_LINK;
-    	}
-    	else if(type == 24)
-    	{
-    		toReturn = FieldType.NOTES;
-    	}
-    	else if(type>0&&type<=24)
-    	{
-    		toReturn = FieldType.UNKNOWN;
-    	}
-    	System.out.println("torrrrr"+toReturn);
-    	return toReturn;
-    }
+    
     
     public static boolean isChoiceField(FieldType ftype) {
     	return 	ftype.equals(FieldType.MULTISELECT) || 
