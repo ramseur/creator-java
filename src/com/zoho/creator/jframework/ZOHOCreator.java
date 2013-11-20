@@ -79,10 +79,6 @@ public class ZOHOCreator {
 	private static String prefix = "https";//No I18N
 	private static Properties props = new Properties();
 
-
-	private static List<ZCRecordValue> subFormRecordValueParams = null;
-
-
 	public static String getLoginURL() {
 		return ZCURL.getURLString(ZCURL.getLoginUrl());
 	}
@@ -422,7 +418,6 @@ public class ZOHOCreator {
 			additionalParams = new ArrayList<NameValuePair>();
 		}
 		additionalParams.addAll(appListURLPair.getNvPair());
-		String str = ZOHOCreator.postURL(appListURLPair.getUrl(), additionalParams);
 		Document rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), additionalParams);
 		return new ZCAppList(ZCAppList.PERSONAL_APPS, XMLParser.parseForApplicationList(rootDocument));
 	}

@@ -139,6 +139,46 @@ public enum FieldType   {
     			ftype.equals(FieldType.AUTO_NUMBER) || 
     			ftype.equals(FieldType.RICH_TEXT));
     }
+    
+    static FieldType getFieldType(String type) {
+    	FieldType fieldType = FieldType.SINGLE_LINE;
+    	if(type.equals("MULTI_SELECT")) {
+			fieldType = FieldType.MULTISELECT;
+		} else if(type.equals("FILE_UPLOAD")) {
+			fieldType = FieldType.FILE_UPLOAD;
+		} else if(type.equals("IMAGE")) {
+			fieldType = FieldType.IMAGE;
+		} else if(type.equals("URL")){
+			fieldType = FieldType.URL;
+		} else if(type.equals("TEXT_AREA")){
+			fieldType = FieldType.MULTI_LINE;
+		} else if(type.equals("EMAIL_ADDRESS")){
+			fieldType = FieldType.EMAIL;
+		} else if(type.equals("RICH_TEXT_AREA")){
+			fieldType = FieldType.RICH_TEXT;
+		} else if(type.equals("DATE")){
+			fieldType = FieldType.DATE;
+		} else if(type.equals("DATE_TIME")){
+			fieldType = FieldType.DATE_TIME;
+		} else if(type.equals("INLINE_SINGLE_SELECT")){
+			fieldType = FieldType.DROPDOWN;
+		} else if(type.equals("INLINE_SINGLE_SELECT")){
+			fieldType = FieldType.RADIO;
+		} else if(type.equals("NUMBER")){
+			fieldType = FieldType.NUMBER;
+		} else if(type.equals("PERCENTAGE")){
+			fieldType = FieldType.PERCENTAGE;
+		} else if(type.equals("CURRENCY")){
+			fieldType = FieldType.CURRENCY;
+		} else if(type.equals("CHECK_BOX")){
+			fieldType = FieldType.DECISION_CHECK_BOX;
+		} else if(type.equals("SCRIPT")){
+			fieldType = FieldType.FORMULA;
+		}
+    	
+		return fieldType;
+    }
+    	
 
 }
 

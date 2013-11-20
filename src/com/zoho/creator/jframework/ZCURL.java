@@ -40,7 +40,7 @@ public class ZCURL {
 
 	static URLPair getFileUploadURL(String filepath, String appOwner, String appLinkName, String viewLinkName) {
 		List<NameValuePair> params = getDefaultParams();
-		params.add(new BasicNameValuePair("filepath", filepath));//No I18N
+		params.add(new BasicNameValuePair("filepath","/"+filepath));//No I18N
 		params.add(new BasicNameValuePair("sharedBy", appOwner));//No I18N
 		params.add(new BasicNameValuePair("appLinkName", appLinkName));//No I18N
 		params.add(new BasicNameValuePair("viewLinkName", viewLinkName));//No I18N
