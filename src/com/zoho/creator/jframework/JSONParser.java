@@ -11,10 +11,7 @@ import org.json.JSONObject;
 
 	 static ZCResponse parseAndCallFormEvents(String response, ZCForm form,List<ZCRecordValue> subFormTempRecordValues) throws ZCException
 		{
-			if(subFormTempRecordValues!=null&&subFormTempRecordValues.size()>0)
-			{
-				System.out.println("subformmmmmmmmmmmm"+subFormTempRecordValues.get(0).getValue());
-			}
+			
 			List<String> alertMessages = new ArrayList<String>();
 			List<String> infoValues = new ArrayList<String>();
 			int type = -1;
@@ -45,6 +42,7 @@ import org.json.JSONObject;
 						type = jsonObj.getInt("task");
 					}
 					if(jsonObj.has("formName"))
+						
 					{
 						formName = jsonObj.getString("formName");
 					}
@@ -143,7 +141,6 @@ import org.json.JSONObject;
 						field.setLastReachedForChoices(true);
 					} else if(type==ZCForm.task_select) {
 						if(FieldType.isMultiChoiceField(field.getType())) {
-
 							if(subFormName==null) {
 								recordValue.addToValues(choiceValues);
 							}
@@ -202,7 +199,7 @@ import org.json.JSONObject;
 									//ZCRecordValue subFormRecordValue =subFormTempRecordValues.get(l);
 									if(subFormTempRecordValues.get(l).getField().getFieldName().equals(field.getFieldName()))
 									{
-										subFormTempRecordValues.get(l).addToValues(choiceValues);
+										subFormTempRecordValues.get(l).setChoiceValues(choiceValues);
 										break;
 									}
 								}
@@ -210,7 +207,7 @@ import org.json.JSONObject;
 							}
 							else
 							{
-								recordValue.addToValues(choiceValues);
+								recordValue.setChoiceValues(choiceValues);
 								System.out.println("setaoutside"+choiceValues);
 							}
 							

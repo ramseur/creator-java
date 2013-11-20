@@ -24,5 +24,16 @@ public class ZCChoice {
 	public String getValue() {
 		return value;
 	}
+	
+	public boolean equals(Object toCheck) {
+        if (this == toCheck) {
+        	return true;
+        }
+        
+        if (key == null || toCheck == null || getClass() != toCheck.getClass()) {
+        	return false;
+        }
+        return key.equals(((ZCChoice)toCheck).getKey());
+	}
 
 }

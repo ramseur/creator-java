@@ -83,7 +83,14 @@ public class ZCRecordValue {
 		if(!FieldType.isMultiChoiceField(field.getType())) {
 			throw new RuntimeException("Cannot use this one for this field type");//No I18N
 		}
-		choiceValues.addAll(valuesToAdd);
+		for(int i=0;i<valuesToAdd.size();i++) // 3,2
+		{
+			ZCChoice valueToAdd = valuesToAdd.get(i);
+			if(!choiceValues.contains(valueToAdd))
+			{
+				choiceValues.add(valueToAdd);
+			}
+		}
 	}
 	
 	void removeFromValues(List<ZCChoice> valuesToRemove) {
