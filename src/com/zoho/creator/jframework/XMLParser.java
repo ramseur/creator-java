@@ -708,6 +708,9 @@ class XMLParser {
 			zcField.setRecordValue(new ZCRecordValue(zcField, initialValue));
 		}
 
+		
+		
+		
 
 		zcField.setHidden(isAdminOnly);
 		zcField.setTextValue(textValue);

@@ -407,7 +407,10 @@ public class ZCForm extends ZCComponent {
 				String value = "";
 				if(FieldType.isSingleChoiceField(field.getType()))
 				{
+					if(recordValue.getChoiceValue()!=null)
+					{
 					value = recordValue.getChoiceValue().getKey();
+					}
 				}
 				else if(!FieldType.isPhotoField(field.getType()) && !field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES))
 				{

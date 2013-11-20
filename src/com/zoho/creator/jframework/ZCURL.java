@@ -174,7 +174,6 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("recType",String.valueOf(ZCForm.VIEW_EDIT_FORM)));
 		params.add(new BasicNameValuePair("pkValue",String.valueOf(recordLinkId-2)));
 		params.addAll(additionalParams);
-		
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}
 
@@ -219,6 +218,7 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("formLinkName", formLinkName));
 		params.add(new BasicNameValuePair("linkNameBased", "true"));
 		params.addAll(additionalParams);
+		
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}
 

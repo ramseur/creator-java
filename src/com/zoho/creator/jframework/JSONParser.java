@@ -211,8 +211,9 @@ import org.json.JSONObject;
 							else
 							{
 								recordValue.addToValues(choiceValues);
+								System.out.println("setaoutside"+choiceValues);
 							}
-							//System.out.println("setaoutside"+values);
+							
 						} 
 						else if(FieldType.isSingleChoiceField(field.getType()))
 						{
