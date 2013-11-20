@@ -15,6 +15,8 @@ public class ZCField implements Comparable<ZCField> {
 	private boolean isRequired = false;
 
 	private int maxChar = 255;
+	private int defaultRows = 0;
+	private int maximumRows = 0;
 
 	private boolean urlTitleReq = false;
 	private boolean urlLinkNameReq = true;
@@ -518,7 +520,7 @@ public class ZCField implements Comparable<ZCField> {
 		return new ArrayList<ZCChoice>();
 	}
 
-
+	
 	public void reloadChoices() throws ZCException {
 		choices.clear();
 		isLastReachedForChoices = false;
@@ -540,4 +542,21 @@ public class ZCField implements Comparable<ZCField> {
 	public void setLookupLoadingStarted(boolean lookupLoadingStarted) {
 		this.lookupLoadingStarted = lookupLoadingStarted;
 	}
+
+	public int getMaximumRows() {
+		return maximumRows;
+	}
+
+    void setMaximumRows(int maximumRows) {
+		this.maximumRows = maximumRows;
+	}
+	public int getDefaultRows()
+	{
+		return defaultRows;
+	}
+	
+	void setDefaultRows(int defaultRows){
+		this.defaultRows = defaultRows;
+	}
+
 }

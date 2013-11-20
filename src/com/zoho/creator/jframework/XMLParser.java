@@ -500,6 +500,8 @@ class XMLParser {
 		boolean isAdminOnly = false;
 
 		int maxChar = 255;
+		int defaultRows = 0;
+		int maximumRows = 0;
 
 		boolean urlTitleReq = false;
 		boolean urlLinkNameReq = false;
@@ -638,7 +640,16 @@ class XMLParser {
 				hasOnUserInput = getBooleanValue(fieldPropetyNode, hasOnUserInput);
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("formulaExists")) {
 				hasOnUserInputForFormula = getBooleanValue(fieldPropetyNode, hasOnUserInputForFormula);
-			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("SubFormFields")) {
+			} 
+			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("defaultrows"))
+			{
+				defaultRows = getIntValue(fieldPropetyNode, defaultRows);
+			}
+			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("maximumrows"))
+			{
+				maximumRows = getIntValue(fieldPropetyNode, maximumRows);
+			}
+			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("SubFormFields")) {
 				NodeList subFormFieldNodes = fieldPropetyNode.getChildNodes();
 				hasSubForm = true;
 				for(int m=0; m<subFormFieldNodes.getLength(); m++) {
@@ -703,20 +714,16 @@ class XMLParser {
 				}
 			}
 			zcField.setRecordValue(new ZCRecordValue(zcField, toAdd));
-			//System.out.println("addddd"+zcField.getRecordValue().getChoiceValue().getKey()+" adddd.."+zcField.getRecordValue().getChoiceValue().getValue()+"addd");
 		} else {
 			zcField.setRecordValue(new ZCRecordValue(zcField, initialValue));
+			//System.out.println("adddddddinitial"+zcField.getRecordValue().getValue());
 		}
-
-		
-		
-		
 
 		zcField.setHidden(isAdminOnly);
 		zcField.setTextValue(textValue);
 		zcField.addChoices(choices);
-
-
+		zcField.setDefaultRows(defaultRows);
+		zcField.setMaximumRows(maximumRows);
 		zcField.setHidden(isAdminOnly);
 		zcField.setTextValue(textValue);
 
@@ -1181,41 +1188,41 @@ class XMLParser {
 											String compType = fieldAttrMap.getNamedItem("ComponentType").getNodeValue(); //No I18N
 
 											FieldType fieldType = FieldType.SINGLE_LINE;
-											
+
 											fieldType = FieldType.getFieldType(compType);
-//											if(compType.equals("MULTI_SELECT")) {
-//												fieldType = FieldType.MULTISELECT;
-//											} else if(compType.equals("FILE_UPLOAD")) {
-//												fieldType = FieldType.FILE_UPLOAD;
-//											} else if(compType.equals("IMAGE")) {
-//												fieldType = FieldType.IMAGE;
-//											} else if(compType.equals("URL")){
-//												fieldType = FieldType.URL;
-//											} else if(compType.equals("TEXT_AREA")){
-//												fieldType = FieldType.MULTI_LINE;
-//											} else if(compType.equals("EMAIL_ADDRESS")){
-//												fieldType = FieldType.EMAIL;
-//											} else if(compType.equals("RICH_TEXT_AREA")){
-//												fieldType = FieldType.RICH_TEXT;
-//											} else if(compType.equals("DATE")){
-//												fieldType = FieldType.DATE;
-//											} else if(compType.equals("DATE_TIME")){
-//												fieldType = FieldType.DATE_TIME;
-//											} else if(compType.equals("INLINE_SINGLE_SELECT")){
-//												fieldType = FieldType.DROPDOWN;
-//											} else if(compType.equals("INLINE_SINGLE_SELECT")){
-//												fieldType = FieldType.RADIO;
-//											} else if(compType.equals("NUMBER")){
-//												fieldType = FieldType.NUMBER;
-//											} else if(compType.equals("PERCENTAGE")){
-//												fieldType = FieldType.PERCENTAGE;
-//											} else if(compType.equals("CURRENCY")){
-//												fieldType = FieldType.CURRENCY;
-//											} else if(compType.equals("CHECK_BOX")){
-//												fieldType = FieldType.DECISION_CHECK_BOX;
-//											} else if(compType.equals("SCRIPT")){
-//												fieldType = FieldType.FORMULA;
-//											}
+											//											if(compType.equals("MULTI_SELECT")) {
+											//												fieldType = FieldType.MULTISELECT;
+											//											} else if(compType.equals("FILE_UPLOAD")) {
+											//												fieldType = FieldType.FILE_UPLOAD;
+											//											} else if(compType.equals("IMAGE")) {
+											//												fieldType = FieldType.IMAGE;
+											//											} else if(compType.equals("URL")){
+											//												fieldType = FieldType.URL;
+											//											} else if(compType.equals("TEXT_AREA")){
+											//												fieldType = FieldType.MULTI_LINE;
+											//											} else if(compType.equals("EMAIL_ADDRESS")){
+											//												fieldType = FieldType.EMAIL;
+											//											} else if(compType.equals("RICH_TEXT_AREA")){
+											//												fieldType = FieldType.RICH_TEXT;
+											//											} else if(compType.equals("DATE")){
+											//												fieldType = FieldType.DATE;
+											//											} else if(compType.equals("DATE_TIME")){
+											//												fieldType = FieldType.DATE_TIME;
+											//											} else if(compType.equals("INLINE_SINGLE_SELECT")){
+											//												fieldType = FieldType.DROPDOWN;
+											//											} else if(compType.equals("INLINE_SINGLE_SELECT")){
+											//												fieldType = FieldType.RADIO;
+											//											} else if(compType.equals("NUMBER")){
+											//												fieldType = FieldType.NUMBER;
+											//											} else if(compType.equals("PERCENTAGE")){
+											//												fieldType = FieldType.PERCENTAGE;
+											//											} else if(compType.equals("CURRENCY")){
+											//												fieldType = FieldType.CURRENCY;
+											//											} else if(compType.equals("CHECK_BOX")){
+											//												fieldType = FieldType.DECISION_CHECK_BOX;
+											//											} else if(compType.equals("SCRIPT")){
+											//												fieldType = FieldType.FORMULA;
+											//											}
 
 											int seqNo  = Integer.parseInt(fieldAttrMap.getNamedItem("SequenceNumber").getNodeValue()); //No I18N
 											ZCColumn column = new ZCColumn(fieldName, fieldType, displayName);
