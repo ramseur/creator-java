@@ -287,10 +287,12 @@ public class ZOHOCreator {
 		}
 	}
 
-	public static void loadFormForAddToLookup(ZCField lookupField) throws ZCException {
+	public static void loadFormForAddToLookup(ZCField lookupField,List<ZCRecordValue> recordValues) throws ZCException {
 		ZCComponent refComponent = lookupField.getRefFormComponent();
 		ZCForm zcForm = lookupField.getBaseForm();
-		ZCForm lookupForm =  getForm(refComponent.getAppLinkName(), refComponent.getComponentLinkName(), refComponent.getAppOwner(), null,null, ZCForm.FORM_LOOKUP_ADD_FORM, zcForm.getAppLinkName(), zcForm.getComponentLinkName(), lookupField.getFieldName(), null, null,getAdditionalParamsForForm(zcForm, lookupField));
+		List<NameValuePair> params = getAdditionalParamsForForm(zcForm, lookupField);
+		params.addAll(ZOHOCreator.getCurrentForm().getFieldParamValues(recordValues));
+		ZCForm lookupForm =  getForm(refComponent.getAppLinkName(), refComponent.getComponentLinkName(), refComponent.getAppOwner(), null,null, ZCForm.FORM_LOOKUP_ADD_FORM, zcForm.getAppLinkName(), zcForm.getComponentLinkName(), lookupField.getFieldName(), null, null,params);
 		lookupField.setLookupForm(lookupForm);
 		if (lookupForm.hasOnLoad()) {
 			ZOHOCreator.callFormOnAddOnLoad(lookupForm);
@@ -879,11 +881,11 @@ public class ZOHOCreator {
 			params = new ArrayList<NameValuePair>();
 		}
 		params.addAll(xmlWriteURLPair.getNvPair());
-		//		System.out.println(getURLString(xmlWriteURLPair.getUrl(), params)); 
+		System.out.println(getURLString(xmlWriteURLPair.getUrl(), params)); 
 		Document rootDocument = ZOHOCreator.postURLXML(xmlWriteURLPair.getUrl(), params);
 		
 
-		System.out.println("response " + getString(rootDocument));
+		System.out.println("response...." + getString(rootDocument));
 		XPath xPath = XPathFactory.newInstance().newXPath();
 		//read a string value
 		ZCResponse toReturn = new ZCResponse();
