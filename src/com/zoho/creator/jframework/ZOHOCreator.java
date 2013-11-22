@@ -656,7 +656,6 @@ public class ZOHOCreator {
 			subformComponent = subFormField.getFieldName();
 		}
 
-		boolean isAddAllowed = false,isEditAllowed = false,isBulkEditAllowed = false;
 		if(getCurrentForm().getViewForAdd()!=null)
 		{
 			
@@ -674,6 +673,8 @@ public class ZOHOCreator {
 		{
 			formAccessType = ZCForm.FORM_LOOKUP_ADD_FORM;
 		}
+		//List<NameValuePair> params = getAdditionalParamsForForm(baseForm,field);
+		//params.addAll(getCurrentForm().getFieldParamValues(recordValues));
 		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), field.getFieldName(), field.getChoices().size(), field.getSearchForChoices(), subformComponent,formAccessType,getAdditionalParamsForForm(baseForm,field));
 
 		Document rootDocument = ZOHOCreator.postURLXML(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair());

@@ -15,6 +15,7 @@ public class ZCField implements Comparable<ZCField> {
 	private boolean isRequired = false;
 
 	private int maxChar = 255;
+	private int decimalLength = 0;
 	private int defaultRows = 0;
 	private int maximumRows = 0;
 
@@ -557,6 +558,13 @@ public class ZCField implements Comparable<ZCField> {
 	
 	void setDefaultRows(int defaultRows){
 		this.defaultRows = defaultRows;
+	}
+
+	public int getDecimalLength() {
+		return decimalLength;
+	}
+    void setDecimalLength(int decimalLength) {
+		this.decimalLength = decimalLength;
 	}
 
 }

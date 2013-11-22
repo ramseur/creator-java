@@ -502,6 +502,7 @@ class XMLParser {
 		int maxChar = 255;
 		int defaultRows = 0;
 		int maximumRows = 0;
+		int decimalLength = 0;
 
 		boolean urlTitleReq = false;
 		boolean urlLinkNameReq = false;
@@ -586,7 +587,10 @@ class XMLParser {
 				}
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("maxChar")) {
 				maxChar = getIntValue(fieldPropetyNode, maxChar);
-			} else if(fieldPropetyNode.getNodeName().equals("ref_formdispname")) {
+			} 
+			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("decimallength")) {
+				decimalLength = getIntValue(fieldPropetyNode, decimalLength);
+			}else if(fieldPropetyNode.getNodeName().equals("ref_formdispname")) {
 				refFormDisplayName = getStringValue(fieldPropetyNode, "");
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("refform")) {
 				refFormLinkName = getStringValue(fieldPropetyNode, "");
@@ -726,6 +730,7 @@ class XMLParser {
 		zcField.setMaximumRows(maximumRows);
 		zcField.setHidden(isAdminOnly);
 		zcField.setTextValue(textValue);
+		zcField.setDecimalLength(decimalLength);
 
 		if(!isLookup) {
 			zcField.addChoices(choices);
