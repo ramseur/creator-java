@@ -85,6 +85,7 @@ public class ZOHOUser {
 	
 
 	static ZOHOUser getUserObject() {
+		
 	    if(userCredential == null && userStorage != null) {
     		String loadedAuthToken = userStorage.loadAuthToken();
     		if(loadedAuthToken != null) {
@@ -98,8 +99,6 @@ public class ZOHOUser {
 	    }
 	    return userCredential;
 	}
-	
-	
 	
 	private ZOHOUser(String authToken) throws ZCException {
 		this.authToken = authToken;

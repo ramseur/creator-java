@@ -224,7 +224,6 @@ public class ZCField implements Comparable<ZCField> {
 
 	void addChoices(List<ZCChoice> choices) {
 		this.choices = choices;		
-		System.out.println("setting in zcfield "+ choices.size());
 	}
 
 	void clearChoices() {

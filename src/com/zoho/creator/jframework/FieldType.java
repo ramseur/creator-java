@@ -174,6 +174,8 @@ public enum FieldType   {
 			fieldType = FieldType.DECISION_CHECK_BOX;
 		} else if(type.equals("SCRIPT")){
 			fieldType = FieldType.FORMULA;
+		} else if(type.equals("SUB_FORM")){
+			fieldType = FieldType.SUB_FORM;
 		}
     	
 		return fieldType;

@@ -75,7 +75,6 @@ import org.json.JSONObject;
 					{
 	                    
 						rowNo = Integer.parseInt(jsonObj.getString("rowNo").substring(7));
-						System.out.println("rownoooo"+rowNo);
 					}
 					if(jsonObj.has("infoValue"))
 					{
@@ -106,7 +105,6 @@ import org.json.JSONObject;
 						field=form.getField(fieldName);
 						field.setRebuildRequired(true);
 						recordValue = field.getRecordValue();
-						System.out.println("inside fieldsss22");
 					}
 					else if(subFormName!=null)
 					{
@@ -115,7 +113,6 @@ import org.json.JSONObject;
 						field = subForm.getField(fieldName);
 						recordValue = field.getRecordValue();
 						field.setRebuildRequired(true);
-						System.out.println("inside fieldsss111");
 					}
 					//System.out.println("type  "+type+" formName "+formName+" fieldname "+fieldName+" arrayList "+choiceValues);
 					if(type==ZCForm.task_hide) {
@@ -208,7 +205,6 @@ import org.json.JSONObject;
 							else
 							{
 								recordValue.setChoiceValues(choiceValues);
-								System.out.println("setaoutside"+choiceValues);
 							}
 							
 						} 
@@ -240,7 +236,6 @@ import org.json.JSONObject;
 									if(subFormTempRecordValues.get(l).getField().getFieldName().equals(field.getFieldName()))
 									{
 										subFormTempRecordValues.get(l).setChoiceValue(new ZCChoice(value,value));
-										System.out.println("setvale"+subFormTempRecordValues.get(l).getValue());
 										break;
 									}
 								}
@@ -279,7 +274,6 @@ import org.json.JSONObject;
 									if(subFormTempRecordValues.get(l).getField().getFieldName().equals(field.getFieldName()))
 									{
 										subFormTempRecordValues.get(l).setValue(value);
-										System.out.println("setvale"+subFormTempRecordValues.get(l).getValue());
 										break;
 									}
 								}

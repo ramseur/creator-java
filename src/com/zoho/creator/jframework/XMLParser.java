@@ -575,7 +575,6 @@ class XMLParser {
 						key = fieldPropetyNode.getAttributes().getNamedItem("value").getNodeValue();
 					}
 					initialValue = getStringValue(fieldPropetyNode, "");
-					System.out.println("initial value"+initialValue+"   key.."+key);
 					if(!(key.equals("")))
 					{
 						keys.add(key);

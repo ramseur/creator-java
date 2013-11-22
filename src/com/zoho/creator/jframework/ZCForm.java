@@ -252,7 +252,6 @@ public class ZCForm extends ZCComponent {
 					buff.append(getXMLStringForSubFormEntries(field.getRemovedSubFormEntries(), "delete"));//No I18N
 					buff.append("</field>");//No I18N
 				} else if(FieldType.isSingleChoiceField(field.getType())) {
-					System.out.println("inside form submit"+recordValue.getChoiceValue());
 					if(recordValue.getChoiceValue() != null) {
 						buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
 						buff.append("<value>");//No I18N

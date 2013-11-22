@@ -108,7 +108,6 @@ public class ZCButton implements Comparable<ZCButton>{
 			} else {
 				URLPair urlPair = ZCURL.buttonOnClick(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), linkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(null));
 				response = ZOHOCreator.parseResponseDocumentForJSONString(urlPair, zcForm);
-				System.out.println("inside clickkk"+response);
 
 			}
 			Hashtable<ZCField, String> errorMessagesTable = response.getErrorMessagesTable();
@@ -124,11 +123,9 @@ public class ZCButton implements Comparable<ZCButton>{
 					File fileToUpload = recValue.getFileValue();
 					constructImageUrl(field,response,fileToUpload);	
 				}
-				System.out.println("fieldtype.."+field.getType()+"subformtype.."+FieldType.SUB_FORM);
 				if(field.getType()==FieldType.SUB_FORM)
 				{
 					List<ZCRecord> zcRecords = field.getAddedSubFormEntries();
-					System.out.println("inside subfffff1"+zcRecords.size());
 					for(int j=0;j<zcRecords.size();j++)
 					{
 						ZCRecord zcRecord =zcRecords.get(j);
@@ -139,7 +136,6 @@ public class ZCButton implements Comparable<ZCButton>{
 							if (FieldType.isPhotoField(recordValue.getField().getType()))
 							{
 								constructImageUrl(field,response,recordValue.getFileValue());
-								System.out.println("inside subfffff");
 							}
 						}
 					}	
@@ -151,13 +147,8 @@ public class ZCButton implements Comparable<ZCButton>{
 
 	private void constructImageUrl(ZCField field,ZCResponse response,File fileToUpload) throws ZCException
 	{
-		if(fileToUpload==null)
-		{
-			System.out.println("filetouploadisnulll...");
-		}
 		if(fileToUpload!=null)
 		{
-			System.out.println("lkhjjjhjhk"+ Integer.parseInt(String.valueOf(fileToUpload.length()/1024)));
 			URLPair urlPair = ZCURL.fileUploadURL(zcForm.getAppOwner());
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.addAll(urlPair.getNvPair());

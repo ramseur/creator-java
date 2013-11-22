@@ -26,7 +26,6 @@ public class ZCRecordValue {
 	public ZCRecordValue(ZCField field, List<ZCChoice> choiceValues) {
 		this.field = field;
 		setChoiceValues(choiceValues);
-		System.out.println("choiceeeesizeee"+choiceValues.size());
 	}
 
 	public ZCRecordValue(ZCField field, File fileValue) {
@@ -145,7 +144,6 @@ public class ZCRecordValue {
 			throw new RuntimeException("Use the other one");//No I18N
 		}
 		this.choiceValues = new ArrayList<ZCChoice>(choiceValues);
-		System.out.println("size..."+this.choiceValues.size()+choiceValues);
 	}
 
 	public void setFileValue(File fileValue) {
@@ -154,7 +152,6 @@ public class ZCRecordValue {
 			throw new RuntimeException("Use the other one");//No I18N
 		}
 		this.fileValue = fileValue;
-		System.out.println("inside setfilevalue..");
 	}
 	
 
