@@ -20,7 +20,6 @@ public enum FieldType   {
     }
 
     private int fieldType;
-
     private FieldType(int fieldType) {
         this.fieldType = fieldType;
     }

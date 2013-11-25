@@ -339,16 +339,6 @@ public class ZCField implements Comparable<ZCField> {
 		this.subForm = subForm;
 		subForm.setBaseSubFormField(this);
 	}
-	//List<HashMap<ZCField, List<String>>> subFormEntries
-	/*
-	public ZCForm getNewSubForm()
-	{
-		ZCForm newSubForm = new ZCForm(subForm.getAppOwner(),subForm.getAppLinkName(),subForm.getComponentName(),subForm.getComponentLinkName(),-1,false,false,"","",false);
-		//System.out.println("zcfff"+subForm.getAppOwner()+subForm.getAppLinkName()+subForm.getComponentName()+subForm.getComponentLinkName());
-		//setSubForm(newSubForm);
-		return newSubForm;
-	}
-	 */
 
 	public void addSubFormEntry(ZCRecord record) {
 		subFormEntries.add(record);
@@ -463,8 +453,6 @@ public class ZCField implements Comparable<ZCField> {
 	}
 
 	public void onUserInput(List<ZCRecordValue> subFormTempRecordValues) throws ZCException{
-
-		//System.out.println("inside ifonuserrr");
 		ZOHOCreator.callFieldOnUser(baseForm, fieldName, false);
 
 

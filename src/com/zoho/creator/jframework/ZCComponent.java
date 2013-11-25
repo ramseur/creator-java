@@ -1,6 +1,10 @@
 // $Id$
 package com.zoho.creator.jframework;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 
 public class ZCComponent  {
 
@@ -8,15 +12,17 @@ public class ZCComponent  {
 	public static final String REPORT = "view"; //No I18N
 	public static final String CALENDAR = "calendar"; //No I18N
 	public static final String PAGE = "html"; //No I18N
-	
-	
+
+
 	private String appOwner = null;
 	private String appLinkName = null;
 	private String type = null;
 	private String componentName = null;
 	private String componentLinkName = null;
 	private int sequenceNumber = -1;
-	
+
+	private String queryString = null;
+
 	ZCComponent(String appOwner, String appLinkName, String type, String componentName, String componentLinkName, int sequenceNumber) {
 		this.appOwner = appOwner;	
 		this.appLinkName = appLinkName;
@@ -25,7 +31,7 @@ public class ZCComponent  {
 		this.componentLinkName = componentLinkName;
 		this.sequenceNumber = sequenceNumber;
 	}
-	
+
 	public String toString() {
 		return componentName;  //No I18N
 	}
@@ -58,5 +64,16 @@ public class ZCComponent  {
 	public String getAppLinkName() {
 		return appLinkName;
 	}
+
+
+	String getQueryString() {
+		return queryString;
+	}
+
+	void setQueryString(String queryString)
+	{
+		this.queryString = queryString;
+	}
+
 
 }

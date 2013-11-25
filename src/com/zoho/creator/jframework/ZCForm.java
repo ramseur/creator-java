@@ -219,7 +219,6 @@ public class ZCForm extends ZCComponent {
 			ZCField field = fieldsToIterate.get(i);
 			//ZCRecordValue recordValue = field.getEnteredValue();
 			ZCRecordValue recordValue = field.getRecordValue();
-
 			if(recordValue != null) 
 			{
 				if(FieldType.isMultiChoiceField(field.getType())) 
@@ -242,9 +241,7 @@ public class ZCForm extends ZCComponent {
 						buff.append("</options>");//No I18N
 						buff.append("</field>");//No I18N
 						//}
-
 					}
-
 				} else if(field.getType().equals(FieldType.SUB_FORM)) {
 					buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
 					buff.append(getXMLStringForSubFormEntries(field.getAddedSubFormEntries(), "add"));//No I18N
@@ -272,9 +269,6 @@ public class ZCForm extends ZCComponent {
 						buff.append("</value>");//No I18N
 						buff.append("</field>");//No I18N
 					}
-
-
-
 				}
 			}
 		}

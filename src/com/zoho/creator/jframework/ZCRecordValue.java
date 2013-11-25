@@ -100,7 +100,6 @@ public class ZCRecordValue {
 		{
 			for(int j=0;j<valuesToRemove.size();j++)
 			{
-				//System.out.println("Values111111"+choiceValues.get(i)+valuesToRemove.get(j));
 				if(choiceValues.get(i).equals(valuesToRemove.get(j)))
 				{
 					choiceValues.remove(i);

@@ -139,7 +139,14 @@ public class ZCURL {
 			}
 
 			params.add(new BasicNameValuePair("formAccessType", String.valueOf(formType)));//No I18N
-			return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName + "/fields/", params);//No I18N	
+//			if(formType == ZCForm.VIEW_BULK_EDIT_FORM)
+//			{
+//				return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName + "/bulkeditfields/", params);//No I18N
+//			}
+//			else
+//			{
+			return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName + "/fields/", params);//No I18N
+//			}
 		}
 	}
 

@@ -86,27 +86,22 @@ class XMLParser {
 		NodeList nl = rootDocument.getChildNodes();
 		for(int i=0; i<nl.getLength(); i++) {
 			Node resultNode = nl.item(i);
-			////////System.out.println("******* " + resultNode.getNodeName());
 			if(resultNode.getNodeName().equals("result")) {
 				NodeList resultNodes = resultNode.getChildNodes();
 				for(int j=0; j<resultNodes.getLength(); j++) {
 					Node resultNodeChild = resultNodes.item(j);
-					////////System.out.println(resultNodeChild.getNodeName());
 					if(resultNodeChild.getNodeName().equals("allworkspaces")) {
 						NodeList workspacesNodes = resultNodeChild.getChildNodes(); 
 						for(int k=0; k<workspacesNodes.getLength(); k++) {
 							Node workspacesNode = workspacesNodes.item(k);
-							////////System.out.println(workspacesNode.getNodeName());
 							if(workspacesNode.getNodeName().equals("workspaces")) {
 								NodeList workspaceNodes = workspacesNode.getChildNodes();
 								for(int l=0; l<workspaceNodes.getLength(); l++) {
 									Node workspaceNode = workspaceNodes.item(l);
-									////////System.out.println(workspaceNode.getNodeName());
 									if(workspaceNode.getNodeName().equals("workspace")) {
 										NodeList workspaceownerNodes = workspaceNode.getChildNodes();
 										for(int m=0; m<workspaceownerNodes.getLength(); m++) {
 											Node workspaceownerNode = workspaceownerNodes.item(m);
-											////////System.out.println(workspaceownerNode.getNodeName());
 											if(workspaceownerNode.getNodeName().equals("workspaceowner")) {
 												String workspaceowner = getStringValue(workspaceownerNode, null);
 												sharedWithWorkSpaceList.add(workspaceowner);
@@ -121,24 +116,20 @@ class XMLParser {
 						NodeList groupsNodes = resultNodeChild.getChildNodes();
 						for(int k=0; k<groupsNodes.getLength(); k++) {
 							Node groupsNode = groupsNodes.item(k);
-							////////System.out.println(groupsNode.getNodeName());
 							if(groupsNode.getNodeName().equals("groups")) {
 								NodeList groupNodes = groupsNode.getChildNodes();
 								for(int l=0; l<groupNodes.getLength(); l++) {
 									Node groupNode = groupNodes.item(l);
-									////////System.out.println(groupNode.getNodeName());
 									if(groupNode.getNodeName().equals("group")) {
 										NodeList groupNodeChildNodes = groupNode.getChildNodes();
 										String groupName = null;
 										Long groupId = -1L;
 										for(int m=0; m<groupNodeChildNodes.getLength(); m++) {
 											Node groupNodeChildNode = groupNodeChildNodes.item(m);
-											////////System.out.println(groupNodeChildNode.getNodeName());
 											if(groupNodeChildNode.getNodeName().equals("groupname")) {
 												groupName = getStringValue(groupNodeChildNode, groupName);
 											} else if(groupNodeChildNode.getNodeName().equals("groupid")) {
 												groupId = getLongValue(groupNodeChildNode, groupId);
-												////////System.out.println(groupId);
 											}
 										}
 										sharedWithGroupList.add(new ZCSharedGroup(groupName, groupId));
@@ -162,12 +153,10 @@ class XMLParser {
 		String appOwner = "";
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
-			////////System.out.println("******* " + responseNode.getNodeName());
 			if(responseNode.getNodeName().equals("response")) {
 				NodeList responseNodes = responseNode.getChildNodes();
 				for(int j=0; j<responseNodes.getLength(); j++) {
 					Node resultNode = responseNodes.item(j);
-					////////System.out.println(resultNode.getNodeName());
 					if(resultNode.getNodeName().equals("result")) {
 						NodeList resultNodes = resultNode.getChildNodes();						
 						for(int k=0; k<resultNodes.getLength(); k++) {
@@ -178,14 +167,10 @@ class XMLParser {
 								NodeList appListNodes = resultNodeChild.getChildNodes();
 								for(int l=0; l<appListNodes.getLength(); l++) {
 									Node applicationsNode = appListNodes.item(l);
-									////////System.out.println(applicationsNode.getNodeName());
 									if(applicationsNode.getNodeName().equals("applications")) {
-										////////System.out.println(ZOHOCreator.getString(applicationsNode));
 										NodeList applicationsNodes = applicationsNode.getChildNodes();
-										////////System.out.println(applicationsNodes.getLength());
 										for(int m=0; m<applicationsNodes.getLength(); m++) {
 											Node applicationNode = applicationsNodes.item(m);
-											////////System.out.println(applicationNode.getNodeName());
 											if(applicationNode.getNodeName().equals("application")) {
 												NodeList applicationNodes = applicationNode.getChildNodes();
 												String appName = null;
@@ -195,7 +180,6 @@ class XMLParser {
 												for(int n=0; n<applicationNodes.getLength(); n++) {
 													Node appPropertyNode = applicationNodes.item(n);
 													String nodeName = appPropertyNode.getNodeName();
-													////////System.out.println(nodeName);
 													if(nodeName.equals("application_name")) {
 														appName = getStringValue(appPropertyNode, appName); //No I18N
 													} else if(nodeName.equals("link_name")) {
@@ -242,12 +226,10 @@ class XMLParser {
 		NodeList nl = rootDocument.getChildNodes();
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
-			////////////System.out.println(responseNode.getNodeName());
 			if(responseNode.getNodeName().equals("Response")) {
 				NodeList responseNodes = responseNode.getChildNodes();
 				for(int j=0; j<responseNodes.getLength(); j++) {
 					Node responseNodeChild = responseNodes.item(j);
-					////////////System.out.println(responseNodeChild.getNodeName());
 					if(responseNodeChild.getNodeName().equals("Sections")) {
 
 						NodeList sectionsNodes = responseNodeChild.getChildNodes();
@@ -265,7 +247,6 @@ class XMLParser {
 								for(int l=0; l<sectionNodes.getLength(); l++) {
 									Node sectionNodeChild = sectionNodes.item(l);
 									String nodeName = sectionNodeChild.getNodeName();
-									////////////System.out.println(nodeName);
 									if(nodeName.equals("Display_Name")) {
 										sectionName = getStringValue(sectionNodeChild, ""); //No I18N
 									} else if(nodeName.equals("Is_Hidden")) {
@@ -327,9 +308,8 @@ class XMLParser {
 		return toReturn;		
 	}
 
-	static ZCForm parseForForm(Document rootDocument, String appLinkName, String appOwner) throws ZCException {
+	static ZCForm parseForForm(Document rootDocument, String appLinkName, String appOwner,String queryString) throws ZCException {
 		NodeList nl = rootDocument.getChildNodes();
-		//System.out.println("roottttt"+rootDocument+"nlll"+nl.getLength());
 		ZCForm toReturn = null;
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
@@ -357,11 +337,9 @@ class XMLParser {
 						for(int k=0;k<resultNodes.getLength();k++)
 						{
 							Node resultNodeChild = resultNodes.item(k);
-							////////////System.out.println(resultNode.getNodeName());
 							if(resultNodeChild.getNodeName().equalsIgnoreCase("hasAddOnLoad")) { 
 								String nodeValue = getStringValue(resultNodeChild, "");
 								hasAddOnLoad = Boolean.valueOf(nodeValue);
-								////////System.out.println("node value "+nodeValue+"boolean"+hasAddOnLoad);
 							} else if(resultNodeChild.getNodeName().equalsIgnoreCase("hasEditOnLoad")) { 
 								String nodeValue = getStringValue(resultNodeChild, "");
 								hasEditOnLoad = Boolean.valueOf(nodeValue);
@@ -372,10 +350,6 @@ class XMLParser {
 							} else if(resultNodeChild.getNodeName().equalsIgnoreCase("errorlist")) {
 								throw new ZCException(parseErrorMessage(resultNodeChild), ZCException.ACCESS_ERROR);
 							} 
-							//							else if(resultNodeChild.getNodeName().equalsIgnoreCase("tableName")) {
-							//								String tableName = getStringValue(resultNodeChild, "");
-							//								isStateLess = (tableName.equalsIgnoreCase(""));
-							//							} 
 							else if(resultNodeChild.getNodeName().equalsIgnoreCase("type")) {
 								int type = getIntValue(resultNodeChild, 1);
 								if(type==2)
@@ -391,12 +365,11 @@ class XMLParser {
 							} else if(resultNodeChild.getNodeName().equalsIgnoreCase("formid")) {
 								componentID = getLongValue(resultNodeChild, componentID);
 							} else if(resultNodeChild.getNodeName().equalsIgnoreCase("Fields")) {
-								//System.out.println("inside fieldsss");
 								NodeList fieldNodes = resultNodeChild.getChildNodes();
 								for(int l=0; l<fieldNodes.getLength(); l++) {
 									Node fieldNode = fieldNodes.item(l);
 									if(fieldNode.getNodeName().equalsIgnoreCase("field")) {
-										ZCField field = parseField(fieldNode,appLinkName,componentLinkName, appOwner, false);
+										ZCField field = parseField(fieldNode,appLinkName,componentLinkName, appOwner, false,queryString);
 										if(field != null) {
 											fields.add(field);
 										}
@@ -478,8 +451,7 @@ class XMLParser {
 	}
 
 
-	private static ZCField parseField(Node resultNodeChild,String applinkName,String formlinkName, String appOwner,boolean isParentSubForm) throws ZCException {
-		////////System.out.println("inside zcparse field");
+	private static ZCField parseField(Node resultNodeChild,String applinkName,String formlinkName, String appOwner,boolean isParentSubForm,String queryString) throws ZCException {
 		NodeList fieldPropetyNodes = resultNodeChild.getChildNodes();
 
 		String fieldName = null;
@@ -543,7 +515,6 @@ class XMLParser {
 				delugeType = getStringValue(fieldPropetyNode, delugeType);
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("DisplayName")) {
 				displayName = getStringValue(fieldPropetyNode, displayName);
-				//System.out.println("displayNameeeeee " + displayName);
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("FieldName")) {
 				fieldName = getStringValue(fieldPropetyNode, fieldName);
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("Text")) {
@@ -639,7 +610,6 @@ class XMLParser {
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("LinkNameReq")) {
 				urlLinkNameReq = getBooleanValue(fieldPropetyNode, urlLinkNameReq);
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("onChangeExists")) {
-				//System.out.println("inside onchange");
 				hasOnUserInput = getBooleanValue(fieldPropetyNode, hasOnUserInput);
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("formulaExists")) {
 				hasOnUserInputForFormula = getBooleanValue(fieldPropetyNode, hasOnUserInputForFormula);
@@ -658,11 +628,11 @@ class XMLParser {
 				for(int m=0; m<subFormFieldNodes.getLength(); m++) {
 					Node subFormFieldNode = subFormFieldNodes.item(m);
 					if(subFormFieldNode.getNodeName().equalsIgnoreCase("Field")) {
-						ZCField subFormField = parseField(subFormFieldNode,appLinkName,formLinkName, appOwner, true);
+						ZCField subFormField = parseField(subFormFieldNode,appLinkName,formLinkName, appOwner, true,null);
 						if(subFormField != null)
 						{
 							subFormFields.add(subFormField);
-							subFormEditFields.add(parseField(subFormFieldNode,appLinkName,formLinkName, appOwner, true));
+							subFormEditFields.add(parseField(subFormFieldNode,appLinkName,formLinkName, appOwner, true,null));
 						}
 					}
 				}
@@ -677,6 +647,33 @@ class XMLParser {
 		}	
 
 		ZCField zcField = new ZCField(fieldName, fieldType, displayName);
+		if(queryString!=null)
+		{
+			if(queryString.contains("&"))
+			{
+				String[] stringValues = queryString.split("&");
+				for(int p=0;p<stringValues.length;p++)
+				{
+					if(FieldType.isMultiChoiceField(fieldType)){
+						initialChoiceValues = setFieldInitialValues(stringValues[p], fieldName,fieldType,initialChoiceValues);
+					}
+					else
+					{
+						initialValue = setFieldInitialValue(stringValues[p], fieldName,fieldType,initialValue);
+					}
+				}
+			}
+			else
+			{
+				if(FieldType.isMultiChoiceField(fieldType)){
+					initialChoiceValues = setFieldInitialValues(queryString, fieldName,fieldType,initialChoiceValues);
+				}
+				else
+				{
+					initialValue = setFieldInitialValue(queryString, fieldName,fieldType,initialValue);
+				}
+			}
+		}
 		if(FieldType.isMultiChoiceField(fieldType)) {
 			// THis is used in Edit record for multichoice field. But in form builder there is no way to set initial value
 			List<ZCChoice> selectedChoices = new ArrayList<ZCChoice>();
@@ -719,7 +716,6 @@ class XMLParser {
 			zcField.setRecordValue(new ZCRecordValue(zcField, toAdd));
 		} else {
 			zcField.setRecordValue(new ZCRecordValue(zcField, initialValue));
-			//System.out.println("adddddddinitial"+zcField.getRecordValue().getValue());
 		}
 
 		zcField.setHidden(isAdminOnly);
@@ -764,7 +760,6 @@ class XMLParser {
 			ZCForm subForm = new ZCForm(appOwner, refAppLinkName, refFormDisplayName, refFormLinkName, -1, false, false, "", "", false);
 			subForm.addFields(subFormFields);
 			zcField.setSubForm(subForm);
-			//System.out.println("zcfff222  "+subForm.getFields().size()+subForm.getAppOwner()+subForm.getAppLinkName()+subForm.getComponentName()+subForm.getComponentLinkName());
 			for(int i=0; i<subFormEntries.size(); i++) {
 				zcField.addSubFormEntry(subFormEntries.get(i));
 			}
@@ -773,6 +768,36 @@ class XMLParser {
 			zcField.setEditSubForm(editSubForm);
 		}
 		return zcField;
+	}
+	private static String setFieldInitialValue(String queryString,String fieldName,FieldType fieldType,String initialValue)
+	{
+		String[] fieldValues = queryString.split("=");
+		if(fieldName.equals(fieldValues[0]))
+		{
+			initialValue = fieldValues[1];
+		}
+		return initialValue;
+	}
+	private static List<String> setFieldInitialValues(String queryString,String fieldName,FieldType fieldType,List<String> initialValues)
+	{
+		String[] fieldValues = queryString.split("=");
+		String[] choicevalues = null;
+		if(fieldName.equals(fieldValues[0]))
+		{
+			if(fieldValues[1].contains(","))
+			{
+				choicevalues = fieldValues[1].split(",");
+				for(int i=0;i<choicevalues.length;i++)
+				{
+					initialValues.add(choicevalues[i]);
+				}
+			}
+			else
+			{
+				initialValues.add(fieldValues[1]);
+			}
+		}
+		return initialValues;
 	}
 
 	private static List<ZCChoice> parseLookUpChoices(Node fieldPropetyNode) {
@@ -794,23 +819,19 @@ class XMLParser {
 		NodeList nl = rootDocument.getChildNodes();
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
-			//System.out.println("in respons"+responseNode.getNodeName());
 			if(responseNode.getNodeName().equals("response")) {
 				NodeList responseNodeList = responseNode.getChildNodes();
 				for(int j=0; j<responseNodeList.getLength(); j++) {
 					Node resultNode = responseNodeList.item(j);
-					//System.out.println("in result"+resultNode.getNodeName());
 					if(resultNode.getNodeName().equals("result")) {
 						NodeList resultNodeList = resultNode.getChildNodes();
 						for(int k=0; k<resultNodeList.getLength(); k++) {
 							Node fieldNode = resultNodeList.item(k);
-							//System.out.println("in field"+fieldNode.getNodeName());
 							if(fieldNode.getNodeName().equals("field")) {
 								NodeList fieldNodeList = fieldNode.getChildNodes();
 								for(int l=0;l<fieldNodeList.getLength();l++)
 								{
 									Node choicesNode = fieldNodeList.item(l);
-									//System.out.println("in choices"+choicesNode.getNodeName());
 									if(choicesNode.getNodeName().equals("choices"))
 									{
 										return parseLookUpChoices(choicesNode);
@@ -879,7 +900,6 @@ class XMLParser {
 		NodeList nl = rootDocument.getChildNodes();
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
-			////////System.out.println("here... " + responseNode.getNodeName());
 			if(responseNode.getNodeName().equals("response")) {
 				NodeList responseNodes = responseNode.getChildNodes();
 				for(int j=0; j<responseNodes.getLength(); j++) {
@@ -981,7 +1001,6 @@ class XMLParser {
 
 	private static void parseAndSetRecords(ZCView zcView, Node recordsNode) {
 		NodeList recordsList = recordsNode.getChildNodes();
-		////////System.out.println("recordsList.size(): " + recordsList.getLength());
 		List<ZCRecord> records = new ArrayList<ZCRecord>();
 		List<ZCGroup> zcGroups = zcView.getGroups();
 		ZCGroup zcGroup = null;
@@ -1031,20 +1050,12 @@ class XMLParser {
 			Node columnNode = columnList.item(l);
 			NamedNodeMap columAttrMap = columnNode.getAttributes();
 			String fieldName = columAttrMap.getNamedItem("name").getNodeValue(); //No I18N
-			////////System.out.println("fieldName..... " + fieldName);
-			////////System.out.println("Columns... "+ zcView.getColumns());
 			ZCField zcField = null;
 			if(zcView != null) {
-				//////System.out.println("dfh1");
 				zcField = zcView.getColumn(fieldName);
-				//				 if(zcField==null)
-				//		           {
-				//		           //////System.out.println("dfh2");
-				//		           }
 			} else {
 				for(int m=0; m<subFormFields.size(); m++) {
 					ZCField fieldToCheck = subFormFields.get(m);
-					//////System.out.println("dfh3"+fieldToCheck.getType());
 					if(fieldToCheck.getFieldName().equals(fieldName)) {
 						zcField = fieldToCheck;
 						break;
@@ -1053,7 +1064,6 @@ class XMLParser {
 			}
 			Node valueNode = columnNode.getFirstChild();
 			String value = getStringValue(valueNode, "");
-			//			//System.out.println("radioo"+value);
 			ZCRecordValue zcValue = null;
 			List<ZCChoice> choices = null;
 			if(zcView == null) {
@@ -1082,12 +1092,10 @@ class XMLParser {
 		ZCView toReturn = null;
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
-			////////System.out.println("here... " + responseNode.getNodeName());
 			if(responseNode.getNodeName().equals("response")) {
 				NodeList responseNodes = responseNode.getChildNodes();
 				for(int j=0; j<responseNodes.getLength(); j++) {
 					Node responseChildNode = responseNodes.item(j);
-					////////System.out.println(responseChildNode.getNodeName());
 					if(responseChildNode.getNodeName().equals("metadata")) {
 						NodeList viewNodes = responseChildNode.getChildNodes();
 						for(int k=0; k<viewNodes.getLength(); k++) {
@@ -1254,14 +1262,8 @@ class XMLParser {
 
 	private static String getChildNodeValue(Node parentNode, String nodeName) {
 		NodeList parentNodeChildNodes = parentNode.getChildNodes();
-		//		if(nodeName.equals("title")) {
-		//			//System.out.println("Parent node ---- " + getString(parentNode));
-		//		}
 		for(int i=0; i<parentNodeChildNodes.getLength(); i++) {
 			Node parentNodeChildNode = parentNodeChildNodes.item(i);
-			//			if(nodeName.equals("title")) {
-			//				//System.out.println("node name " + parentNodeChildNode.getNodeName() + " ---- " + getString(parentNodeChildNode));
-			//			}
 			if(parentNodeChildNode.getNodeName().equals(nodeName)) {
 				Node firstItem = parentNodeChildNode.getChildNodes().item(0);
 				if(firstItem != null) {
@@ -1281,7 +1283,6 @@ class XMLParser {
 			TransformerFactory tf = TransformerFactory.newInstance();
 			Transformer transformer = tf.newTransformer();
 			transformer.transform(domSource, result);
-			////System.out.println("Response " + writer.toString());
 		}
 		catch(TransformerException ex)
 		{
