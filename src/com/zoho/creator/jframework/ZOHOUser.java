@@ -189,7 +189,6 @@ public class ZOHOUser {
         {
             cause = props.getProperty("CAUSE");
             
-            //System.out.println("Cause : " + cause);
  
             if (cause != null)
             {

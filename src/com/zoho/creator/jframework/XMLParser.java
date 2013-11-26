@@ -1142,9 +1142,15 @@ class XMLParser {
 											for(int n=0; n<filterValuesList.getLength(); n++) {
 												Node filterValueNode = filterValuesList.item(n);
 												if(filterValueNode.getNodeName().equals("value")) {
-													String filterValue = getStringValue(filterValueNode, ""); //No I18N
-													filterValue = filterValue.substring(filterValue.indexOf(":") + 1);
-													filterValues.add(new ZCFilterValue(filterValue));
+													
+														String filterValue = getStringValue(filterValueNode, ""); //No I18N
+														filterValue = filterValue.substring(filterValue.indexOf(":") + 1);
+														String displayValue = filterValue;
+														NamedNodeMap filterValAttrMap = filterValueNode.getAttributes();
+														if(filterValAttrMap.getLength()>0){
+															displayValue = filterValAttrMap.getNamedItem("display").getNodeValue();
+														}
+														filterValues.add(new ZCFilterValue(filterValue,displayValue));
 												}
 											}
 											filter.addValues(filterValues);

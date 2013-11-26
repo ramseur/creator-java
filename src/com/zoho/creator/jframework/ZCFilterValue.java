@@ -6,9 +6,11 @@ public class ZCFilterValue {
 
 	private String value = null;
 	private boolean isSelected = false;
+	private String dispValue = null;
 
-	ZCFilterValue(String value) {
+	ZCFilterValue(String value,String dispValue) {
 		this.value = value;
+		this.dispValue  = dispValue;
 	}
 	
 	public String toString() {
@@ -25,6 +27,10 @@ public class ZCFilterValue {
 
 	public String getValue() {
 		return value;
+	}
+	
+	public String getDisplayValue() {
+		return dispValue;
 	}
 
 }

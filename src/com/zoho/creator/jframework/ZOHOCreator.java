@@ -2,9 +2,11 @@
 
 package com.zoho.creator.jframework;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -967,7 +969,7 @@ public class ZOHOCreator {
 	}
 
 	// convert InputStream to String
-	/*
+	
 	private static String getStringFromInputStream(InputStream is) {
 
 		BufferedReader br = null;
@@ -996,7 +998,7 @@ public class ZOHOCreator {
 		return sb.toString();
 
 	}
-	 */
+	 
 
 	private static String getURLString(String url, List<NameValuePair> params) {
 		StringBuffer buff = new StringBuffer(url);
@@ -1019,6 +1021,7 @@ public class ZOHOCreator {
 	}
 
 	static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
+		System.out.println("urleeeee"+getURLString(url, params));
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1043,6 +1046,7 @@ public class ZOHOCreator {
 				InputStream is = null;
 				try {
 					is = entity.getContent();
+				//	System.out.println("inputstrream" + getStringFromInputStream(is));
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);

@@ -175,7 +175,9 @@ public enum FieldType   {
 			fieldType = FieldType.FORMULA;
 		} else if(type.equals("SUB_FORM")){
 			fieldType = FieldType.SUB_FORM;
-		}
+		} else if(type.equals("EXTERNAL_FIELD")){
+			fieldType = FieldType.ZOHO_CRM;
+		} 
     	
 		return fieldType;
     }
