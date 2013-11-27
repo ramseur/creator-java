@@ -453,14 +453,11 @@ public class ZCField implements Comparable<ZCField> {
 	}
 
 	public void onUserInput(List<ZCRecordValue> subFormTempRecordValues) throws ZCException{
-		ZOHOCreator.callFieldOnUser(baseForm, fieldName, false);
-
-
+		ZOHOCreator.callFieldOnUser(baseForm, fieldName, false,subFormTempRecordValues);
 	}
 
-
 	public void onUserInputForFormula(List<ZCRecordValue> subFormTempRecordValues) throws ZCException{
-		ZOHOCreator.callFieldOnUser(baseForm, fieldName, true);
+		ZOHOCreator.callFieldOnUser(baseForm, fieldName, true,subFormTempRecordValues);
 	}
 
 	public void setTextValue(String textValue) {
