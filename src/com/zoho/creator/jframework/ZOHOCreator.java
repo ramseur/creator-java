@@ -546,9 +546,7 @@ public class ZOHOCreator {
 		List<NameValuePair> params = zcForm.getFieldParamValues(null);
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
 		URLPair formOnAddOnLoadURL = ZCURL.formOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), params );
-		System.out.println("onload url "+getURLString(formOnAddOnLoadURL.getUrl(), formOnAddOnLoadURL.getNvPair()));
 		String response = ZOHOCreator.postURL(formOnAddOnLoadURL.getUrl(), formOnAddOnLoadURL.getNvPair());
-		System.out.println("onload response"+response);
 		JSONParser.parseAndCallFormEvents(response, zcForm,null);
 	}
 
@@ -557,20 +555,16 @@ public class ZOHOCreator {
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
 		URLPair formEditOnAddOnLoadURL = ZCURL.formEditOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), params,recordLinkId);
 		String response = ZOHOCreator.postURL(formEditOnAddOnLoadURL.getUrl(), formEditOnAddOnLoadURL.getNvPair());
-		System.out.println("onEditload response"+response);
 		JSONParser.parseAndCallFormEvents(response, zcForm,null);
 	}
 
 	private static void callDelugeEvents(ZCForm zcForm, URLPair urlPair,List<ZCRecordValue> recordValues) throws ZCException{
-		System.out.println("deluge url"+getURLString(urlPair.getUrl(), urlPair.getNvPair()));
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
-		System.out.println("deluge response"+response);
 		JSONParser.parseAndCallFormEvents(response, zcForm,recordValues);
 	}
 
 
 	static ZCResponse parseResponseDocumentForJSONString(URLPair urlPair, ZCForm zcForm) throws ZCException {
-		System.out.println("stateless submit url"+getURLString(urlPair.getUrl(), urlPair.getNvPair()));
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
 		return JSONParser.parseAndCallFormEvents(response, zcForm, null);
 	}
@@ -1030,7 +1024,7 @@ public class ZOHOCreator {
 	}
 
 	static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-		System.out.println("urleeeee"+getURLString(url, params));
+		//System.out.println("urleeeee"+getURLString(url, params));
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1055,7 +1049,6 @@ public class ZOHOCreator {
 				InputStream is = null;
 				try {
 					is = entity.getContent();
-				//	System.out.println("inputstrream" + getStringFromInputStream(is));
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
@@ -1081,7 +1074,6 @@ public class ZOHOCreator {
 		} catch (IOException e) {
 			throw new ZCException("Network Error.", ZCException.NETWORK_ERROR);//No I18N
 		}
-
 		throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, getURLString(url, params)); //No I18N
 	}
 

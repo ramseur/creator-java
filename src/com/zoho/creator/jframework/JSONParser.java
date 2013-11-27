@@ -178,7 +178,6 @@ import org.json.JSONObject;
                                                                         {
 
                                                                                 subFormRecordValue.setChoiceValues(choiceValues);
-                                                                                System.out.println("multiselect1111"+choiceValues);
                                                                                 break;
                                                                         }
                                                                 }        
@@ -191,7 +190,6 @@ import org.json.JSONObject;
                                                                         if(subFormTempRecordValues.get(l).getField().getFieldName().equals(field.getFieldName()))
                                                                         {
                                                                                 subFormTempRecordValues.get(l).setChoiceValues(choiceValues);
-                                                                                System.out.println("multiselect11"+choiceValues);
                                                                                 break;
                                                                         }
                                                                 }
@@ -260,7 +258,6 @@ import org.json.JSONObject;
                                                                                 	}
                                                                                 	else
                                                                                 	{
-                                                                                		System.out.println("valueeee11"+value);
                                                                                         subFormRecordValue.setValue(value);
                                                                                 	}
                                                                                         break;
@@ -282,7 +279,6 @@ import org.json.JSONObject;
                                                                         	}
                                                                         	else
                                                                         	{
-                                                                        		System.out.println("valueeee"+value);
                                                                                 subFormTempRecordValues.get(l).setValue(value);
                                                                         	}
                                                                                 break;

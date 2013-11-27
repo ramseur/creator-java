@@ -418,7 +418,6 @@ public class ZCForm extends ZCComponent {
 				ZCField subFormField = subFormRecordValue.getField();
 				if(FieldType.isMultiChoiceField(subFormField.getType())) {
 					List<ZCChoice> subFormChoiceValues = subFormRecordValue.getChoiceValues();
-					System.out.println("subformmm"+subFormRecordValue.getChoiceValues().size());
 					for(int l=0; l<subFormChoiceValues.size(); l++) {
 						params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV("+subFormField.getFieldName()+")",subFormChoiceValues.get(l).getKey()));
 					}

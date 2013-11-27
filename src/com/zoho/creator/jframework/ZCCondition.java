@@ -87,10 +87,10 @@ public class ZCCondition {
 	public static int getDefaultSearchOperator(FieldType type){
 		if(type.equals(FieldType.DATE) || type.equals(FieldType.NUMBER) || type.equals(FieldType.PERCENTAGE) || type.equals(FieldType.DATE_TIME) || type.equals(FieldType.DECIMAL) || type.equals(FieldType.CURRENCY)){
 			return ZCCondition.EQUAL;
+		}else if(type.equals(FieldType.DECISION_CHECK_BOX)){
+			return ZCCondition.TRUE;
 		}else{
 			return ZCCondition.CONTAINS;
 		}
 	}
-
-	
 }
