@@ -329,12 +329,22 @@ public class ZCForm extends ZCComponent {
 	}
 
 
+	String getXMLStringForDeluge() {
+		StringBuffer buff = new StringBuffer();
+		buff.append("<fields>");//No I18N
+		buff.append(getXMLStringForFields());
+		buff.append("</fields>");//No I18N
+		////System.out.println("form"+buff.toString());
+		return buff.toString();
+	}
+
 	List<NameValuePair> getFieldParamValues(List<ZCRecordValue> recordValues) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		List<ZCField> fieldsToIterate = fields;
 		for(int i=0; i<fieldsToIterate.size(); i++) {//No I18N
 			ZCField field = fieldsToIterate.get(i);
 			ZCRecordValue recordValue = field.getRecordValue();
+			//System.out.println("inside fieldtype"+field.getType());
 			if(recordValue != null) 
 			{
 				if(FieldType.isMultiChoiceField(field.getType())) 
@@ -350,6 +360,7 @@ public class ZCForm extends ZCComponent {
 					}
 				}
 				else if(field.getType().equals(FieldType.SUB_FORM)) {
+					//System.out.println("inside subfoem"+field.getType());
 					params.addAll(getParamsForSubFormEntries(field.getAddedSubFormEntries(),field.getFieldName()));
 					if(recordValues != null) {
 						params.addAll(getTempRecordParams(recordValues,field.getFieldName(),field.getAddedSubFormEntries().size()+1));
@@ -450,11 +461,11 @@ public class ZCForm extends ZCComponent {
 		ZOHOCreator.callSubFormDeleteRow(this, field.getFieldName(),recordValues);
 	}
 
-	public void onUserInputForSubFormField(ZCField onUserInputField, ZCField subFormField, List<ZCRecordValue> recordValues,int entryPosition) throws ZCException{
-		ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , subFormField.getFieldName(),recordValues,false,entryPosition);
+	public void onUserInputForSubFormField(ZCField onUserInputField, ZCField subFormField, List<ZCRecordValue> recordValues) throws ZCException{
+		ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , subFormField.getFieldName(),recordValues,false);
 	}
-	public void onUserInputForSubFormFieldForFormula(ZCField onUserInputField, ZCField subFormField, List<ZCRecordValue> recordValues,int entryPosition) throws ZCException{
-		ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , subFormField.getFieldName(),recordValues,true,entryPosition);
+	public void onUserInputForSubFormFieldForFormula(ZCField onUserInputField, ZCField subFormField, List<ZCRecordValue> recordValues) throws ZCException{
+		ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , subFormField.getFieldName(),recordValues,true);
 	}
 	public ZCField getBaseSubFormField() {
 		return baseSubFormField;

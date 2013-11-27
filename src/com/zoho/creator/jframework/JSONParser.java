@@ -21,6 +21,7 @@ import org.json.JSONObject;
                                 JSONArray jArray = new JSONArray(response);
                                 for (int i=0; i < jArray.length(); i++) {
                                         List<ZCChoice> choiceValues = new ArrayList<ZCChoice>();
+                                        ZCChoice choiceValue = null;
                                         String subFormName = null;
                                         String fieldName=null;
                                         ZCField field=null;
@@ -56,6 +57,7 @@ import org.json.JSONObject;
                                                 }
                                                 catch(ClassCastException e) {
                                                         value = (String)jsonObj.get("fieldValue");
+                                                        choiceValue = new ZCChoice(value, value);
                                                 }
                                         }
                                         if(jsonObj.has("alertValue"))
@@ -178,7 +180,7 @@ import org.json.JSONObject;
                                                                         {
 
                                                                                 subFormRecordValue.setChoiceValues(choiceValues);
-                                                                                System.out.println("multiselect1111"+choiceValues);
+
                                                                                 break;
                                                                         }
                                                                 }        
@@ -191,7 +193,6 @@ import org.json.JSONObject;
                                                                         if(subFormTempRecordValues.get(l).getField().getFieldName().equals(field.getFieldName()))
                                                                         {
                                                                                 subFormTempRecordValues.get(l).setChoiceValues(choiceValues);
-                                                                                System.out.println("multiselect11"+choiceValues);
                                                                                 break;
                                                                         }
                                                                 }
@@ -260,7 +261,6 @@ import org.json.JSONObject;
                                                                                 	}
                                                                                 	else
                                                                                 	{
-                                                                                		System.out.println("valueeee11"+value);
                                                                                         subFormRecordValue.setValue(value);
                                                                                 	}
                                                                                         break;
@@ -282,7 +282,6 @@ import org.json.JSONObject;
                                                                         	}
                                                                         	else
                                                                         	{
-                                                                        		System.out.println("valueeee"+value);
                                                                                 subFormTempRecordValues.get(l).setValue(value);
                                                                         	}
                                                                                 break;
@@ -305,7 +304,6 @@ import org.json.JSONObject;
                                         }
                                         if(subFormName==null)
                                         {
-                                        	
                                                 if(field != null && type==ZCForm.task_setValue|| type==ZCForm.task_deselectAll ||type==ZCForm.task_deselect || type==ZCForm.task_selectAll || type==ZCForm.task_select) {
                                                         if(field.isHasOnUserInputForFormula()) {
                                                                 field.onUserInputForFormula(subFormTempRecordValues);
@@ -315,6 +313,7 @@ import org.json.JSONObject;
                                                         }
                                                 }
                                         }
+
                                 }
 
 

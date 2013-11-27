@@ -715,7 +715,6 @@ class XMLParser {
 			}
 			zcField.setRecordValue(new ZCRecordValue(zcField, toAdd));
 		} else {
-			System.out.println("initialvalueeeeeeeqqww"+initialValue);
 			zcField.setRecordValue(new ZCRecordValue(zcField, initialValue));
 		}
 
