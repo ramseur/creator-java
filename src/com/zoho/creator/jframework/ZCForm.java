@@ -29,6 +29,8 @@ public class ZCForm extends ZCComponent {
 	private boolean reLoadForm = false;
 	private List<String> infos = null; 
 	private String openUrl = null;
+	private String openurlType = "";
+	private String openurlValue = "";
 
 	private int formType = ZCForm.FORM_ALONE;
 
@@ -60,7 +62,7 @@ public class ZCForm extends ZCComponent {
 
 
 
-	ZCForm(String appOwner, String appLinkName, String componentName, String componentLinkName, int sequenceNumber, boolean hasAddOnLoad, boolean hasEditOnLoad, String successMessage, String dateFormat, boolean isStateLess) {
+	ZCForm(String appOwner, String appLinkName, String componentName, String componentLinkName, int sequenceNumber, boolean hasAddOnLoad, boolean hasEditOnLoad, String successMessage, String dateFormat, boolean isStateLess,String openurlType,String openurlValue) {
 		super( appOwner,  appLinkName,  ZCComponent.FORM,  componentName,  componentLinkName,  sequenceNumber);
 
 		this.hasAddOnLoad = hasAddOnLoad;
@@ -68,6 +70,8 @@ public class ZCForm extends ZCComponent {
 		this.successMessage = successMessage;
 		this.dateFormat = dateFormat;
 		this.isStateLess = isStateLess;
+		this.openurlType = openurlType;
+		this.openurlValue = openurlValue;
 
 	}
 
@@ -329,7 +333,7 @@ public class ZCForm extends ZCComponent {
 	}
 
 
-	List<NameValuePair> getFieldParamValues(List<ZCRecordValue> recordValues) {
+	List<NameValuePair> getFieldParamValues(List<ZCRecordValue> recordValues,int recordPosition) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		List<ZCField> fieldsToIterate = fields;
 		for(int i=0; i<fieldsToIterate.size(); i++) {//No I18N
@@ -441,19 +445,19 @@ public class ZCForm extends ZCComponent {
 		return params;
 	}
 
-	public void onAddRowForSubForm(ZCField field,List<ZCRecordValue> recordValues) throws ZCException{
-		ZOHOCreator.callSubFormAddRow(this, field.getFieldName(),recordValues);
+	public void onAddRowForSubForm(ZCField field,List<ZCRecordValue> recordValues,ZCForm currentShownForm) throws ZCException{
+		ZOHOCreator.callSubFormAddRow(this, field.getFieldName(),recordValues,currentShownForm);
 	}
 
 	public void onDeleteRowForSubForm(ZCField field,List<ZCRecordValue> recordValues) throws ZCException{
 		ZOHOCreator.callSubFormDeleteRow(this, field.getFieldName(),recordValues);
 	}
 
-	public void onUserInputForSubFormField(ZCField onUserInputField, ZCField subFormField, List<ZCRecordValue> recordValues,int entryPosition) throws ZCException{
-		ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , subFormField.getFieldName(),recordValues,false,entryPosition);
+	public void onUserInputForSubFormField(ZCField onUserInputField,ZCForm currentShownForm, List<ZCRecordValue> recordValues,int entryPosition) throws ZCException{
+		ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , currentShownForm,recordValues,false,entryPosition);
 	}
-	public void onUserInputForSubFormFieldForFormula(ZCField onUserInputField, ZCField subFormField, List<ZCRecordValue> recordValues,int entryPosition) throws ZCException{
-		ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , subFormField.getFieldName(),recordValues,true,entryPosition);
+	public void onUserInputForSubFormFieldForFormula(ZCField onUserInputField, ZCForm currentShownForm, List<ZCRecordValue> recordValues,int entryPosition) throws ZCException{
+		ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , currentShownForm,recordValues,true,entryPosition);
 	}
 	public ZCField getBaseSubFormField() {
 		return baseSubFormField;
@@ -558,6 +562,14 @@ public class ZCForm extends ZCComponent {
 
 	public void setOpenUrl(String openUrl) {
 		this.openUrl = openUrl;
+	}
+	public String getOpenUrlValue()
+	{
+		return openurlValue;				
+	}
+	public String getOpenUrlType()
+	{
+		return openurlType;
 	}
 
 }

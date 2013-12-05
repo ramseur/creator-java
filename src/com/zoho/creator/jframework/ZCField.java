@@ -56,23 +56,12 @@ public class ZCField implements Comparable<ZCField> {
 	private List<ZCRecord> removedSubFormEntries = new ArrayList<ZCRecord>();
 	private boolean hasOnUserInputForFormula = false;
 
-
-	//public static final String STRING = "STRING"; //No I18N
 	private boolean isHidden = false;
 	private boolean isDisabled = false;
 	private boolean isRebuildRequired = false;
-	private String textValue = "";
 	private boolean isLastReachedForChoices = false;
 	private String searchStringForChoices = null;
-
-	private int lookupCount = 0;
-
-	private List<ZCField> lookUpFields = new ArrayList<ZCField>();
-
-
-
 	private boolean lookupLoadingStarted = false;
-
 
 
 	ZCField(String fieldName, FieldType type, String displayName) {
@@ -87,7 +76,7 @@ public class ZCField implements Comparable<ZCField> {
 				" - isUnique:" + isUnique + " - isRequired:" + isRequired + " - maxChar:" + maxChar +  //No I18N
 				" - urlTitleReq:" + urlTitleReq + " - urlLinkNameReq:" + urlLinkNameReq + " - fromZohoDoc:" + fromZohoDoc + " - fromGoogleDoc:" + fromGoogleDoc +  //No I18N
 				" - fromLocalComputer:" + fromLocalComputer + " - imgLinkReq:" + imgLinkReq + " - altTxtReq:" + altTxtReq +   //No I18N
-				" - refFieldLinkName: " + refFieldLinkName + " - choices:" + choices + "textValue" + textValue; //No I18N
+				" - refFieldLinkName: " + refFieldLinkName + " - choices:" + choices; //No I18N
 		if(refFormComponent != null) {
 			toReturn = toReturn + " - refFormLinkName:" + refFormComponent.getComponentLinkName() + " - refFormDisplayName:" +  refFormComponent.getComponentName() + " - refAppLinkName:" + refFormComponent.getAppLinkName(); //No I18N
 		}
@@ -314,9 +303,9 @@ public class ZCField implements Comparable<ZCField> {
 					{
 						subFormRecordValue.setChoiceValue(recordValue.getChoiceValue());
 					}
-					//					else if(recordValueField.getType().equals(FieldType.FILE_UPLOAD) || recordValueField.getType().equals(FieldType.IMAGE)) {
+					//else if(recordValueField.getType().equals(FieldType.FILE_UPLOAD) || recordValueField.getType().equals(FieldType.IMAGE)) {
 					//						
-					//					} 
+					//} 
 					else {
 						subFormRecordValue.setValue(recordValue.getValue());
 					}
@@ -458,14 +447,6 @@ public class ZCField implements Comparable<ZCField> {
 
 	public void onUserInputForFormula(List<ZCRecordValue> subFormTempRecordValues) throws ZCException{
 		ZOHOCreator.callFieldOnUser(baseForm, fieldName, true,subFormTempRecordValues);
-	}
-
-	public void setTextValue(String textValue) {
-		this.textValue  =  textValue;
-	}
-
-	public String getTextValue() {
-		return textValue;
 	}
 
 	public boolean isOnAddRowExists()

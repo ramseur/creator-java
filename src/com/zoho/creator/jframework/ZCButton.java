@@ -3,7 +3,6 @@ package com.zoho.creator.jframework;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -100,17 +99,24 @@ public class ZCButton implements Comparable<ZCButton>{
 				if(baseLookupField != null) {
 					ZCForm baseForm = baseLookupField.getBaseForm();
 					params.add(new BasicNameValuePair("childAppLinkName" , baseForm.getAppLinkName()));//No I18N
-					params.add(new BasicNameValuePair("childFormLinkName" , baseForm.getComponentLinkName()));//No I18N
+					if(baseForm.getComponentLinkName()==null)
+					{
+
+						params.add(new BasicNameValuePair("childFormLinkName" , baseForm.getBaseSubFormField().getBaseForm().getComponentLinkName()));//No I18N
+					}
+					else
+					{
+						params.add(new BasicNameValuePair("childFormLinkName" , baseForm.getComponentLinkName()));//No I18N
+					}
 					params.add(new BasicNameValuePair("childFieldLabelName" , baseLookupField.getFieldName()));//No I18N
 				}
 				params.addAll(ZOHOCreator.getAdditionalParamsForForm(zcForm, baseLookupField));
 				response =  ZOHOCreator.postXMLString(zcForm.getAppOwner(), xmlString, action, params, zcForm);		
 			} else {
-				URLPair urlPair = ZCURL.buttonOnClick(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), linkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(null));
+				URLPair urlPair = ZCURL.buttonOnClick(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), linkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(null,-1));
 				response = ZOHOCreator.parseResponseDocumentForJSONString(urlPair, zcForm);
 
 			}
-			Hashtable<ZCField, String> errorMessagesTable = response.getErrorMessagesTable();
 			if(response.isError()) {
 				////System.out.println("inside responsesss");
 				return response;
