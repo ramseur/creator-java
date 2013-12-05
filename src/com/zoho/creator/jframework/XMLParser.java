@@ -478,7 +478,6 @@ class XMLParser {
 		String delugeType = "";
 		String appLinkName = applinkName;
 		String formLinkName = formlinkName;
-		System.out.println("applinkname,formlinkname"+appLinkName+formLinkName);
 
 		String initialValue = "";
 		List<String> initialChoiceValues = new ArrayList<String>(); 		
@@ -733,7 +732,6 @@ class XMLParser {
 			}
 			zcField.setRecordValue(new ZCRecordValue(zcField, toAdd));
 		} else {
-			System.out.println("zcFielddisplayname"+zcField.getDisplayName()+initialValue);
 			zcField.setRecordValue(new ZCRecordValue(zcField, initialValue));
 		}
 

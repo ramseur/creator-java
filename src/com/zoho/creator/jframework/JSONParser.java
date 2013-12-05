@@ -209,7 +209,6 @@ class JSONParser {
 									else
 									{
 										subFormRecordValue.setValue(value);
-										System.out.println("setvalueof subformrecord"+value);
 									}
 									break;
 								}
@@ -239,7 +238,6 @@ class JSONParser {
 								}
 							}
 						}
-
 					}
 					else
 					{
@@ -252,6 +250,25 @@ class JSONParser {
 						}
 						else
 						{
+							if(recordValue.getField().getType().equals(FieldType.NOTES)){
+								if(value.contains("<img")){
+                        			int indexOfImgTag = value.indexOf("<img");
+                        			int indexOfImgSrc = value.indexOf("src", indexOfImgTag);
+                        			int indexOfstartVal = value.indexOf("\"", indexOfImgSrc);
+                        			int count = 0;
+                        			for(int l=indexOfstartVal+1;;l++){
+                        				if(value.charAt(l) != '\"'){
+                        					count++;
+                        				}else{
+                        					break;
+                        				}
+                        			}
+                        			String substring = value.substring(indexOfstartVal+1, indexOfstartVal+count+1);
+                        			String[] tokens = substring.split("/");
+                        			String urlForImg = ZOHOCreator.getFileUploadURL(tokens[tokens.length-1], tokens[1], tokens[2], tokens[3]);
+                        			value = value.replace(substring, urlForImg);
+								}
+							}
 							recordValue.setValue(value);
 						}
 					}

@@ -555,7 +555,6 @@ public class ZOHOCreator {
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
 		URLPair formOnAddOnLoadURL = ZCURL.formOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), params );
 		String response = ZOHOCreator.postURL(formOnAddOnLoadURL.getUrl(), formOnAddOnLoadURL.getNvPair());
-		System.out.println("onload response"+response);
 		JSONParser.parseAndCallFormEvents(response, zcForm,null,null);
 	}
 
@@ -563,16 +562,12 @@ public class ZOHOCreator {
 		List<NameValuePair> params = zcForm.getFieldParamValues(null,-1);
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
 		URLPair formEditOnAddOnLoadURL = ZCURL.formEditOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), params,recordLinkId);
-		System.out.println("onEditload url"+getURLString(formEditOnAddOnLoadURL.getUrl(), formEditOnAddOnLoadURL.getNvPair()));
 		String response = ZOHOCreator.postURL(formEditOnAddOnLoadURL.getUrl(), formEditOnAddOnLoadURL.getNvPair());
-		System.out.println("onEditload response"+response);
 		JSONParser.parseAndCallFormEvents(response, zcForm,null,null);
 	}
 
 	private static void callDelugeEvents(ZCForm zcForm, URLPair urlPair,List<ZCRecordValue> recordValues,ZCForm currentShownForm) throws ZCException{
-		System.out.println("deluge url"+getURLString(urlPair.getUrl(), urlPair.getNvPair()));
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
-		System.out.println("deluge response"+response);
 		JSONParser.parseAndCallFormEvents(response,zcForm,recordValues,currentShownForm);
 	}
 
@@ -890,12 +885,10 @@ public class ZOHOCreator {
 		ZCResponse toReturn = new ZCResponse();
 		try {
 			String status = xPath.compile("/response/result/form/" + action + "/status").evaluate(rootDocument);//No I18N
-			System.out.println("zcresponsestatus");
 			if(status.startsWith("Failure")) {
 				toReturn.setError(true);
 				String[] failureMessages = status.split(",");
 				List<ZCField> fields = form.getFields();
-				System.out.println("failuremessages...."+failureMessages);
 				if(status.contains("*")) {
 					toReturn.setMainErrorMessage("Invalid entries found. Please correct and submit again.");//No I18N
 					for(int i=1;i<failureMessages.length;i++)
@@ -924,7 +917,6 @@ public class ZOHOCreator {
 				if(form != null) {
 					xPath = XPathFactory.newInstance().newXPath();
 					String idValue = xPath.compile("/response/result/form/add/values/field[@name=\"ID\"]").evaluate(rootDocument);//No I18N
-					System.out.println("idvalue...."+idValue);
 					if(idValue.length()!=0) {
 						toReturn.setSuccessRecordID(Long.parseLong(idValue));
 					}
