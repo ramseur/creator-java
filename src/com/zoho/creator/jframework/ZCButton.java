@@ -158,7 +158,6 @@ public class ZCButton implements Comparable<ZCButton>{
 			URLPair urlPair = ZCURL.fileUploadURL(zcForm.getAppOwner());
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.addAll(urlPair.getNvPair());
-			System.out.println("successrecordid"+response.getSuccessRecordID());
 			params.add(new BasicNameValuePair("applinkname", zcForm.getAppLinkName()));//No I18N
 			params.add(new BasicNameValuePair("formname", zcForm.getComponentLinkName()));//No I18N
 			params.add(new BasicNameValuePair("fieldname", field.getFieldName()));//No I18N
