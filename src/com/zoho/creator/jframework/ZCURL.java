@@ -143,7 +143,6 @@ public class ZCURL {
 //			}
 //			else
 //			{
-
 			return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName + "/fields/", params);//No I18N
 		//	}
 		}
@@ -171,6 +170,16 @@ public class ZCURL {
 		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName +"/lookup/"+lookupFieldName+ "/options/", params);//No I18N
 	}
 
+	static URLPair formOnLoad(String appLinkName, String formLinkName, String appOwner, List<NameValuePair> additionalParams) {
+		List<NameValuePair> params = getDefaultParams();
+		params.add(new BasicNameValuePair("sharedBy", appOwner));
+		params.add(new BasicNameValuePair("appLinkName", appLinkName));
+		params.add(new BasicNameValuePair("formLinkName", formLinkName));
+		params.add(new BasicNameValuePair("linkNameBased", "true"));
+		params.addAll(additionalParams);
+		
+		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
+	}
 	static URLPair formEditOnLoad(String appLinkName, String formLinkName, String appOwner,List<NameValuePair> additionalparams,Long recordLinkId) {
 		List<NameValuePair> params=getDefaultParams();
 		params.add(new BasicNameValuePair("sharedBy", appOwner));
@@ -217,16 +226,7 @@ public class ZCURL {
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}
 
-	static URLPair formOnLoad(String appLinkName, String formLinkName, String appOwner, List<NameValuePair> additionalParams) {
-		List<NameValuePair> params = getDefaultParams();
-		params.add(new BasicNameValuePair("sharedBy", appOwner));
-		params.add(new BasicNameValuePair("appLinkName", appLinkName));
-		params.add(new BasicNameValuePair("formLinkName", formLinkName));
-		params.add(new BasicNameValuePair("linkNameBased", "true"));
-		params.addAll(additionalParams);
-		
-		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
-	}
+	
 
 	static URLPair buttonOnClick(String appLinkName, String formLinkName, String buttonName, String appOwner,List<NameValuePair> additionalParams) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();

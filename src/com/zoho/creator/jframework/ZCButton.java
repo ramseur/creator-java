@@ -127,7 +127,7 @@ public class ZCButton implements Comparable<ZCButton>{
 				if(FieldType.isPhotoField(field.getType())) {
 					ZCRecordValue recValue = field.getRecordValue();
 					File fileToUpload = recValue.getFileValue();
-					constructImageUrl(field,response,fileToUpload);	
+					constructImageUrl(field,response,fileToUpload,action);	
 				}
 				if(field.getType()==FieldType.SUB_FORM)
 				{
@@ -141,7 +141,7 @@ public class ZCButton implements Comparable<ZCButton>{
 							ZCRecordValue recordValue = zcRecordValues.get(k);
 							if (FieldType.isPhotoField(recordValue.getField().getType()))
 							{
-								constructImageUrl(field,response,recordValue.getFileValue());
+								constructImageUrl(field,response,recordValue.getFileValue(),action);
 							}
 						}
 					}	
@@ -151,17 +151,25 @@ public class ZCButton implements Comparable<ZCButton>{
 		return response;
 	}
 
-	private void constructImageUrl(ZCField field,ZCResponse response,File fileToUpload) throws ZCException
+	private void constructImageUrl(ZCField field,ZCResponse response,File fileToUpload,String action) throws ZCException
 	{
 		if(fileToUpload!=null)
 		{
 			URLPair urlPair = ZCURL.fileUploadURL(zcForm.getAppOwner());
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.addAll(urlPair.getNvPair());
+			System.out.println("successrecordid"+response.getSuccessRecordID());
 			params.add(new BasicNameValuePair("applinkname", zcForm.getAppLinkName()));//No I18N
 			params.add(new BasicNameValuePair("formname", zcForm.getComponentLinkName()));//No I18N
 			params.add(new BasicNameValuePair("fieldname", field.getFieldName()));//No I18N
-			params.add(new BasicNameValuePair("recordId", response.getSuccessRecordID() + ""));//No I18N
+			if(action == "update")
+			{
+				 params.add(new BasicNameValuePair("recordId", ZOHOCreator.getCurrentEditRecord().getRecordId() + ""));//No I18N
+			}
+			else
+			{
+			 params.add(new BasicNameValuePair("recordId", response.getSuccessRecordID() + ""));//No I18N
+			}
 			params.add(new BasicNameValuePair("filename", fileToUpload.getName()));//No I18N
 			ZOHOCreator.postFile(urlPair.getUrl(), fileToUpload, params);	
 		}	
