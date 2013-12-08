@@ -714,10 +714,11 @@ class XMLParser {
 
 			}
 			zcField.setRecordValue(new ZCRecordValue(zcField, selectedChoices)); 
-		} else if(FieldType.isPhotoField(fieldType)) {
-			File file = null;
-			zcField.setRecordValue(new ZCRecordValue(zcField, file));
-		} else if(FieldType.isSingleChoiceField(fieldType)) {
+		
+//		} else if(FieldType.isPhotoField(fieldType)) {
+//			File file = null;
+//			zcField.setRecordValue(new ZCRecordValue(zcField, file));
+	} else if(FieldType.isSingleChoiceField(fieldType)) {
 			ZCChoice toAdd = null;
 			if(keys.size()>0)
 			{

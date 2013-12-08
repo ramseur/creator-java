@@ -91,6 +91,7 @@ public class ZOHOCreator {
 	}
 
 	public static String getFileUploadURL(String filepath, String appOwner, String appLinkName, String viewLinkName) {
+		System.out.println("");
 		return ZCURL.getURLString(ZCURL.getFileUploadURL(filepath, appOwner, appLinkName, viewLinkName));
 	}
 
@@ -194,7 +195,6 @@ public class ZOHOCreator {
 	public static ZCForm getCurrentSubForm() {
 		return subform;
 	}
-
 
 	public static ZCRecord getCurrentEditRecord() {
 		return editRecord;
@@ -553,7 +553,9 @@ public class ZOHOCreator {
 		List<NameValuePair> params = zcForm.getFieldParamValues(null,-1);
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
 		URLPair formOnAddOnLoadURL = ZCURL.formOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), params );
+		System.out.println("formonloadurl"+getURLString(formOnAddOnLoadURL.getUrl(), formOnAddOnLoadURL.getNvPair()));
 		String response = ZOHOCreator.postURL(formOnAddOnLoadURL.getUrl(), formOnAddOnLoadURL.getNvPair());
+		System.out.println("onload response"+response);
 		JSONParser.parseAndCallFormEvents(response, zcForm,null,null);
 	}
 
@@ -674,12 +676,12 @@ public class ZOHOCreator {
 		}
 		else
 		{
-			formAccessType = ZCForm.FORM_LOOKUP_ADD_FORM;
+			formAccessType = ZCForm.FORM_ALONE;
 		}
 		//List<NameValuePair> params = getAdditionalParamsForForm(baseForm,field);
 		//params.addAll(getCurrentForm().getFieldParamValues(recordValues));
 		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), field.getFieldName(), field.getChoices().size(), field.getSearchForChoices(), subformComponent,formAccessType,getAdditionalParamsForForm(baseForm,field));
-
+        System.out.println("lookup choices"+getURLString(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair()));
 		Document rootDocument = ZOHOCreator.postURLXML(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair());
 		return XMLParser.getLookUpChoices(rootDocument);
 

@@ -63,6 +63,7 @@ public class ZCRecordValue {
 			else
 				return choiceValue.getValue();
         }
+		System.out.println("recordvalue's Value"+value);
         return value;
 	}
 
