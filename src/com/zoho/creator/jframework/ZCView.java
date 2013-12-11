@@ -275,12 +275,9 @@ public class ZCView extends ZCComponent {
 		//recordsCount = this.records.size();
 		return getEventRecordsMap();
 	}
-
-	
     
 	void addRecords(List<ZCRecord> records) {
 		if(records.size() < ZCView.PAGE_SIZE) {
-			//System.out.println("records.size(): " + records.size());
 			lastReached = true;
 		}
 		this.records.addAll(records);

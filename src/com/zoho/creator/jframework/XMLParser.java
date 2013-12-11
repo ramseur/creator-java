@@ -1,7 +1,6 @@
 // $Id$
 package com.zoho.creator.jframework;
 
-import java.io.File;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,7 +59,6 @@ class XMLParser {
 			SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
 			return formatter.parse(dateString);
 		} catch (java.text.ParseException e) {
-			////////////System.out.println("?????");
 			//e.printStackTrace();
 		}
 		return null;
@@ -474,6 +472,7 @@ class XMLParser {
 
 		String fieldName = null;
 		FieldType fieldType = FieldType.SINGLE_LINE;
+		ExternalField externalFieldType = ExternalField.ZOHO_CRM;
 		String displayName = "";
 		String delugeType = "";
 		String appLinkName = applinkName;
@@ -567,10 +566,10 @@ class XMLParser {
 					{
 						keys.add(key);
 					}
-					else
-					{
-						initialChoiceValues.add(initialValue);
-					}
+//					else
+//					{
+					initialChoiceValues.add(initialValue);
+					//}
 				}
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("maxChar")) {
 				maxChar = getIntValue(fieldPropetyNode, maxChar);
@@ -593,6 +592,10 @@ class XMLParser {
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("Type")) {
 				int type = getIntValue(fieldPropetyNode, 1);
 				fieldType = FieldType.getFieldType(type);
+			}
+			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("serviceType")) {
+				int type = getIntValue(fieldPropetyNode, 1);
+				externalFieldType = ExternalField.getExternalFieldType(type);
 			}
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("islookupfield"))
 			{
@@ -664,6 +667,9 @@ class XMLParser {
 		}	
 
 		ZCField zcField = new ZCField(fieldName, fieldType, displayName);
+		//if(fieldType.equals(FieldType.EXTERNAL_FIELD)){
+		zcField.setExternalFieldType(externalFieldType);
+		//}
 		if(queryString!=null)
 		{
 			if(queryString.contains("&"))
@@ -692,47 +698,64 @@ class XMLParser {
 			}
 		}
 		if(FieldType.isMultiChoiceField(fieldType)) {
-			// THis is used in Edit record for multichoice field. But in form builder there is no way to set initial value
-			List<ZCChoice> selectedChoices = new ArrayList<ZCChoice>();
-			if(keys.size()>0)
+			List<ZCChoice> selectedChoices = new ArrayList<ZCChoice>();// THis is used in Edit record for multichoice field. But in form builder there is no way to set initial value
+			if(!isLookup)
 			{
-				initialChoiceValues = keys;
+				if(keys.size()>0)
+				{
+					initialChoiceValues = keys;
+				}
+				for(int j=0; j<initialChoiceValues.size(); j++) {
+					String initValue = initialChoiceValues.get(j);
+					ZCChoice toAdd = null;
+					for(int i=0; i<choices.size(); i++) {
+						ZCChoice choice = choices.get(i);
+						if(choice.getKey().equals(initValue)) {
+							toAdd = choice;
+							break;
+						}
+					}
+					if(toAdd != null) {
+						selectedChoices.add(toAdd);
+					}
+				}
+				zcField.setRecordValue(new ZCRecordValue(zcField, selectedChoices)); 
 			}
-			for(int j=0; j<initialChoiceValues.size(); j++) {
-				String initValue = initialChoiceValues.get(j);
-				ZCChoice toAdd = null;
+			else
+			{
+				for(int i=0;i<keys.size();i++)
+				{
+					selectedChoices.add(new ZCChoice(keys.get(i), initialChoiceValues.get(i)));
+				}
+				zcField.setRecordValue(new ZCRecordValue(zcField,selectedChoices));
+			}
+		} else if(FieldType.isSingleChoiceField(fieldType)) {
+			ZCChoice toAdd = null;
+			if(!isLookup)
+			{
+				if(keys.size()>0)
+				{
+					initialValue = keys.get(0);
+				}
 				for(int i=0; i<choices.size(); i++) {
 					ZCChoice choice = choices.get(i);
-					if(choice.getKey().equals(initValue)) {
+					if(choice.getKey().equals(initialValue)) {
 						toAdd = choice;
 						break;
 					}
 				}
-				if(toAdd != null) {
-					selectedChoices.add(toAdd);
+				zcField.setRecordValue(new ZCRecordValue(zcField, toAdd));
+			}
+			else
+			{  
+				if(keys.size()>0)
+				{
+					toAdd = new ZCChoice(keys.get(0), initialValue);
 				}
-
+				zcField.setRecordValue(new ZCRecordValue(zcField,toAdd));
+				
 			}
-			zcField.setRecordValue(new ZCRecordValue(zcField, selectedChoices)); 
-		
-//		} else if(FieldType.isPhotoField(fieldType)) {
-//			File file = null;
-//			zcField.setRecordValue(new ZCRecordValue(zcField, file));
-	} else if(FieldType.isSingleChoiceField(fieldType)) {
-			ZCChoice toAdd = null;
-			if(keys.size()>0)
-			{
-				initialValue = keys.get(0);
-			}
-			for(int i=0; i<choices.size(); i++) {
-				ZCChoice choice = choices.get(i);
-				if(choice.getKey().equals(initialValue)) {
-					toAdd = choice;
-					break;
-				}
-			}
-			zcField.setRecordValue(new ZCRecordValue(zcField, toAdd));
-		} else {
+		}  else {
 			zcField.setRecordValue(new ZCRecordValue(zcField, initialValue));
 		}
 
@@ -740,7 +763,6 @@ class XMLParser {
 		zcField.addChoices(choices);
 		zcField.setDefaultRows(defaultRows);
 		zcField.setMaximumRows(maximumRows);
-		zcField.setHidden(isAdminOnly);
 		zcField.setDecimalLength(decimalLength);
 
 		if(!isLookup) {
@@ -1282,6 +1304,25 @@ class XMLParser {
 		return toReturn;		
 	}
 
+	public static String parseForTokenForExternalField(Document rootDocument) {
+		// TODO Auto-generated method stub
+		String accessToken = "";
+		NodeList nl = rootDocument.getChildNodes();
+		for(int i=0; i<nl.getLength(); i++) {
+			Node responseNode = nl.item(i);
+			if(responseNode.getNodeName().equals("OAuth")) {
+				NodeList responseNodes = responseNode.getChildNodes();
+				for(int j=0; j<responseNodes.getLength(); j++) {
+					Node responseChildNode = responseNodes.item(j);
+					if(responseChildNode.getNodeName().equals("access_token")) {
+						accessToken = getChildNodeValue(responseChildNode, "access_token");
+					}
+				}
+			}
+		}
+		return accessToken;
+	}
+
 	private static String getChildNodeValue(Node parentNode, String nodeName) {
 		NodeList parentNodeChildNodes = parentNode.getChildNodes();
 		for(int i=0; i<parentNodeChildNodes.getLength(); i++) {
@@ -1330,6 +1371,8 @@ class XMLParser {
 			return null;
 		}
 	}
+
+
 
 
 

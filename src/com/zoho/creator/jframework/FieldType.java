@@ -8,7 +8,7 @@ import java.util.Map;
 
 public enum FieldType   {
 	
-	SINGLE_LINE (1), MULTI_LINE (2), EMAIL (3), NUMBER(5), CURRENCY(8), PERCENTAGE(7), DECISION_CHECK_BOX(16), DATE(10), NOTES(24), FORMULA(20), FILE_UPLOAD(19), DECIMAL(6), IMAGE(18), URL(17), DATE_TIME(11), SUB_FORM(21), RICH_TEXT(4), AUTO_NUMBER(9), DROPDOWN(12), RADIO(13) , MULTISELECT(14), CHECKBOXES(15), NEW_PICKLIST(1100), NEW_RADIO(1101),ZOHO_CRM(22),ZOHO_CRM_LINK(23),UNKNOWN(-1);
+	SINGLE_LINE (1), MULTI_LINE (2), EMAIL (3), NUMBER(5), CURRENCY(8), PERCENTAGE(7), DECISION_CHECK_BOX(16), DATE(10), NOTES(24), FORMULA(20), FILE_UPLOAD(19), DECIMAL(6), IMAGE(18), URL(17), DATE_TIME(11), SUB_FORM(21), RICH_TEXT(4), AUTO_NUMBER(9), DROPDOWN(12), RADIO(13) , MULTISELECT(14), CHECKBOXES(15), NEW_PICKLIST(1100), NEW_RADIO(1101),EXTERNAL_FIELD(22),EXTERNAL_LINK(23),UNKNOWN(-1);
 
 	private static Map<Integer, FieldType> typeMap;
 
@@ -27,7 +27,7 @@ public enum FieldType   {
     public String toString() {
 		switch (fieldType) {
 		case 1:
-				return "SINGLE LINE";//No I18N
+			return "SINGLE LINE";//No I18N
 		case 2:
 			return "MULTI LINE";//No I18N
 		case 3:
@@ -58,6 +58,10 @@ public enum FieldType   {
 			return "DATE TIME";//No I18N
 		case 21:
 			return "SUB FORM";//No I18N
+		case 22:
+			return "EXTERNAL FIELD";
+		case 23:
+			return "EXTERNAL LINK";
 		case 4:
 			return "RICH TEXT";//No I18N
 		case 9:
@@ -93,6 +97,7 @@ public enum FieldType   {
     			ftype.equals(FieldType.RADIO) || 
     			ftype.equals(FieldType.DROPDOWN) || 
     			ftype.equals(FieldType.CHECKBOXES) ||
+    			ftype.equals(FieldType.EXTERNAL_FIELD) ||
     			ftype.equals(FieldType.NEW_PICKLIST) ||
     			ftype.equals(FieldType.NEW_RADIO);
     }
@@ -101,6 +106,7 @@ public enum FieldType   {
     	return 	ftype.equals(FieldType.RADIO) || 
     			ftype.equals(FieldType.DROPDOWN) || 
     			ftype.equals(FieldType.NEW_PICKLIST) ||
+    			ftype.equals(FieldType.EXTERNAL_FIELD) ||
     			ftype.equals(FieldType.NEW_RADIO);
     }
 
@@ -137,6 +143,14 @@ public enum FieldType   {
     			ftype.equals(FieldType.UNKNOWN) || 
     			ftype.equals(FieldType.AUTO_NUMBER) || 
     			ftype.equals(FieldType.RICH_TEXT));
+    }
+    
+    
+    public static boolean isDisplayAsLinksField(FieldType ftype) {
+    	return 	ftype.equals(FieldType.RICH_TEXT) || 
+    			ftype.equals(FieldType.URL) || 
+    			ftype.equals(FieldType.EXTERNAL_FIELD) || 
+    			ftype.equals(FieldType.SUB_FORM);
     }
     
     static FieldType getFieldType(String type) {
@@ -176,9 +190,9 @@ public enum FieldType   {
 		} else if(type.equals("SUB_FORM")){
 			fieldType = FieldType.SUB_FORM;
 		} else if(type.equals("EXTERNAL_FIELD")){
-			fieldType = FieldType.ZOHO_CRM;
+			fieldType = EXTERNAL_FIELD;
 		} 
-    	
+    		
 		return fieldType;
     }
     	

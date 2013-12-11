@@ -80,6 +80,7 @@ public class ZOHOCreator {
 	private static String creatorURL = "creator.zoho.com";//No I18N
 	private static String prefix = "https";//No I18N
 	private static Properties props = new Properties();
+	private static String accessTokenForExternalField;
 
 
 	public static String getLoginURL() {
@@ -91,7 +92,6 @@ public class ZOHOCreator {
 	}
 
 	public static String getFileUploadURL(String filepath, String appOwner, String appLinkName, String viewLinkName) {
-		System.out.println("");
 		return ZCURL.getURLString(ZCURL.getFileUploadURL(filepath, appOwner, appLinkName, viewLinkName));
 	}
 
@@ -553,9 +553,7 @@ public class ZOHOCreator {
 		List<NameValuePair> params = zcForm.getFieldParamValues(null,-1);
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
 		URLPair formOnAddOnLoadURL = ZCURL.formOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), params );
-		System.out.println("formonloadurl"+getURLString(formOnAddOnLoadURL.getUrl(), formOnAddOnLoadURL.getNvPair()));
 		String response = ZOHOCreator.postURL(formOnAddOnLoadURL.getUrl(), formOnAddOnLoadURL.getNvPair());
-		System.out.println("onload response"+response);
 		JSONParser.parseAndCallFormEvents(response, zcForm,null,null);
 	}
 
@@ -652,6 +650,8 @@ public class ZOHOCreator {
 		}		
 		throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Trying to fetch view details. But not a view"); //No I18N
 	}
+	
+	
 
 	static List<ZCChoice> loadMoreChoices(ZCField field, ZCField subFormField) throws ZCException {
 		ZCForm baseForm = field.getBaseForm();
@@ -663,7 +663,6 @@ public class ZOHOCreator {
 
 		if(getCurrentForm().getViewForAdd()!=null)
 		{
-
 			formAccessType = ZCForm.VIEW_ADD_FORM;
 		}
 		else if(getCurrentForm().getViewForEdit()!=null)
@@ -680,8 +679,7 @@ public class ZOHOCreator {
 		}
 		//List<NameValuePair> params = getAdditionalParamsForForm(baseForm,field);
 		//params.addAll(getCurrentForm().getFieldParamValues(recordValues));
-		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), field.getFieldName(), field.getChoices().size(), field.getSearchForChoices(), subformComponent,formAccessType,getAdditionalParamsForForm(baseForm,field));
-        System.out.println("lookup choices"+getURLString(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair()));
+		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), field.getFieldName(), field.getChoices().size(), field.getSearchForChoices(), subformComponent,formAccessType,getAdditionalParamsForForm(baseForm,field),field);
 		Document rootDocument = ZOHOCreator.postURLXML(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair());
 		return XMLParser.getLookUpChoices(rootDocument);
 
@@ -852,7 +850,21 @@ public class ZOHOCreator {
 		Document toReturn = ZOHOCreator.postURLXML(viewURLPair.getUrl(), params);		
 		return toReturn;
 	}
+	
+	public static void getAuthTokenForExternalField(String accessToken) throws ZCException{
+		URLPair externalFieldTokenURLPair = ZCURL.externalFieldTokenURL(accessToken);
+		String rootDocument = ZOHOCreator.postURL(externalFieldTokenURLPair.getUrl(), externalFieldTokenURLPair.getNvPair());
+		ZOHOCreator.setAccessTokenForExternalField(JSONParser.parseForTokenForExternalField(rootDocument));
+	}
 
+	private static void setAccessTokenForExternalField(String accessTokenForExternalField) {
+		// TODO Auto-generated method stub
+		ZOHOCreator.accessTokenForExternalField = accessTokenForExternalField;
+	}
+	
+	public static String getAccessTokenForExternalField(){
+		return accessTokenForExternalField;
+	}
 	static ZCResponse postCustomAction(String appLinkName, String viewLinkName, String appOwner, long customActionId, List<Long> recordIDs) throws ZCException{
 		URLPair customActionURLPair = ZCURL.customActionURL(appLinkName, viewLinkName, customActionId, appOwner, recordIDs);
 		Document rootDocument = ZOHOCreator.postURLXML(customActionURLPair.getUrl(), customActionURLPair.getNvPair());
@@ -1042,7 +1054,7 @@ public class ZOHOCreator {
 	}
 
 	static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-		//System.out.println("urleeeee"+getURLString(url, params));
+		System.out.println("urleeeee"+getURLString(url, params));
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1058,7 +1070,6 @@ public class ZOHOCreator {
 			HttpEntity entity = null;
 			try {
 				entity = client.execute(request).getEntity();
-
 			} catch (ClientProtocolException e) {
 				throw new ZCException("Unable to connect with Zoho Creator", ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
 			} 
@@ -1076,7 +1087,6 @@ public class ZOHOCreator {
 				} catch (SAXException e) {
 					throw new ZCException("An error has occured", ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
 				}  
-
 				finally {
 					if(is != null) {
 						is.close();

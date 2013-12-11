@@ -110,13 +110,10 @@ class JSONParser {
 					recordValue = field.getRecordValue();
 					field.setRebuildRequired(true);
 				}
-				//System.out.println("type  "+type+" formName "+formName+" fieldname "+fieldName+" arrayList "+choiceValues);
 				if(type==ZCForm.task_hide) {
-					//System.out.println("inside hide");
 					field.setHidden(true);
 				} else if(type==ZCForm.task_show) {
 					field.setHidden(false);
-					//        //System.out.println("inside h");
 				} else if(type==ZCForm.task_enable) {
 					field.setDisabled(false);
 				} else if(type==ZCForm.task_disable) {
@@ -162,7 +159,6 @@ class JSONParser {
 					}
 				} else if(type==ZCForm.task_alert) {
 					alertMessages.add(alertMessage);
-					//System.out.println("inside alertmessage"+alertMessage);
 				} else if(type==ZCForm.task_reloadForm) {
 					form.setReLoadForm(true);
 					break;
@@ -293,7 +289,6 @@ class JSONParser {
 			e.printStackTrace();
 		}
 		if(alertMessages.size() >0) {
-			//System.out.println("inside alerrr");
 			if(currentShownForm!=null)
 			{
 				currentShownForm.setAlertMessages(alertMessages);
@@ -327,6 +322,22 @@ class JSONParser {
 			
 		}
 
+		return toReturn;
+	}
+	
+	static String parseForTokenForExternalField(String response){
+		String toReturn = "";
+		try {
+			JSONObject jsonObject = new JSONObject(response);
+				if(jsonObject.has("access_token"))
+				{
+					toReturn = jsonObject.getString("access_token");
+				}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return toReturn;
 	}
 }

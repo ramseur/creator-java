@@ -79,9 +79,7 @@ public class ZCButton implements Comparable<ZCButton>{
 
 	public ZCResponse click() throws ZCException {
 		ZCResponse response =  null;
-		////System.out.println("inside click");
 		if(!buttonType.equals(ZCButtonType.RESET)) {
-			////System.out.println("inside click");
 			String action = "add"; //No I18N
 			String xmlString = zcForm.getXMLStringForSubmit();
 			if(!zcForm .isStateLess()) 
@@ -101,7 +99,6 @@ public class ZCButton implements Comparable<ZCButton>{
 					params.add(new BasicNameValuePair("childAppLinkName" , baseForm.getAppLinkName()));//No I18N
 					if(baseForm.getComponentLinkName()==null)
 					{
-
 						params.add(new BasicNameValuePair("childFormLinkName" , baseForm.getBaseSubFormField().getBaseForm().getComponentLinkName()));//No I18N
 					}
 					else
@@ -115,7 +112,6 @@ public class ZCButton implements Comparable<ZCButton>{
 			} else {
 				URLPair urlPair = ZCURL.buttonOnClick(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), linkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(null,-1));
 				response = ZOHOCreator.parseResponseDocumentForJSONString(urlPair, zcForm);
-
 			}
 			if(response.isError()) {
 				return response;

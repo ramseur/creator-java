@@ -148,7 +148,7 @@ public class ZCURL {
 		}
 	}
 
-	static URLPair lookupChoices(String appLinkName, String formLinkName, String appOwner,String lookupFieldName, int startIndex, String searchString, String subformComponent,int formAccessType,List<NameValuePair> additionalParams) {
+	static URLPair lookupChoices(String appLinkName, String formLinkName, String appOwner,String lookupFieldName, int startIndex, String searchString, String subformComponent,int formAccessType,List<NameValuePair> additionalParams, ZCField field) {
 		List<NameValuePair> params = getDefaultParams();
 		params.add(new BasicNameValuePair("limit", 50 + ""));
 		params.add(new BasicNameValuePair("appendRows", "true"));
@@ -166,8 +166,16 @@ public class ZCURL {
 		}
 		params.add(new BasicNameValuePair("zc_ownername",appOwner));
 		params.add(new BasicNameValuePair("formAccessType", String.valueOf(formAccessType)));//No I18N
+		String urlValToAdd = "lookup";
+		if(field.getType().equals(FieldType.EXTERNAL_FIELD)){
+			urlValToAdd = "externalfield";
+			if(field.getExternalFieldType().equals(ExternalField.SALES_FORCE)){
+				params.add(new BasicNameValuePair("accesstoken", ZOHOCreator.getAccessTokenForExternalField()));
+			}
+		}
+		
 		params.addAll(additionalParams);
-		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName +"/lookup/"+lookupFieldName+ "/options/", params);//No I18N
+		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName +"/"+urlValToAdd+"/"+lookupFieldName+ "/options/", params);//No I18N
 	}
 
 	static URLPair formOnLoad(String appLinkName, String formLinkName, String appOwner, List<NameValuePair> additionalParams) {
@@ -319,6 +327,18 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("PASSWORD", password));//No I18N
 		return new URLPair("https://" + ZOHOCreator.getAccountsURL() + "/apiauthtoken/nb/create", params);
 	}
+	
+	public static URLPair externalFieldTokenURL(String accessToken) {
+		// TODO Auto-generated method stub
+		//grant_type=authorization_code&code=%@&client_id=3MVG9Y6d_Btp4xp5MNbwoUX5SZA0SD0OO15kwh0D4sVVDVIeWoWNL2qIWQYxS6zNukVuxHdCt.SLq87xwXxGk&client_secret=4406449787548088942&redirect_uri=https://creator.zoho.com",
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("grant_type", "authorization_code"));
+		params.add(new BasicNameValuePair("code", accessToken));//No I18N
+		params.add(new BasicNameValuePair("client_id", "3MVG9Y6d_Btp4xp5MNbwoUX5SZA0SD0OO15kwh0D4sVVDVIeWoWNL2qIWQYxS6zNukVuxHdCt.SLq87xwXxGk"));//No I18N
+		params.add(new BasicNameValuePair("client_secret", "4406449787548088942"));//No I18N
+		params.add(new BasicNameValuePair("redirect_uri", "https://creator.zoho.com"));//No I18N
+		return new URLPair("https://login.salesforce.com/services/oauth2/token", params);
+	}
 
 
 	static String getURLString(URLPair urlPair) {
@@ -336,6 +356,8 @@ public class ZCURL {
 		}
 		return buff.toString();
 	}
+
+	
 
 
 }

@@ -120,7 +120,6 @@ public class ZCForm extends ZCComponent {
 
 
 	void addButtons(List<ZCButton> buttons) {
-		//System.out.println("booleannn"+buttonsAdded);
 		if(!buttonsAdded) {
 			this.buttons.addAll(buttons);
 			buttonsAdded = true;
@@ -153,7 +152,6 @@ public class ZCForm extends ZCComponent {
 		String listTag = "formlist";//No I18N
 		String compTag = "form";//No I18N
 		String compLinkNameValue = getComponentLinkName();
-		//System.out.println("compliiiiiii"+compLinkNameValue);
 		String actionTag = "add";//No I18N
 		String newValuesOpenTag = "";//No I18N
 		String newValuesCloseTag = "";//No I18N
@@ -221,18 +219,14 @@ public class ZCForm extends ZCComponent {
 		}
 		for(int i=0; i<fieldsToIterate.size(); i++) {//No I18N
 			ZCField field = fieldsToIterate.get(i);
-			//ZCRecordValue recordValue = field.getEnteredValue();
 			ZCRecordValue recordValue = field.getRecordValue();
 			if(recordValue != null) 
 			{
 				if(FieldType.isMultiChoiceField(field.getType())) 
 				{
 					List<ZCChoice> values = recordValue.getChoiceValues();
-					////System.out.println("values"+values.size()+values.get(0));
-
 					if(values.size()!=0)
 					{
-						//if(!values.get(0).equals("")) {
 						buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
 						buff.append("<options>");//No I18N
 						for(int j=0; j<values.size(); j++) {
@@ -276,7 +270,6 @@ public class ZCForm extends ZCComponent {
 				}
 			}
 		}
-		////System.out.println("response stringgg"+buff.toString());
 		return buff.toString();
 	}
 
@@ -373,7 +366,6 @@ public class ZCForm extends ZCComponent {
 	private List<NameValuePair> getTempRecordParams(List<ZCRecordValue> zcRecordValues,String fieldName,int rowPosition)
 	{
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		//System.out.println("recooooor  "+zcRecordValues.size());
 		params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+rowPosition+").SV(record::status)","added"));
 		for(int i=0;i<zcRecordValues.size();i++)
 		{
@@ -385,7 +377,6 @@ public class ZCForm extends ZCComponent {
 				for(int j=0;j<choices.size();j++)
 				{
 					params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+rowPosition+").SV("+field.getFieldName()+")",choices.get(j).getKey()));
-					//System.out.println("recooooormulti  "+recordValue.getValues().get(j));
 				}
 			}
 			else
@@ -410,10 +401,8 @@ public class ZCForm extends ZCComponent {
 	private List<NameValuePair> getParamsForSubFormEntries(List<ZCRecord> subFormEntries,String fieldName)
 	{
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		//System.out.println("inside fieldtypeff");
 		for(int i=0;i<subFormEntries.size();i++)
 		{	
-			//System.out.println("inside fieldtypef");
 			ZCRecord subFormRecord = subFormEntries.get(i);	
 			List<ZCRecordValue> subFormRecordValues = subFormRecord.getValues();
 			params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV(record::status)", "added"));
@@ -533,7 +522,6 @@ public class ZCForm extends ZCComponent {
 	public void setAlertMessages(List<String> alertMessages) {
 
 		this.alertMessages = alertMessages;
-		//System.out.println("inside eeeee"+this.alertMessages);
 	}
 
 	public boolean isReLoadForm() {

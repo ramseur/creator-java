@@ -62,6 +62,7 @@ public class ZCField implements Comparable<ZCField> {
 	private boolean isLastReachedForChoices = false;
 	private String searchStringForChoices = null;
 	private boolean lookupLoadingStarted = false;
+	private ExternalField externalFieldType = null;
 
 
 	ZCField(String fieldName, FieldType type, String displayName) {
@@ -532,4 +533,12 @@ public class ZCField implements Comparable<ZCField> {
 		this.decimalLength = decimalLength;
 	}
 
+	public void setExternalFieldType(ExternalField externalFieldType) {
+		// TODO Auto-generated method stub
+		this.externalFieldType  = externalFieldType;
+	}
+	
+	public ExternalField getExternalFieldType(){
+		return externalFieldType;
+	}
 }

@@ -60,10 +60,11 @@ public class ZCRecordValue {
 			{
 				return "";
 			}
-			else
+			else{
 				return choiceValue.getValue();
+			}
+				
         }
-		System.out.println("recordvalue's Value"+value);
         return value;
 	}
 
