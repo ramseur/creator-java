@@ -184,8 +184,8 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("appLinkName", appLinkName));
 		params.add(new BasicNameValuePair("formLinkName", formLinkName));
 		params.add(new BasicNameValuePair("linkNameBased", "true"));
+		params.add(new BasicNameValuePair("recType", "2"));
 		params.addAll(additionalParams);
-		
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}
 	static URLPair formEditOnLoad(String appLinkName, String formLinkName, String appOwner,List<NameValuePair> additionalparams,Long recordLinkId) {
@@ -215,7 +215,6 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("subfcname","SF(SubForm).FD(t::row_"+entryPosition+").SV("+subFormFieldLinkName+")"));
 		params.add(new BasicNameValuePair("rowseqid","t::row_"+entryPosition));
 		params.addAll(additionalParams);
-
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 
 	}

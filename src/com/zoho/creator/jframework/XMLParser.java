@@ -19,6 +19,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -551,7 +554,8 @@ class XMLParser {
 					for(int k=0; k<recordsList.getLength(); k++) {
 						Node recordNode = recordsList.item(k);
 						if(recordNode.getNodeName().equals("record")) {
-							parseAndSetRecord(null, recordNode, subFormEntries, subFormFields);
+							ZCRecord zcRecord = parseAndSetRecord(null, recordNode, subFormFields);
+							subFormEntries.add(zcRecord);
 						}
 					}
 				}
@@ -642,6 +646,18 @@ class XMLParser {
 			{
 				maximumRows = getIntValue(fieldPropetyNode, maximumRows);
 			}
+			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("subformrecords"))
+			{
+
+				NodeList subFormRecordsNodeList = fieldPropetyNode.getChildNodes();
+				for(int m=0; m<subFormRecordsNodeList.getLength(); m++) {
+					Node subFormRecordsNode = subFormRecordsNodeList.item(m);
+					System.out.println("recordsid length"+subFormRecordsNodeList.getLength());
+					ZCRecord record = parseAndSetRecord(null, subFormRecordsNode, subFormFields);
+					subFormEntries.add(record);
+				}
+
+			}
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("SubFormFields")) {
 				NodeList subFormFieldNodes = fieldPropetyNode.getChildNodes();
 				hasSubForm = true;
@@ -697,6 +713,7 @@ class XMLParser {
 				}
 			}
 		}
+
 		if(FieldType.isMultiChoiceField(fieldType)) {
 			List<ZCChoice> selectedChoices = new ArrayList<ZCChoice>();// THis is used in Edit record for multichoice field. But in form builder there is no way to set initial value
 			if(!isLookup)
@@ -723,6 +740,7 @@ class XMLParser {
 			}
 			else
 			{
+
 				for(int i=0;i<keys.size();i++)
 				{
 					selectedChoices.add(new ZCChoice(keys.get(i), initialChoiceValues.get(i)));
@@ -732,7 +750,7 @@ class XMLParser {
 		} else if(FieldType.isSingleChoiceField(fieldType)) {
 			ZCChoice toAdd = null;
 			if(!isLookup)
-			{
+			{	
 				if(keys.size()>0)
 				{
 					initialValue = keys.get(0);
@@ -747,17 +765,21 @@ class XMLParser {
 				zcField.setRecordValue(new ZCRecordValue(zcField, toAdd));
 			}
 			else
-			{  
+			{   
 				if(keys.size()>0)
 				{
 					toAdd = new ZCChoice(keys.get(0), initialValue);
 				}
 				zcField.setRecordValue(new ZCRecordValue(zcField,toAdd));
-				
 			}
-		}  else {
+		} 
+		//		 else if(FieldType.isPhotoField(fieldType)) {
+		//			File file = null;
+		//			zcField.setRecordValue(new ZCRecordValue(zcField, file));}
+		else {
 			zcField.setRecordValue(new ZCRecordValue(zcField, initialValue));
 		}
+
 
 		zcField.setHidden(isAdminOnly);
 		zcField.addChoices(choices);
@@ -900,37 +922,59 @@ class XMLParser {
 
 	private static List<ZCChoice> parseMultiSelectValues(String value, List<ZCChoice> choices) {
 		List<ZCChoice> multSelVals = new ArrayList<ZCChoice>();
-		if(value.startsWith("[") && value.endsWith("]")) {
+		if(value.startsWith("[{"))
+		{
+			try {
+				JSONArray jArray = new JSONArray(value);
+				for(int q=0;q<jArray.length();q++)
+				{
+					JSONObject jsonObject = jArray.getJSONObject(q);
+					String key = "";
+					String displayValue = "";
+					if(jsonObject.has("referFieldValue"))
+					{
+						key = jsonObject.getString("referFieldValue");
+					}
+					if(jsonObject.has("displayValue"))
+					{
+						displayValue = jsonObject.getString("displayValue");
+					}
+					multSelVals.add(new ZCChoice(key, displayValue));
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else if(value.startsWith("[") && value.endsWith("]")) {
 			value = value.substring(1, value.length()-1);
-		}
-
-		String[] tokens = value.split(",");
-		for(int i=1;i<tokens.length;i++)
-		{
-			tokens[i]=tokens[i].substring(1);
-		}
-
-		for(int m = 0;m<tokens.length;m++)
-		{
-			if(!(tokens[m].equals("")))
+			String[] tokens = value.split(",");
+			for(int i=1;i<tokens.length;i++)
 			{
-				String initialValue = tokens[m];
-				boolean added = false;
-				if(choices != null) {
-					for(int i=0; i<choices.size(); i++) {
-						if(choices.get(i).getKey().equals(initialValue)) {
-							multSelVals.add(choices.get(i));
-							added = true;
-							break;
+				tokens[i]=tokens[i].substring(1);
+			}
+			for(int m = 0;m<tokens.length;m++)
+			{
+				if(!(tokens[m].equals("")))
+				{
+					String initialValue = tokens[m];
+					boolean added = false;
+					if(choices != null) {
+						for(int i=0; i<choices.size(); i++) {
+							if(choices.get(i).getKey().equals(initialValue)) {
+								multSelVals.add(choices.get(i));
+								added = true;
+								break;
+							}
 						}
 					}
+					if(!added) {
+						multSelVals.add(new ZCChoice(initialValue, initialValue));
+					}
 				}
-				if(!added) {
-					multSelVals.add(new ZCChoice(initialValue, initialValue));
-				}
-			}
+			}		
+		}
 
-		}		
 		return multSelVals;
 	}
 
@@ -1063,7 +1107,8 @@ class XMLParser {
 					groupHeaderValues.add(getStringValue(valueNode, ""));
 				}
 			} else if(recordNode.getNodeName().equals("record")) {
-				ZCRecord record = parseAndSetRecord(zcView, recordNode, records, null);
+				ZCRecord record = parseAndSetRecord(zcView, recordNode, null);
+				records.add(record);
 				if(isViewGrouped) {
 					if(isFirstRecordInGroup && (zcGroup == null || !zcGroup.getGroupHeaderValues().equals(groupHeaderValues))) { // To check if it's not the same group of the previous set's last group
 						zcGroup = new ZCGroup(groupHeaderValues);
@@ -1079,9 +1124,17 @@ class XMLParser {
 		zcView.setGrouped(isViewGrouped);
 	}
 
-	private static ZCRecord parseAndSetRecord(ZCView zcView, Node recordNode, List<ZCRecord> records, List<ZCField> subFormFields) {
+	private static ZCRecord parseAndSetRecord(ZCView zcView, Node recordNode, List<ZCField> subFormFields) {
 		NamedNodeMap recordAttrMap = recordNode.getAttributes();
-		long recordid = Long.parseLong(recordAttrMap.getNamedItem("id").getNodeValue()); //No I18N
+		long recordid = 0L;
+		if(recordAttrMap.getNamedItem("id")!=null)
+		{
+			recordid = Long.parseLong(recordAttrMap.getNamedItem("id").getNodeValue()); //No I18N
+		}
+		else
+		{
+			recordid = Long.parseLong(recordAttrMap.getNamedItem("ID").getNodeValue()); //No I18N
+		}
 		List<ZCRecordValue> valueList  = new ArrayList<ZCRecordValue>();
 		NodeList columnList = recordNode.getChildNodes();
 		for(int l=0; l<columnList.getLength(); l++) {
@@ -1121,7 +1174,6 @@ class XMLParser {
 			}
 		}
 		ZCRecord record = new ZCRecord(recordid, valueList);
-		records.add(record);
 		return record;
 	}
 

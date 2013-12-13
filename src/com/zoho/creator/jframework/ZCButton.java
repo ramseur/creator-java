@@ -84,7 +84,6 @@ public class ZCButton implements Comparable<ZCButton>{
 			String xmlString = zcForm.getXMLStringForSubmit();
 			if(!zcForm .isStateLess()) 
 			{
-
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				params.add(new BasicNameValuePair("zcRefValue", true+""));
 				params.add(new BasicNameValuePair("formAccessType", String.valueOf(zcForm.getFormType())));//No I18N
@@ -122,7 +121,10 @@ public class ZCButton implements Comparable<ZCButton>{
 				if(FieldType.isPhotoField(field.getType())) {
 					ZCRecordValue recValue = field.getRecordValue();
 					File fileToUpload = recValue.getFileValue();
-					constructImageUrl(field,response,fileToUpload,action);	
+					if(field.isFileReUploaded())
+					{
+						constructImageUrl(field,response,fileToUpload,action);	
+					}
 				}
 				if(field.getType()==FieldType.SUB_FORM)
 				{
@@ -158,11 +160,11 @@ public class ZCButton implements Comparable<ZCButton>{
 			params.add(new BasicNameValuePair("fieldname", field.getFieldName()));//No I18N
 			if(action == "update")
 			{
-				 params.add(new BasicNameValuePair("recordId", ZOHOCreator.getCurrentEditRecord().getRecordId() + ""));//No I18N
+				params.add(new BasicNameValuePair("recordId", ZOHOCreator.getCurrentEditRecord().getRecordId() + ""));//No I18N
 			}
 			else
 			{
-			 params.add(new BasicNameValuePair("recordId", response.getSuccessRecordID() + ""));//No I18N
+				params.add(new BasicNameValuePair("recordId", response.getSuccessRecordID() + ""));//No I18N
 			}
 			params.add(new BasicNameValuePair("filename", fileToUpload.getName()));//No I18N
 			ZOHOCreator.postFile(urlPair.getUrl(), fileToUpload, params);	

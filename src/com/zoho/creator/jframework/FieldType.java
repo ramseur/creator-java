@@ -144,6 +144,20 @@ public enum FieldType   {
     			ftype.equals(FieldType.AUTO_NUMBER) || 
     			ftype.equals(FieldType.RICH_TEXT));
     }
+    public static boolean isBulkEditUNSupportedField(FieldType ftype)
+    {
+    	return (ftype.equals(FieldType.SUB_FORM) || 
+    			ftype.equals(FieldType.NOTES) || 
+    			ftype.equals(FieldType.AUTO_NUMBER) || 
+    			isUNSupportedField(ftype) || 
+    			ftype.equals(FieldType.FORMULA) ||
+    			FieldType.isPhotoField(ftype));
+    }
+    public static boolean isUNSupportedField(FieldType ftype)
+    {
+    	return (ftype.equals(FieldType.EXTERNAL_FIELD) || 
+    			ftype.equals(FieldType.EXTERNAL_LINK));
+    }
     
     
     public static boolean isDisplayAsLinksField(FieldType ftype) {

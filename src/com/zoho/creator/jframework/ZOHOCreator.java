@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -54,6 +55,9 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -528,6 +532,7 @@ public class ZOHOCreator {
 
 	private static ZCForm getForm(String appLinkName, String formLinkName, String appOwner, String viewLinkName, Long recordLinkId, int formType, String refAppLinkName, String refFormLinkName, String refFieldName, Date calSelectedStartDate,Date calSelectedEndDate,List<NameValuePair> params,String queryString) throws ZCException {
 		URLPair formMetaURLPair = ZCURL.formMetaURL(appLinkName, formLinkName, appOwner, viewLinkName, recordLinkId, formType, refAppLinkName, refFormLinkName, refFieldName, calSelectedStartDate,calSelectedEndDate,params);
+		System.out.println("formmetaurl"+getURLString(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair()));
 		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
 		ZCForm toReturn = XMLParser.parseForForm(rootDocument, appLinkName, appOwner,queryString);
 		if(toReturn == null) {
@@ -566,8 +571,39 @@ public class ZOHOCreator {
 	}
 
 	private static void callDelugeEvents(ZCForm zcForm, URLPair urlPair,List<ZCRecordValue> recordValues,ZCForm currentShownForm) throws ZCException{
+		System.out.println("deluge url"+getURLString(urlPair.getUrl(), urlPair.getNvPair()));
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
+		System.out.println("Response"+response);
 		JSONParser.parseAndCallFormEvents(response,zcForm,recordValues,currentShownForm);
+	}
+	public static void JSONPARSER(String response)
+	{
+		
+		try {
+			JSONArray jArray = new JSONArray(response);
+			for (int i=0; i < jArray.length(); i++) {
+				JSONObject jsonObj = jArray.getJSONObject(i);
+				Iterator<?> keys = jsonObj.keys();
+				while( keys.hasNext() ){
+					String key = (String)keys.next(); 
+					if( key.contains("generatedjs")){
+						String value = jsonObj.getString(key);
+						if(value.contains("openWindowTask("))
+						{
+							String s = value.substring((value.indexOf("openWindowTask(")+"openWindowTask(".length()));
+							String a[]=s.split(",");
+							String url = a[0].substring(1,a[0].length()-1);
+							String type = a[1].substring(1,a[1].length()-1);
+						}
+
+					}
+				}	  
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+
 	}
 
 
@@ -628,6 +664,7 @@ public class ZOHOCreator {
 				params.add(new BasicNameValuePair("startDateStr", startDateFormat.format(startCalendar.getTime())));//No I18N
 				params.add(new BasicNameValuePair("endDateStr", endDateFormat.format(endCalendar.getTime()))); //No I18N
 			}
+			
 			Document rootDocument = getViewXMLDocument(comp, params);
 			Calendar cal = Calendar.getInstance();
 			ZCView toReturn =  XMLParser.parseForView(rootDocument, comp.getAppLinkName(), comp.getAppOwner(), comp.getType(), cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
@@ -655,12 +692,15 @@ public class ZOHOCreator {
 
 	static List<ZCChoice> loadMoreChoices(ZCField field, ZCField subFormField) throws ZCException {
 		ZCForm baseForm = field.getBaseForm();
+		if(baseForm==ZOHOCreator.getCurrentSubForm())
+		{
+			baseForm = ZOHOCreator.getCurrentForm();
+		}
 		String subformComponent = null;
 		int formAccessType = 0;
 		if(subFormField != null) {
 			subformComponent = subFormField.getFieldName();
 		}
-
 		if(getCurrentForm().getViewForAdd()!=null)
 		{
 			formAccessType = ZCForm.VIEW_ADD_FORM;
@@ -847,6 +887,7 @@ public class ZOHOCreator {
 	private static Document getViewXMLDocument(ZCComponent comp, List<NameValuePair> params) throws ZCException{
 		URLPair viewURLPair = ZCURL.viewURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner());
 		params.addAll(viewURLPair.getNvPair());
+		System.out.println("viewUrl"+getURLString(viewURLPair.getUrl(), params));
 		Document toReturn = ZOHOCreator.postURLXML(viewURLPair.getUrl(), params);		
 		return toReturn;
 	}
@@ -891,6 +932,7 @@ public class ZOHOCreator {
 			params = new ArrayList<NameValuePair>();
 		}
 		params.addAll(xmlWriteURLPair.getNvPair());
+		System.out.println("xmlstringforsubmit"+getURLString(xmlWriteURLPair.getUrl(), params));
 		Document rootDocument = ZOHOCreator.postURLXML(xmlWriteURLPair.getUrl(), params);
 
 		XPath xPath = XPathFactory.newInstance().newXPath();
