@@ -652,7 +652,6 @@ class XMLParser {
 				NodeList subFormRecordsNodeList = fieldPropetyNode.getChildNodes();
 				for(int m=0; m<subFormRecordsNodeList.getLength(); m++) {
 					Node subFormRecordsNode = subFormRecordsNodeList.item(m);
-					System.out.println("recordsid length"+subFormRecordsNodeList.getLength());
 					ZCRecord record = parseAndSetRecord(null, subFormRecordsNode, subFormFields);
 					subFormEntries.add(record);
 				}
@@ -1059,8 +1058,6 @@ class XMLParser {
 
 		HashMap<Date, List<ZCRecord>> eventsMap = zcView.getEventRecordsMap();
 
-
-
 		SortedSet<Date> keys = new TreeSet<Date>(eventsMap.keySet());
 		for (Date eventDate : keys) { 
 			List<ZCRecord> eventRecords = eventsMap.get(eventDate);
@@ -1423,9 +1420,4 @@ class XMLParser {
 			return null;
 		}
 	}
-
-
-
-
-
 }

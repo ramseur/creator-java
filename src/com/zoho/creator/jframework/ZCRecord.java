@@ -83,8 +83,6 @@ public class ZCRecord implements Comparable<ZCRecord> {
 		return getSubValues(false);
 	}
 
-	
-
 	public long getRecordId() {
 		return recordId;
 	}
@@ -136,6 +134,4 @@ public class ZCRecord implements Comparable<ZCRecord> {
 		}
  		return 0;
 	}
-
-	
 }
