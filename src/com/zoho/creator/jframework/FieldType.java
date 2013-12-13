@@ -159,6 +159,11 @@ public enum FieldType   {
     			ftype.equals(FieldType.EXTERNAL_LINK));
     }
     
+    public static boolean isSubFormUNSupportedField(FieldType ftype)
+    {
+    	return (isUNSupportedField(ftype) || ftype.equals(FieldType.DECISION_CHECK_BOX) || FieldType.isPhotoField(ftype));
+    }
+    
     
     public static boolean isDisplayAsLinksField(FieldType ftype) {
     	return 	ftype.equals(FieldType.RICH_TEXT) || 
