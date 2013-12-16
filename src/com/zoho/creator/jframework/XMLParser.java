@@ -213,12 +213,10 @@ class XMLParser {
 		}
 
 		if(!licenceEnabled) {
-			throw new ZCException("Mobile Access not enabled for " + appOwner, ZCException.LICENCE_ERROR); //No I18N
+			throw new ZCException("Please subscribe to PROFESSIONAL EDITION and get access", ZCException.LICENCE_ERROR); //No I18N
 		}
 		return toReturn;
 	}
-
-
 
 
 	static List<ZCSection> parseForSectionList(Document rootDocument, String appLinkName, String appOwner) throws ZCException {
@@ -300,7 +298,7 @@ class XMLParser {
 				}
 			} else if(responseNode.getNodeName().equals("license_enabled")) { //No I18N
 				if(!getBooleanValue(responseNode, false)) {
-					throw new ZCException("Mobile Access not enabled for " + appOwner, ZCException.LICENCE_ERROR); //No I18N
+					throw new ZCException("Please subscribe to PROFESSIONAL EDITION and get access", ZCException.LICENCE_ERROR); //No I18N
 				}
 			} else if(responseNode.getNodeName().equals("evaluationDays")) { //No I18N
 				ZOHOCreator.setUserProperty("evaluationDays", getStringValue(responseNode, ""));

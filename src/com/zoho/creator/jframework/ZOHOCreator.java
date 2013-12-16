@@ -428,7 +428,6 @@ public class ZOHOCreator {
 	}
 
 
-
 	public static ZCAppList getPersonalApplicationList(List<NameValuePair> additionalParams) throws ZCException {
 		URLPair appListURLPair = ZCURL.appListURL();
 		if(additionalParams == null) {
