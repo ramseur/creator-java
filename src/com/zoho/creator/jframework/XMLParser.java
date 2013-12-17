@@ -218,7 +218,6 @@ class XMLParser {
 		return toReturn;
 	}
 
-
 	static List<ZCSection> parseForSectionList(Document rootDocument, String appLinkName, String appOwner) throws ZCException {
 		List<ZCSection> toReturn = new ArrayList<ZCSection>();
 		int remainingDays = -1;
@@ -943,8 +942,11 @@ class XMLParser {
 				e.printStackTrace();
 			}
 		}
-		else if(value.startsWith("[") && value.endsWith("]")) {
-			value = value.substring(1, value.length()-1);
+		else  {
+			//value = value.substring(1, value.length()-1);
+			if(value.startsWith("[") && value.endsWith("]")) {
+			      value = value.substring(1, value.length()-1);
+		    }
 			String[] tokens = value.split(",");
 			for(int i=1;i<tokens.length;i++)
 			{

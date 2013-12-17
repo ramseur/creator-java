@@ -63,7 +63,6 @@ public class ZCRecordValue {
 			else{
 				return choiceValue.getValue();
 			}
-				
         }
         return value;
 	}

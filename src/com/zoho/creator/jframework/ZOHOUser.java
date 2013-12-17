@@ -108,7 +108,6 @@ public class ZOHOUser {
 
 		NodeList nl = rootDocument.getChildNodes();
 		
-		
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
 			////////System.out.println("******* " + responseNode.getNodeName());

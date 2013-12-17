@@ -287,12 +287,23 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("scope", "creatorapi"));//No I18N		
 		params.add(new BasicNameValuePair("hide_signup", "true"));
 		params.add(new BasicNameValuePair("hide_remember", "true"));
+		//params.add(new BasicNameValuePair("getticket", "true"));
 		params.add(new BasicNameValuePair("scopes", ZOHOCreator.getServiceName() + "/creatorapi,ZohoContacts/photoapi"));
 		params.add(new BasicNameValuePair("appname", ZOHOCreator.getServiceName()));
 		params.add(new BasicNameValuePair("serviceurl", serverURL()));
 		return new URLPair("https://" + ZOHOCreator.getAccountsURL() + "/login", params);  //No I18N
 	}
 
+	static URLPair getCreatorUpdateUrl() {
+		//https://accounts.zoho.com/login?servicename=ZohoCreator&serviceurl=https://creator.zoho.com/dashboard?showpage=upgradeplan&hide_signup=true&LOGIN_ID="+ZOHOCreator.getZohoUser().getEmailAddresses().get(0)
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("servicename", ZOHOCreator.getServiceName()));//No I18N		
+		params.add(new BasicNameValuePair("serviceurl", serverURL()+"/dashboard?showpage=upgradeplan"));
+		params.add(new BasicNameValuePair("hide_signup", "true"));
+		params.add(new BasicNameValuePair("LOGIN_ID", ZOHOCreator.getZohoUser().getEmailAddresses().get(0)));
+		return new URLPair("https://" + ZOHOCreator.getAccountsURL() + "/login", params);  //No I18N
+	}
+	
 	// 		signInUrl = "https://accounts.zoho.com/login?hide_signup=true&hide_remember=true&scopes=ZohoCreator/creatorapi&appname=ZohoCreator&serviceurl=https://creator.zoho.com";  //No I18N
 
 

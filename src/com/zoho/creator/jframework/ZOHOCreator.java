@@ -90,6 +90,10 @@ public class ZOHOCreator {
 	public static String getLoginURL() {
 		return ZCURL.getURLString(ZCURL.getLoginUrl());
 	}
+	
+	public static String getCreatorUpdateURL() {
+		return ZCURL.getURLString(ZCURL.getCreatorUpdateUrl());
+	}
 
 	public static String getPersonalPhotoURL() {
 		return ZCURL.getURLString(ZCURL.getURLForPersonalPhoto());
@@ -1089,7 +1093,7 @@ public class ZOHOCreator {
 	}
 
 	static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-		//System.out.println("urleeeee"+getURLString(url, params));
+		System.out.println("urleeeee"+getURLString(url, params));
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
