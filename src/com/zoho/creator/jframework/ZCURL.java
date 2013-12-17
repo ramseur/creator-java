@@ -9,8 +9,6 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-
-
 public class ZCURL {
 
 	private static List<NameValuePair> getParamsWithOwner(String appOwner) {
