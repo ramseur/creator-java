@@ -292,7 +292,7 @@ public class ZCURL {
 		return new URLPair("https://" + ZOHOCreator.getAccountsURL() + "/login", params);  //No I18N
 	}
 
-	static URLPair getCreatorUpdateUrl() {
+	static URLPair getCreatorUpgradeUrl() {
 		//https://accounts.zoho.com/login?servicename=ZohoCreator&serviceurl=https://creator.zoho.com/dashboard?showpage=upgradeplan&hide_signup=true&LOGIN_ID="+ZOHOCreator.getZohoUser().getEmailAddresses().get(0)
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("servicename", ZOHOCreator.getServiceName()));//No I18N		
