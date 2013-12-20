@@ -139,7 +139,7 @@ public class ZCAPIDemo {
 				printNavList();
 			} else {
 				try {
-					ZOHOCreator.setCurrentAppList(ZOHOCreator.getWorkspaceApplicationList(sharedWithWorkSpaceList.get(inpValue-1), null));
+					ZOHOCreator.setCurrentAppList(ZOHOCreator.getWorkspaceApplicationList(sharedWithWorkSpaceList.get(inpValue-1), null,null));
 				} catch (ZCException e) {
 					System.out.println(e.getMessage());
 					printNavList();

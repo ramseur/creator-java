@@ -547,14 +547,41 @@ public class ZOHOCreator {
 		return toReturn;
 	}
 
-	public static ZCAppList getWorkspaceApplicationList(String workspaceAppOwner, List<NameValuePair> additionalParams) throws ZCException {
+	public static ZCAppList getWorkspaceApplicationList(String workspaceAppOwner, List<NameValuePair> additionalParams, String filePath) throws ZCException {
 		//checkForLicense(workspaceAppOwner);
 		URLPair appListURLPair = ZCURL.workSpaceAppListURL(workspaceAppOwner); 
 		if(additionalParams == null) {
 			additionalParams = new ArrayList<NameValuePair>();
 		}
 		additionalParams.addAll(appListURLPair.getNvPair());
-		Document rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), additionalParams);
+		//Document rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), additionalParams);
+		
+		Document rootDocument = null;
+		File 	f = new File(filePath+"/workspaceApps_"+workspaceAppOwner+"List.xml");
+		if(!f.exists()){
+			try {
+				f.createNewFile();
+				rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), additionalParams);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			writeResponseToFile(getString(rootDocument), f.getAbsolutePath());
+		}else{
+			try {
+				rootDocument = stringToDocument(readResponseFromFile(f.getAbsolutePath()));
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParserConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		ZCAppList toReturn = new ZCAppList(ZCAppList.WORKSPACE_APPS, XMLParser.parseForApplicationList(rootDocument));
 		toReturn.setWorkspaceAppOwner(workspaceAppOwner);
 		return toReturn;
@@ -1110,7 +1137,6 @@ public class ZOHOCreator {
 
 
 	static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
-		System.out.println(url+"u");
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1130,7 +1156,6 @@ public class ZOHOCreator {
 				}
 			};
 			byte[] response = client.execute(request, handler);
-			System.out.println(new String(response)+"str");
 			return new String(response);
 		} catch(UnknownHostException uhe) {
 			throw new ZCException("No network connection.", ZCException.NETWORK_ERROR);//No I18N
