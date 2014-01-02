@@ -2,7 +2,9 @@
 
 package com.zoho.creator.jframework;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -149,19 +151,19 @@ public enum FieldType   {
     	return (ftype.equals(FieldType.SUB_FORM) || 
     			ftype.equals(FieldType.NOTES) || 
     			ftype.equals(FieldType.AUTO_NUMBER) || 
-    			isUNSupportedField(ftype) || 
+    			isUnSupportedField(ftype) || 
     			ftype.equals(FieldType.FORMULA) ||
     			FieldType.isPhotoField(ftype));
     }
-    public static boolean isUNSupportedField(FieldType ftype)
+    public static boolean isUnSupportedField(FieldType ftype)
     {
     	return (ftype.equals(FieldType.EXTERNAL_FIELD) || 
     			ftype.equals(FieldType.EXTERNAL_LINK));
     }
     
-    public static boolean isSubFormUNSupportedField(FieldType ftype)
+    public static boolean isSubFormUnSupportedField(FieldType ftype)
     {
-    	return (isUNSupportedField(ftype) || ftype.equals(FieldType.DECISION_CHECK_BOX) || FieldType.isPhotoField(ftype));
+    	return (isUnSupportedField(ftype) || ftype.equals(FieldType.DECISION_CHECK_BOX) || FieldType.isPhotoField(ftype));
     }
     
     
@@ -215,6 +217,30 @@ public enum FieldType   {
 		return fieldType;
     }
     	
+
+	static List<ZCRecordValue> getDisplayValues(boolean isPrimary, List<ZCRecordValue> values) {
+		List<ZCRecordValue> tempList = new ArrayList<ZCRecordValue>();
+		boolean primaryPassed = false;
+		for(int i=0; i<values.size(); i++) {
+			ZCRecordValue recValue = values.get(i);
+			FieldType fieldType = recValue.getField().getType();
+			if((isPrimary && FieldType.isPrimaryFieldType(fieldType)) || (!isPrimary && FieldType.isSecondaryFieldType(fieldType))) {
+				if(!isPrimary && !primaryPassed) {
+					if(FieldType.isPrimaryFieldType(fieldType)) {
+						primaryPassed = true;
+						continue;
+					}
+				}
+				tempList.add(recValue);
+				if(isPrimary && tempList.size() == 1 || !isPrimary && tempList.size() == 3) {
+					break;
+				}
+			}
+		}
+		final List<ZCRecordValue> toReturn = new ArrayList<ZCRecordValue>(tempList);
+		return toReturn ;
+	}
+	
 
 }
 

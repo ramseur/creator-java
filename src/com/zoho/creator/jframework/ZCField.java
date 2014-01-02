@@ -18,11 +18,10 @@ public class ZCField implements Comparable<ZCField> {
 	private int decimalLength = 0;
 	private int defaultRows = 0;
 	private int maximumRows = 0;
+	private int imageType = 3;
 
 	private boolean urlTitleReq = false;
 	private boolean urlLinkNameReq = true;
-	private String  urlTitleValue = "";
-	private String  urlLinkNameValue = "";
 
 	private boolean fromZohoDoc = false;
 	private boolean fromGoogleDoc = false;
@@ -33,6 +32,7 @@ public class ZCField implements Comparable<ZCField> {
 	private boolean altTxtReq = false;
 
 	private boolean hasOnUserInput = false;
+	private boolean hasOnUserInputForFormula = false;
 
 	private ZCForm baseForm = null;
 	private ZCForm subForm = null;
@@ -54,7 +54,7 @@ public class ZCField implements Comparable<ZCField> {
 
 	private List<ZCRecord> subFormEntries = new ArrayList<ZCRecord>();
 	private List<ZCRecord> removedSubFormEntries = new ArrayList<ZCRecord>();
-	private boolean hasOnUserInputForFormula = false;
+	
 
 	private boolean isHidden = false;
 	private boolean isDisabled = false;
@@ -140,24 +140,6 @@ public class ZCField implements Comparable<ZCField> {
 
 	void setUrlTitleReq(boolean urlTitleReq) {
 		this.urlTitleReq = urlTitleReq;
-	}
-	public String getUrlTitleValue()
-	{
-		return urlTitleValue;
-	}
-
-	void setUrlTitleValue(String urlTitleValue)
-	{
-		this.urlTitleValue=urlTitleValue;
-	}
-
-	public String getUrlLinkNameValue()
-	{
-		return urlLinkNameValue;
-	}
-	void setUrlLinkNameValue(String urlLinkNameValue)
-	{
-		this.urlLinkNameValue=urlLinkNameValue;
 	}
 
 	public boolean isFromZohoDoc() {
@@ -279,6 +261,7 @@ public class ZCField implements Comparable<ZCField> {
 	void setHasOnUserInput(boolean hasOnUserInput) {
 		this.hasOnUserInput = hasOnUserInput;
 	}
+	
 
 	public String getRefFieldLinkName() {
 		return refFieldLinkName;
@@ -551,5 +534,13 @@ public class ZCField implements Comparable<ZCField> {
     {
     	this.isFileReUploaded = isFileReUploaded;
     }
+
+	public int getImageType() {
+		return imageType;
+	}
+
+    void setImageType(int imageType) {
+		this.imageType = imageType;
+	}
     
 }

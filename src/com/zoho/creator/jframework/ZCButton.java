@@ -77,7 +77,7 @@ public class ZCButton implements Comparable<ZCButton>{
 		return onClickExists;
 	}
 
-	public ZCResponse click() throws ZCException {
+	public ZCResponse click() throws ZCException{
 		ZCResponse response =  null;
 		if(!buttonType.equals(ZCButtonType.RESET)) {
 			String action = "add"; //No I18N
@@ -121,7 +121,9 @@ public class ZCButton implements Comparable<ZCButton>{
 				if(FieldType.isPhotoField(field.getType())) {
 					ZCRecordValue recValue = field.getRecordValue();
 					File fileToUpload = recValue.getFileValue();
-					if(field.isFileReUploaded())
+					System.out.println("is filereuploaded"+field.isFileReUploaded());
+					int imageType = field.getImageType();
+					if(field.isFileReUploaded() && imageType != 1 )
 					{
 						constructImageUrl(field,response,fileToUpload,action);	
 					}
@@ -150,25 +152,38 @@ public class ZCButton implements Comparable<ZCButton>{
 
 	private void constructImageUrl(ZCField field,ZCResponse response,File fileToUpload,String action) throws ZCException
 	{
+		System.out.println("inside consturct image");
+		URLPair urlPair = ZCURL.fileUploadURL(zcForm.getAppOwner());
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.addAll(urlPair.getNvPair());
+		params.add(new BasicNameValuePair("applinkname", zcForm.getAppLinkName()));//No I18N
+		params.add(new BasicNameValuePair("formname", zcForm.getComponentLinkName()));//No I18N
+		params.add(new BasicNameValuePair("fieldname", field.getFieldName()));//No I18N
+		if(action == "update")
+		{
+			params.add(new BasicNameValuePair("recordId", ZOHOCreator.getCurrentEditRecord().getRecordId() + ""));//No I18N
+		}
+		else
+		{
+			params.add(new BasicNameValuePair("recordId", response.getSuccessRecordID() + ""));//No I18N
+		}
 		if(fileToUpload!=null)
 		{
-			URLPair urlPair = ZCURL.fileUploadURL(zcForm.getAppOwner());
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.addAll(urlPair.getNvPair());
-			params.add(new BasicNameValuePair("applinkname", zcForm.getAppLinkName()));//No I18N
-			params.add(new BasicNameValuePair("formname", zcForm.getComponentLinkName()));//No I18N
-			params.add(new BasicNameValuePair("fieldname", field.getFieldName()));//No I18N
-			if(action == "update")
-			{
-				params.add(new BasicNameValuePair("recordId", ZOHOCreator.getCurrentEditRecord().getRecordId() + ""));//No I18N
-			}
-			else
-			{
-				params.add(new BasicNameValuePair("recordId", response.getSuccessRecordID() + ""));//No I18N
-			}
 			params.add(new BasicNameValuePair("filename", fileToUpload.getName()));//No I18N
 			ZOHOCreator.postFile(urlPair.getUrl(), fileToUpload, params);	
-		}	
+		}
+		else
+		{
+			params.add(new BasicNameValuePair("operation", "delete"));//No I18N
+			System.out.println("inside cons else"+ZOHOCreator.getCurrentView().getComponentLinkName());
+			if(ZOHOCreator.getCurrentView()!=null)
+			{
+			params.add(new BasicNameValuePair("viewLinkName", ZOHOCreator.getCurrentView().getComponentLinkName()));//No I18N
+			}
+			params.add(new BasicNameValuePair("formAccessType",ZCForm.VIEW_EDIT_FORM+""));//No I18N
+			ZOHOCreator.postFile(urlPair.getUrl(), null, params);
+		}
+
 	}
 
 }

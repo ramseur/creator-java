@@ -11,8 +11,12 @@ public class ZCRecordValue {
 	private ZCChoice choiceValue = null;
 	private List<ZCChoice> choiceValues = null;
 	private File fileValue = null;
+	private String urlTitleValue = null;
+	private String urlLinkNameValue = null;
+	private boolean errorField = false;
+	private String errorMessage = null; 
 
-	
+
 	public ZCRecordValue(ZCField field, String value) {
 		this.field = field;		
 		setValue(value); 
@@ -22,7 +26,7 @@ public class ZCRecordValue {
 		this.field = field;
 		setChoiceValue(choiceValue); 
 	}
-	
+
 	public ZCRecordValue(ZCField field, List<ZCChoice> choiceValues) {
 		this.field = field;
 		setChoiceValues(choiceValues);
@@ -43,7 +47,25 @@ public class ZCRecordValue {
 		}
 		return value;
 	}
-	
+
+	public String getUrlLinkNameValue()
+	{
+		return urlLinkNameValue;
+	}
+
+	public String getUrlTitleValue()
+	{
+		return urlTitleValue;
+	}
+	public void setUrlTitleValue(String urlTitleValue)
+	{
+		this.urlTitleValue = urlTitleValue;
+	}
+	public void setUrlLinkNameValue(String urlLinkNameValue)
+	{
+		this.urlLinkNameValue = urlLinkNameValue;
+	}
+
 	public String getDisplayValue() {
 		if(FieldType.isMultiChoiceField(field.getType())) {
 			StringBuffer buff = new StringBuffer();
@@ -63,8 +85,8 @@ public class ZCRecordValue {
 			else{
 				return choiceValue.getValue();
 			}
-        }
-        return value;
+		}
+		return value;
 	}
 
 	public ZCChoice getChoiceValue() {
@@ -73,12 +95,12 @@ public class ZCRecordValue {
 		}
 		return choiceValue;
 	}
-	
+
 	public List<ZCChoice> getChoiceValues() {
 		final List<ZCChoice> toReturn = new ArrayList<ZCChoice>(choiceValues);
 		return toReturn;
 	}
-	
+
 	void addToValues(List<ZCChoice> valuesToAdd) {
 		if(!FieldType.isMultiChoiceField(field.getType())) {
 			throw new RuntimeException("Cannot use this one for this field type");//No I18N
@@ -92,7 +114,7 @@ public class ZCRecordValue {
 			}
 		}
 	}
-	
+
 	void removeFromValues(List<ZCChoice> valuesToRemove) {
 		if(!FieldType.isMultiChoiceField(field.getType())) {
 			throw new RuntimeException("Cannot use this one for this field type");//No I18N
@@ -124,7 +146,7 @@ public class ZCRecordValue {
 	public File getFileValue() {
 		return fileValue;
 	}
-	
+
 	public void setValue(String value) {
 		if(FieldType.isChoiceField(field.getType())) {
 			throw new RuntimeException("Use the other one");//No I18N
@@ -153,12 +175,32 @@ public class ZCRecordValue {
 		}
 		this.fileValue = fileValue;
 	}
-	
+
 
 	public ZCField getField() {
 		return field;
 	}
 
+	public Boolean isErrorField()
+	{
+		Boolean iserror = new Boolean(errorField);
+		return iserror;
+	}
 
+	public void setErrorField(boolean errorField)
+	{
+		this.errorField = errorField;
+	}
+
+	public void setErrorMessage(String errorMessage)
+	{
+		this.errorMessage = errorMessage;
+	}
+
+	public String getErrorMessage()
+	{
+	
+		return errorMessage;
+	}
 
 }

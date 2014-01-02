@@ -13,6 +13,7 @@ public class ZCRecord implements Comparable<ZCRecord> {
 	private Date startTime = null;
 	private Date endTime = null;
 	private String eventTitle = null;
+	private boolean isRecordError = false;
 
 	public ZCRecord(List<ZCRecordValue> values) {
 		this.values = values;
@@ -52,35 +53,13 @@ public class ZCRecord implements Comparable<ZCRecord> {
 		return getDisplay(getSecondaryValues());
 	}
 
-	private List<ZCRecordValue> getSubValues(boolean isPrimary) {
-		List<ZCRecordValue> tempList = new ArrayList<ZCRecordValue>();
-		boolean primaryPassed = false;
-		for(int i=0; i<values.size(); i++) {
-			ZCRecordValue recValue = values.get(i);
-			FieldType fieldType = recValue.getField().getType();
-			if((isPrimary && FieldType.isPrimaryFieldType(fieldType)) || (!isPrimary && FieldType.isSecondaryFieldType(fieldType))) {
-				if(!isPrimary && !primaryPassed) {
-					if(FieldType.isPrimaryFieldType(fieldType)) {
-						primaryPassed = true;
-						continue;
-					}
-				}
-				tempList.add(recValue);
-				if(isPrimary && tempList.size() == 1 || !isPrimary && tempList.size() == 3) {
-					break;
-				}
-			}
-		}
-		final List<ZCRecordValue> toReturn = new ArrayList<ZCRecordValue>(tempList);
-		return toReturn ;
-	}
 	
 	public List<ZCRecordValue> getPrimaryValues() {
-		return getSubValues(true);
+		return FieldType.getDisplayValues(true, values);
 	}
 	
 	public List<ZCRecordValue> getSecondaryValues() {
-		return getSubValues(false);
+		return FieldType.getDisplayValues(true, values);
 	}
 
 	public long getRecordId() {
@@ -133,5 +112,13 @@ public class ZCRecord implements Comparable<ZCRecord> {
 					: 0;
 		}
  		return 0;
+	}
+	public boolean isRecordError()
+	{
+		return isRecordError;
+	}
+	public void setRecordError(boolean isRecordError)
+	{
+		this.isRecordError = isRecordError;
 	}
 }

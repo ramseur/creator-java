@@ -14,9 +14,10 @@ class JSONParser {
 
 		List<String> alertMessages = new ArrayList<String>();
 		List<String> infoValues = new ArrayList<String>();
+		String openUrlString = null;
 		int type = -1;
 		ZCResponse toReturn = new ZCResponse();
-		String openUrlString = null;
+		
 		try {
 			JSONArray jArray = new JSONArray(response);
 			for (int i=0; i < jArray.length(); i++) {
@@ -29,6 +30,8 @@ class JSONParser {
 				String formName=null;
 				String alertMessage=null;
 				String value = null;
+				List<String> keys = new ArrayList<String>();
+				ZCChoice zcChoice = null;
 
 
 				int rowNo = -1;
@@ -51,11 +54,27 @@ class JSONParser {
 					try {
 						JSONArray jsonArray = (JSONArray) jsonObj.get("fieldValue");
 						for (int j=0; j<jsonArray.length(); j++) {
+							keys.add(jsonArray.getString(j));
+							System.out.println("fieldvaluessssss"+jsonArray.getString(j));
 							choiceValues.add(new ZCChoice(jsonArray.getString(j), jsonArray.getString(j)));
 						}
 					}
 					catch(ClassCastException e) {
 						value = (String)jsonObj.get("fieldValue");
+					}
+				}
+				if(jsonObj.has("combinedValue"))
+				{
+					try {
+						JSONArray jsonArray = (JSONArray) jsonObj.get("combinedValue");
+						choiceValues = new ArrayList<ZCChoice>();
+						for (int j=0; j<jsonArray.length(); j++) {
+							System.out.println("combinedvalue...."+jsonArray.getString(j));
+							choiceValues.add(new ZCChoice(keys.get(j), jsonArray.getString(j)));
+						}
+					}
+					catch(ClassCastException e) {
+						zcChoice = new ZCChoice(value,(String)jsonObj.get("combinedValue"));
 					}
 				}
 				if(jsonObj.has("alertValue"))
@@ -95,6 +114,7 @@ class JSONParser {
 				if(fieldName!=null&& subFormName ==null)
 				{
 					field=form.getField(fieldName);
+					System.out.println("fieldName..."+fieldName);
 					field.setRebuildRequired(true);
 					recordValue = field.getRecordValue();
 				}
@@ -122,12 +142,14 @@ class JSONParser {
 					field.clearChoices();
 					field.setLastReachedForChoices(true);
 				} else if(type==ZCForm.task_addValue) {
-					List<ZCChoice> moreChoices = new ArrayList<ZCChoice>();
-					for(int k=0; k<choiceValues.size(); k++) {
-						ZCChoice choice = new ZCChoice(choiceValues.get(k).getKey(), choiceValues.get(k).getValue());
-						moreChoices.add(choice);
-					}
-					field.appendChoices(moreChoices);
+//					List<ZCChoice> moreChoices = new ArrayList<ZCChoice>();
+//					for(int k=0; k<choiceValues.size(); k++) {
+//						ZCChoice choice = new ZCChoice(choiceValues.get(k).getKey(), choiceValues.get(k).getValue());
+//						moreChoices.add(choice);
+//					}
+					System.out.println("choicevaluessize"+choiceValues.size());
+					field.appendChoices(choiceValues);
+					System.out.println("fieldname,,,,"+field.getFieldName());
 					field.setLastReachedForChoices(true);
 				} else if(type==ZCForm.task_select) {
 					if(FieldType.isMultiChoiceField(field.getType())) {
@@ -188,11 +210,25 @@ class JSONParser {
 								{
 									if(currentShownForm!=null && subFormTempRecordValues == null)
 									{
-										recordValue.setChoiceValue(new ZCChoice(value,value));
+										if(zcChoice!=null)
+										{
+											recordValue.setChoiceValue(zcChoice);
+										}
+										else
+										{
+											recordValue.setChoiceValue(new ZCChoice(value,value));
+										}
 									}
 									else
 									{
-										subFormRecordValue.setChoiceValue(new ZCChoice(value,value));
+										if(zcChoice!=null)
+										{
+											subFormRecordValue.setChoiceValue(zcChoice);
+										}
+										else
+										{
+											subFormRecordValue.setChoiceValue(new ZCChoice(value,value));
+										}
 									}
 									break; 
 								}
@@ -224,7 +260,13 @@ class JSONParser {
 								}
 								else if(FieldType.isSingleChoiceField(field.getType()))
 								{
-									subFormRecordValue.setChoiceValue(new ZCChoice(value,value));
+									if(zcChoice!=null)
+									{
+										subFormRecordValue.setChoiceValue(zcChoice);
+									}else
+									{
+										subFormRecordValue.setChoiceValue(new ZCChoice(value,value));
+									}
 									break;
 								}
 								else
@@ -242,33 +284,39 @@ class JSONParser {
 						}
 						else if(FieldType.isSingleChoiceField(field.getType()))
 						{
+							if(zcChoice!=null)
+							{
+								recordValue.setChoiceValue(zcChoice);
+							}
+							else
+							{
 							recordValue.setChoiceValue(new ZCChoice(value,value));
+							}
 						}
 						else
 						{
 							if(recordValue.getField().getType().equals(FieldType.NOTES)){
 								if(value.contains("<img")){
-                        			int indexOfImgTag = value.indexOf("<img");
-                        			int indexOfImgSrc = value.indexOf("src", indexOfImgTag);
-                        			int indexOfstartVal = value.indexOf("\"", indexOfImgSrc);
-                        			int count = 0;
-                        			for(int l=indexOfstartVal+1;;l++){
-                        				if(value.charAt(l) != '\"'){
-                        					count++;
-                        				}else{
-                        					break;
-                        				}
-                        			}
-                        			String substring = value.substring(indexOfstartVal+1, indexOfstartVal+count+1);
-                        			String[] tokens = substring.split("/");
-                        			String urlForImg = ZOHOCreator.getFileUploadURL(tokens[tokens.length-1], tokens[1], tokens[2], tokens[3]);
-                        			value = value.replace(substring, urlForImg);
+									int indexOfImgTag = value.indexOf("<img");
+									int indexOfImgSrc = value.indexOf("src", indexOfImgTag);
+									int indexOfstartVal = value.indexOf("\"", indexOfImgSrc);
+									int count = 0;
+									for(int l=indexOfstartVal+1;;l++){
+										if(value.charAt(l) != '\"'){
+											count++;
+										}else{
+											break;
+										}
+									}
+									String substring = value.substring(indexOfstartVal+1, indexOfstartVal+count+1);
+									String[] tokens = substring.split("/");
+									String urlForImg = ZOHOCreator.getFileUploadURL(tokens[tokens.length-1], tokens[1], tokens[2], tokens[3]);
+									value = value.replace(substring, urlForImg);
 								}
 							}
 							recordValue.setValue(value);
 						}
 					}
-					field.setLastReachedForChoices(true); 
 				}
 				if(subFormName==null)
 				{
@@ -319,25 +367,25 @@ class JSONParser {
 			{
 				form.setOpenUrl(openUrlString);
 			}
-			
+
 		}
 
 		return toReturn;
 	}
-	
+
 	static String parseForTokenForExternalField(String response){
 		String toReturn = "";
 		try {
 			JSONObject jsonObject = new JSONObject(response);
-				if(jsonObject.has("access_token"))
-				{
-					toReturn = jsonObject.getString("access_token");
-				}
+			if(jsonObject.has("access_token"))
+			{
+				toReturn = jsonObject.getString("access_token");
+			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return toReturn;
 	}
 }

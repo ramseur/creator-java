@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.sun.xml.internal.ws.model.FieldSignature;
+
 public class ZCForm extends ZCComponent {
 
 	private boolean hasAddOnLoad = false;
@@ -217,9 +219,11 @@ public class ZCForm extends ZCComponent {
 		if(viewForBulkEdit != null) {
 			fieldsToIterate = bulkEditFields;
 		}
+		System.out.println("outside for..");
 		for(int i=0; i<fieldsToIterate.size(); i++) {//No I18N
 			ZCField field = fieldsToIterate.get(i);
 			ZCRecordValue recordValue = field.getRecordValue();
+			System.out.println("inside for field to itertae"+fieldsToIterate.size());
 			if(recordValue != null) 
 			{
 				if(FieldType.isMultiChoiceField(field.getType())) 
@@ -256,8 +260,20 @@ public class ZCForm extends ZCComponent {
 						buff.append("</value>");//No I18N
 						buff.append("</field>");//No I18N
 					}
-				} else if(!FieldType.isPhotoField(field.getType()) && !field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES)) {
-					if(!(recordValue.getValue().equals("")))
+				} else if(!field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES)) {
+                  System.out.println("inside fieldtypephotofild"+recordValue.getValue());
+					if(FieldType.isPhotoField(field.getType()) && field.getImageType()==1 && !(recordValue.getValue().equals("")))
+					{
+						System.out.println("inside if photofield");
+						buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
+						buff.append("<value>");//No I18N
+						buff.append("<![CDATA[");//No I18N
+						buff.append(recordValue.getValue());
+						buff.append("]]>");//No I18N
+						buff.append("</value>");//No I18N
+						buff.append("</field>");//No I18N
+					}
+					else if(!FieldType.isPhotoField(field.getType()) && !(recordValue.getValue().equals("")))
 					{
 						buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
 						buff.append("<value>");//No I18N

@@ -119,7 +119,7 @@ public class ZCURL {
 		if(recordLinkId != null) {
 			return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/view/"+ viewLinkName + "/record/" + recordLinkId + "/edit/", params);//No I18N
 		} else {
-			if(viewLinkName != null) {
+			if(viewLinkName != null && (!(formType == ZCForm.VIEW_BULK_EDIT_FORM))) {
 				params.add(new BasicNameValuePair("viewLinkName", viewLinkName));//No I18N
 			}
 			if(additionalParams!=null) {
@@ -135,10 +135,10 @@ public class ZCURL {
 			}
 
 			params.add(new BasicNameValuePair("formAccessType", String.valueOf(formType)));//No I18N
-//			if(formType == ZCForm.VIEW_BULK_EDIT_FORM)
-//			{
-//				return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName + "/bulkeditfields/", params);//No I18N
-//			}
+			if(formType == ZCForm.VIEW_BULK_EDIT_FORM)
+			{
+				return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"view/"+ viewLinkName + "/bulkeditfields/", params);//No I18N
+			}
 //			else
 //			{
 			return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName + "/fields/", params);//No I18N
@@ -176,25 +176,26 @@ public class ZCURL {
 		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName +"/"+urlValToAdd+"/"+lookupFieldName+ "/options/", params);//No I18N
 	}
 
-	static URLPair formOnLoad(String appLinkName, String formLinkName, String appOwner, List<NameValuePair> additionalParams) {
+	static URLPair formOnLoad(String appLinkName, String formLinkName, String appOwner, List<NameValuePair> additionalParams,int formAccessType) {
 		List<NameValuePair> params = getDefaultParams();
 		params.add(new BasicNameValuePair("sharedBy", appOwner));
 		params.add(new BasicNameValuePair("appLinkName", appLinkName));
 		params.add(new BasicNameValuePair("formLinkName", formLinkName));
 		params.add(new BasicNameValuePair("linkNameBased", "true"));
-		params.add(new BasicNameValuePair("recType", "2"));
+		params.add(new BasicNameValuePair("formAccessType",String.valueOf(formAccessType)));
 		params.addAll(additionalParams);
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}
-	static URLPair formEditOnLoad(String appLinkName, String formLinkName, String appOwner,List<NameValuePair> additionalparams,Long recordLinkId) {
+	static URLPair formEditOnLoad(String appLinkName, String formLinkName, String appOwner,List<NameValuePair> additionalparams,Long recordLinkId,int formAccessType) {
 		List<NameValuePair> params=getDefaultParams();
 		params.add(new BasicNameValuePair("sharedBy", appOwner));
 		params.add(new BasicNameValuePair("appLinkName", appLinkName));
 		params.add(new BasicNameValuePair("formLinkName", formLinkName));
 		params.add(new BasicNameValuePair("linkNameBased", "true"));
-		params.add(new BasicNameValuePair("recType",String.valueOf(ZCForm.VIEW_EDIT_FORM)));
-		params.add(new BasicNameValuePair("pkValue",String.valueOf(recordLinkId-2)));
-		params.addAll(additionalparams);
+		System.out.println("recordlinkid..."+recordLinkId);
+		params.add(new BasicNameValuePair("recordLinkID",String.valueOf(recordLinkId)));
+		params.add(new BasicNameValuePair("recType",String.valueOf(formAccessType)));
+		//params.addAll(additionalparams);
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}
 
@@ -214,16 +215,17 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("rowseqid","t::row_"+entryPosition));
 		params.addAll(additionalParams);
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
-
 	}
 
-	static URLPair fieldOnUser(String appLinkName, String formLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params, boolean isFormula,List<NameValuePair> additionalParams) {
+	static URLPair fieldOnUser(String appLinkName, String formLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params, boolean isFormula,List<NameValuePair> additionalParams,int formType) {
 		params.addAll(getDefaultParams());
 		params.add(new BasicNameValuePair("sharedBy", appOwner));
 		params.add(new BasicNameValuePair("appLinkName", appLinkName));
 		params.add(new BasicNameValuePair("formLinkName", formLinkName));
 		params.add(new BasicNameValuePair("fieldName", fieldLinkName));
 		params.add(new BasicNameValuePair("linkNameBased", "true"));
+		System.out.println("formType....."+formType);
+//		params.add(new BasicNameValuePair("formAccessType",formType+""));
 		if(isFormula) {
 			params.add(new BasicNameValuePair("isFormula", "true"));
 		}
