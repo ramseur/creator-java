@@ -105,7 +105,7 @@ public class ZCForm extends ZCComponent {
 		return toReturn ;
 	}
 
-	ZCField getField(String fieldLinkName) {
+	public ZCField getField(String fieldLinkName) {
 		for(int i=0; i<fields.size(); i++) {//No I18N
 			ZCField field = fields.get(i);
 			if(field.getFieldName().equals(fieldLinkName)) {//No I18N
@@ -246,8 +246,8 @@ public class ZCForm extends ZCComponent {
 					}
 				} else if(field.getType().equals(FieldType.SUB_FORM)) {
 					buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
-					buff.append(getXMLStringForSubFormEntries(field.getAddedSubFormEntries(), "add"));//No I18N
 					buff.append(getXMLStringForSubFormEntries(field.getUpdatedSubFormEntries(), "update"));//No I18N
+					buff.append(getXMLStringForSubFormEntries(field.getAddedSubFormEntries(), "add"));//No I18N
 					buff.append(getXMLStringForSubFormEntries(field.getRemovedSubFormEntries(), "delete"));//No I18N
 					buff.append("</field>");//No I18N
 				} else if(FieldType.isSingleChoiceField(field.getType())) {

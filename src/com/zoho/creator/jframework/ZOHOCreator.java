@@ -1132,32 +1132,32 @@ public class ZOHOCreator {
 						String errorMessage=null;
 						fieldName = failureMessages[i].substring(1,failureMessages[i].indexOf("*"));
 						errorMessage = failureMessages[i].substring(failureMessages[i].indexOf("*")+1);
-						System.out.println("fieldName    "+fieldName);
-						if(fieldName.contains(".FD(t::row_"))
+						if(fieldName.contains(").FD(")
 						{
 							String subFormName = fieldName.substring(3, fieldName.indexOf(")"));
-							System.out.println("subFormName...."+subFormName);
 							String remString = fieldName.substring((4+subFormName.length()));
-							System.out.println("remString.."+remString);
-							String rownum = remString.substring(11,remString.indexOf(")"));
-							System.out.println("rowno.."+rownum);
-							String remString2 = remString.substring((12+rownum.length()));
-							System.out.println("remString2.."+remString2);
-							String subFormFieldName = remString2.substring(4,remString2.indexOf(")"));
-							System.out.println("fieldName.."+subFormFieldName);
+							String rownum = "";
+							if(fieldName.contains(".FD(t::row_"))
+							{
+								rownum = remString.substring(11,remString.indexOf(")"));
+								remString = remString.substring((12+rownum.length()));
+							}
+							else
+							{
+								rownum = remString.substring(remString.indexOf("_")+1,remString.indexOf(")"));
+								remString = remString.substring(remString.indexOf(")")+1);
+							}
+							String subFormFieldName = remString.substring(4,remString.indexOf(")"));
 							fieldName = subFormName;
 							ZCField subFormField = form.getField(fieldName);
-							ZCRecord zcRecord = subFormField.getAddedSubFormEntries().get(Integer.valueOf(rownum)-1);
+							ZCRecord zcRecord = subFormField.getSubFormEntry(Integer.valueOf(rownum)-1);
 							zcRecord.setRecordError(true);
-							System.out.println("row..."+(Integer.valueOf(rownum)-1));
-							System.out.println("errormesss"+errorMessage);
 							for(int j=0;j<zcRecord.getValues().size();j++)
 							{
 								ZCRecordValue recordvalue = zcRecord.getValues().get(j);
 								if(recordvalue.getField().getFieldName().equals(subFormFieldName))
 								{
 									recordvalue.setErrorField(true);
-									System.out.println("recordvaluefieldname"+recordvalue.getField().getFieldName());
 									recordvalue.setErrorMessage(errorMessage);
 									break;
 								} 
