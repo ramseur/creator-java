@@ -41,7 +41,6 @@ class JSONParser {
 					type = jsonObj.getInt("task");
 				}
 				if(jsonObj.has("formName"))
-
 				{
 					formName = jsonObj.getString("formName");
 				}
@@ -55,7 +54,6 @@ class JSONParser {
 						JSONArray jsonArray = (JSONArray) jsonObj.get("fieldValue");
 						for (int j=0; j<jsonArray.length(); j++) {
 							keys.add(jsonArray.getString(j));
-							System.out.println("fieldvaluessssss"+jsonArray.getString(j));
 							choiceValues.add(new ZCChoice(jsonArray.getString(j), jsonArray.getString(j)));
 						}
 					}
@@ -69,7 +67,7 @@ class JSONParser {
 						JSONArray jsonArray = (JSONArray) jsonObj.get("combinedValue");
 						choiceValues = new ArrayList<ZCChoice>();
 						for (int j=0; j<jsonArray.length(); j++) {
-							System.out.println("combinedvalue...."+jsonArray.getString(j));
+							
 							choiceValues.add(new ZCChoice(keys.get(j), jsonArray.getString(j)));
 						}
 					}
@@ -111,10 +109,15 @@ class JSONParser {
 						toReturn.addErrorMessage(form.getField(errorMessageField[0]),errorMessageField[1] );
 					}                
 				}
+				if(jsonObj.has("message"))
+				{
+					toReturn.setError(true);
+					toReturn.setMainErrorMessage((String) jsonObj.get("message"));//No I18N
+				}
 				if(fieldName!=null&& subFormName ==null)
 				{
 					field=form.getField(fieldName);
-					System.out.println("fieldName..."+fieldName);
+					
 					field.setRebuildRequired(true);
 					recordValue = field.getRecordValue();
 				}
@@ -147,9 +150,9 @@ class JSONParser {
 //						ZCChoice choice = new ZCChoice(choiceValues.get(k).getKey(), choiceValues.get(k).getValue());
 //						moreChoices.add(choice);
 //					}
-					System.out.println("choicevaluessize"+choiceValues.size());
+				
 					field.appendChoices(choiceValues);
-					System.out.println("fieldname,,,,"+field.getFieldName());
+					
 					field.setLastReachedForChoices(true);
 				} else if(type==ZCForm.task_select) {
 					if(FieldType.isMultiChoiceField(field.getType())) {
@@ -186,7 +189,7 @@ class JSONParser {
 					break;
 				} else if(type==ZCForm.task_setValue) {
 
-					if(rowNo>0&&subFormField.getAddedSubFormEntries().size()>=rowNo)
+					if(rowNo>0&&subFormField.getSubFormEntriesSize()>=rowNo)
 					{
 						ZCRecord zcRecord =  subFormField.getAddedSubFormEntries().get(rowNo-1);
 						List<ZCRecordValue> zcRecordValues = zcRecord.getValues();

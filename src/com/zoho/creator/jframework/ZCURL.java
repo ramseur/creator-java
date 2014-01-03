@@ -192,7 +192,6 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("appLinkName", appLinkName));
 		params.add(new BasicNameValuePair("formLinkName", formLinkName));
 		params.add(new BasicNameValuePair("linkNameBased", "true"));
-		System.out.println("recordlinkid..."+recordLinkId);
 		params.add(new BasicNameValuePair("recordLinkID",String.valueOf(recordLinkId)));
 		params.add(new BasicNameValuePair("recType",String.valueOf(formAccessType)));
 		//params.addAll(additionalparams);
@@ -224,7 +223,6 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("formLinkName", formLinkName));
 		params.add(new BasicNameValuePair("fieldName", fieldLinkName));
 		params.add(new BasicNameValuePair("linkNameBased", "true"));
-		System.out.println("formType....."+formType);
 //		params.add(new BasicNameValuePair("formAccessType",formType+""));
 		if(isFormula) {
 			params.add(new BasicNameValuePair("isFormula", "true"));

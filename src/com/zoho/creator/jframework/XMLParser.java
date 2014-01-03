@@ -222,7 +222,6 @@ class XMLParser {
 		List<ZCSection> toReturn = new ArrayList<ZCSection>();
 		int remainingDays = -1;
 		NodeList nl = rootDocument.getChildNodes();
-		System.out.println("nllength"+nl.getLength());
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
 			if(responseNode.getNodeName().equals("Response")) {
@@ -233,7 +232,6 @@ class XMLParser {
 					{
 						String errorMessage = getStringValue(responseNodeChild, "error"); //No I18N
 						ZOHOCreator.setErrorMessage(errorMessage);
-						System.out.println("error message"+errorMessage);
 					}
 					else if(responseNodeChild.getNodeName().equals("Sections")) {
 
@@ -517,6 +515,7 @@ class XMLParser {
 		boolean hasSubForm = false;
 		boolean onAddRowExists = false;
 		boolean onDeleteRowExists = false;
+		boolean isFilterApplied = false;
 
 		String refFormLinkName = null;
 		String refFormDisplayName = null;
@@ -657,6 +656,10 @@ class XMLParser {
 
 				urlTitleReq = getBooleanValue(fieldPropetyNode, urlTitleReq);
 			} 
+			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("filter")) {
+
+				isFilterApplied = getBooleanValue(fieldPropetyNode, isFilterApplied);
+			} 
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("currencydisp")){
 				currencyType = getStringValue(fieldPropetyNode, "");
 			}
@@ -672,7 +675,7 @@ class XMLParser {
 			} 
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("defaultrows"))
 			{
-				System.out.println("defaultrows"+defaultRows);
+			
 				defaultRows = getIntValue(fieldPropetyNode, defaultRows);
 			}
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("maximumrows"))
@@ -810,33 +813,36 @@ class XMLParser {
 		//			zcField.setRecordValue(new ZCRecordValue(zcField, file));}
 		else {
 			ZCRecordValue recordValue = null;
-			System.out.println("xmlparserzcFieldType"+zcField.getType()+FieldType.URL);
+			
 			if(zcField.getType()==FieldType.URL)
 			{
-				System.out.println("xmlparsurltitle..."+urlTitleValue+"   linkname   "+urlLinkNameValue+"url"+initialValue);
+				
 				recordValue = new ZCRecordValue(zcField, urlValue);
 				recordValue.setUrlTitleValue(urlTitleValue);
 				recordValue.setUrlLinkNameValue(urlLinkNameValue);
 			}
 			else
 			{
-				System.out.println("initialvalue...."+initialValue);
+				
 				recordValue = new ZCRecordValue(zcField, initialValue);
 			}
 			zcField.setRecordValue(recordValue);
 		}
 
 		zcField.setHidden(isAdminOnly);
-		zcField.addChoices(choices);
 		zcField.setDefaultRows(defaultRows);
 		zcField.setMaximumRows(maximumRows);
 		zcField.setDecimalLength(decimalLength);
 
-		if(!isLookup) {
+//		if(!isLookup) {
+//			zcField.addChoices(choices);
+//			zcField.setLastReachedForChoices(true);
+//		}
+		if(isFilterApplied || (!isLookup))
+		{
 			zcField.addChoices(choices);
 			zcField.setLastReachedForChoices(true);
 		}
-
 		zcField.setOnAddRowExists(onAddRowExists);
 		zcField.setOnDeleteRowExists(onDeleteRowExists);
 		zcField.setLookup(isLookup);
@@ -1205,22 +1211,22 @@ class XMLParser {
 			NodeList urlTagNodes = valueNode.getChildNodes();
 			for(int m=0;m<urlTagNodes.getLength();m++)
 			{
-				System.out.println("urltagsize.."+m);
+				
 				Node urlNode = urlTagNodes.item(m);
 				if(urlNode.getNodeName().equals("linkname")) {
 
 					urlLinkNameValue = getStringValue(urlNode, urlLinkNameValue);
-					System.out.println("urltag1"+urlLinkNameValue);
+					
 				}
 				else if(urlNode.getNodeName().equals("url"))
 				{
 					value = getStringValue(urlNode, "");
-					System.out.println("urltag2"+value);
+					
 				}
 				else if(urlNode.getNodeName().equals("title"))
 				{
 					urlTitleValue = getStringValue(urlNode, urlTitleValue);
-					System.out.println("urltag3"+urlTitleValue);
+					
 				}
 			}
 			ZCRecordValue zcValue = null;
@@ -1239,10 +1245,10 @@ class XMLParser {
 				}
 				if(zcField.getType()==FieldType.URL)
 				{
-					System.out.println("inside url if.."+urlTitleValue+urlLinkNameValue);
+					
 					zcValue.setUrlTitleValue(urlTitleValue);
 					zcValue.setUrlLinkNameValue(urlLinkNameValue);
-					System.out.println("insideafter settingvalueslinkname.."+zcValue.getUrlLinkNameValue()+"title.."+zcValue.getUrlTitleValue()+"url"+value);
+					
 				}
 				if(isForView)
 				{

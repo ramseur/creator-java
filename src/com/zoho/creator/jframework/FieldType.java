@@ -163,7 +163,7 @@ public enum FieldType   {
     
     public static boolean isSubFormUnSupportedField(FieldType ftype)
     {
-    	return (isUnSupportedField(ftype) || ftype.equals(FieldType.DECISION_CHECK_BOX) || FieldType.isPhotoField(ftype));
+    	return (isUnSupportedField(ftype) || FieldType.isPhotoField(ftype));
     }
     
     

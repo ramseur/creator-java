@@ -121,7 +121,7 @@ public class ZCButton implements Comparable<ZCButton>{
 				if(FieldType.isPhotoField(field.getType())) {
 					ZCRecordValue recValue = field.getRecordValue();
 					File fileToUpload = recValue.getFileValue();
-					System.out.println("is filereuploaded"+field.isFileReUploaded());
+					
 					int imageType = field.getImageType();
 					if(field.isFileReUploaded() && imageType != 1 )
 					{
@@ -152,7 +152,7 @@ public class ZCButton implements Comparable<ZCButton>{
 
 	private void constructImageUrl(ZCField field,ZCResponse response,File fileToUpload,String action) throws ZCException
 	{
-		System.out.println("inside consturct image");
+		
 		URLPair urlPair = ZCURL.fileUploadURL(zcForm.getAppOwner());
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.addAll(urlPair.getNvPair());
@@ -175,7 +175,6 @@ public class ZCButton implements Comparable<ZCButton>{
 		else
 		{
 			params.add(new BasicNameValuePair("operation", "delete"));//No I18N
-			System.out.println("inside cons else"+ZOHOCreator.getCurrentView().getComponentLinkName());
 			if(ZOHOCreator.getCurrentView()!=null)
 			{
 			params.add(new BasicNameValuePair("viewLinkName", ZOHOCreator.getCurrentView().getComponentLinkName()));//No I18N

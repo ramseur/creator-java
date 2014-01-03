@@ -110,12 +110,10 @@ public class ZOHOUser {
 		
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
-			////////System.out.println("******* " + responseNode.getNodeName());
 			if(responseNode.getNodeName().equals("response")) {
 				NodeList responseNodes = responseNode.getChildNodes();
 				for(int j=0; j<responseNodes.getLength(); j++) {
 					Node resultNode = responseNodes.item(j);
-					////////System.out.println(resultNode.getNodeName());
 					if(resultNode.getNodeName().equals("result")) {
 						NodeList resultNodes = resultNode.getChildNodes();		
 						for(int k=0; k<resultNodes.getLength(); k++) {
@@ -169,20 +167,15 @@ public class ZOHOUser {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} //No I18N
-            //System.out.println("loginURL : " + loginURL);
- 
-            //System.out.println("response : " + response);
+            
         authToken = props.getProperty("AUTHTOKEN");
         result = props.getProperty("RESULT");
-        //System.out.println("authToken : " + authToken);
-        //System.out.println("result : " + result);
         if (authToken != null && result != null)
         {
             status = 200;
             userCredential = this;
             ZOHOUser.userStorage.saveAuthToken(authToken);
-            //String filePath = "./Login"; //No I18N
-            //EncodeObject.encode(filePath, userCredential);
+
         }
         else
         {
@@ -222,7 +215,6 @@ public class ZOHOUser {
     
     static ZOHOUser getUserObject(String uname, String password) throws ZCException {
         ZOHOUser currentUser = getUserObject();
-        //System.out.println("currentUser : " + currentUser);
         
         if(currentUser != null) {
             currentUser.logout(); // logout and remove the files.
@@ -236,7 +228,6 @@ public class ZOHOUser {
 	
 	static ZOHOUser getUserObject(String authToken) throws ZCException {
 		ZOHOUser currentUser = getUserObject();
-		//System.out.println("currentUser : " + currentUser);
 		
 		if(currentUser != null) {
 			currentUser.logout(); // logout and remove the files.
@@ -257,7 +248,6 @@ public class ZOHOUser {
 				e.printStackTrace();
 			}
 			ZOHOUser.userStorage.removeAuthToken();
-			//System.out.println("***** LOGOUT RESPONSE **** " + response);
 			userCredential = null;
 		}
 	}
