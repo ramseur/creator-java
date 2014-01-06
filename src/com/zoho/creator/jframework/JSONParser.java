@@ -110,8 +110,7 @@ class JSONParser {
 				}
 				if(jsonObj.has("message"))
 				{
-					toReturn.setError(true);
-					toReturn.setMainErrorMessage((String) jsonObj.get("message"));//No I18N
+					form.setErrorMessage(jsonObj.getString("message"));
 				}
 				if(fieldName!=null&& subFormName ==null)
 				{
@@ -148,7 +147,6 @@ class JSONParser {
 //						ZCChoice choice = new ZCChoice(choiceValues.get(k).getKey(), choiceValues.get(k).getValue());
 //						moreChoices.add(choice);
 //					}
-
 					field.appendChoices(choiceValues);
 					field.setLastReachedForChoices(true);
 				} else if(type==ZCForm.task_select) {

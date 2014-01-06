@@ -15,6 +15,7 @@ public class ZCForm extends ZCComponent {
 	private boolean hasEditOnLoad = false;
 	private String successMessage = "";
 	private String dateFormat = "";
+	private String errorMessage = null;
 	private List<ZCField> fields = new ArrayList<ZCField>();
 	private List<ZCButton> buttons = new ArrayList<ZCButton>();
 	private boolean isStateLess = false;
@@ -91,7 +92,7 @@ public class ZCForm extends ZCComponent {
 		return false;
 	}
 
-	
+
 	public String getSuccessMessage() {
 		return successMessage;
 	}
@@ -243,6 +244,13 @@ public class ZCForm extends ZCComponent {
 						buff.append("</field>");//No I18N
 						//}
 					}
+					else
+					{
+						buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
+						buff.append("<options>");//No I18N
+						buff.append("</options>");//No I18N
+						buff.append("</field>");//No I18N
+					}
 				} else if(field.getType().equals(FieldType.SUB_FORM)) {
 					buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
 					buff.append(getXMLStringForSubFormEntries(field.getUpdatedSubFormEntries(), "update"));//No I18N
@@ -250,15 +258,18 @@ public class ZCForm extends ZCComponent {
 					buff.append(getXMLStringForSubFormEntries(field.getRemovedSubFormEntries(), "delete"));//No I18N
 					buff.append("</field>");//No I18N
 				} else if(FieldType.isSingleChoiceField(field.getType())) {
+					buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
+					buff.append("<value>");//No I18N
+					buff.append("<![CDATA[");//No I18N
 					if(recordValue.getChoiceValue() != null) {
-						buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
-						buff.append("<value>");//No I18N
-						buff.append("<![CDATA[");//No I18N
 						buff.append(recordValue.getChoiceValue().getKey());
-						buff.append("]]>");//No I18N
-						buff.append("</value>");//No I18N
-						buff.append("</field>");//No I18N
+					}else
+					{
+						buff.append("");	
 					}
+					buff.append("]]>");//No I18N
+					buff.append("</value>");//No I18N
+					buff.append("</field>");//No I18N
 				} else if(!field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES)) {
 					if(FieldType.isPhotoField(field.getType()) && field.getImageType()==1 && !(recordValue.getValue().equals("")))
 					{
@@ -270,7 +281,7 @@ public class ZCForm extends ZCComponent {
 						buff.append("</value>");//No I18N
 						buff.append("</field>");//No I18N
 					}
-					else if(!FieldType.isPhotoField(field.getType()) && !(recordValue.getValue().equals("")))
+					else if(!FieldType.isPhotoField(field.getType()))
 					{
 						buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
 						buff.append("<value>");//No I18N
@@ -399,7 +410,7 @@ public class ZCForm extends ZCComponent {
 				{
 					if(recordValue.getChoiceValue()!=null)
 					{
-					value = recordValue.getChoiceValue().getKey();
+						value = recordValue.getChoiceValue().getKey();
 					}
 				}
 				else if(!FieldType.isPhotoField(field.getType()) && !field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES))
@@ -571,6 +582,15 @@ public class ZCForm extends ZCComponent {
 	public String getOpenUrlType()
 	{
 		return openurlType;
+	}
+	public void setErrorMessage(String errorMessage)
+	{
+		this.errorMessage = errorMessage;
+	}
+
+	public String getErrorMessage()
+	{
+		return errorMessage;
 	}
 
 }

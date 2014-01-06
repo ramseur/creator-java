@@ -714,7 +714,6 @@ public class ZOHOCreator {
 
 	private static ZCForm getForm(String appLinkName, String formLinkName, String appOwner, String viewLinkName, Long recordLinkId, int formType, String refAppLinkName, String refFormLinkName, String refFieldName, Date calSelectedStartDate,Date calSelectedEndDate,List<NameValuePair> params,String queryString) throws ZCException {
 		URLPair formMetaURLPair = ZCURL.formMetaURL(appLinkName, formLinkName, appOwner, viewLinkName, recordLinkId, formType, refAppLinkName, refFormLinkName, refFieldName, calSelectedStartDate,calSelectedEndDate,params);
-
 		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
 		ZCForm toReturn = XMLParser.parseForForm(rootDocument, appLinkName, appOwner,queryString);
 		if(toReturn == null) {

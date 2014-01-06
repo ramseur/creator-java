@@ -604,6 +604,7 @@ class XMLParser {
 						initialChoiceValues.add(initialValue);
 					}	
 				}
+				
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("maxChar")) {
 				maxChar = getIntValue(fieldPropetyNode, maxChar);
 			} 
@@ -780,6 +781,7 @@ class XMLParser {
 					selectedChoices.add(new ZCChoice(keys.get(i), initialChoiceValues.get(i)));
 				}
 				zcField.setRecordValue(new ZCRecordValue(zcField,selectedChoices));
+				
 			}
 		} else if(FieldType.isSingleChoiceField(fieldType)) {
 			ZCChoice toAdd = null;
