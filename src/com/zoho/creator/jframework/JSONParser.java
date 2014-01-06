@@ -67,7 +67,6 @@ class JSONParser {
 						JSONArray jsonArray = (JSONArray) jsonObj.get("combinedValue");
 						choiceValues = new ArrayList<ZCChoice>();
 						for (int j=0; j<jsonArray.length(); j++) {
-							
 							choiceValues.add(new ZCChoice(keys.get(j), jsonArray.getString(j)));
 						}
 					}
@@ -117,7 +116,6 @@ class JSONParser {
 				if(fieldName!=null&& subFormName ==null)
 				{
 					field=form.getField(fieldName);
-					
 					field.setRebuildRequired(true);
 					recordValue = field.getRecordValue();
 				}
@@ -150,9 +148,8 @@ class JSONParser {
 //						ZCChoice choice = new ZCChoice(choiceValues.get(k).getKey(), choiceValues.get(k).getValue());
 //						moreChoices.add(choice);
 //					}
-				
+
 					field.appendChoices(choiceValues);
-					
 					field.setLastReachedForChoices(true);
 				} else if(type==ZCForm.task_select) {
 					if(FieldType.isMultiChoiceField(field.getType())) {

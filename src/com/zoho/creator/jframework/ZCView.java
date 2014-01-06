@@ -188,12 +188,10 @@ public class ZCView extends ZCComponent {
 		return sortByColumns;
 	}
 
-
 	public List<ZCCustomFilter> getCustomFilters() {
 		final List<ZCCustomFilter> toReturn = new ArrayList<ZCCustomFilter>(customFilters);
 		return toReturn ;
 	}
-
 	
 	void addCustomFilters(List<ZCCustomFilter> customFilters) {
 		if(!customFiltersAdded) {
@@ -204,7 +202,6 @@ public class ZCView extends ZCComponent {
 		}
 		
 	}
-
 	
 	public List<ZCFilter> getFilters() {
 		final List<ZCFilter> toReturn = new ArrayList<ZCFilter>(filters);

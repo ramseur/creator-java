@@ -174,7 +174,9 @@ public class ZOHOUser {
         {
             status = 200;
             userCredential = this;
-            ZOHOUser.userStorage.saveAuthToken(authToken);
+         //   ZOHOUser.userStorage.saveAuthToken(authToken);
+            //String filePath = "./Login"; //No I18N
+            //EncodeObject.encode(filePath, userCredential);
 
         }
         else

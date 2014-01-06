@@ -219,7 +219,7 @@ public class ZCForm extends ZCComponent {
 		if(viewForBulkEdit != null) {
 			fieldsToIterate = bulkEditFields;
 		}
-		
+
 		for(int i=0; i<fieldsToIterate.size(); i++) {//No I18N
 			ZCField field = fieldsToIterate.get(i);
 			ZCRecordValue recordValue = field.getRecordValue();

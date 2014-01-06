@@ -135,7 +135,8 @@ public enum FieldType   {
     			ftype.equals(FieldType.URL) || 
     			ftype.equals(FieldType.AUTO_NUMBER) || 
     			ftype.equals(FieldType.UNKNOWN) || 
-    			ftype.equals(FieldType.RICH_TEXT));
+    			ftype.equals(FieldType.RICH_TEXT)|| 
+    			ftype.equals(FieldType.SUB_FORM));
     }
 
     public static boolean isSecondaryFieldType(FieldType ftype) {
@@ -144,7 +145,8 @@ public enum FieldType   {
     			ftype.equals(FieldType.URL) || 
     			ftype.equals(FieldType.UNKNOWN) || 
     			ftype.equals(FieldType.AUTO_NUMBER) || 
-    			ftype.equals(FieldType.RICH_TEXT));
+    			ftype.equals(FieldType.RICH_TEXT)|| 
+    			ftype.equals(FieldType.SUB_FORM));
     }
     public static boolean isBulkEditUNSupportedField(FieldType ftype)
     {

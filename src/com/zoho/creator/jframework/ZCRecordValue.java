@@ -169,13 +169,11 @@ public class ZCRecordValue {
 	}
 
 	public void setFileValue(File fileValue) {
-
 		if(!FieldType.isPhotoField(field.getType())) {
 			throw new RuntimeException("Use the other one");//No I18N
 		}
 		this.fileValue = fileValue;
 	}
-
 
 	public ZCField getField() {
 		return field;
@@ -202,5 +200,4 @@ public class ZCRecordValue {
 	
 		return errorMessage;
 	}
-
 }

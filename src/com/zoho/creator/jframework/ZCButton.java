@@ -121,7 +121,7 @@ public class ZCButton implements Comparable<ZCButton>{
 				if(FieldType.isPhotoField(field.getType())) {
 					ZCRecordValue recValue = field.getRecordValue();
 					File fileToUpload = recValue.getFileValue();
-					
+
 					int imageType = field.getImageType();
 					if(field.isFileReUploaded() && imageType != 1 )
 					{
@@ -152,7 +152,7 @@ public class ZCButton implements Comparable<ZCButton>{
 
 	private void constructImageUrl(ZCField field,ZCResponse response,File fileToUpload,String action) throws ZCException
 	{
-		
+
 		URLPair urlPair = ZCURL.fileUploadURL(zcForm.getAppOwner());
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.addAll(urlPair.getNvPair());

@@ -675,7 +675,6 @@ class XMLParser {
 			} 
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("defaultrows"))
 			{
-			
 				defaultRows = getIntValue(fieldPropetyNode, defaultRows);
 			}
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("maximumrows"))
@@ -813,17 +812,16 @@ class XMLParser {
 		//			zcField.setRecordValue(new ZCRecordValue(zcField, file));}
 		else {
 			ZCRecordValue recordValue = null;
-			
+
 			if(zcField.getType()==FieldType.URL)
 			{
-				
 				recordValue = new ZCRecordValue(zcField, urlValue);
 				recordValue.setUrlTitleValue(urlTitleValue);
 				recordValue.setUrlLinkNameValue(urlLinkNameValue);
 			}
 			else
 			{
-				
+
 				recordValue = new ZCRecordValue(zcField, initialValue);
 			}
 			zcField.setRecordValue(recordValue);
@@ -1211,22 +1209,19 @@ class XMLParser {
 			NodeList urlTagNodes = valueNode.getChildNodes();
 			for(int m=0;m<urlTagNodes.getLength();m++)
 			{
-				
 				Node urlNode = urlTagNodes.item(m);
 				if(urlNode.getNodeName().equals("linkname")) {
 
 					urlLinkNameValue = getStringValue(urlNode, urlLinkNameValue);
-					
 				}
 				else if(urlNode.getNodeName().equals("url"))
 				{
 					value = getStringValue(urlNode, "");
-					
 				}
 				else if(urlNode.getNodeName().equals("title"))
 				{
 					urlTitleValue = getStringValue(urlNode, urlTitleValue);
-					
+
 				}
 			}
 			ZCRecordValue zcValue = null;
@@ -1245,10 +1240,8 @@ class XMLParser {
 				}
 				if(zcField.getType()==FieldType.URL)
 				{
-					
 					zcValue.setUrlTitleValue(urlTitleValue);
 					zcValue.setUrlLinkNameValue(urlLinkNameValue);
-					
 				}
 				if(isForView)
 				{
