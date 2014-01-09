@@ -1088,100 +1088,99 @@ public class ZOHOCreator {
 		Document rootDocument = ZOHOCreator.postURLXML(xmlWriteURLPair.getUrl(), params);
 		XPath xPath = XPathFactory.newInstance().newXPath();
 		ZCResponse toReturn = new ZCResponse();
-		try {
-			String status = xPath.compile("/response/result/form/" + action + "/status").evaluate(rootDocument);//No I18N
-			String openurlValue = xPath.compile("/response/result/form/" + action + "/openurl/url").evaluate(rootDocument);//No I18N
-			String openUrlType = xPath.compile("/response/result/form/" + action + "/openurl/type").evaluate(rootDocument);//No I18N
-			if(form!=null)
-			{
-				form.setOpenUrl(openurlValue);
-			}
-			if(status.startsWith("Failure")) {
-				toReturn.setError(true);
-				String[] failureMessages = status.split(",");
-				List<ZCField> fields = form.getFields();
-				if(status.contains("*")) {
-					toReturn.setMainErrorMessage("Invalid entries found. Please correct and submit again.");//No I18N
-					for(int i=1;i<failureMessages.length;i++)
-					{
-						String fieldName=null;
-						String errorMessage=null;
-						fieldName = failureMessages[i].substring(1,failureMessages[i].indexOf("*"));
-						errorMessage = failureMessages[i].substring(failureMessages[i].indexOf("*")+1);
-						if(fieldName.contains(").FD("))
+			try {
+				String status = xPath.compile("/response/result/form/" + action + "/status").evaluate(rootDocument);//No I18N
+				String openurlValue = xPath.compile("/response/result/form/" + action + "/openurl/url").evaluate(rootDocument);//No I18N
+				String openUrlType = xPath.compile("/response/result/form/" + action + "/openurl/type").evaluate(rootDocument);//No I18N
+				if(form != null){
+					form.setOpenUrl(openurlValue);
+				}
+				
+				if(status.startsWith("Failure")) {
+					toReturn.setError(true);
+					String[] failureMessages = status.split(",");
+					List<ZCField> fields = form.getFields();
+					if(status.contains("*")) {
+						toReturn.setMainErrorMessage("Invalid entries found. Please correct and submit again.");//No I18N
+						for(int i=1;i<failureMessages.length;i++)
 						{
-							String subFormName = fieldName.substring(3, fieldName.indexOf(")"));
-							String remString = fieldName.substring((4+subFormName.length()));
-							String rownum = "";
-							if(fieldName.contains(".FD(t::row_"))
+							String fieldName=null;
+							String errorMessage=null;
+							fieldName = failureMessages[i].substring(1,failureMessages[i].indexOf("*"));
+							errorMessage = failureMessages[i].substring(failureMessages[i].indexOf("*")+1);
+							if(fieldName.contains(").FD("))
 							{
-								rownum = remString.substring(11,remString.indexOf(")"));
-								remString = remString.substring((12+rownum.length()));
-							}
-							else
-							{
-								rownum = remString.substring(remString.indexOf("_")+1,remString.indexOf(")"));
-								remString = remString.substring(remString.indexOf(")")+1);
-							}
-							String subFormFieldName = remString.substring(4,remString.indexOf(")"));
-							fieldName = subFormName;
-							ZCField subFormField = form.getField(fieldName);
-							ZCRecord zcRecord = subFormField.getSubFormEntry(Integer.valueOf(rownum)-1);
-							zcRecord.setRecordError(true);
-							for(int j=0;j<zcRecord.getValues().size();j++)
-							{
-								ZCRecordValue recordvalue = zcRecord.getValues().get(j);
-								if(recordvalue.getField().getFieldName().equals(subFormFieldName))
+								String subFormName = fieldName.substring(3, fieldName.indexOf(")"));
+								String remString = fieldName.substring((4+subFormName.length()));
+								String rownum = "";
+								if(fieldName.contains(".FD(t::row_"))
 								{
-									recordvalue.setErrorField(true);
-									recordvalue.setErrorMessage(errorMessage);
-									break;
-								} 
+									rownum = remString.substring(11,remString.indexOf(")"));
+									remString = remString.substring((12+rownum.length()));
+								}
+								else
+								{
+									rownum = remString.substring(remString.indexOf("_")+1,remString.indexOf(")"));
+									remString = remString.substring(remString.indexOf(")")+1);
+								}
+								String subFormFieldName = remString.substring(4,remString.indexOf(")"));
+								fieldName = subFormName;
+								ZCField subFormField = form.getField(fieldName);
+								ZCRecord zcRecord = subFormField.getSubFormEntry(Integer.valueOf(rownum)-1);
+								zcRecord.setRecordError(true);
+								for(int j=0;j<zcRecord.getValues().size();j++)
+								{
+									ZCRecordValue recordvalue = zcRecord.getValues().get(j);
+									if(recordvalue.getField().getFieldName().equals(subFormFieldName))
+									{
+										recordvalue.setErrorField(true);
+										recordvalue.setErrorMessage(errorMessage);
+										break;
+									} 
+								}
+								errorMessage = "Invalid entries found in "+fieldName;
 							}
-							errorMessage = "Invalid entries found in "+fieldName;
-						}
 
-						for(int j=0;j<fields.size();j++)
-						{
-							if(fieldName.equals(fields.get(j).getFieldName())) 
+							for(int j=0;j<fields.size();j++)
 							{
-								toReturn.addErrorMessage(fields.get(j), errorMessage);
-								break;
+								if(fieldName.equals(fields.get(j).getFieldName())) 
+								{
+									toReturn.addErrorMessage(fields.get(j), errorMessage);
+									break;
+								}
 							}
 						}
+					} 
+					else {
+						if(failureMessages.length > 1) {
+							toReturn.setMainErrorMessage(status.substring(failureMessages[0].length() + 1));
+						} else {
+							toReturn.setMainErrorMessage(status);
+						}
+					}
+				} else  if(status.startsWith("Success")) { //No I18N
+					if(form != null) {
+						xPath = XPathFactory.newInstance().newXPath();
+						String idValue = xPath.compile("/response/result/form/add/values/field[@name=\"ID\"]").evaluate(rootDocument);//No I18N
+						if(idValue.length()!=0) {
+							toReturn.setSuccessRecordID(Long.parseLong(idValue));
+						}
+						String lookUpValue = xPath.compile("/response/result/form/" + action + "/combinedlookupvalue").evaluate(rootDocument);//No I18N
+						toReturn.setSuccessLookUpChoiceValue(new ZCChoice(idValue, lookUpValue));
 					}
 				} 
 				else {
-					if(failureMessages.length > 1) {
-						toReturn.setMainErrorMessage(status.substring(failureMessages[0].length() + 1));
-					} else {
-						toReturn.setMainErrorMessage(status);
-					}
-				}
-			} else  if(status.startsWith("Success")) { //No I18N
-				if(form != null) {
-					xPath = XPathFactory.newInstance().newXPath();
-					String idValue = xPath.compile("/response/result/form/add/values/field[@name=\"ID\"]").evaluate(rootDocument);//No I18N
-					if(idValue.length()!=0) {
-						toReturn.setSuccessRecordID(Long.parseLong(idValue));
-					}
-					String lookUpValue = xPath.compile("/response/result/form/" + action + "/combinedlookupvalue").evaluate(rootDocument);//No I18N
-					toReturn.setSuccessLookUpChoiceValue(new ZCChoice(idValue, lookUpValue));
-				}
-			} 
-			else {
-				//String errorCodeStr = xPath.compile("/response/errorlist/error/code/").evaluate(rootDocument);//No I18N
-				String errorCodeMessage = xPath.compile("/response/errorlist/error/message").evaluate(rootDocument);//No I18N
-				if(errorCodeMessage != null && !errorCodeMessage.equals("")) {
+					//String errorCodeStr = xPath.compile("/response/errorlist/error/code/").evaluate(rootDocument);//No I18N
+					String errorCodeMessage = xPath.compile("/response/errorlist/error/message").evaluate(rootDocument);//No I18N
+					if(errorCodeMessage != null && !errorCodeMessage.equals("")) {
 
-					toReturn.setError(true);
-					toReturn.setMainErrorMessage(errorCodeMessage);
+						toReturn.setError(true);
+						toReturn.setMainErrorMessage(errorCodeMessage);
+					}
 				}
+			} catch (XPathExpressionException e) {
+				throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, getTrace(e));//No I18N
 			}
-		} catch (XPathExpressionException e) {
-			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, getTrace(e));//No I18N
-		}
-
 
 		return toReturn;
 	}

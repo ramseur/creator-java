@@ -59,7 +59,7 @@ public class ZCRecord implements Comparable<ZCRecord> {
 	}
 	
 	public List<ZCRecordValue> getSecondaryValues() {
-		return FieldType.getDisplayValues(true, values);
+		return FieldType.getDisplayValues(false, values);
 	}
 
 	public long getRecordId() {
