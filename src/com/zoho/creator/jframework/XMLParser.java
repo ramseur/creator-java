@@ -926,6 +926,7 @@ class XMLParser {
 
 	static List<ZCChoice> getLookUpChoices(Document rootDocument)
 	{
+		
 		NodeList nl = rootDocument.getChildNodes();
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
@@ -954,8 +955,6 @@ class XMLParser {
 			}
 
 		}
-
-
 		return new ArrayList<ZCChoice>();
 	}
 

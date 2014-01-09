@@ -16,13 +16,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -63,9 +61,6 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -108,7 +103,7 @@ public class ZOHOCreator {
 	public static String getLoginURL() {
 		return ZCURL.getURLString(ZCURL.getLoginUrl());
 	}
-	
+
 	public static String getCreatorUpgradeURL() {
 		return ZCURL.getURLString(ZCURL.getCreatorUpgradeUrl());
 	}
@@ -448,7 +443,7 @@ public class ZOHOCreator {
 		// check for file
 		URLPair navigationListURL = ZCURL.navigationListURL();
 		//Document rootDocument = ZOHOCreator.postURLXML(navigationListURL.getUrl(), navigationListURL.getNvPair());
-		
+
 		Document rootDocument = null;
 		File f = new File(filePath+"/navList.xml");
 		if(!f.exists()){
@@ -474,7 +469,7 @@ public class ZOHOCreator {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return XMLParser.parseForNavigationListForApps(rootDocument);
 	}
 
@@ -492,22 +487,22 @@ public class ZOHOCreator {
 			BufferedReader br = null;
 			try {
 				br = new BufferedReader(new FileReader(filePath+"/editSupportURL.txt"));
-		        //String line = br.readLine();
-		        while (true) {
-		           String url = br.readLine();
-		           if(url == null){
-		        	   		break;
-		           }
-		           String[] token = url.split("/");
-		           ZCApplication zcApp = new ZCApplication(token[3], token[4], token[4], false, new Date());
-		           zcApps.add(zcApp);
-		        }
+				//String line = br.readLine();
+				while (true) {
+					String url = br.readLine();
+					if(url == null){
+						break;
+					}
+					String[] token = url.split("/");
+					ZCApplication zcApp = new ZCApplication(token[3], token[4], token[4], false, new Date());
+					zcApps.add(zcApp);
+				}
 			}catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return new ZCAppList(ZCAppList.PERSONAL_APPS, zcApps);
-			
+
 		}else{
 			File f = new File(filePath+"/personalAppList.xml");
 			if(!f.exists()){
@@ -536,10 +531,10 @@ public class ZOHOCreator {
 			return new ZCAppList(ZCAppList.PERSONAL_APPS, XMLParser.parseForApplicationList(rootDocument));
 		}
 	}
-	
-	
-	
-	
+
+
+
+
 	public static ZCAppList getSharedApplicationList(String filePath) throws ZCException {
 		return getSharedApplicationList(null,filePath);
 	}
@@ -577,8 +572,8 @@ public class ZOHOCreator {
 				e.printStackTrace();
 			}
 		}
-		
-		
+
+
 		List<ZCApplication> apps = XMLParser.parseForApplicationList(rootDocument);
 		ZCAppList toReturn = new ZCAppList(ZCAppList.SHARED_APPS, apps);
 		toReturn.setSharedGroup(sharedGroup);
@@ -593,7 +588,7 @@ public class ZOHOCreator {
 		}
 		additionalParams.addAll(appListURLPair.getNvPair());
 		//Document rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), additionalParams);
-		
+
 		Document rootDocument = null;
 		File 	f = new File(filePath+"/workspaceApps_"+workspaceAppOwner+"List.xml");
 		if(!f.exists()){
@@ -619,7 +614,7 @@ public class ZOHOCreator {
 				e.printStackTrace();
 			}
 		}
-		
+
 		ZCAppList toReturn = new ZCAppList(ZCAppList.WORKSPACE_APPS, XMLParser.parseForApplicationList(rootDocument));
 		toReturn.setWorkspaceAppOwner(workspaceAppOwner);
 		return toReturn;
@@ -632,7 +627,7 @@ public class ZOHOCreator {
 			additionalParams = new ArrayList<NameValuePair>();
 		}
 		additionalParams.addAll(sectionListURLPair.getNvPair());
-		
+
 		Document rootDocument = null;
 		File f = new File(filePath+"/section_appOwner"+appOwner+"_appLinkName"+appLinkName+"List.xml");
 		if(!f.exists()){
@@ -658,7 +653,7 @@ public class ZOHOCreator {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return XMLParser.parseForSectionList(rootDocument, appLinkName, appOwner);
 	}
 
@@ -714,6 +709,7 @@ public class ZOHOCreator {
 
 	private static ZCForm getForm(String appLinkName, String formLinkName, String appOwner, String viewLinkName, Long recordLinkId, int formType, String refAppLinkName, String refFormLinkName, String refFieldName, Date calSelectedStartDate,Date calSelectedEndDate,List<NameValuePair> params,String queryString) throws ZCException {
 		URLPair formMetaURLPair = ZCURL.formMetaURL(appLinkName, formLinkName, appOwner, viewLinkName, recordLinkId, formType, refAppLinkName, refFormLinkName, refFieldName, calSelectedStartDate,calSelectedEndDate,params);
+		
 		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
 		ZCForm toReturn = XMLParser.parseForForm(rootDocument, appLinkName, appOwner,queryString);
 		if(toReturn == null) {
@@ -748,7 +744,7 @@ public class ZOHOCreator {
 	static void callFormEditOnAddOnLoad(ZCForm zcForm,Long recordLinkId,int formAccessType) throws ZCException{
 		List<NameValuePair> params = zcForm.getFieldParamValues(null,-1);
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
-		
+
 		URLPair formEditOnAddOnLoadURL = ZCURL.formEditOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), params,recordLinkId,formAccessType);
 		String response = ZOHOCreator.postURL(formEditOnAddOnLoadURL.getUrl(), formEditOnAddOnLoadURL.getNvPair());
 		JSONParser.parseAndCallFormEvents(response, zcForm,null,null);
@@ -758,7 +754,7 @@ public class ZOHOCreator {
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
 		JSONParser.parseAndCallFormEvents(response,zcForm,recordValues,currentShownForm);
 	}
-	
+
 	static ZCResponse parseResponseDocumentForJSONString(URLPair urlPair, ZCForm zcForm) throws ZCException {
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
 		return JSONParser.parseAndCallFormEvents(response, zcForm, null,null);
@@ -879,9 +875,9 @@ public class ZOHOCreator {
 		//List<NameValuePair> params = getAdditionalParamsForForm(baseForm,field);
 		//params.addAll(getCurrentForm().getFieldParamValues(recordValues));
 		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), fieldName, field.getChoices().size(), field.getSearchForChoices(), subformComponent,formAccessType,getAdditionalParamsForForm(baseForm,field),field);
+		
 		Document rootDocument = ZOHOCreator.postURLXML(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair());
 		return XMLParser.getLookUpChoices(rootDocument);
-
 	}
 
 
@@ -1096,7 +1092,10 @@ public class ZOHOCreator {
 			String status = xPath.compile("/response/result/form/" + action + "/status").evaluate(rootDocument);//No I18N
 			String openurlValue = xPath.compile("/response/result/form/" + action + "/openurl/url").evaluate(rootDocument);//No I18N
 			String openUrlType = xPath.compile("/response/result/form/" + action + "/openurl/type").evaluate(rootDocument);//No I18N
-			form.setOpenUrl(openurlValue);
+			if(form!=null)
+			{
+				form.setOpenUrl(openurlValue);
+			}
 			if(status.startsWith("Failure")) {
 				toReturn.setError(true);
 				String[] failureMessages = status.split(",");
@@ -1289,7 +1288,7 @@ public class ZOHOCreator {
 	}
 
 	static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-	
+
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1461,30 +1460,30 @@ public class ZOHOCreator {
 			return null;
 		}
 	}
-	
-	 static Document stringToDocument(final String xmlSource)   
-		    throws SAXException, ParserConfigurationException, IOException {  
-		    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();  
-		    DocumentBuilder builder = factory.newDocumentBuilder();  
 
-		    return builder.parse(new InputSource(new StringReader(xmlSource)));  
-		}  
-	
+	static Document stringToDocument(final String xmlSource)   
+			throws SAXException, ParserConfigurationException, IOException {  
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();  
+		DocumentBuilder builder = factory.newDocumentBuilder();  
+
+		return builder.parse(new InputSource(new StringReader(xmlSource)));  
+	}  
+
 	static String readResponseFromFile(String fileName){
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(fileName));
 			StringBuilder sb = new StringBuilder();
-	        String line = br.readLine();
+			String line = br.readLine();
 
-	        while (line != null) {
-	            sb.append(line);
-	            sb.append('\n');
-	            line = br.readLine();
-	        }
-	        return sb.toString();
+			while (line != null) {
+				sb.append(line);
+				sb.append('\n');
+				line = br.readLine();
+			}
+			return sb.toString();
 		} 
-		
+
 		catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1492,21 +1491,21 @@ public class ZOHOCreator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		 finally {
-		        try {
-					br.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		    }
+		finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return null; 
-	    
+
 	}
-	
+
 	static void writeResponseToFile( String content , String fileName){
 		try {
-			
+
 			PrintWriter writer = new PrintWriter(fileName, "UTF-8");
 			writer.println(content);
 			writer.close();
