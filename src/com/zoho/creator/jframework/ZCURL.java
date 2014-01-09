@@ -223,7 +223,7 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("formLinkName", formLinkName));
 		params.add(new BasicNameValuePair("fieldName", fieldLinkName));
 		params.add(new BasicNameValuePair("linkNameBased", "true"));
-//		params.add(new BasicNameValuePair("formAccessType",formType+""));
+		params.add(new BasicNameValuePair("formAccessType",formType+""));
 		if(isFormula) {
 			params.add(new BasicNameValuePair("isFormula", "true"));
 		}
