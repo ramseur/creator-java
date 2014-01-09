@@ -604,7 +604,7 @@ class XMLParser {
 						initialChoiceValues.add(initialValue);
 					}	
 				}
-				
+
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("maxChar")) {
 				maxChar = getIntValue(fieldPropetyNode, maxChar);
 			} 
@@ -781,7 +781,7 @@ class XMLParser {
 					selectedChoices.add(new ZCChoice(keys.get(i), initialChoiceValues.get(i)));
 				}
 				zcField.setRecordValue(new ZCRecordValue(zcField,selectedChoices));
-				
+
 			}
 		} else if(FieldType.isSingleChoiceField(fieldType)) {
 			ZCChoice toAdd = null;
@@ -834,10 +834,10 @@ class XMLParser {
 		zcField.setMaximumRows(maximumRows);
 		zcField.setDecimalLength(decimalLength);
 
-//		if(!isLookup) {
-//			zcField.addChoices(choices);
-//			zcField.setLastReachedForChoices(true);
-//		}
+		//		if(!isLookup) {
+		//			zcField.addChoices(choices);
+		//			zcField.setLastReachedForChoices(true);
+		//		}
 		if(isFilterApplied || (!isLookup))
 		{
 			zcField.addChoices(choices);
@@ -926,7 +926,7 @@ class XMLParser {
 
 	static List<ZCChoice> getLookUpChoices(Document rootDocument)
 	{
-		
+
 		NodeList nl = rootDocument.getChildNodes();
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
@@ -996,16 +996,16 @@ class XMLParser {
 			}
 		}
 		else
-
 		{
 			if(value.startsWith("[") && value.endsWith("]")) {
 				value = value.substring(1, value.length()-1);
 			}
-			String[] tokens = value.split(",");
-			for(int i=1;i<tokens.length;i++)
-			{
-				tokens[i]=tokens[i].substring(1);
-			}
+			String[] tokens = value.split(", ");
+//			for(int i=1;i<tokens.length;i++)
+//			{
+//				System.out.println("hai"+tokens[i]+"token.....");
+//				//tokens[i]=tokens[i].substring(1);
+//			}
 			for(int m = 0;m<tokens.length;m++)
 			{
 				if(!(tokens[m].equals("")))

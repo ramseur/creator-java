@@ -1287,7 +1287,7 @@ public class ZOHOCreator {
 	}
 
 	static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-
+		//System.out.println(getURLString(url, params)+"urllllll");
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
