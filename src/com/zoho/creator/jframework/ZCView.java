@@ -419,7 +419,6 @@ public class ZCView extends ZCComponent {
 	}
 	
 	
-	
 	public ZCResponse customAction(long customActionID, List<Long> recordIDs) throws ZCException{
 		return ZOHOCreator.postCustomAction(getAppLinkName(), getComponentLinkName(), getAppOwner(), customActionID, recordIDs);
 	}

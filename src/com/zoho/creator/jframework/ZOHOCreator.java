@@ -1062,7 +1062,41 @@ public class ZOHOCreator {
 	}
 	static ZCResponse postCustomAction(String appLinkName, String viewLinkName, String appOwner, long customActionId, List<Long> recordIDs) throws ZCException{
 		URLPair customActionURLPair = ZCURL.customActionURL(appLinkName, viewLinkName, customActionId, appOwner, recordIDs);
-		Document rootDocument = ZOHOCreator.postURLXML(customActionURLPair.getUrl(), customActionURLPair.getNvPair());
+		String strResponse = ZOHOCreator.postURL(customActionURLPair.getUrl(), customActionURLPair.getNvPair());
+		int index = strResponse.indexOf("GenerateJS>");
+		if(index != -1){
+			while(strResponse.charAt(index) != '>'){
+				index++;
+			}
+			int startIndex = ++index;
+			index++;
+			while(strResponse.charAt(index) != '<'){
+				index++;
+			}
+			int endIndex = index;
+			strResponse = strResponse.replace(strResponse.substring(startIndex, endIndex), "");
+			index = strResponse.indexOf("]");
+			startIndex = index;
+			while(strResponse.charAt(index) != '>'){
+				index++;
+			}
+			endIndex = ++index;
+			strResponse = strResponse.replace(strResponse.substring(startIndex, endIndex), "");
+		}
+		
+		Document rootDocument = null;
+		try {
+			rootDocument = stringToDocument(strResponse);
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		NodeList nl = rootDocument.getChildNodes();
 		ZCResponse toReturn = new ZCResponse();
 		for(int i=0; i<nl.getLength(); i++) {
@@ -1072,6 +1106,22 @@ public class ZOHOCreator {
 				Node customActionNode = customActionNodes.item(j);
 				if(customActionNode.getNodeName().equals("SuccessMessage")) {
 					toReturn.setSuccessMessage(customActionNode.getFirstChild().getNodeValue());
+				}if(customActionNode.getNodeName().equals("GenerateJS")) {
+					NodeList GenerateJSNodeList = customActionNode.getChildNodes();
+					for(int k =0;k<GenerateJSNodeList.getLength();k++) {
+						Node tasksNode = GenerateJSNodeList.item(k);
+						NodeList tasksNodeList = tasksNode.getChildNodes();
+						for(int m =0;m<tasksNodeList.getLength();m++) {
+							Node taskNode = tasksNodeList.item(m);
+							NodeList taskNodeList = taskNode.getChildNodes();
+							for(int n =0;n<taskNodeList.getLength();n++) {
+								Node urlNode = taskNodeList.item(n);
+								if(urlNode.getNodeName().equals("url")) {
+									toReturn.setOpenUrlValueForCustomAction(urlNode.getFirstChild().getNodeValue());
+								}
+							}
+						}
+					}
 				}				
 			}
 		}
@@ -1187,7 +1237,7 @@ public class ZOHOCreator {
 
 
 	static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
-
+		System.out.println(getURLString(url, params)+"url");
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1287,7 +1337,7 @@ public class ZOHOCreator {
 	}
 
 	static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-		//System.out.println(getURLString(url, params)+"urllllll");
+		System.out.println(getURLString(url, params)+"urllllll");
 		try
 		{
 			HttpClient client = new DefaultHttpClient();

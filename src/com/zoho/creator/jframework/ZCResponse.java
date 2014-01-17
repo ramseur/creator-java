@@ -11,6 +11,7 @@ public class ZCResponse {
 	private boolean error = false;
 	private String mainErrorMessage = "";
 	private String successMessage = "";
+	private String openURLValue = null;
 	
 	void addErrorMessage(ZCField field, String errorMessage) {
 		errorMessagesTable.put(field, errorMessage);
@@ -59,5 +60,14 @@ public class ZCResponse {
 	
 	public String getSuccessMessage() {
 		return successMessage;
+	}
+
+	public void setOpenUrlValueForCustomAction(String openURLValue) {
+		// TODO Auto-generated method stub
+		this.openURLValue = openURLValue;
+	}
+
+	public String getOpenURLValueForCustomAction() {
+		return openURLValue;
 	}
 }

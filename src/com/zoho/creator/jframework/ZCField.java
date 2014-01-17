@@ -62,7 +62,7 @@ public class ZCField implements Comparable<ZCField> {
 	private boolean isLastReachedForChoices = false;
 	private String searchStringForChoices = null;
 	private boolean lookupLoadingStarted = false;
-	private ExternalField externalFieldType = null;
+	private ExternalField externalFieldType = ExternalField.UNKNOWN;
 	private boolean isFileReUploaded = false;
 
 

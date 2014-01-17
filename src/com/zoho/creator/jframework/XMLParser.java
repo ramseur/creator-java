@@ -40,6 +40,7 @@ class XMLParser {
 		if(node != null && node.getFirstChild() != null) {
 			return Integer.parseInt(node.getFirstChild().getNodeValue());
 		}
+		
 		return defaultValue;
 	}
 
@@ -203,7 +204,7 @@ class XMLParser {
 							} else if(resultNodeChild.getNodeName().equals("license_enabled")) {
 								licenceEnabled = getBooleanValue(resultNodeChild, false);
 							} else if(resultNodeChild.getNodeName().equals("evaluationDays")) {
-								remainingDays = getStringValue(resultNodeChild, "");					
+								remainingDays = getStringValue(resultNodeChild, "");	
 							}
 							ZOHOCreator.setUserProperty("evaluationDays", remainingDays);
 						}
@@ -719,7 +720,6 @@ class XMLParser {
 
 		ZCField zcField = new ZCField(fieldName, fieldType, displayName);
 		//if(fieldType.equals(FieldType.EXTERNAL_FIELD)){
-		zcField.setExternalFieldType(externalFieldType);
 		//}
 		if(queryString!=null)
 		{
@@ -854,10 +854,8 @@ class XMLParser {
 		zcField.setUrlLinkNameReq(urlLinkNameReq);
 		zcField.setUrlTitleReq(urlTitleReq);
 		zcField.setImageType(imageType);
-		if(isNewEntriesAllowed)
-		{
-			zcField.setNewEntriesAllowed(true);
-		}
+		zcField.setExternalFieldType(externalFieldType);
+		zcField.setNewEntriesAllowed(isNewEntriesAllowed);
 		if(refFormLinkName != null && refAppLinkName != null ) {
 			zcField.setRefFormComponent(new ZCComponent(appOwner, refAppLinkName, ZCComponent.FORM, "", refFormLinkName, -1));
 			zcField.setRefFieldLinkName(refFieldLinkName);
@@ -1352,11 +1350,12 @@ class XMLParser {
 											NamedNodeMap actionAttrMap = actionNode.getAttributes();
 											String actionType = actionAttrMap.getNamedItem("type").getNodeValue(); //No I18N
 											String actionName = getChildNodeValue(actionNode, "name"); //actionAttrMap.getNamedItem("name").getNodeValue(); //No I18N
+											String headerAction = getChildNodeValue(actionNode, "isHeaderAction");
 											Long actionId = Long.parseLong(actionAttrMap.getNamedItem("id").getNodeValue()); //No I18N
 											ZCCustomAction action = new ZCCustomAction(actionType, actionName, actionId);
 											if(actionType.equals("row")) {
 												recordCustomActions.add(action);
-											} else if(actionType.equals("view")) {
+											} if(headerAction.equals("true")) {
 												headerCustomActions.add(action);
 											}
 										}
