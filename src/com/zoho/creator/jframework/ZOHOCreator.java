@@ -87,7 +87,7 @@ public class ZOHOCreator {
 	private static Properties props = new Properties();
 	private static String accessTokenForExternalField;
 	private static String errorMessage = null;
-
+	private static String filesDirPath;
 
 	public static void setErrorMessage(String errorMessage)
 	{
@@ -119,6 +119,14 @@ public class ZOHOCreator {
 
 	public static String getUserProperty(String key) {
 		return props.getProperty(key);
+	}
+	
+	static String getFilesDir(){
+		String str = ZOHOCreator.getUserProperty("FILES_DIR_PATH");
+		if(str == null){
+			str = "/";
+		}
+		return str;
 	}
 
 	public static void setBaseLookUpField(ZCField baseLookUpField)
@@ -243,8 +251,8 @@ public class ZOHOCreator {
 
 	}
 
-	public static void loadSelectedApplication(List<NameValuePair> additionalParams, String filePath)  throws ZCException {
-		setCurrentSectionList(getSectionList(getCurrentApplication(), additionalParams,filePath));
+	public static void loadSelectedApplication(List<NameValuePair> additionalParams)  throws ZCException {
+		setCurrentSectionList(getSectionList(getCurrentApplication(), additionalParams));
 	}
 
 	public static void setCurrentSectionList(List<ZCSection> sectionList) {
@@ -479,13 +487,13 @@ public class ZOHOCreator {
 		}
 	}
 
-	public static ZCNavList getNavigationListForApps(String filePath) throws ZCException {
+	public static ZCNavList getNavigationListForApps() throws ZCException {
 		// check for file
 		URLPair navigationListURL = ZCURL.navigationListURL();
 		//Document rootDocument = ZOHOCreator.postURLXML(navigationListURL.getUrl(), navigationListURL.getNvPair());
 
 		Document rootDocument = null;
-		File f = new File(filePath+"/navList.xml");
+		File f = new File(getFilesDir()+"/navList.xml");
 		if(!f.exists()){
 			rootDocument = ZOHOCreator.postURLXML(navigationListURL.getUrl(), navigationListURL.getNvPair());
 			try {
@@ -494,10 +502,10 @@ public class ZOHOCreator {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			writeResponseToFile(getString(rootDocument), filePath+"/navList.xml");
+			writeResponseToFile(getString(rootDocument),getFilesDir()+"/navList.xml");
 		}else{
 			try {
-				rootDocument = stringToDocument(readResponseFromFile(filePath+"/navList.xml"));
+				rootDocument = stringToDocument(readResponseFromFile(getFilesDir()+"/navList.xml"));
 			} catch (SAXException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -513,20 +521,19 @@ public class ZOHOCreator {
 		return XMLParser.parseForNavigationListForApps(rootDocument);
 	}
 
-	public static ZCAppList getPersonalApplicationList(List<NameValuePair> additionalParams , String filePath) throws ZCException {
+	public static ZCAppList getPersonalApplicationList(List<NameValuePair> additionalParams) throws ZCException {
 		URLPair appListURLPair = ZCURL.appListURL();
 		if(additionalParams == null) {
 			additionalParams = new ArrayList<NameValuePair>();
 		}
 		additionalParams.addAll(appListURLPair.getNvPair());
-		System.out.println("applist Document.."+getURLString(appListURLPair.getUrl(), additionalParams));
 		Document rootDocument = null;
-		File f1 = new File(filePath+"/editSupportURL.txt");
+		File f1 = new File(getFilesDir()+"/editSupportURL.txt");
 		if(f1.exists()){
 			List<ZCApplication> zcApps = new ArrayList<ZCApplication>();
 			BufferedReader br = null;
 			try {
-				br = new BufferedReader(new FileReader(filePath+"/editSupportURL.txt"));
+				br = new BufferedReader(new FileReader(getFilesDir()+"/editSupportURL.txt"));
 				//String line = br.readLine();
 				while (true) {
 					String url = br.readLine();
@@ -544,7 +551,7 @@ public class ZOHOCreator {
 			return new ZCAppList(ZCAppList.PERSONAL_APPS, zcApps);
 
 		}else{
-			File f = new File(filePath+"/personalAppList.xml");
+			File f = new File(getFilesDir()+"/personalAppList.xml");
 			if(!f.exists()){
 				rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), additionalParams);
 				System.out.println(getString(rootDocument)+"appDoc");
@@ -554,10 +561,10 @@ public class ZOHOCreator {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				writeResponseToFile(getString(rootDocument), filePath+"/personalAppList.xml");
+				writeResponseToFile(getString(rootDocument), getFilesDir()+"/personalAppList.xml");
 			}else{
 				try {
-					rootDocument = stringToDocument(readResponseFromFile(filePath+"/personalAppList.xml"));
+					rootDocument = stringToDocument(readResponseFromFile(getFilesDir()+"/personalAppList.xml"));
 				} catch (SAXException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -576,19 +583,19 @@ public class ZOHOCreator {
 
 
 
-	public static ZCAppList getSharedApplicationList(String filePath) throws ZCException {
-		return getSharedApplicationList(null,filePath);
+	public static ZCAppList getSharedApplicationList() throws ZCException {
+		return getSharedApplicationList(null);
 	}
 
-	public static ZCAppList getSharedApplicationList(ZCSharedGroup sharedGroup, String filePath) throws ZCException {
+	public static ZCAppList getSharedApplicationList(ZCSharedGroup sharedGroup) throws ZCException {
 		URLPair appListURLPair = ZCURL.sharedAppListURL(null); 
 		if(sharedGroup != null) {
 			appListURLPair = ZCURL.sharedAppListURL(sharedGroup.getGroupId()); 
 		}
 		Document rootDocument = null;
-		File f = new File(filePath+"/sharedAppsList.xml");
+		File f = new File(getFilesDir()+"/sharedAppsList.xml");
 		if(sharedGroup != null){
-			f = new File(filePath+"/sharedApps_"+sharedGroup.getGroupId()+"List.xml");
+			f = new File(getFilesDir()+"/sharedApps_"+sharedGroup.getGroupId()+"List.xml");
 		}
 		if(!f.exists()){
 			try {
@@ -621,14 +628,14 @@ public class ZOHOCreator {
 		return toReturn;
 	}
 
-	public static ZCAppList getWorkspaceApplicationList(String workspaceAppOwner, List<NameValuePair> additionalParams, String filePath) throws ZCException {
+	public static ZCAppList getWorkspaceApplicationList(String workspaceAppOwner, List<NameValuePair> additionalParams) throws ZCException {
 		URLPair appListURLPair = ZCURL.workSpaceAppListURL(workspaceAppOwner); 
 		if(additionalParams == null) {
 			additionalParams = new ArrayList<NameValuePair>();
 		}
 		additionalParams.addAll(appListURLPair.getNvPair());
 		Document rootDocument = null;
-		File 	f = new File(filePath+"/workspaceApps_"+workspaceAppOwner+"List.xml");
+		File 	f = new File(getFilesDir()+"/workspaceApps_"+workspaceAppOwner+"List.xml");
 		if(!f.exists()){
 			try {
 				f.createNewFile();
@@ -659,7 +666,7 @@ public class ZOHOCreator {
 	}
 
 
-	public static List<ZCSection> getSectionList(String appLinkName, String appOwner, List<NameValuePair> additionalParams, String filePath) throws ZCException {
+	public static List<ZCSection> getSectionList(String appLinkName, String appOwner, List<NameValuePair> additionalParams) throws ZCException {
 		URLPair sectionListURLPair = ZCURL.sectionMetaURL(appLinkName, appOwner);
 		if(additionalParams == null) {
 			additionalParams = new ArrayList<NameValuePair>();
@@ -667,7 +674,7 @@ public class ZOHOCreator {
 		additionalParams.addAll(sectionListURLPair.getNvPair());
 
 		Document rootDocument = null;
-		File f = new File(filePath+"/section_appOwner"+appOwner+"_appLinkName"+appLinkName+"List.xml");
+		File f = new File(getFilesDir()+"/section_appOwner"+appOwner+"_appLinkName"+appLinkName+"List.xml");
 		if(!f.exists()){
 			try {
 				f.createNewFile();
@@ -695,8 +702,8 @@ public class ZOHOCreator {
 		return XMLParser.parseForSectionList(rootDocument, appLinkName, appOwner);
 	}
 
-	public static List<ZCSection> getSectionList(ZCApplication zcApp, List<NameValuePair> additionalParams, String filePath)  throws ZCException {
-		return getSectionList(zcApp.getAppLinkName(), zcApp.getAppOwner(), additionalParams, filePath);
+	public static List<ZCSection> getSectionList(ZCApplication zcApp, List<NameValuePair> additionalParams)  throws ZCException {
+		return getSectionList(zcApp.getAppLinkName(), zcApp.getAppOwner(), additionalParams);
 	}
 
 
@@ -757,9 +764,7 @@ public class ZOHOCreator {
 	}
 
 	private static void callDelugeEvents(ZCForm zcForm, URLPair urlPair,List<ZCRecordValue> recordValues,ZCForm currentShownForm) throws ZCException{
-		System.out.println("deluge url.."+getURLString(urlPair.getUrl(), urlPair.getNvPair()));
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
-		System.out.println("deluge response"+response);
 		JSONParser.parseAndCallFormEvents(response,zcForm,recordValues,currentShownForm);
 	}
 

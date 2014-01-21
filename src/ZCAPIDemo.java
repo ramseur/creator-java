@@ -86,7 +86,7 @@ public class ZCAPIDemo {
 			return;
 		} else if(inpValue == 1) {
 			try {
-				ZOHOCreator.setCurrentAppList(ZOHOCreator.getPersonalApplicationList(null,null));
+				ZOHOCreator.setCurrentAppList(ZOHOCreator.getPersonalApplicationList(null));
 			} catch (ZCException e) {
 				System.out.println(e.getMessage());
 				printNavList();
@@ -116,7 +116,7 @@ public class ZCAPIDemo {
 				printNavList();
 			} else {
 				try {
-					ZOHOCreator.setCurrentAppList(ZOHOCreator.getSharedApplicationList(sharedWithGroupList.get(inpValue-1),null));
+					ZOHOCreator.setCurrentAppList(ZOHOCreator.getSharedApplicationList(sharedWithGroupList.get(inpValue-1)));
 				} catch (ZCException e) {
 					System.out.println(e.getMessage());
 					printNavList();
@@ -139,7 +139,7 @@ public class ZCAPIDemo {
 				printNavList();
 			} else {
 				try {
-					ZOHOCreator.setCurrentAppList(ZOHOCreator.getWorkspaceApplicationList(sharedWithWorkSpaceList.get(inpValue-1), null,null));
+					ZOHOCreator.setCurrentAppList(ZOHOCreator.getWorkspaceApplicationList(sharedWithWorkSpaceList.get(inpValue-1), null));
 				} catch (ZCException e) {
 					System.out.println(e.getMessage());
 					printNavList();
@@ -151,7 +151,7 @@ public class ZCAPIDemo {
 	
 	public static void printCompsList() {
 		try {
-			ZOHOCreator.loadSelectedApplication(null,null);
+			ZOHOCreator.loadSelectedApplication(null);
 		} catch (ZCException e) {
 			System.out.println(e.getMessage());
 			return;
@@ -512,7 +512,7 @@ public class ZCAPIDemo {
 		
 		
 		try {
-			ZOHOCreator.setCurrentNavigationListForApps(ZOHOCreator.getNavigationListForApps(null));
+			ZOHOCreator.setCurrentNavigationListForApps(ZOHOCreator.getNavigationListForApps());
 		} catch (ZCException e) {
 			System.out.println(e.getMessage());
 			return;
@@ -520,7 +520,7 @@ public class ZCAPIDemo {
 		
 		
 		try {
-			ZCAppList personalAppList = ZOHOCreator.getPersonalApplicationList(null,null);
+			ZCAppList personalAppList = ZOHOCreator.getPersonalApplicationList(null);
 			//System.out.println("Personal Apps" + personalAppList.getApps());
 			ZOHOCreator.setCurrentAppList(personalAppList);
 		} catch (ZCException e) {

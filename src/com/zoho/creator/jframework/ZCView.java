@@ -264,7 +264,6 @@ public class ZCView extends ZCComponent {
 		recordsCount = -1;
 		ZOHOCreator.loadRecords(this);
 	}
-	
 
 	public HashMap<Date, List<ZCRecord>> loadCalendarRecords(int month, int year) throws ZCException{
 		this.recordsMonthYear = new ZCPair<Integer, Integer>(month, year);
