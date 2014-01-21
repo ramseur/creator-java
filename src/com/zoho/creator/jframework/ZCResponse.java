@@ -1,7 +1,6 @@
 //$Id$
 package com.zoho.creator.jframework;
 
-import java.util.Hashtable;
 
 public class ZCResponse {
 	
