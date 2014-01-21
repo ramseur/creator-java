@@ -854,7 +854,7 @@ class XMLParser {
 		zcField.setUrlLinkNameReq(urlLinkNameReq);
 		zcField.setUrlTitleReq(urlTitleReq);
 		zcField.setImageType(imageType);
-		zcField.setExternalFieldType(externalFieldType);
+	//	zcField.setExternalFieldType(externalFieldType);
 		zcField.setNewEntriesAllowed(isNewEntriesAllowed);
 		if(refFormLinkName != null && refAppLinkName != null ) {
 			zcField.setRefFormComponent(new ZCComponent(appOwner, refAppLinkName, ZCComponent.FORM, "", refFormLinkName, -1));

@@ -165,12 +165,12 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("zc_ownername",appOwner));
 		params.add(new BasicNameValuePair("formAccessType", String.valueOf(formAccessType)));//No I18N
 		String urlValToAdd = "lookup";
-		if(field.getType().equals(FieldType.EXTERNAL_FIELD)){
-			urlValToAdd = "externalfield";
-			if(field.getExternalFieldType().equals(ExternalField.SALES_FORCE)){
-				params.add(new BasicNameValuePair("accesstoken", ZOHOCreator.getAccessTokenForExternalField()));
-			}
-		}
+//		if(field.getType().equals(FieldType.EXTERNAL_FIELD)){
+//			urlValToAdd = "externalfield";
+//			if(field.getExternalFieldType().equals(ExternalField.SALES_FORCE)){
+//				params.add(new BasicNameValuePair("accesstoken", ZOHOCreator.getAccessTokenForExternalField()));
+//			}
+//		}
 		
 		params.addAll(additionalParams);
 		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName +"/"+urlValToAdd+"/"+lookupFieldName+ "/options/", params);//No I18N

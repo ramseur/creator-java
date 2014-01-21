@@ -62,7 +62,7 @@ public class ZCField implements Comparable<ZCField> {
 	private boolean isLastReachedForChoices = false;
 	private String searchStringForChoices = null;
 	private boolean lookupLoadingStarted = false;
-	private ExternalField externalFieldType = ExternalField.UNKNOWN;
+	//private ExternalField externalFieldType = ExternalField.UNKNOWN;
 	private boolean isFileReUploaded = false;
 
 
@@ -517,14 +517,14 @@ public class ZCField implements Comparable<ZCField> {
 		this.decimalLength = decimalLength;
 	}
     
-	public void setExternalFieldType(ExternalField externalFieldType) {
-		// TODO Auto-generated method stub
-		this.externalFieldType  = externalFieldType;
-	}
-	
-	public ExternalField getExternalFieldType(){
-		return externalFieldType;
-	}
+//	public void setExternalFieldType(ExternalField externalFieldType) {
+//		// TODO Auto-generated method stub
+//		this.externalFieldType  = externalFieldType;
+//	}
+//	
+//	public ExternalField getExternalFieldType(){
+//		return externalFieldType;
+//	}
 	
     boolean isFileReUploaded()
     {

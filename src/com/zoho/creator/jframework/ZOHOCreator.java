@@ -507,6 +507,7 @@ public class ZOHOCreator {
 			File f = new File(filePath+"/personalAppList.xml");
 			if(!f.exists()){
 				rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), additionalParams);
+				System.out.println(getString(rootDocument)+"appDoc");
 				try {
 					f.createNewFile();
 				} catch (IOException e) {
@@ -1046,20 +1047,20 @@ public class ZOHOCreator {
 		return toReturn;
 	}
 
-	public static void getAuthTokenForExternalField(String accessToken) throws ZCException{
-		URLPair externalFieldTokenURLPair = ZCURL.externalFieldTokenURL(accessToken);
-		String rootDocument = ZOHOCreator.postURL(externalFieldTokenURLPair.getUrl(), externalFieldTokenURLPair.getNvPair());
-		ZOHOCreator.setAccessTokenForExternalField(JSONParser.parseForTokenForExternalField(rootDocument));
-	}
+//	public static void getAuthTokenForExternalField(String accessToken) throws ZCException{
+//		URLPair externalFieldTokenURLPair = ZCURL.externalFieldTokenURL(accessToken);
+//		String rootDocument = ZOHOCreator.postURL(externalFieldTokenURLPair.getUrl(), externalFieldTokenURLPair.getNvPair());
+//		ZOHOCreator.setAccessTokenForExternalField(JSONParser.parseForTokenForExternalField(rootDocument));
+//	}
 
-	private static void setAccessTokenForExternalField(String accessTokenForExternalField) {
-		// TODO Auto-generated method stub
-		ZOHOCreator.accessTokenForExternalField = accessTokenForExternalField;
-	}
-
-	public static String getAccessTokenForExternalField(){
-		return accessTokenForExternalField;
-	}
+//	private static void setAccessTokenForExternalField(String accessTokenForExternalField) {
+//		// TODO Auto-generated method stub
+//		ZOHOCreator.accessTokenForExternalField = accessTokenForExternalField;
+//	}
+//
+//	public static String getAccessTokenForExternalField(){
+//		return accessTokenForExternalField;
+//	}
 	static ZCResponse postCustomAction(String appLinkName, String viewLinkName, String appOwner, long customActionId, List<Long> recordIDs) throws ZCException{
 		URLPair customActionURLPair = ZCURL.customActionURL(appLinkName, viewLinkName, customActionId, appOwner, recordIDs);
 		String strResponse = ZOHOCreator.postURL(customActionURLPair.getUrl(), customActionURLPair.getNvPair());
