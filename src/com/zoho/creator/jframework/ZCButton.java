@@ -107,7 +107,7 @@ public class ZCButton implements Comparable<ZCButton>{
 					params.add(new BasicNameValuePair("childFieldLabelName" , baseLookupField.getFieldName()));//No I18N
 				}
 				params.addAll(ZOHOCreator.getAdditionalParamsForForm(zcForm, baseLookupField));
-				response =  ZOHOCreator.postXMLString(zcForm.getAppOwner(), xmlString, action, params, zcForm);		
+				response =  ZOHOCreator.postXMLString(zcForm.getAppOwner(), xmlString, action, params);		
 			} else {
 				URLPair urlPair = ZCURL.buttonOnClick(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), linkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(null,-1));
 				response = ZOHOCreator.parseResponseDocumentForJSONString(urlPair, zcForm);
@@ -159,9 +159,20 @@ public class ZCButton implements Comparable<ZCButton>{
 		params.add(new BasicNameValuePair("applinkname", zcForm.getAppLinkName()));//No I18N
 		params.add(new BasicNameValuePair("formname", zcForm.getComponentLinkName()));//No I18N
 		params.add(new BasicNameValuePair("fieldname", field.getFieldName()));//No I18N
+		ZCForm form = field.getBaseForm();
+		int formType = form.getFormType();
+		if(!(formType==ZCForm.FORM_ALONE))
+		{
+			params.add(new BasicNameValuePair("formAccessType",formType+""));//No I18N
+		}
 		if(action == "update")
 		{
 			params.add(new BasicNameValuePair("recordId", ZOHOCreator.getCurrentEditRecord().getRecordId() + ""));//No I18N
+			if(ZOHOCreator.getCurrentView()!=null && fileToUpload!=null)
+			{
+			params.add(new BasicNameValuePair("viewLinkName", ZOHOCreator.getCurrentView().getComponentLinkName()));//No I18N
+			params.add(new BasicNameValuePair("operation","update"));
+			}	
 		}
 		else
 		{
@@ -179,7 +190,6 @@ public class ZCButton implements Comparable<ZCButton>{
 			{
 			params.add(new BasicNameValuePair("viewLinkName", ZOHOCreator.getCurrentView().getComponentLinkName()));//No I18N
 			}
-			params.add(new BasicNameValuePair("formAccessType",ZCForm.VIEW_EDIT_FORM+""));//No I18N
 			ZOHOCreator.postFile(urlPair.getUrl(), null, params);
 		}
 

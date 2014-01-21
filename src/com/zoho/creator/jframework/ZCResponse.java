@@ -5,20 +5,43 @@ import java.util.Hashtable;
 
 public class ZCResponse {
 	
-	private Hashtable<ZCField, String> errorMessagesTable = new Hashtable<ZCField, String>();
 	private long successRecordID = -1l;
 	private ZCChoice successLookUpChoiceValue = null;
 	private boolean error = false;
 	private String mainErrorMessage = "";
 	private String successMessage = "";
-	private String openURLValue = null;
+	private String openUrlType = "";
+	private String openUrlValue = "";
+	private String status = "";
 	
-	void addErrorMessage(ZCField field, String errorMessage) {
-		errorMessagesTable.put(field, errorMessage);
+	void setStatus(String status)
+	{
+		this.status = status;
 	}
 	
-	public Hashtable<ZCField, String> getErrorMessagesTable() {
-		return errorMessagesTable;
+	public String getStatus()
+	{
+		return status;
+	}
+	
+	void setOpenUrlType(String openUrlType)
+	{
+		this.openUrlType = openUrlType;
+	}
+	
+	public String getOpenUrlType()
+	{
+		return openUrlType;
+	}
+	
+	void setOpenUrlValue(String openUrlValue)
+	{
+		this.openUrlValue = openUrlValue;
+	}
+	
+	public String getOpenUrlValue()
+	{
+		return openUrlValue;
 	}
 
 	public long getSuccessRecordID() {
@@ -64,10 +87,10 @@ public class ZCResponse {
 
 	public void setOpenUrlValueForCustomAction(String openURLValue) {
 		// TODO Auto-generated method stub
-		this.openURLValue = openURLValue;
+		this.openUrlValue = openURLValue;
 	}
 
 	public String getOpenURLValueForCustomAction() {
-		return openURLValue;
+		return openUrlValue;
 	}
 }

@@ -478,7 +478,7 @@ class XMLParser {
 
 		String fieldName = null;
 		FieldType fieldType = FieldType.SINGLE_LINE;
-		ExternalField externalFieldType = ExternalField.ZOHO_CRM;
+		ExternalField externalFieldType = ExternalField.UNKNOWN;
 		String displayName = "";
 		String delugeType = "";
 		String appLinkName = applinkName;
@@ -491,7 +491,7 @@ class XMLParser {
 		boolean isUnique = false;
 		boolean isRequired = false;
 		boolean isNewEntriesAllowed = false;
-		boolean isAdminOnly = false;
+		boolean isHidden = false;
 		boolean allowOtherChoice = false;
 
 		int maxChar = 255;
@@ -532,7 +532,11 @@ class XMLParser {
 		List<ZCField> subFormFields = new ArrayList<ZCField>();
 		List<ZCField> subFormEditFields = new ArrayList<ZCField>();
 		List<ZCRecord> subFormEntries = new ArrayList<ZCRecord>();
-
+		Node fieldNode = resultNodeChild.getAttributes().getNamedItem("ishidden");
+		if(fieldNode!=null)
+		{
+			isHidden = Boolean.valueOf(fieldNode.getNodeValue());	
+		}
 		for(int l=0; l<fieldPropetyNodes.getLength(); l++) {
 			Node fieldPropetyNode = fieldPropetyNodes.item(l);
 			if(fieldPropetyNode.getNodeName().equalsIgnoreCase("altTxtReq")) {
@@ -651,9 +655,7 @@ class XMLParser {
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("ondeleterowexists")) {
 				onDeleteRowExists = getBooleanValue(fieldPropetyNode,onDeleteRowExists);
 			} 
-			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("isadminonly")) {
-				isAdminOnly = getBooleanValue(fieldPropetyNode, isAdminOnly);
-			} 
+
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("TitleReq")) {
 
 				urlTitleReq = getBooleanValue(fieldPropetyNode, urlTitleReq);
@@ -661,6 +663,7 @@ class XMLParser {
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("filter")) {
 
 				isFilterApplied = getBooleanValue(fieldPropetyNode, isFilterApplied);
+				System.out.println("filter value..."+isFilterApplied);
 			} 
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("currencydisp")){
 				currencyType = getStringValue(fieldPropetyNode, "");
@@ -829,7 +832,7 @@ class XMLParser {
 			zcField.setRecordValue(recordValue);
 		}
 
-		zcField.setHidden(isAdminOnly);
+		zcField.setHidden(isHidden);
 		zcField.setDefaultRows(defaultRows);
 		zcField.setMaximumRows(maximumRows);
 		zcField.setDecimalLength(decimalLength);
@@ -854,7 +857,6 @@ class XMLParser {
 		zcField.setUrlLinkNameReq(urlLinkNameReq);
 		zcField.setUrlTitleReq(urlTitleReq);
 		zcField.setImageType(imageType);
-	//	zcField.setExternalFieldType(externalFieldType);
 		zcField.setNewEntriesAllowed(isNewEntriesAllowed);
 		if(refFormLinkName != null && refAppLinkName != null ) {
 			zcField.setRefFormComponent(new ZCComponent(appOwner, refAppLinkName, ZCComponent.FORM, "", refFormLinkName, -1));
@@ -915,7 +917,7 @@ class XMLParser {
 			Node choiceNode = choiceNodes.item(m);
 			String key = choiceNode.getAttributes().getNamedItem("value").getNodeValue();
 			String value = getStringValue(choiceNode, "");
-
+			System.out.println(value);
 			choices.add(new ZCChoice(key, value));
 		}
 
@@ -1205,27 +1207,30 @@ class XMLParser {
 			String urlTitleValue = "";
 			Node valueNode = columnNode.getFirstChild();
 			String value = getStringValue(valueNode, "");
-			NodeList urlTagNodes = valueNode.getChildNodes();
-			for(int m=0;m<urlTagNodes.getLength();m++)
+			if(valueNode!=null)
 			{
-				Node urlNode = urlTagNodes.item(m);
-				if(urlNode.getNodeName().equals("linkname")) {
-
-					urlLinkNameValue = getStringValue(urlNode, urlLinkNameValue);
-				}
-				else if(urlNode.getNodeName().equals("url"))
+				NodeList urlTagNodes = valueNode.getChildNodes();
+				for(int m=0;m<urlTagNodes.getLength();m++)
 				{
-					value = getStringValue(urlNode, "");
-				}
-				else if(urlNode.getNodeName().equals("title"))
-				{
-					urlTitleValue = getStringValue(urlNode, urlTitleValue);
+					Node urlNode = urlTagNodes.item(m);
+					if(urlNode.getNodeName().equals("linkname")) {
 
+						urlLinkNameValue = getStringValue(urlNode, urlLinkNameValue);
+					}
+					else if(urlNode.getNodeName().equals("url"))
+					{
+						value = getStringValue(urlNode, "");
+					}
+					else if(urlNode.getNodeName().equals("title"))
+					{
+						urlTitleValue = getStringValue(urlNode, urlTitleValue);
+
+					}
 				}
 			}
 			ZCRecordValue zcValue = null;
 			List<ZCChoice> choices = null;
-			if(zcView == null) {
+			if(zcView == null && zcField!=null) {
 				choices = zcField.getChoices();
 			}
 			if(zcField!=null)

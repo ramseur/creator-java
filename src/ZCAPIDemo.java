@@ -256,14 +256,14 @@ public class ZCAPIDemo {
 				ZCResponse response;
 				try {
 					response = button.click();
-					Hashtable<ZCField, String> errorTable = response.getErrorMessagesTable();
-					if(errorTable.keySet().size()>0) {
-						System.out.println("\n************** Errors found **************");
-						System.out.println(errorTable);
-						printForm();
-					} else {
-						System.out.println("\n************** " + zcForm.getSuccessMessage() + " **************");
-					}
+//					Hashtable<ZCField, String> errorTable = response.getErrorMessagesTable();
+//					if(errorTable.keySet().size()>0) {
+//						System.out.println("\n************** Errors found **************");
+//						System.out.println(errorTable);
+//						printForm();
+//					} else {
+//						System.out.println("\n************** " + zcForm.getSuccessMessage() + " **************");
+//					}
 				} catch (ZCException e) {
 					System.out.println(e.getMessage());
 					printForm();

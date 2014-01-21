@@ -25,6 +25,7 @@ class JSONParser {
 				String subFormName = null;
 				String fieldName=null;
 				ZCField field=null;
+				ZCField editSubFormField = null;
 				ZCRecordValue recordValue=null;
 				ZCField subFormField = null;
 				String formName=null;
@@ -32,8 +33,6 @@ class JSONParser {
 				String value = null;
 				List<String> keys = new ArrayList<String>();
 				ZCChoice zcChoice = null;
-
-
 				int rowNo = -1;
 				JSONObject jsonObj = jArray.getJSONObject(i); // Pulling items from the array 
 				if(jsonObj.has("task"))
@@ -84,7 +83,17 @@ class JSONParser {
 				}
 				if(jsonObj.has("rowNo"))
 				{
-					rowNo = Integer.parseInt(jsonObj.getString("rowNo").substring(7));
+					String rowNum = jsonObj.getString("rowNo");
+					rowNo = Integer.parseInt(rowNum.substring(rowNum.indexOf("_")+1));
+					System.out.println("number...row..."+rowNo);
+//					if(rowNum.contains("t::row"))
+//					{
+//						rowNo = Integer.parseInt(jsonObj.getString("rowNo").substring(7));
+//					}
+//					else
+//					{
+//						
+//					}	
 				}
 				if(jsonObj.has("infoValue"))
 				{
@@ -98,16 +107,16 @@ class JSONParser {
 					openUrlString = jsonObj.getString("urlString");
 					form.setOpenUrl(openUrlString);
 				}
-				if(jsonObj.has("errors"))
-				{
-					toReturn.setError(true);
-					toReturn.setMainErrorMessage("Invalid entries found. Please correct and submit again.");//No I18N        
-					JSONArray jsonArray = (JSONArray) jsonObj.get("errors");
-					for (int j=0; j<jsonArray.length(); j++) {
-						String[] errorMessageField = jsonArray.getString(j).split(",");
-						toReturn.addErrorMessage(form.getField(errorMessageField[0]),errorMessageField[1] );
-					}                
-				}
+//				if(jsonObj.has("errors"))
+//				{
+//					toReturn.setError(true);
+//					toReturn.setMainErrorMessage("Invalid entries found. Please correct and submit again.");//No I18N        
+//					JSONArray jsonArray = (JSONArray) jsonObj.get("errors");
+//					for (int j=0; j<jsonArray.length(); j++) {
+//						String[] errorMessageField = jsonArray.getString(j).split(",");
+//						toReturn.addErrorMessage(form.getField(errorMessageField[0]),errorMessageField[1] );
+//					}                
+//				}
 				if(jsonObj.has("message"))
 				{
 					form.setErrorMessage(jsonObj.getString("message"));
@@ -129,15 +138,40 @@ class JSONParser {
 					field = subForm.getField(fieldName);
 					recordValue = field.getRecordValue();
 					field.setRebuildRequired(true);
+					List<ZCField> subformFields = subForm.getFields();
+					List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+					for(int l=0;l<subformFields.size();l++)
+					{
+						recordValues.add(subformFields.get(l).getRecordValue());	
+					}
+					ZCForm editSubform = subFormField.getEditSubForm(new ZCRecord(recordValues));
+					editSubFormField = editSubform.getField(fieldName);
+					
 				}
 				if(type==ZCForm.task_hide) {
 					field.setHidden(true);
+					if(editSubFormField!=null)
+					{
+						editSubFormField.setHidden(true);
+					}
 				} else if(type==ZCForm.task_show) {
 					field.setHidden(false);
+					if(editSubFormField!=null)
+					{
+						editSubFormField.setHidden(false);
+					}
 				} else if(type==ZCForm.task_enable) {
 					field.setDisabled(false);
+					if(editSubFormField!=null)
+					{
+						editSubFormField.setDisabled(false);
+					}
 				} else if(type==ZCForm.task_disable) {
 					field.setDisabled(true);
+					if(editSubFormField!=null)
+					{
+						editSubFormField.setDisabled(true);
+					}
 				} else if(type==ZCForm.task_clear) {
 					field.clearChoices();
 					field.setLastReachedForChoices(true);
@@ -147,6 +181,7 @@ class JSONParser {
 //						ZCChoice choice = new ZCChoice(choiceValues.get(k).getKey(), choiceValues.get(k).getValue());
 //						moreChoices.add(choice);
 //					}
+					System.out.println("choicevalues...."+choiceValues);
 					field.appendChoices(choiceValues);
 					field.setLastReachedForChoices(true);
 				} else if(type==ZCForm.task_select) {
@@ -183,10 +218,11 @@ class JSONParser {
 					form.setReLoadForm(true);
 					break;
 				} else if(type==ZCForm.task_setValue) {
-
 					if(rowNo>0&&subFormField.getSubFormEntriesSize()>=rowNo)
 					{
-						ZCRecord zcRecord =  subFormField.getAddedSubFormEntries().get(rowNo-1);
+						List<ZCRecord> records = subFormField.getUpdatedSubFormEntries();
+						records.addAll(subFormField.getAddedSubFormEntries());
+						ZCRecord zcRecord =  records.get(rowNo-1);
 						List<ZCRecordValue> zcRecordValues = zcRecord.getValues();
 						for(int l=0;l<zcRecordValues.size();l++)
 						{
@@ -269,6 +305,7 @@ class JSONParser {
 								}
 								else
 								{
+									System.out.println("setValue...");
 									subFormRecordValue.setValue(value);
 									break;
 								}

@@ -29,7 +29,7 @@ public class ZCForm extends ZCComponent {
 	private List<String> alertMessages = null; 
 	private boolean reLoadForm = false;
 	private List<String> infos = null; 
-	private String openUrl = null;
+	private String openUrl = "";
 	private String openurlType = "";
 	private String openurlValue = "";
 
@@ -367,11 +367,12 @@ public class ZCForm extends ZCComponent {
 								params.add(new BasicNameValuePair(field.getFieldName(), values.get(j).getKey()));
 						}
 					}
-				}
+				} 
 				else if(field.getType().equals(FieldType.SUB_FORM)) {
-					params.addAll(getParamsForSubFormEntries(field.getAddedSubFormEntries(),field.getFieldName()));
+					//params.addAll(getParamsForEditSubFormEntries(field,field.getFieldName()))
+					params.addAll(getParamsForSubFormEntries(field,field.getFieldName()));
 					if(recordValues != null) {
-						params.addAll(getTempRecordParams(recordValues,field.getFieldName(),field.getAddedSubFormEntries().size()+1));
+						params.addAll(getTempRecordParams(recordValues,field.getFieldName(),field.getSubFormEntriesSize()+1));
 					}
 				} else if(FieldType.isSingleChoiceField(field.getType())) {
 					if(recordValue.getChoiceValue() != null) {
@@ -420,21 +421,42 @@ public class ZCForm extends ZCComponent {
 		}
 		return params;
 	}
-	private List<NameValuePair> getParamsForSubFormEntries(List<ZCRecord> subFormEntries,String fieldName)
+	private List<NameValuePair> getParamsForSubFormEntries(ZCField field,String fieldName)
 	{
+		List<ZCRecord> subFormEntries = field.getUpdatedSubFormEntries();
+		subFormEntries.addAll(field.getAddedSubFormEntries());
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		for(int i=0;i<subFormEntries.size();i++)
 		{	
 			ZCRecord subFormRecord = subFormEntries.get(i);	
 			List<ZCRecordValue> subFormRecordValues = subFormRecord.getValues();
-			params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV(record::status)", "added"));
+			long recordId = subFormRecord.getRecordId();
+			if(recordId==-1l)
+			{
+				params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV(record::status)", "added"));
+			}
+			else
+			{
+				params.add(new BasicNameValuePair("SF("+fieldName+").FD("+recordId+"_"+(i+1)+").SV(record::status)", "nochange"));
+				//SF(SubForm).FD(1553251000000441102_1).SV(ID):1553251000000441102
+				params.add(new BasicNameValuePair("SF("+fieldName+").FD("+recordId+"_"+(i+1)+").SV(ID)",recordId+""));
+			}
 			for(int k=0; k<subFormRecordValues.size(); k++) {
 				ZCRecordValue subFormRecordValue = subFormRecordValues.get(k);
 				ZCField subFormField = subFormRecordValue.getField();
 				if(FieldType.isMultiChoiceField(subFormField.getType())) {
 					List<ZCChoice> subFormChoiceValues = subFormRecordValue.getChoiceValues();
 					for(int l=0; l<subFormChoiceValues.size(); l++) {
-						params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV("+subFormField.getFieldName()+")",subFormChoiceValues.get(l).getKey()));
+						//params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV("+subFormField.getFieldName()+")",subFormChoiceValues.get(l).getKey()));
+						if(recordId==-1l)
+						{
+							params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV("+subFormField.getFieldName()+")",subFormChoiceValues.get(l).getKey()));
+						}
+						else
+						{
+							params.add(new BasicNameValuePair("SF("+fieldName+").FD("+recordId+"_"+(i+1)+").SV("+subFormField.getFieldName()+")",subFormChoiceValues.get(l).getKey()));
+						}
+
 					}
 				} 
 				else
@@ -449,7 +471,15 @@ public class ZCForm extends ZCComponent {
 					} else if(!FieldType.isPhotoField(subFormField.getType())) {
 						value = subFormRecordValue.getValue();
 					}
-					params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV("+subFormField.getFieldName()+")",value));
+					//params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV("+subFormField.getFieldName()+")",value));
+					if(recordId==-1l)
+					{
+						params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV("+subFormField.getFieldName()+")",value));
+					}
+					else
+					{
+						params.add(new BasicNameValuePair("SF("+fieldName+").FD("+recordId+"_"+(i+1)+").SV("+subFormField.getFieldName()+")",value));
+					}
 				}
 			}
 		}
@@ -460,15 +490,15 @@ public class ZCForm extends ZCComponent {
 		ZOHOCreator.callSubFormAddRow(this, field.getFieldName(),recordValues,currentShownForm);
 	}
 
-	public void onDeleteRowForSubForm(ZCField field,List<ZCRecordValue> recordValues) throws ZCException{
-		ZOHOCreator.callSubFormDeleteRow(this, field.getFieldName(),recordValues);
+	public void onDeleteRowForSubForm(ZCField field,long id,int position) throws ZCException{
+		ZOHOCreator.callSubFormDeleteRow(this, field.getFieldName(),id,position);
 	}
 
-	public void onUserInputForSubFormField(ZCField onUserInputField,ZCForm currentShownForm, List<ZCRecordValue> recordValues,int entryPosition) throws ZCException{
-		ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , currentShownForm,recordValues,false,entryPosition);
+	public void onUserInputForSubFormField(ZCField onUserInputField,ZCForm currentShownForm, List<ZCRecordValue> recordValues,int entryPosition,long id) throws ZCException{
+		ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , currentShownForm,recordValues,false,entryPosition,id);
 	}
-	public void onUserInputForSubFormFieldForFormula(ZCField onUserInputField, ZCForm currentShownForm, List<ZCRecordValue> recordValues,int entryPosition) throws ZCException{
-		ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , currentShownForm,recordValues,true,entryPosition);
+	public void onUserInputForSubFormFieldForFormula(ZCField onUserInputField, ZCForm currentShownForm, List<ZCRecordValue> recordValues,int entryPosition,long id) throws ZCException{
+		ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , currentShownForm,recordValues,true,entryPosition,id);
 	}
 	public ZCField getBaseSubFormField() {
 		return baseSubFormField;

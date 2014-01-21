@@ -2,8 +2,6 @@
 package com.zoho.creator.jframework;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -111,39 +109,34 @@ public class ZCURL {
 	}
 
 
-
-	static URLPair formMetaURL(String appLinkName, String formLinkName, String appOwner, String viewLinkName, Long recordLinkId, int formType, String refAppLinkName, String refFormLinkName, String refFieldName, Date calSelectedStartDate,Date calSelectedEndDate,List<NameValuePair> additionalParams) {
+	static URLPair bulkEditFormMetaURL(String appLinkName, String appOwner, String viewLinkName, int formAccessType) {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);
 		params.add(new BasicNameValuePair("metaData","complete"));//No I18N
 		params.add(new BasicNameValuePair("zcRefValue","true"));//No I18N
-		if(recordLinkId != null) {
-			return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/view/"+ viewLinkName + "/record/" + recordLinkId + "/edit/", params);//No I18N
-		} else {
-			if(viewLinkName != null && (!(formType == ZCForm.VIEW_BULK_EDIT_FORM))) {
-				params.add(new BasicNameValuePair("viewLinkName", viewLinkName));//No I18N
-			}
-			if(additionalParams!=null) {
-				params.addAll(additionalParams);
-			}
-			if(calSelectedStartDate != null) {			
-				Calendar startDateCal = Calendar.getInstance();
-				startDateCal.setTime(calSelectedStartDate);
-				Calendar endDateCal = Calendar.getInstance();
-				endDateCal.setTime(calSelectedEndDate);
-				params.add(new BasicNameValuePair("dateJsonObject", "{\"startDate\":{\"day\":" + startDateCal.get(Calendar.DAY_OF_MONTH) + ",\"month\":" + startDateCal.get(Calendar.MONTH) + ",\"year\":" + startDateCal.get(Calendar.YEAR) + ",\"hours\":"+ startDateCal.get(Calendar.HOUR_OF_DAY)  +",\"minutes\":"+ startDateCal.get(Calendar.MINUTE) +",\"seconds\":" + startDateCal.get(Calendar.SECOND) +"}," +  //No I18N
-						"\"endDate\":{\"day\":" +endDateCal.get(Calendar.DAY_OF_MONTH) + ",\"month\":" + endDateCal.get(Calendar.MONTH) + ",\"year\":" + endDateCal.get(Calendar.YEAR) + ",\"hours\":"+ endDateCal.get(Calendar.HOUR_OF_DAY)  +",\"minutes\":"+ endDateCal.get(Calendar.MINUTE) +",\"seconds\":" + endDateCal.get(Calendar.SECOND) + "}};"));//No I18N
-			}
-
-			params.add(new BasicNameValuePair("formAccessType", String.valueOf(formType)));//No I18N
-			if(formType == ZCForm.VIEW_BULK_EDIT_FORM)
-			{
-				return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"view/"+ viewLinkName + "/bulkeditfields/", params);//No I18N
-			}
-//			else
-//			{
-			return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName + "/fields/", params);//No I18N
-		//	}
+		params.add(new BasicNameValuePair("formAccessType", String.valueOf(formAccessType)));//No I18N
+		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"view/"+ viewLinkName + "/bulkeditfields/", params);//No I18N
+	}
+	
+	static URLPair editFormMetaURL(String appLinkName, String appOwner, String viewLinkName, Long recordLinkId) {
+		List<NameValuePair> params = getParamsWithOwner(appOwner);
+		params.add(new BasicNameValuePair("metaData","complete"));//No I18N
+		params.add(new BasicNameValuePair("zcRefValue","true"));//No I18N
+		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/view/"+ viewLinkName + "/record/" + recordLinkId + "/edit/", params);//No I18N
+	}
+	
+	
+	static URLPair formMetaURL(String appLinkName, String formLinkName, String appOwner, String viewLinkName, int formAccessType, List<NameValuePair> additionalParams) {
+		List<NameValuePair> params = getParamsWithOwner(appOwner);
+		params.add(new BasicNameValuePair("metaData","complete"));//No I18N
+		params.add(new BasicNameValuePair("zcRefValue","true"));//No I18N
+		params.add(new BasicNameValuePair("formAccessType", String.valueOf(formAccessType)));//No I18N
+		if(additionalParams != null) {
+			params.addAll(additionalParams);
 		}
+		if(viewLinkName != null) {
+			params.add(new BasicNameValuePair("viewLinkName", viewLinkName));//No I18N
+		}
+		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName + "/fields/", params);//No I18N
 	}
 
 	static URLPair lookupChoices(String appLinkName, String formLinkName, String appOwner,String lookupFieldName, int startIndex, String searchString, String subformComponent,int formAccessType,List<NameValuePair> additionalParams, ZCField field) {
@@ -152,10 +145,10 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("appendRows", "true"));
 		params.add(new BasicNameValuePair("startindex", startIndex + ""));
 		params.add(new BasicNameValuePair("zcRefValue", true+""));
-//		if(viewLinkName!=null)
-//		{
-//			params.add(new BasicNameValuePair("viewLinkName", viewLinkName));
-//		}
+		//		if(viewLinkName!=null)
+		//		{
+		//			params.add(new BasicNameValuePair("viewLinkName", viewLinkName));
+		//		}
 		if(searchString != null && !"".equals(searchString)) {
 			params.add(new BasicNameValuePair("searchValue", searchString));
 		}
@@ -171,7 +164,6 @@ public class ZCURL {
 //				params.add(new BasicNameValuePair("accesstoken", ZOHOCreator.getAccessTokenForExternalField()));
 //			}
 //		}
-		
 		params.addAll(additionalParams);
 		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName +"/"+urlValToAdd+"/"+lookupFieldName+ "/options/", params);//No I18N
 	}
@@ -198,23 +190,57 @@ public class ZCURL {
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}
 
-	static URLPair subFormOnUser(String appLinkName, String formLinkName, String subFormFieldLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params,boolean isFormula,List<NameValuePair> additionalParams,int entryPosition) {
+	static URLPair subFormOnUser(String appLinkName, String formLinkName, String subFormFieldLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params,boolean isFormula,List<NameValuePair> additionalParams,int entryPosition,long id) {
 		params.addAll(getDefaultParams());
 		if(isFormula) {
 			params.add(new BasicNameValuePair("isFormula", "true"));
-			params.add(new BasicNameValuePair("isSubForm", "true"));
 		}
+		System.out.println("linkname.."+fieldLinkName);
 		params.add(new BasicNameValuePair("sharedBy", appOwner));
 		params.add(new BasicNameValuePair("appLinkName", appLinkName));
 		params.add(new BasicNameValuePair("formLinkName", formLinkName));
 		params.add(new BasicNameValuePair("linkNameBased", "true"));
 		params.add(new BasicNameValuePair("fieldName", fieldLinkName));
 		params.add(new BasicNameValuePair("subformFieldName", subFormFieldLinkName));
-		params.add(new BasicNameValuePair("subfcname","SF(SubForm).FD(t::row_"+entryPosition+").SV("+subFormFieldLinkName+")"));
-		params.add(new BasicNameValuePair("rowseqid","t::row_"+entryPosition));
+		if(id==-1l)
+		{
+			params.add(new BasicNameValuePair("rowseqid","t::row_"+entryPosition));
+		}
+		else
+		{
+			params.add(new BasicNameValuePair("rowseqid",id+"_"+entryPosition));
+		}
+		params.addAll(additionalParams);
+		if(isFormula)
+		{
+			return new URLPair(serverURL() + "/calculateFormulaAPI.do" , params);//No I18N
+		}
+		else
+		{
+			return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
+		}
+	}
+
+	static URLPair subFormDeleteRow(String appLinkName, String formLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params,List<NameValuePair> additionalParams,long id,int position) {
+		params.addAll(getDefaultParams());
+		params.add(new BasicNameValuePair("sharedBy", appOwner));
+		params.add(new BasicNameValuePair("appLinkName", appLinkName));
+		params.add(new BasicNameValuePair("formLinkName", formLinkName));
+		params.add(new BasicNameValuePair("fieldName", fieldLinkName));
+		params.add(new BasicNameValuePair("linkNameBased", "true"));
+		params.add(new BasicNameValuePair("rowactiontype","ondeleterow"));
+		if(id==-1l)
+		{
+			params.add(new BasicNameValuePair("rowseqid","t::row_"+position));
+		}
+		else
+		{
+			params.add(new BasicNameValuePair("rowseqid",id+"_"+position));
+		}
 		params.addAll(additionalParams);
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}
+
 
 	static URLPair fieldOnUser(String appLinkName, String formLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params, boolean isFormula,List<NameValuePair> additionalParams,int formType) {
 		params.addAll(getDefaultParams());
@@ -231,7 +257,7 @@ public class ZCURL {
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}
 
-	
+
 
 	static URLPair buttonOnClick(String appLinkName, String formLinkName, String buttonName, String appOwner,List<NameValuePair> additionalParams) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -260,18 +286,8 @@ public class ZCURL {
 		//return new URLPair(serverURL() + "/api/mobile/xml/" + appLinkName + "/" + formLinkName + "/OnAddRow/" + fieldLinkName + "/", getParamsWithOwnerAndXMLString(appOwner, xmlString)); //No I18N
 	}
 
-	static URLPair subFormDeleteRow(String appLinkName, String formLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params,List<NameValuePair> additionalParams) {
-		params.addAll(getDefaultParams());
-		params.add(new BasicNameValuePair("sharedBy", appOwner));
-		params.add(new BasicNameValuePair("appLinkName", appLinkName));
-		params.add(new BasicNameValuePair("formLinkName", formLinkName));
-		params.add(new BasicNameValuePair("fieldName", fieldLinkName));
-		params.add(new BasicNameValuePair("linkNameBased", "true"));
-		params.add(new BasicNameValuePair("rowactiontype","ondeleterow"));
-		params.add(new BasicNameValuePair("rowseqid","t::row_"+1));
-		params.addAll(additionalParams);
-		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
-	}
+
+
 
 	static URLPair recordCount(String appOwner, String appLinkName, String viewLinkName) {
 		List<NameValuePair> params = getDefaultParams();
@@ -301,7 +317,7 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("LOGIN_ID", ZOHOCreator.getZohoUser().getEmailAddresses().get(0)));
 		return new URLPair("https://" + ZOHOCreator.getAccountsURL() + "/login", params);  //No I18N
 	}
-	
+
 	// 		signInUrl = "https://accounts.zoho.com/login?hide_signup=true&hide_remember=true&scopes=ZohoCreator/creatorapi&appname=ZohoCreator&serviceurl=https://creator.zoho.com";  //No I18N
 
 
@@ -335,7 +351,7 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("PASSWORD", password));//No I18N
 		return new URLPair("https://" + ZOHOCreator.getAccountsURL() + "/apiauthtoken/nb/create", params);
 	}
-	
+
 	public static URLPair externalFieldTokenURL(String accessToken) {
 		// TODO Auto-generated method stub
 		//grant_type=authorization_code&code=%@&client_id=3MVG9Y6d_Btp4xp5MNbwoUX5SZA0SD0OO15kwh0D4sVVDVIeWoWNL2qIWQYxS6zNukVuxHdCt.SLq87xwXxGk&client_secret=4406449787548088942&redirect_uri=https://creator.zoho.com",
@@ -365,7 +381,7 @@ public class ZCURL {
 		return buff.toString();
 	}
 
-	
+
 
 
 }

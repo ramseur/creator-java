@@ -205,6 +205,7 @@ public class ZCField implements Comparable<ZCField> {
 
 	public void appendChoices(List<ZCChoice> moreChoices) {
 		choices.addAll(moreChoices);
+		System.out.println("choices..."+choices);
 	}
 
 	public void addToLookupChoice(ZCChoice choice) {

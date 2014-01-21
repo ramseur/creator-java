@@ -355,14 +355,14 @@ public class ZCView extends ZCComponent {
 			throw new RuntimeException("Delete not allowed");//No I18N
 		}
 
-		return ZOHOCreator.postXMLString(getAppOwner(), getRecordIDXMLString(recordIDs, "delete"), "delete", null, null);//No I18N
+		return ZOHOCreator.postXMLString(getAppOwner(), getRecordIDXMLString(recordIDs, "delete"), "delete", null);//No I18N
 	}
 	
 	public ZCResponse duplicateRecords(List<Long> recordIDs) throws ZCException{
 		if(!isDuplicateAllowed) {
 			throw new RuntimeException("Duplicate not allowed");//No I18N
 		}
-		return ZOHOCreator.postXMLString(getAppOwner(), getRecordIDXMLString(recordIDs, "duplicate"), "duplicate", null, null);//No I18N
+		return ZOHOCreator.postXMLString(getAppOwner(), getRecordIDXMLString(recordIDs, "duplicate"), "duplicate", null);//No I18N
 	}
 
 	private String getRecordIDXMLString(List<Long> recordIDs, String tagName) {
