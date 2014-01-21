@@ -264,8 +264,14 @@ public class ZOHOCreator {
 	}	
 
 	public static void loadSelectedForm() throws ZCException {
-		ZCComponent zcComp = getCurrentComponent();
-		ZCForm zcForm = getForm(zcComp);
+		ZCComponent comp = getCurrentComponent();
+		URLPair formMetaURLPair = ZCURL.formMetaURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner(), ZCForm.FORM_ALONE, null);
+		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
+		ZCForm zcForm = XMLParser.parseForForm(rootDocument, comp.getAppLinkName(), comp.getAppOwner(), comp.getQueryString());
+		if(zcForm == null) {
+			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
+		}
+		zcForm.setFormType(ZCForm.FORM_ALONE);
 		setCurrentForm(zcForm);
 		if (zcForm.hasOnLoad()) {
 			ZOHOCreator.callFormOnAddOnLoad(zcForm,ZCForm.FORM_ALONE);
@@ -305,19 +311,6 @@ public class ZOHOCreator {
 		}
 	}
 
-	public static ZCForm getForm(ZCComponent comp) throws ZCException{
-		if(comp.getType().equals(ZCComponent.FORM)) {
-			URLPair formMetaURLPair = ZCURL.formMetaURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner(), ZCForm.FORM_ALONE, null);
-			Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
-			ZCForm toReturn = XMLParser.parseForForm(rootDocument, comp.getAppLinkName(), comp.getAppOwner(), comp.getQueryString());
-			if(toReturn == null) {
-				throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
-			}
-			toReturn.setFormType(ZCForm.FORM_ALONE);
-			return toReturn;
-		}
-		throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Trying to fetch form details. But not a form. " + comp); //No I18N
-	}
 
 	private static ZCForm getForm(String appLinkName, String formLinkName, String appOwner, int formType, List<NameValuePair> params) throws ZCException {
 		URLPair formMetaURLPair = ZCURL.formMetaURL(appLinkName, formLinkName, appOwner,  formType, params);
@@ -475,6 +468,13 @@ public class ZOHOCreator {
 	public static void logout() {
 		ZOHOUser user = ZOHOCreator.getZohoUser();
 		if(user != null) {
+			URLPair delAuthTokenURL = ZCURL.deleteAuthToken(user.getAuthToken());
+			try {
+				String response = ZOHOCreator.postURL(delAuthTokenURL.getUrl(), delAuthTokenURL.getNvPair());
+			} catch (ZCException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			user.logout();
 		}
 	}
@@ -1135,6 +1135,18 @@ public class ZOHOCreator {
 		}
 		return toReturn;
 	}
+	
+	static Document getUserDocument() throws ZCException {
+		URLPair userPersonalInfoURL = ZCURL.userPersonalInfoURL();
+		return ZOHOCreator.postURLXML(userPersonalInfoURL.getUrl(), userPersonalInfoURL.getNvPair());
+	}
+	
+	static String getAuthTokenResponse(String uname, String password) throws ZCException {
+		URLPair loginURL = ZCURL.getAuthTokenURL(uname, password);//No I18N
+		return ZOHOCreator.postURL(loginURL.getUrl(), loginURL.getNvPair());
+		
+	}
+
 
 	static ZCResponse postXMLString(String appOwner, String xmlString, String action, List<NameValuePair> params) throws ZCException{
 
@@ -1180,7 +1192,7 @@ public class ZOHOCreator {
 		return toReturn;
 	}
 
-	static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
+	private static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
 		System.out.println(getURLString(url, params)+"url");
 		try
 		{
@@ -1280,7 +1292,7 @@ public class ZOHOCreator {
 		return buff.toString();
 	}
 
-	static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
+	private static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
 		System.out.println(getURLString(url, params)+"urllllll");
 		try
 		{
@@ -1434,7 +1446,7 @@ public class ZOHOCreator {
 		}
 	}
 
-	static Document stringToDocument(final String xmlSource)   
+	private static Document stringToDocument(final String xmlSource)   
 			throws SAXException, ParserConfigurationException, IOException {  
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();  
 		DocumentBuilder builder = factory.newDocumentBuilder();  
@@ -1442,7 +1454,7 @@ public class ZOHOCreator {
 		return builder.parse(new InputSource(new StringReader(xmlSource)));  
 	}  
 
-	static String readResponseFromFile(String fileName){
+	private static String readResponseFromFile(String fileName){
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(fileName));
@@ -1476,7 +1488,7 @@ public class ZOHOCreator {
 
 	}
 
-	static void writeResponseToFile( String content , String fileName){
+	private static void writeResponseToFile( String content , String fileName){
 		try {
 
 			PrintWriter writer = new PrintWriter(fileName, "UTF-8");

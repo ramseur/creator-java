@@ -103,11 +103,8 @@ public class ZOHOUser {
 	private ZOHOUser(String authToken) throws ZCException {
 		this.authToken = authToken;
 		userCredential = this;
-		URLPair userPersonalInfoURL = ZCURL.userPersonalInfoURL();
-		Document rootDocument = ZOHOCreator.postURLXML(userPersonalInfoURL.getUrl(), userPersonalInfoURL.getNvPair());
-
+		Document rootDocument = ZOHOCreator.getUserDocument();
 		NodeList nl = rootDocument.getChildNodes();
-		
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
 			if(responseNode.getNodeName().equals("response")) {
@@ -155,8 +152,7 @@ public class ZOHOUser {
 			try {
 				uname = java.net.URLEncoder.encode(uname, "UTF-8");
 				password = java.net.URLEncoder.encode(password, "UTF-8");//No I18N
-				URLPair loginURL = ZCURL.getAuthTokenURL(uname, password);//No I18N
-	            String response = ZOHOCreator.postURL(loginURL.getUrl(), loginURL.getNvPair());
+				String response = ZOHOCreator.getAuthTokenResponse(uname, password);
 	            try {
 					props.load(new StringReader(response));
 				} catch (IOException e) {
@@ -242,13 +238,6 @@ public class ZOHOUser {
 	
 	void logout() {
 		if(authToken != null) {
-			URLPair delAuthTokenURL = ZCURL.deleteAuthToken(authToken);
-			try {
-				String response = ZOHOCreator.postURL(delAuthTokenURL.getUrl(), delAuthTokenURL.getNvPair());
-			} catch (ZCException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			ZOHOUser.userStorage.removeAuthToken();
 			userCredential = null;
 		}
