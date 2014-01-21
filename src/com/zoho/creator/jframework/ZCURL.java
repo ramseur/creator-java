@@ -109,11 +109,11 @@ public class ZCURL {
 	}
 
 
-	static URLPair bulkEditFormMetaURL(String appLinkName, String appOwner, String viewLinkName, int formAccessType) {
+	static URLPair bulkEditFormMetaURL(String appLinkName, String appOwner, String viewLinkName) {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);
 		params.add(new BasicNameValuePair("metaData","complete"));//No I18N
 		params.add(new BasicNameValuePair("zcRefValue","true"));//No I18N
-		params.add(new BasicNameValuePair("formAccessType", String.valueOf(formAccessType)));//No I18N
+		params.add(new BasicNameValuePair("formAccessType", String.valueOf(ZCForm.VIEW_BULK_EDIT_FORM)));//No I18N
 		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"view/"+ viewLinkName + "/bulkeditfields/", params);//No I18N
 	}
 	
@@ -125,16 +125,13 @@ public class ZCURL {
 	}
 	
 	
-	static URLPair formMetaURL(String appLinkName, String formLinkName, String appOwner, String viewLinkName, int formAccessType, List<NameValuePair> additionalParams) {
+	static URLPair formMetaURL(String appLinkName, String formLinkName, String appOwner, int formAccessType, List<NameValuePair> additionalParams) {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);
 		params.add(new BasicNameValuePair("metaData","complete"));//No I18N
 		params.add(new BasicNameValuePair("zcRefValue","true"));//No I18N
 		params.add(new BasicNameValuePair("formAccessType", String.valueOf(formAccessType)));//No I18N
 		if(additionalParams != null) {
 			params.addAll(additionalParams);
-		}
-		if(viewLinkName != null) {
-			params.add(new BasicNameValuePair("viewLinkName", viewLinkName));//No I18N
 		}
 		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName + "/fields/", params);//No I18N
 	}
