@@ -354,17 +354,17 @@ public class ZCView extends ZCComponent {
 			throw new RuntimeException("Delete not allowed");//No I18N
 		}
 
-		return ZOHOCreator.postXMLString(getAppOwner(), getRecordIDXMLString(recordIDs, "delete"), "delete", null);//No I18N
+		return ZOHOCreator.deleteRecords(this, recordIDs);
 	}
 	
 	public ZCResponse duplicateRecords(List<Long> recordIDs) throws ZCException{
 		if(!isDuplicateAllowed) {
 			throw new RuntimeException("Duplicate not allowed");//No I18N
 		}
-		return ZOHOCreator.postXMLString(getAppOwner(), getRecordIDXMLString(recordIDs, "duplicate"), "duplicate", null);//No I18N
+		return ZOHOCreator.duplicateRecords(this, recordIDs);
 	}
 
-	private String getRecordIDXMLString(List<Long> recordIDs, String tagName) {
+	String getRecordIDXMLString(List<Long> recordIDs, String tagName) {
 		StringBuffer buff = new StringBuffer();
 	    buff.append("<ZohoCreator>");//No I18N
 	    	buff.append("<applicationlist>");//No I18N
@@ -419,7 +419,7 @@ public class ZCView extends ZCComponent {
 	
 	
 	public ZCResponse customAction(long customActionID, List<Long> recordIDs) throws ZCException{
-		return ZOHOCreator.postCustomAction(getAppLinkName(), getComponentLinkName(), getAppOwner(), customActionID, recordIDs);
+		return ZOHOCreator.postCustomAction(this, customActionID, recordIDs);
 	}
 
 	public ZCField getTitleField() {
