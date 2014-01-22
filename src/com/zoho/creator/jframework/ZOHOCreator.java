@@ -80,7 +80,6 @@ public class ZOHOCreator {
 	private static ZCHtmlView htmlView = null;
 	private static ZCRecord editRecord = null;
 	private static List<ZCRecord> bulkEditRecords = null;
-	private static ZCField baseLookUpField = null;
 
 	private static ZCAppList appList = null;
 	private static ZCNavList navigationListForApps = null;
@@ -90,16 +89,7 @@ public class ZOHOCreator {
 	private static String creatorURL = "creator.zoho.com";//No I18N
 	private static String prefix = "https";//No I18N
 	private static Properties props = new Properties();
-	private static String errorMessage = null;
 
-	public static void setErrorMessage(String errorMessage)
-	{
-		ZOHOCreator.errorMessage = errorMessage;
-	}
-	public static String getErrorMessage()
-	{
-		return errorMessage;
-	}
 	public static String getLoginURL() {
 		return ZCURL.getURLString(ZCURL.getLoginUrl());
 	}
@@ -124,7 +114,7 @@ public class ZOHOCreator {
 		return props.getProperty(key);
 	}
 
-	static String getFilesDir(){
+	static String getFilesDir() {
 		String str = ZOHOCreator.getUserProperty("FILES_DIR_PATH");
 		if(str == null){
 			str = "/";
@@ -132,15 +122,6 @@ public class ZOHOCreator {
 		return str;
 	}
 
-	public static void setBaseLookUpField(ZCField baseLookUpField)
-	{
-		ZOHOCreator.baseLookUpField = baseLookUpField;
-	}
-
-	public static ZCField getBaseLookUPField()
-	{
-		return baseLookUpField;
-	}
 
 	public static void setUserProperty(String key, String value) {
 		props.setProperty(key, value);
@@ -851,8 +832,7 @@ public class ZOHOCreator {
 	static List<ZCChoice> loadMoreChoices(ZCField field, ZCField subFormField) throws ZCException {
 		ZCForm baseForm = field.getBaseForm();
 		String fieldName = field.getFieldName();
-		if(baseForm==ZOHOCreator.getCurrentSubForm())
-		{
+		if(baseForm==ZOHOCreator.getCurrentSubForm()) {
 			baseForm = ZOHOCreator.getCurrentForm();
 		}
 		String subformComponent = null;
@@ -862,37 +842,26 @@ public class ZOHOCreator {
 			fieldName = subFormField.getFieldName();
 		}
 
-		if(field.getBaseForm().getFormType()==ZCForm.FORM_LOOKUP_ADD_FORM)
-		{
+		if(field.getBaseForm().getFormType()==ZCForm.FORM_LOOKUP_ADD_FORM) {
 			formAccessType = ZCForm.FORM_LOOKUP_ADD_FORM;
-		}
-		else if(getCurrentForm().getViewForAdd()!=null)
-		{
+		} else if(getCurrentForm().getViewForAdd()!=null) {
 			formAccessType = ZCForm.VIEW_ADD_FORM;
-		}
-		else if(getCurrentForm().getViewForEdit()!=null)
-		{
+		} else if(getCurrentForm().getViewForEdit()!=null) {
 			formAccessType = ZCForm.VIEW_EDIT_FORM;
-		}
-		else if(getCurrentForm().getViewForBulkEdit()!=null)
-		{
+		} else if(getCurrentForm().getViewForBulkEdit()!=null) {
 			formAccessType = ZCForm.VIEW_BULK_EDIT_FORM;
-		}
-		else
-		{
+		} else {
 			formAccessType = ZCForm.FORM_ALONE;
 		}
-		//List<NameValuePair> params = getAdditionalParamsForForm(baseForm,field);
-		//params.addAll(getCurrentForm().getFieldParamValues(recordValues));
 		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), fieldName, field.getChoices().size(), field.getSearchForChoices(), subformComponent,formAccessType,getAdditionalParamsForForm(baseForm,field),field);
 		System.out.println("choic url"+getURLString(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair()));
 		Document rootDocument = ZOHOCreator.postURLXML(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair());
 
-		return XMLParser.getLookUpChoices(rootDocument);
+		return XMLParser.parseLookUpChoices(rootDocument);
 	}
 
 
-	static void loadRecords(ZCView zcView) throws ZCException{  // Search, Filter & Group By
+	static void loadRecords(ZCView zcView) throws ZCException {  // Search, Filter & Group By
 
 		List<NameValuePair> params = new ArrayList<NameValuePair>(); //URLConstructor.getDefaultParams(zcView.getAppOwner());
 		if(zcView.getType().equals(ZCComponent.CALENDAR)) {
@@ -1056,20 +1025,6 @@ public class ZOHOCreator {
 		return toReturn;
 	}
 
-	//	public static void getAuthTokenForExternalField(String accessToken) throws ZCException{
-	//		URLPair externalFieldTokenURLPair = ZCURL.externalFieldTokenURL(accessToken);
-	//		String rootDocument = ZOHOCreator.postURL(externalFieldTokenURLPair.getUrl(), externalFieldTokenURLPair.getNvPair());
-	//		ZOHOCreator.setAccessTokenForExternalField(JSONParser.parseForTokenForExternalField(rootDocument));
-	//	}
-
-	//	private static void setAccessTokenForExternalField(String accessTokenForExternalField) {
-	//		// TODO Auto-generated method stub
-	//		ZOHOCreator.accessTokenForExternalField = accessTokenForExternalField;
-	//	}
-	//
-	//	public static String getAccessTokenForExternalField(){
-	//		return accessTokenForExternalField;
-	//	}
 	static ZCResponse postCustomAction(ZCView zcView, long customActionId, List<Long> recordIDs) throws ZCException {
 		String appLinkName =	zcView.getAppLinkName();
 		String viewLinkName = zcView.getComponentLinkName();

@@ -221,7 +221,6 @@ class XMLParser {
 
 	static List<ZCSection> parseForSectionList(Document rootDocument, String appLinkName, String appOwner) throws ZCException {
 		List<ZCSection> toReturn = new ArrayList<ZCSection>();
-		int remainingDays = -1;
 		NodeList nl = rootDocument.getChildNodes();
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
@@ -229,10 +228,8 @@ class XMLParser {
 				NodeList responseNodes = responseNode.getChildNodes();
 				for(int j=0; j<responseNodes.getLength(); j++) {
 					Node responseNodeChild = responseNodes.item(j);
-					if(responseNodeChild.getNodeName().equals("error"))
-					{
-						String errorMessage = getStringValue(responseNodeChild, "error"); //No I18N
-						ZOHOCreator.setErrorMessage(errorMessage);
+					if(responseNodeChild.getNodeName().equals("error")) {
+						throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, getStringValue(responseNodeChild, "error"));
 					}
 					else if(responseNodeChild.getNodeName().equals("Sections")) {
 
@@ -455,7 +452,7 @@ class XMLParser {
 		return toReturn;
 	}
 
-	static String parseErrorMessage(Node errorlistNode) {
+	private static String parseErrorMessage(Node errorlistNode) {
 		NodeList resultNodes = errorlistNode.getChildNodes();
 		for(int k=0; k<resultNodes.getLength(); k++) {
 			Node resultNodeChild = resultNodes.item(k);
@@ -924,7 +921,7 @@ class XMLParser {
 		return choices;
 	}
 
-	static List<ZCChoice> getLookUpChoices(Document rootDocument)
+	static List<ZCChoice> parseLookUpChoices(Document rootDocument)
 	{
 
 		NodeList nl = rootDocument.getChildNodes();
@@ -1376,44 +1373,7 @@ class XMLParser {
 											String displayName = getChildNodeValue(fieldNode, "DisplayName"); //fieldAttrMap.getNamedItem("DisplayName").getNodeValue(); //No I18N
 											String fieldName = fieldAttrMap.getNamedItem("BaseLabelName").getNodeValue(); //No I18N
 											String compType = fieldAttrMap.getNamedItem("ComponentType").getNodeValue(); //No I18N
-
-											FieldType fieldType = FieldType.SINGLE_LINE;
-
-											fieldType = FieldType.getFieldType(compType);
-											//											if(compType.equals("MULTI_SELECT")) {
-											//												fieldType = FieldType.MULTISELECT;
-											//											} else if(compType.equals("FILE_UPLOAD")) {
-											//												fieldType = FieldType.FILE_UPLOAD;
-											//											} else if(compType.equals("IMAGE")) {
-											//												fieldType = FieldType.IMAGE;
-											//											} else if(compType.equals("URL")){
-											//												fieldType = FieldType.URL;
-											//											} else if(compType.equals("TEXT_AREA")){
-											//												fieldType = FieldType.MULTI_LINE;
-											//											} else if(compType.equals("EMAIL_ADDRESS")){
-											//												fieldType = FieldType.EMAIL;
-											//											} else if(compType.equals("RICH_TEXT_AREA")){
-											//												fieldType = FieldType.RICH_TEXT;
-											//											} else if(compType.equals("DATE")){
-											//												fieldType = FieldType.DATE;
-											//											} else if(compType.equals("DATE_TIME")){
-											//												fieldType = FieldType.DATE_TIME;
-											//											} else if(compType.equals("INLINE_SINGLE_SELECT")){
-											//												fieldType = FieldType.DROPDOWN;
-											//											} else if(compType.equals("INLINE_SINGLE_SELECT")){
-											//												fieldType = FieldType.RADIO;
-											//											} else if(compType.equals("NUMBER")){
-											//												fieldType = FieldType.NUMBER;
-											//											} else if(compType.equals("PERCENTAGE")){
-											//												fieldType = FieldType.PERCENTAGE;
-											//											} else if(compType.equals("CURRENCY")){
-											//												fieldType = FieldType.CURRENCY;
-											//											} else if(compType.equals("CHECK_BOX")){
-											//												fieldType = FieldType.DECISION_CHECK_BOX;
-											//											} else if(compType.equals("SCRIPT")){
-											//												fieldType = FieldType.FORMULA;
-											//											}
-
+											FieldType fieldType = FieldType.getFieldType(compType);
 											int seqNo  = Integer.parseInt(fieldAttrMap.getNamedItem("SequenceNumber").getNodeValue()); //No I18N
 											ZCColumn column = new ZCColumn(fieldName, fieldType, displayName);
 											column.setSequenceNumber(seqNo);
@@ -1438,7 +1398,7 @@ class XMLParser {
 		return toReturn;		
 	}
 
-	public static String parseForTokenForExternalField(Document rootDocument) {
+	private static String parseForTokenForExternalField(Document rootDocument) {
 		// TODO Auto-generated method stub
 		String accessToken = "";
 		NodeList nl = rootDocument.getChildNodes();
