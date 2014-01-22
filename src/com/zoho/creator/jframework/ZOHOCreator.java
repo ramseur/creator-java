@@ -547,7 +547,6 @@ public class ZOHOCreator {
 			try {
 				ZOHOCreator.postURL(delAuthTokenURL.getUrl(), delAuthTokenURL.getNvPair());
 			} catch (ZCException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			user.logout();

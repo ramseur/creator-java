@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.Hashtable;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -27,6 +28,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+
 class XMLParser {
 
 	static String getStringValue(Node node, String defaultValue) {
@@ -40,7 +42,7 @@ class XMLParser {
 		if(node != null && node.getFirstChild() != null) {
 			return Integer.parseInt(node.getFirstChild().getNodeValue());
 		}
-		
+
 		return defaultValue;
 	}
 
@@ -312,6 +314,16 @@ class XMLParser {
 	static ZCForm parseForForm(Document rootDocument, String appLinkName, String appOwner,String queryString) throws ZCException {
 		NodeList nl = rootDocument.getChildNodes();
 		ZCForm toReturn = null;
+		Hashtable<String,String> queryStringTable = new Hashtable<String, String>();
+		if(queryString!=null)
+		{
+			String[] stringValues = queryString.split("&");
+			for(int p=0;p<stringValues.length;p++)
+			{
+				String[] fieldNameAndValueString = stringValues[p].split("=");
+				queryStringTable.put(fieldNameAndValueString[0],fieldNameAndValueString[1]);
+			}
+		}
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
 			if(responseNode.getNodeName().equals("response")) {
@@ -388,7 +400,7 @@ class XMLParser {
 								for(int l=0; l<fieldNodes.getLength(); l++) {
 									Node fieldNode = fieldNodes.item(l);
 									if(fieldNode.getNodeName().equalsIgnoreCase("field")) {
-										ZCField field = parseField(fieldNode,appLinkName,componentLinkName, appOwner, false,queryString);
+										ZCField field = parseField(fieldNode,appLinkName,componentLinkName, appOwner, false,queryStringTable);
 										if(field != null) {
 											fields.add(field);
 										}
@@ -470,7 +482,7 @@ class XMLParser {
 	}
 
 
-	private static ZCField parseField(Node resultNodeChild,String applinkName,String formlinkName, String appOwner,boolean isParentSubForm,String queryString) throws ZCException {
+	private static ZCField parseField(Node resultNodeChild,String applinkName,String formlinkName, String appOwner,boolean isParentSubForm,Hashtable<String, String> queryStringhashTable) throws ZCException {
 		NodeList fieldPropetyNodes = resultNodeChild.getChildNodes();
 
 		String fieldName = null;
@@ -719,36 +731,20 @@ class XMLParser {
 		}	
 
 		ZCField zcField = new ZCField(fieldName, fieldType, displayName);
-		//if(fieldType.equals(FieldType.EXTERNAL_FIELD)){
-		//}
-		if(queryString!=null)
+		for(String key:queryStringhashTable.keySet())
 		{
-			if(queryString.contains("&"))
-			{
-				String[] stringValues = queryString.split("&");
-				for(int p=0;p<stringValues.length;p++)
-				{
-					if(FieldType.isMultiChoiceField(fieldType)){
-						initialChoiceValues = setFieldInitialValues(stringValues[p], fieldName,fieldType,initialChoiceValues);
-					}
-					else
-					{
-						initialValue = setFieldInitialValue(stringValues[p], fieldName,fieldType,initialValue);
-					}
-				}
-			}
-			else
+			if(key.equals(fieldName))
 			{
 				if(FieldType.isMultiChoiceField(fieldType)){
-					initialChoiceValues = setFieldInitialValues(queryString, fieldName,fieldType,initialChoiceValues);
+					initialChoiceValues = setFieldInitialValues(queryStringhashTable.get(key));
 				}
 				else
 				{
-					initialValue = setFieldInitialValue(queryString, fieldName,fieldType,initialValue);
+					initialValue = queryStringhashTable.get(key);
 				}
 			}
 		}
-
+		
 		if(FieldType.isMultiChoiceField(fieldType)) {
 			List<ZCChoice> selectedChoices = new ArrayList<ZCChoice>();// THis is used in Edit record for multichoice field. But in form builder there is no way to set initial value
 			if(!isLookup)
@@ -833,11 +829,6 @@ class XMLParser {
 		zcField.setDefaultRows(defaultRows);
 		zcField.setMaximumRows(maximumRows);
 		zcField.setDecimalLength(decimalLength);
-
-		//		if(!isLookup) {
-		//			zcField.addChoices(choices);
-		//			zcField.setLastReachedForChoices(true);
-		//		}
 		if(isFilterApplied || (!isLookup))
 		{
 			zcField.addChoices(choices);
@@ -876,24 +867,14 @@ class XMLParser {
 		}
 		return zcField;
 	}
-	private static String setFieldInitialValue(String queryString,String fieldName,FieldType fieldType,String initialValue)
+	
+	private static List<String> setFieldInitialValues(String queryString)
 	{
-		String[] fieldValues = queryString.split("=");
-		if(fieldName.equals(fieldValues[0]))
-		{
-			initialValue = fieldValues[1];
-		}
-		return initialValue;
-	}
-	private static List<String> setFieldInitialValues(String queryString,String fieldName,FieldType fieldType,List<String> initialValues)
-	{
-		String[] fieldValues = queryString.split("=");
 		String[] choicevalues = null;
-		if(fieldName.equals(fieldValues[0]))
-		{
-			if(fieldValues[1].contains(","))
+		List<String> initialValues = new ArrayList<String>();
+			if(queryString.contains(","))
 			{
-				choicevalues = fieldValues[1].split(",");
+				choicevalues = queryString.split(",");
 				for(int i=0;i<choicevalues.length;i++)
 				{
 					initialValues.add(choicevalues[i]);
@@ -901,9 +882,8 @@ class XMLParser {
 			}
 			else
 			{
-				initialValues.add(fieldValues[1]);
+				initialValues.add(queryString);
 			}
-		}
 		return initialValues;
 	}
 
@@ -998,11 +978,11 @@ class XMLParser {
 				value = value.substring(1, value.length()-1);
 			}
 			String[] tokens = value.split(", ");
-//			for(int i=1;i<tokens.length;i++)
-//			{
-//				System.out.println("hai"+tokens[i]+"token.....");
-//				//tokens[i]=tokens[i].substring(1);
-//			}
+			//			for(int i=1;i<tokens.length;i++)
+			//			{
+			//				System.out.println("hai"+tokens[i]+"token.....");
+			//				//tokens[i]=tokens[i].substring(1);
+			//			}
 			for(int m = 0;m<tokens.length;m++)
 			{
 				if(!(tokens[m].equals("")))
