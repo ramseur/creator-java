@@ -452,19 +452,6 @@ public class ZOHOCreator {
 						postImage(zcForm, field, recordId, fileToUpload, action);	
 					}
 				}
-				if(field.getType()==FieldType.SUB_FORM) {
-					List<ZCRecord> zcRecords = field.getAddedSubFormEntries();
-					for(int j=0;j<zcRecords.size();j++) {
-						ZCRecord zcRecord =zcRecords.get(j);
-						List<ZCRecordValue> zcRecordValues = zcRecord.getValues();
-						for(int k=0;k<zcRecordValues.size();k++) {
-							ZCRecordValue recordValue = zcRecordValues.get(k);
-							if (FieldType.isPhotoField(recordValue.getField().getType())) {
-								postImage(zcForm, field, recordId, recordValue.getFileValue(), action);
-							}
-						}
-					}	
-				}
 			}
 		}
 		return response;		
@@ -558,7 +545,7 @@ public class ZOHOCreator {
 		if(user != null) {
 			URLPair delAuthTokenURL = ZCURL.deleteAuthToken(user.getAuthToken());
 			try {
-				String response = ZOHOCreator.postURL(delAuthTokenURL.getUrl(), delAuthTokenURL.getNvPair());
+				ZOHOCreator.postURL(delAuthTokenURL.getUrl(), delAuthTokenURL.getNvPair());
 			} catch (ZCException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
