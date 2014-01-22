@@ -491,7 +491,8 @@ public class ZCForm extends ZCComponent {
 	}
 
 	public void onDeleteRowForSubForm(ZCField field,long id,int position) throws ZCException{
-		ZOHOCreator.callSubFormDeleteRow(this, field.getFieldName(),id,position);
+		System.out.println("id,position"+id+"position"+position);
+		ZOHOCreator.callSubFormDeleteRow(this, field.getFieldName(),id,position+1);
 	}
 
 	public void onUserInputForSubFormField(ZCField onUserInputField,ZCForm currentShownForm, List<ZCRecordValue> recordValues,int entryPosition,long id) throws ZCException{

@@ -743,6 +743,7 @@ public class ZOHOCreator {
 
 	private static void callDelugeEvents(ZCForm zcForm, URLPair urlPair,List<ZCRecordValue> recordValues,ZCForm currentShownForm) throws ZCException{
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
+		System.out.println("response.."+response);
 		JSONParser.parseAndCallFormEvents(response,zcForm,recordValues,currentShownForm);
 	}
 
@@ -856,7 +857,6 @@ public class ZOHOCreator {
 		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), fieldName, field.getChoices().size(), field.getSearchForChoices(), subformComponent,formAccessType,getAdditionalParamsForForm(baseForm,field),field);
 		System.out.println("choic url"+getURLString(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair()));
 		Document rootDocument = ZOHOCreator.postURLXML(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair());
-
 		return XMLParser.parseLookUpChoices(rootDocument);
 	}
 
