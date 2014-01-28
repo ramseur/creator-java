@@ -42,23 +42,23 @@ public class ZCForm extends ZCComponent {
 	public static final int FORM_LOOKUP_ADD_FORM =5;
 
 
-	public static final int task_reloadForm = 1;
-	public static final int task_clear = 9;
-	public static final int task_hide = 10;
-	public static final int task_show = 11;
-	public static final int task_setValue = 12;
-	public static final int task_enable = 14;
-	public static final int task_disable = 15;
+	public static final int TASK_RELOADFORM = 1;
+	public static final int TASK_CLEAR = 9;
+	public static final int TASK_HIDE = 10;
+	public static final int TASK_SHOW = 11;
+	public static final int TASK_SETVALUE = 12;
+	public static final int TASK_ENABLE = 14;
+	public static final int TASK_DISABLE = 15;
 
-	public static final int task_select = 1001;
-	public static final int task_deselect = 1002;
-	public static final int task_selectAll = 1003;
-	public static final int task_deselectAll = 1004;
-	public static final int task_addValue = 1005;
-	public static final int task_alert = 1302;
-	public static final int task_info = 71;
-	public static final int task_errors = 1007;
-	public static final int task_openurl = 280;
+	public static final int TASK_SELECT = 1001;
+	public static final int TASK_DESELECT = 1002;
+	public static final int TASK_SELECTALL = 1003;
+	public static final int TASK_DESELECTALL = 1004;
+	public static final int TASK_ADDVALUE = 1005;
+	public static final int TASK_ALERT = 1302;
+	public static final int TASK_INFO = 71;
+	public static final int TASK_ERRORS= 1007;
+	public static final int TASK_OPENURL = 280;
 
 
 

@@ -148,34 +148,34 @@ class JSONParser {
 					editSubFormField = editSubform.getField(fieldName);
 					
 				}
-				if(type==ZCForm.task_hide) {
+				if(type==ZCForm.TASK_HIDE) {
 					field.setHidden(true);
 					if(editSubFormField!=null)
 					{
 						editSubFormField.setHidden(true);
 					}
-				} else if(type==ZCForm.task_show) {
+				} else if(type==ZCForm.TASK_SHOW) {
 					field.setHidden(false);
 					if(editSubFormField!=null)
 					{
 						editSubFormField.setHidden(false);
 					}
-				} else if(type==ZCForm.task_enable) {
+				} else if(type==ZCForm.TASK_ENABLE) {
 					field.setDisabled(false);
 					if(editSubFormField!=null)
 					{
 						editSubFormField.setDisabled(false);
 					}
-				} else if(type==ZCForm.task_disable) {
+				} else if(type==ZCForm.TASK_DISABLE) {
 					field.setDisabled(true);
 					if(editSubFormField!=null)
 					{
 						editSubFormField.setDisabled(true);
 					}
-				} else if(type==ZCForm.task_clear) {
+				} else if(type==ZCForm.TASK_CLEAR) {
 					field.clearChoices();
 					field.setLastReachedForChoices(true);
-				} else if(type==ZCForm.task_addValue) {
+				} else if(type==ZCForm.TASK_ADDVALUE) {
 //					List<ZCChoice> moreChoices = new ArrayList<ZCChoice>();
 //					for(int k=0; k<choiceValues.size(); k++) {
 //						ZCChoice choice = new ZCChoice(choiceValues.get(k).getKey(), choiceValues.get(k).getValue());
@@ -184,7 +184,7 @@ class JSONParser {
 					System.out.println("choicevalues...."+choiceValues);
 					field.appendChoices(choiceValues);
 					field.setLastReachedForChoices(true);
-				} else if(type==ZCForm.task_select) {
+				} else if(type==ZCForm.TASK_SELECT) {
 					if(FieldType.isMultiChoiceField(field.getType())) {
 						if(subFormName==null) {
 							recordValue.addToValues(choiceValues);
@@ -193,7 +193,7 @@ class JSONParser {
 						recordValue.setChoiceValue(choiceValues.get(0));
 					}
 				} 
-				else if(type==ZCForm.task_selectAll) {
+				else if(type==ZCForm.TASK_SELECTALL) {
 					if(FieldType.isMultiChoiceField(field.getType())) {
 						List<ZCChoice> choices = field.getChoices();
 						choiceValues = new ArrayList<ZCChoice>();
@@ -202,22 +202,22 @@ class JSONParser {
 						}
 						recordValue.setChoiceValues(choiceValues);
 					} 
-				} else if(type==ZCForm.task_deselect) {
+				} else if(type==ZCForm.TASK_DESELECT) {
 					if(FieldType.isMultiChoiceField(field.getType())) {
 						recordValue.removeFromValues(choiceValues);
 					} else {
 						recordValue.setValue(null);
 					}
-				} else if(type==ZCForm.task_deselectAll) {
+				} else if(type==ZCForm.TASK_DESELECTALL) {
 					if(FieldType.isMultiChoiceField(field.getType())) {
 						recordValue.setChoiceValues(new ArrayList<ZCChoice>());
 					}
-				} else if(type==ZCForm.task_alert) {
+				} else if(type==ZCForm.TASK_ALERT) {
 					alertMessages.add(alertMessage);
-				} else if(type==ZCForm.task_reloadForm) {
+				} else if(type==ZCForm.TASK_RELOADFORM) {
 					form.setReLoadForm(true);
 					break;
-				} else if(type==ZCForm.task_setValue) {
+				} else if(type==ZCForm.TASK_SETVALUE) {
 					if(rowNo>0&&subFormField.getSubFormEntriesSize()>=rowNo)
 					{
 						List<ZCRecord> records = subFormField.getUpdatedSubFormEntries();
@@ -355,7 +355,7 @@ class JSONParser {
 				}
 				if(subFormName==null)
 				{
-					if(field != null && type==ZCForm.task_setValue|| type==ZCForm.task_deselectAll ||type==ZCForm.task_deselect || type==ZCForm.task_selectAll || type==ZCForm.task_select) {
+					if(field != null && type==ZCForm.TASK_SETVALUE|| type==ZCForm.TASK_DESELECTALL ||type==ZCForm.TASK_DESELECT || type==ZCForm.TASK_SELECTALL || type==ZCForm.TASK_SELECT) {
 						if(field.isHasOnUserInputForFormula()) {
 							field.onUserInputForFormula(subFormTempRecordValues);
 						}
