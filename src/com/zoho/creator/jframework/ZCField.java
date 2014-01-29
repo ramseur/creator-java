@@ -60,7 +60,7 @@ public class ZCField implements Comparable<ZCField> {
 	private boolean isDisabled = false;
 	private boolean isRebuildRequired = false;
 	private boolean isLastReachedForChoices = false;
-	private String searchStringForChoices = null;
+	private String searchForChoices = null;
 	private boolean lookupLoadingStarted = false;
 	//private ExternalField externalFieldType = ExternalField.UNKNOWN;
 	private boolean isFileReUploaded = false;
@@ -479,12 +479,12 @@ public class ZCField implements Comparable<ZCField> {
 		loadMoreChoices();
 	}
 
-	public void setSearchForChoices(String searchStringForChoices) {
-		this.searchStringForChoices  = searchStringForChoices;
+	public void setSearchForChoices(String searchForChoices) {
+		this.searchForChoices  = searchForChoices;
 	}
 
 	public String getSearchForChoices() {
-		return searchStringForChoices;
+		return searchForChoices;
 	}
 
 	public boolean isLookupLoadingStarted() {
@@ -531,7 +531,7 @@ public class ZCField implements Comparable<ZCField> {
     {
     	return isFileReUploaded;
     }
-    public void setFileUploadedState(boolean isFileReUploaded)
+    public void setFileUploaded(boolean isFileReUploaded)
     {
     	this.isFileReUploaded = isFileReUploaded;
     }
