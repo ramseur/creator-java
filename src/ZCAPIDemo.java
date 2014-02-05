@@ -224,7 +224,7 @@ public class ZCAPIDemo {
 			ZCField zcField = fields.get(i);
 			String toAsk = "\n\n" + (i+1) + ") " + zcField.getDisplayName();
 			if(FieldType.isChoiceField(zcField.getType())) {
-				toAsk = toAsk + zcField.getChoices();
+				toAsk = toAsk + zcField.getRecordValue().getChoices();
 			} else if(zcField.getType().equals(FieldType.DATE) || zcField.getType().equals(FieldType.DATE_TIME)) {
 				toAsk = toAsk + "[dd-MMM-YYYY] For ex, 29-Aug-2013";
 			} else if(FieldType.isNumberField(zcField.getType())) {
