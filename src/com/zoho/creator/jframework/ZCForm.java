@@ -40,7 +40,7 @@ public class ZCForm extends ZCComponent {
 	public static final int VIEW_EDIT_FORM =3;
 	public static final int VIEW_BULK_EDIT_FORM =4;
 	public static final int FORM_LOOKUP_ADD_FORM =5;
-
+  
 
 	public static final int TASK_RELOADFORM = 1;
 	public static final int TASK_CLEAR = 9;
@@ -191,8 +191,6 @@ public class ZCForm extends ZCComponent {
 		} else if(viewForBulkEdit != null) {
 			compLinkNameValue = viewForBulkEdit.getComponentLinkName();
 		}
-
-
 		buff.append("<ZohoCreator>");//No I18N
 		buff.append("<applicationlist>");//No I18N
 		buff.append("<application name='" + getAppLinkName() + "'>");//No I18N
@@ -487,7 +485,7 @@ public class ZCForm extends ZCComponent {
 	}
 
 	public void onAddRowForSubForm(ZCField field,List<ZCRecordValue> recordValues,ZCForm currentShownForm) throws ZCException{
-		ZOHOCreator.callSubFormAddRow(this, field.getFieldName(),recordValues,currentShownForm);
+		ZOHOCreator.callSubFormAddRow(this, field.getFieldName(),recordValues,currentShownForm,field.getSubFormEntriesSize()+1);
 	}
 
 	public void onDeleteRowForSubForm(ZCField field,long id,int position) throws ZCException{

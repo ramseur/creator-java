@@ -395,6 +395,7 @@ public class ZOHOCreator {
 
 		ZCView viewForAdd = baseForm.getViewForAdd();
 		ZCView viewForEdit = baseForm.getViewForEdit(); 
+		System.out.println("baseForm,,,,"+baseForm.getViewForEdit());
 		if(viewForAdd != null) {
 			params.add(new BasicNameValuePair("viewLinkName" , viewForAdd.getComponentLinkName()));//No I18N
 		} else if(viewForEdit != null) {
@@ -653,7 +654,7 @@ public class ZOHOCreator {
 
 		File f = new File(getFilesDir()+"/sections_"+appOwner+"_"+appLinkName+"List.xml");
 		Document rootDocument = stringToDocument(readResponseFromFile(f));
-
+         
 		if(rootDocument == null){
 			URLPair sectionListURLPair = ZCURL.sectionMetaURL(appLinkName, appOwner);
 			if(additionalParams == null) {
@@ -722,13 +723,14 @@ public class ZOHOCreator {
 	static void callFormEditOnAddOnLoad(ZCForm zcForm,Long recordLinkId,int formAccessType) throws ZCException{
 		List<NameValuePair> params = zcForm.getFieldParamValues(null,-1);
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
-
 		URLPair formEditOnAddOnLoadURL = ZCURL.formEditOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), params,recordLinkId,formAccessType);
 		String response = ZOHOCreator.postURL(formEditOnAddOnLoadURL.getUrl(), formEditOnAddOnLoadURL.getNvPair());
+		System.out.println("edit response.."+response);
 		JSONParser.parseAndCallFormEvents(response, zcForm,null,null);
 	}
 
 	private static void callDelugeEvents(ZCForm zcForm, URLPair urlPair,List<ZCRecordValue> recordValues,ZCForm currentShownForm) throws ZCException{
+		System.out.println("deluge url.."+ getURLString(urlPair.getUrl(), urlPair.getNvPair()));
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
 		System.out.println("response.."+response);
 		JSONParser.parseAndCallFormEvents(response,zcForm,recordValues,currentShownForm);
@@ -741,20 +743,28 @@ public class ZOHOCreator {
 
 
 	static void callFieldOnUser(ZCForm zcForm, String fieldLinkName, boolean isFormula,List<ZCRecordValue> subformTempRecordValues) throws ZCException {
-		callDelugeEvents(zcForm, ZCURL.fieldOnUser(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), fieldLinkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(subformTempRecordValues,-1), isFormula,getAdditionalParamsForForm(zcForm, null),zcForm.getFormType()),subformTempRecordValues,null);
+		List<NameValuePair> params = zcForm.getFieldParamValues(subformTempRecordValues,-1);
+		params.addAll(getAdditionalParamsForForm(zcForm, null));
+		callDelugeEvents(zcForm, ZCURL.fieldOnUser(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), fieldLinkName, zcForm.getAppOwner(),params, isFormula,zcForm.getFormType()),subformTempRecordValues,null);
 	}
 
 	static void callSubFormFieldOnUser(ZCForm zcForm, String subFormFieldLinkName, ZCForm currentShownForm,List<ZCRecordValue> tempRecordValues,boolean isFormula,int entryPosition,long id) throws ZCException{
-		callDelugeEvents(zcForm, ZCURL.subFormOnUser(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, currentShownForm.getBaseSubFormField().getFieldName() , zcForm.getAppOwner(), zcForm.getFieldParamValues(tempRecordValues,entryPosition),isFormula,getAdditionalParamsForForm(zcForm, null),entryPosition,id),tempRecordValues,currentShownForm);
+		List<NameValuePair> params = zcForm.getFieldParamValues(tempRecordValues,entryPosition);
+		params.addAll(getAdditionalParamsForForm(zcForm, null));
+		callDelugeEvents(zcForm, ZCURL.subFormOnUser(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, currentShownForm.getBaseSubFormField().getFieldName() , zcForm.getAppOwner(),params,isFormula,entryPosition,id),tempRecordValues,currentShownForm);
 	}
 
 
-	public static void callSubFormAddRow(ZCForm zcForm, String subFormFieldLinkName,List<ZCRecordValue> tempRecordValues,ZCForm currentShownForm) throws ZCException{
-		callDelugeEvents(zcForm, ZCURL.subFormAddRow(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(null,-1),getAdditionalParamsForForm(zcForm, null)),tempRecordValues,currentShownForm);
+	public static void callSubFormAddRow(ZCForm zcForm, String subFormFieldLinkName,List<ZCRecordValue> tempRecordValues,ZCForm currentShownForm,int rowPosition) throws ZCException{
+		List<NameValuePair> params = zcForm.getFieldParamValues(null,-1);
+		params.addAll(getAdditionalParamsForForm(zcForm, null));
+		callDelugeEvents(zcForm, ZCURL.subFormAddRow(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, zcForm.getAppOwner(), params,rowPosition),tempRecordValues,currentShownForm);
 	}
 
 	public static void callSubFormDeleteRow(ZCForm zcForm, String subFormFieldLinkName,long id,int position) throws ZCException{
-		callDelugeEvents(zcForm, ZCURL.subFormDeleteRow(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, zcForm.getAppOwner(), zcForm.getFieldParamValues(null,-1),getAdditionalParamsForForm(zcForm, null),id,position),null,null);
+		List<NameValuePair> params = zcForm.getFieldParamValues(null,-1);
+		params.addAll(getAdditionalParamsForForm(zcForm, null));
+		callDelugeEvents(zcForm, ZCURL.subFormDeleteRow(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, zcForm.getAppOwner(), params,id,position),null,null);
 	}
 
 	public static ZCView getListReport(String appLinkName, String viewLinkName, String appOwner) throws ZCException{
@@ -1136,7 +1146,7 @@ public class ZOHOCreator {
 	}
 
 	private static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
-		System.out.println(getURLString(url, params)+"url");
+		System.out.println("posturl"+getURLString(url, params));
 		try
 		{
 			HttpClient client = new DefaultHttpClient();

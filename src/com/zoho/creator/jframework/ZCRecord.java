@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class ZCRecord implements Comparable<ZCRecord> {
+public class ZCRecord implements Comparable<ZCRecord>{
 	private List<ZCRecordValue> values = null;	
 	private long recordId = -1l;
 	private Date eventDate = null;

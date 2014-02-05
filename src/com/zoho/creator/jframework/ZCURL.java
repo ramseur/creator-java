@@ -142,10 +142,6 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("appendRows", "true"));
 		params.add(new BasicNameValuePair("startindex", startIndex + ""));
 		params.add(new BasicNameValuePair("zcRefValue", true+""));
-		//		if(viewLinkName!=null)
-		//		{
-		//			params.add(new BasicNameValuePair("viewLinkName", viewLinkName));
-		//		}
 		if(searchString != null && !"".equals(searchString)) {
 			params.add(new BasicNameValuePair("searchValue", searchString));
 		}
@@ -155,12 +151,6 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("zc_ownername",appOwner));
 		params.add(new BasicNameValuePair("formAccessType", String.valueOf(formAccessType)));//No I18N
 		String urlValToAdd = "lookup";
-//		if(field.getType().equals(FieldType.EXTERNAL_FIELD)){
-//			urlValToAdd = "externalfield";
-//			if(field.getExternalFieldType().equals(ExternalField.SALES_FORCE)){
-//				params.add(new BasicNameValuePair("accesstoken", ZOHOCreator.getAccessTokenForExternalField()));
-//			}
-//		}
 		params.addAll(additionalParams);
 		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName +"/"+urlValToAdd+"/"+lookupFieldName+ "/options/", params);//No I18N
 	}
@@ -183,16 +173,12 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("linkNameBased", "true"));
 		params.add(new BasicNameValuePair("recordLinkID",String.valueOf(recordLinkId)));
 		params.add(new BasicNameValuePair("recType",String.valueOf(formAccessType)));
-		//params.addAll(additionalparams);
+		params.addAll(additionalparams);
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}
 
-	static URLPair subFormOnUser(String appLinkName, String formLinkName, String subFormFieldLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params,boolean isFormula,List<NameValuePair> additionalParams,int entryPosition,long id) {
+	static URLPair subFormOnUser(String appLinkName, String formLinkName, String subFormFieldLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params,boolean isFormula,int entryPosition,long id) {
 		params.addAll(getDefaultParams());
-		if(isFormula) {
-			params.add(new BasicNameValuePair("isFormula", "true"));
-		}
-		System.out.println("linkname.."+fieldLinkName);
 		params.add(new BasicNameValuePair("sharedBy", appOwner));
 		params.add(new BasicNameValuePair("appLinkName", appLinkName));
 		params.add(new BasicNameValuePair("formLinkName", formLinkName));
@@ -207,9 +193,9 @@ public class ZCURL {
 		{
 			params.add(new BasicNameValuePair("rowseqid",id+"_"+entryPosition));
 		}
-		params.addAll(additionalParams);
 		if(isFormula)
 		{
+			params.add(new BasicNameValuePair("isFormula", "true"));
 			return new URLPair(serverURL() + "/calculateFormulaAPI.do" , params);//No I18N
 		}
 		else
@@ -218,7 +204,7 @@ public class ZCURL {
 		}
 	}
 
-	static URLPair subFormDeleteRow(String appLinkName, String formLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params,List<NameValuePair> additionalParams,long id,int position) {
+	static URLPair subFormDeleteRow(String appLinkName, String formLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params,long id,int position) {
 		params.addAll(getDefaultParams());
 		params.add(new BasicNameValuePair("sharedBy", appOwner));
 		params.add(new BasicNameValuePair("appLinkName", appLinkName));
@@ -234,12 +220,10 @@ public class ZCURL {
 		{
 			params.add(new BasicNameValuePair("rowseqid",id+"_"+position));
 		}
-		params.addAll(additionalParams);
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}
 
-
-	static URLPair fieldOnUser(String appLinkName, String formLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params, boolean isFormula,List<NameValuePair> additionalParams,int formType) {
+	static URLPair fieldOnUser(String appLinkName, String formLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params, boolean isFormula,int formType) {
 		params.addAll(getDefaultParams());
 		params.add(new BasicNameValuePair("sharedBy", appOwner));
 		params.add(new BasicNameValuePair("appLinkName", appLinkName));
@@ -250,7 +234,6 @@ public class ZCURL {
 		if(isFormula) {
 			params.add(new BasicNameValuePair("isFormula", "true"));
 		}
-		params.addAll(additionalParams);
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}
 
@@ -268,23 +251,18 @@ public class ZCURL {
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}
 
-	static URLPair subFormAddRow(String appLinkName, String formLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params,List<NameValuePair> additionalParams) {
+	static URLPair subFormAddRow(String appLinkName, String formLinkName, String fieldLinkName, String appOwner, List<NameValuePair> params,int rowPosition) {
 		params.addAll(getDefaultParams());
-		params.add(new BasicNameValuePair("SF(SubForm).FD(t::row_"+(ZOHOCreator.getCurrentForm().getField(fieldLinkName).getAddedSubFormEntries().size()+1)+").SV(record::status)","added"));
 		params.add(new BasicNameValuePair("sharedBy", appOwner));
 		params.add(new BasicNameValuePair("appLinkName", appLinkName));
 		params.add(new BasicNameValuePair("formLinkName", formLinkName));
 		params.add(new BasicNameValuePair("fieldName", fieldLinkName));
 		params.add(new BasicNameValuePair("linkNameBased", "true"));
 		params.add(new BasicNameValuePair("rowactiontype","onaddrow"));
-		params.add(new BasicNameValuePair("rowseqid","t::row_"+  (ZOHOCreator.getCurrentForm().getField(fieldLinkName).getAddedSubFormEntries().size()+1)));
-		params.addAll(additionalParams);
+		params.add(new BasicNameValuePair("rowseqid","t::row_"+  rowPosition));
+		params.add(new BasicNameValuePair("SF("+fieldLinkName+").FD(t::row_"+rowPosition+").SV(record::status)","added"));
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
-		//return new URLPair(serverURL() + "/api/mobile/xml/" + appLinkName + "/" + formLinkName + "/OnAddRow/" + fieldLinkName + "/", getParamsWithOwnerAndXMLString(appOwner, xmlString)); //No I18N
 	}
-
-
-
 
 	static URLPair recordCount(String appOwner, String appLinkName, String viewLinkName) {
 		List<NameValuePair> params = getDefaultParams();
@@ -298,7 +276,6 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("scope", "creatorapi"));//No I18N		
 		params.add(new BasicNameValuePair("hide_signup", "true"));
 		params.add(new BasicNameValuePair("hide_remember", "true"));
-		//params.add(new BasicNameValuePair("getticket", "true"));
 		params.add(new BasicNameValuePair("scopes", ZOHOCreator.getServiceName() + "/creatorapi,ZohoContacts/photoapi"));
 		params.add(new BasicNameValuePair("appname", ZOHOCreator.getServiceName()));
 		params.add(new BasicNameValuePair("serviceurl", serverURL()));

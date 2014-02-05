@@ -13,11 +13,11 @@ public class ZCRecordValue {
 	private File fileValue = null;
 	private String urlTitleValue = null;
 	private String urlLinkNameValue = null;
-	private boolean errorField = false;
+	private boolean errorOccured = false;
 	private String errorMessage = null; 
+	private boolean isLastReachedForChoices = false;
 
 	private List<ZCChoice> choices  = new ArrayList<ZCChoice>(); 
-	private boolean isLastReachedForChoices = false;
 	private String searchForChoices = null;
 	private boolean lookupLoadingStarted = false;
 	
@@ -139,16 +139,6 @@ public class ZCRecordValue {
 		}
 	}
 
-	public void removeValue(ZCChoice value)
-	{
-		for(int j=0;j<choiceValues.size();j++)
-		{
-			if(choiceValues.get(j).equals(value))
-			{
-				choiceValues.remove(j);
-			}
-		}
-	}
 	public File getFileValue() {
 		return fileValue;
 	}
@@ -185,15 +175,14 @@ public class ZCRecordValue {
 		return field;
 	}
 
-	public Boolean isErrorField()
+	public boolean isErrorOccured()
 	{
-		Boolean iserror = new Boolean(errorField);
-		return iserror;
+		return errorOccured;
 	}
 
-	public void setErrorField(boolean errorField)
+	public void setErrorOccured(boolean errorOccured)
 	{
-		this.errorField = errorField;
+		this.errorOccured = errorOccured;
 	}
 
 	public void setErrorMessage(String errorMessage)
@@ -206,6 +195,7 @@ public class ZCRecordValue {
 	
 		return errorMessage;
 	}
+
 	
 	
 	
@@ -280,4 +270,5 @@ public class ZCRecordValue {
 		this.lookupLoadingStarted = lookupLoadingStarted;
 	}
 	
+
 }

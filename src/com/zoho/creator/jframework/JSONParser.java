@@ -17,7 +17,6 @@ class JSONParser {
 		String openUrlString = null;
 		int type = -1;
 		ZCResponse toReturn = new ZCResponse();
-		
 		try {
 			JSONArray jArray = new JSONArray(response);
 			for (int i=0; i < jArray.length(); i++) {
@@ -141,8 +140,6 @@ class JSONParser {
 					}
 					else
 					{
-						
-						
 						subFormField = form.getField(subFormName);
 						ZCForm subForm = subFormField.getSubForm();
 						if(currentShownForm!=null)

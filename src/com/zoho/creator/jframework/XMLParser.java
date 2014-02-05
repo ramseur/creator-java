@@ -300,13 +300,14 @@ class XMLParser {
 						}
 					}
 				}
-			} else if(responseNode.getNodeName().equals("license_enabled")) { //No I18N
-				if(!getBooleanValue(responseNode, false)) {
-					throw new ZCException("Please subscribe to Professional Edition and get access", ZCException.LICENCE_ERROR); //No I18N
-				}
-			} else if(responseNode.getNodeName().equals("evaluationDays")) { //No I18N
-				ZOHOCreator.setUserProperty("evaluationDays", getStringValue(responseNode, ""));
 			} 
+				else if(responseNode.getNodeName().equals("license_enabled")) { //No I18N
+							if(!getBooleanValue(responseNode, false)) {
+								throw new ZCException("Please subscribe to Professional Edition and get access", ZCException.LICENCE_ERROR); //No I18N
+							}
+						} else if(responseNode.getNodeName().equals("evaluationDays")) { //No I18N
+							ZOHOCreator.setUserProperty("evaluationDays", getStringValue(responseNode, ""));
+						} 
 		}
 		return toReturn;		
 	}
@@ -712,11 +713,11 @@ class XMLParser {
 				for(int m=0; m<subFormFieldNodes.getLength(); m++) {
 					Node subFormFieldNode = subFormFieldNodes.item(m);
 					if(subFormFieldNode.getNodeName().equalsIgnoreCase("Field")) {
-						ZCField subFormField = parseField(subFormFieldNode,appLinkName,formLinkName, appOwner, true,null);
+						ZCField subFormField = parseField(subFormFieldNode,appLinkName,formLinkName, appOwner, true,new Hashtable<String, String>());
 						if(subFormField != null)
 						{
 							subFormFields.add(subFormField);
-							subFormEditFields.add(parseField(subFormFieldNode,appLinkName,formLinkName, appOwner, true,null));
+							subFormEditFields.add(parseField(subFormFieldNode,appLinkName,formLinkName, appOwner, true,new Hashtable<String, String>()));
 						}
 					}
 				}
@@ -744,7 +745,7 @@ class XMLParser {
 				}
 			}
 		}
-		
+
 		if(FieldType.isMultiChoiceField(fieldType)) {
 			List<ZCChoice> selectedChoices = new ArrayList<ZCChoice>();// THis is used in Edit record for multichoice field. But in form builder there is no way to set initial value
 			if(!isLookup)
@@ -867,23 +868,23 @@ class XMLParser {
 		}
 		return zcField;
 	}
-	
+
 	private static List<String> setFieldInitialValues(String queryString)
 	{
 		String[] choicevalues = null;
 		List<String> initialValues = new ArrayList<String>();
-			if(queryString.contains(","))
+		if(queryString.contains(","))
+		{
+			choicevalues = queryString.split(",");
+			for(int i=0;i<choicevalues.length;i++)
 			{
-				choicevalues = queryString.split(",");
-				for(int i=0;i<choicevalues.length;i++)
-				{
-					initialValues.add(choicevalues[i]);
-				}
+				initialValues.add(choicevalues[i]);
 			}
-			else
-			{
-				initialValues.add(queryString);
-			}
+		}
+		else
+		{
+			initialValues.add(queryString);
+		}
 		return initialValues;
 	}
 
