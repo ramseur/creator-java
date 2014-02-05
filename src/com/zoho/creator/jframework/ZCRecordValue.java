@@ -16,6 +16,12 @@ public class ZCRecordValue {
 	private boolean errorField = false;
 	private String errorMessage = null; 
 
+	private List<ZCChoice> choices  = new ArrayList<ZCChoice>(); 
+	private boolean isLastReachedForChoices = false;
+	private String searchForChoices = null;
+	private boolean lookupLoadingStarted = false;
+	
+	
 
 	public ZCRecordValue(ZCField field, String value) {
 		this.field = field;		
@@ -200,4 +206,78 @@ public class ZCRecordValue {
 	
 		return errorMessage;
 	}
+	
+	
+	
+	public List<ZCChoice> getChoices() {
+		return choices;
+	}
+
+	void addChoices(List<ZCChoice> choices) {
+		this.choices = choices;		
+	}
+
+	void clearChoices() {
+		choices.clear();
+	}
+
+	public void appendChoices(List<ZCChoice> moreChoices) {
+		choices.addAll(moreChoices);
+		System.out.println("choices..."+choices);
+	}
+
+	public void addToLookupChoice(ZCChoice choice) {
+		choices.add(choice);
+		if(FieldType.isMultiChoiceField(field.getType())) {
+			ArrayList<ZCChoice> values = new ArrayList<ZCChoice>();
+			values.add(choice);
+			addToValues(values);
+		} else {
+			setChoiceValue(choice);
+		}
+	}
+
+	void setLastReachedForChoices(boolean isLastReachedForChoices) {
+		this.isLastReachedForChoices = isLastReachedForChoices;
+	}
+
+	public boolean isLastReachedForChoices() {
+		return isLastReachedForChoices;
+	}
+
+	public List<ZCChoice> loadMoreChoices() throws ZCException {
+		if(!isLastReachedForChoices) {
+			List<ZCChoice> moreChoices = ZOHOCreator.loadMoreChoices(field);
+			choices.addAll(moreChoices);
+			if(moreChoices.size()<50) {
+				isLastReachedForChoices = true;
+			}
+			return moreChoices;
+		}
+		return new ArrayList<ZCChoice>();
+	}
+
+	
+	public void reloadChoices() throws ZCException {
+		choices.clear();
+		isLastReachedForChoices = false;
+		loadMoreChoices();
+	}
+
+	public void setSearchForChoices(String searchForChoices) {
+		this.searchForChoices  = searchForChoices;
+	}
+
+	public String getSearchForChoices() {
+		return searchForChoices;
+	}
+
+	public boolean isLookupLoadingStarted() {
+		return lookupLoadingStarted;
+	}
+
+	public void setLookupLoadingStarted(boolean lookupLoadingStarted) {
+		this.lookupLoadingStarted = lookupLoadingStarted;
+	}
+	
 }

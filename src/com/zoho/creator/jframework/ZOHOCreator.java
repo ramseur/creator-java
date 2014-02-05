@@ -680,10 +680,11 @@ public class ZOHOCreator {
 		//choices.add(new ZCChoice("iOS", "iOS"));//No I18N
 		ZCChoice choice = new ZCChoice("Android", "Android");
 		choices.add(choice);//No I18N
-		platformField.setRecordValue(new ZCRecordValue(platformField, choice));//No I18N
+		ZCRecordValue recValue = new ZCRecordValue(platformField, choice);
+		recValue.addChoices(choices);
+		platformField.setRecordValue(recValue);//No I18N
 		platformField.setHidden(true);
 		platformField.setRebuildRequired(true);
-		platformField.addChoices(choices);
 
 		ZCField titleField = new ZCField("Title", FieldType.SINGLE_LINE, "Title");//No I18N
 		titleField.setRecordValue(new ZCRecordValue(titleField, ""));
@@ -816,7 +817,8 @@ public class ZOHOCreator {
 
 
 
-	static List<ZCChoice> loadMoreChoices(ZCField field, ZCField subFormField) throws ZCException {
+	static List<ZCChoice> loadMoreChoices(ZCField field) throws ZCException {
+		ZCField subFormField = field.getBaseForm().getBaseSubFormField();
 		ZCForm baseForm = field.getBaseForm();
 		String fieldName = field.getFieldName();
 		if(baseForm==ZOHOCreator.getCurrentSubForm()) {
@@ -824,9 +826,16 @@ public class ZOHOCreator {
 		}
 		String subformComponent = null;
 		int formAccessType = 0;
+		
+		
+		int size = field.getRecordValue().getChoices().size();
+		String searchForChoices = field.getRecordValue().getSearchForChoices();
+		
 		if(subFormField != null) {
 			subformComponent = field.getFieldName();
 			fieldName = subFormField.getFieldName();
+			size = subFormField.getRecordValue().getChoices().size();
+			searchForChoices = subFormField.getRecordValue().getSearchForChoices();
 		}
 
 		if(field.getBaseForm().getFormType()==ZCForm.FORM_LOOKUP_ADD_FORM) {
@@ -840,7 +849,7 @@ public class ZOHOCreator {
 		} else {
 			formAccessType = ZCForm.FORM_ALONE;
 		}
-		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), fieldName, field.getChoices().size(), field.getSearchForChoices(), subformComponent,formAccessType,getAdditionalParamsForForm(baseForm,field),field);
+		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), fieldName, size, searchForChoices, subformComponent,formAccessType,getAdditionalParamsForForm(baseForm,field),field);
 		System.out.println("choic url"+getURLString(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair()));
 		Document rootDocument = ZOHOCreator.postURLXML(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair());
 		return XMLParser.parseLookUpChoices(rootDocument);

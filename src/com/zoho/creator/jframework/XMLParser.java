@@ -831,8 +831,8 @@ class XMLParser {
 		zcField.setDecimalLength(decimalLength);
 		if(isFilterApplied || (!isLookup))
 		{
-			zcField.addChoices(choices);
-			zcField.setLastReachedForChoices(true);
+			zcField.getRecordValue().addChoices(choices);
+			zcField.getRecordValue().setLastReachedForChoices(true);
 		}
 		zcField.setOnAddRowExists(onAddRowExists);
 		zcField.setOnDeleteRowExists(onDeleteRowExists);
@@ -1208,7 +1208,7 @@ class XMLParser {
 			ZCRecordValue zcValue = null;
 			List<ZCChoice> choices = null;
 			if(zcView == null && zcField!=null) {
-				choices = zcField.getChoices();
+				choices = zcField.getRecordValue().getChoices();
 			}
 			if(zcField!=null)
 			{

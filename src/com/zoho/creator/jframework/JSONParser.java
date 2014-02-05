@@ -121,32 +121,64 @@ class JSONParser {
 				{
 					form.setErrorMessage(jsonObj.getString("message"));
 				}
-				if(fieldName!=null&& subFormName ==null)
+				
+				
+				if(subFormName!=null)
 				{
-					field=form.getField(fieldName);
-					field.setRebuildRequired(true);
-					recordValue = field.getRecordValue();
-				}
-				else if(subFormName!=null)
-				{
-					subFormField = form.getField(subFormName);
-					ZCForm subForm = subFormField.getSubForm();
-					if(currentShownForm!=null)
-					{
-						subForm = currentShownForm;
-					}
-					field = subForm.getField(fieldName);
-					recordValue = field.getRecordValue();
-					field.setRebuildRequired(true);
-					List<ZCField> subformFields = subForm.getFields();
-					List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
-					for(int l=0;l<subformFields.size();l++)
-					{
-						recordValues.add(subformFields.get(l).getRecordValue());	
-					}
-					ZCForm editSubform = subFormField.getEditSubForm(new ZCRecord(recordValues));
-					editSubFormField = editSubform.getField(fieldName);
 					
+					
+				} else 
+				{
+					
+				}
+				if(fieldName != null) 
+				{
+					if(subFormName ==null)
+					{
+						field=form.getField(fieldName);
+						field.setRebuildRequired(true);
+						recordValue = field.getRecordValue();
+					}
+					else
+					{
+						
+						
+						subFormField = form.getField(subFormName);
+						ZCForm subForm = subFormField.getSubForm();
+						if(currentShownForm!=null)
+						{
+							subForm = currentShownForm;
+						}
+						field = subForm.getField(fieldName);
+						recordValue = field.getRecordValue();
+
+						
+						if(subFormTempRecordValues != null)
+						{
+							for(int j=0; j<subFormTempRecordValues.size(); j++) 
+							{
+								ZCRecordValue subFormRecValue = subFormTempRecordValues.get(j);
+								if(subFormRecValue.getField().getFieldName().equals(fieldName))
+								{
+									recordValue = subFormRecValue;
+									break;
+								}
+							}
+						}
+						
+						
+						field.setRebuildRequired(true);
+						List<ZCField> subformFields = subForm.getFields();
+						List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+						for(int l=0;l<subformFields.size();l++)
+						{
+							recordValues.add(subformFields.get(l).getRecordValue());	
+						}
+						ZCForm editSubform = subFormField.getEditSubForm(new ZCRecord(recordValues));
+						editSubFormField = editSubform.getField(fieldName);
+
+					}
+
 				}
 				if(type==ZCForm.TASK_HIDE) {
 					field.setHidden(true);
@@ -173,8 +205,8 @@ class JSONParser {
 						editSubFormField.setDisabled(true);
 					}
 				} else if(type==ZCForm.TASK_CLEAR) {
-					field.clearChoices();
-					field.setLastReachedForChoices(true);
+					recordValue.clearChoices();
+					recordValue.setLastReachedForChoices(true);
 				} else if(type==ZCForm.TASK_ADDVALUE) {
 //					List<ZCChoice> moreChoices = new ArrayList<ZCChoice>();
 //					for(int k=0; k<choiceValues.size(); k++) {
@@ -182,8 +214,8 @@ class JSONParser {
 //						moreChoices.add(choice);
 //					}
 					System.out.println("choicevalues...."+choiceValues);
-					field.appendChoices(choiceValues);
-					field.setLastReachedForChoices(true);
+					recordValue.appendChoices(choiceValues);
+					recordValue.setLastReachedForChoices(true);
 				} else if(type==ZCForm.TASK_SELECT) {
 					if(FieldType.isMultiChoiceField(field.getType())) {
 						if(subFormName==null) {
@@ -195,7 +227,7 @@ class JSONParser {
 				} 
 				else if(type==ZCForm.TASK_SELECTALL) {
 					if(FieldType.isMultiChoiceField(field.getType())) {
-						List<ZCChoice> choices = field.getChoices();
+						List<ZCChoice> choices = recordValue.getChoices();
 						choiceValues = new ArrayList<ZCChoice>();
 						for(int k=0; k<choices.size(); k++) {
 							choiceValues.add(choices.get(k));
