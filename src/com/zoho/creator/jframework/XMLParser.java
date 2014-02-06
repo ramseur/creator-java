@@ -301,13 +301,13 @@ class XMLParser {
 					}
 				}
 			} 
-				else if(responseNode.getNodeName().equals("license_enabled")) { //No I18N
-							if(!getBooleanValue(responseNode, false)) {
-								throw new ZCException("Please subscribe to Professional Edition and get access", ZCException.LICENCE_ERROR); //No I18N
-							}
-						} else if(responseNode.getNodeName().equals("evaluationDays")) { //No I18N
-							ZOHOCreator.setUserProperty("evaluationDays", getStringValue(responseNode, ""));
-						} 
+			else if(responseNode.getNodeName().equals("license_enabled")) { //No I18N
+				if(!getBooleanValue(responseNode, false)) {
+					throw new ZCException("Please subscribe to Professional Edition and get access", ZCException.LICENCE_ERROR); //No I18N
+				}
+			} else if(responseNode.getNodeName().equals("evaluationDays")) { //No I18N
+				ZOHOCreator.setUserProperty("evaluationDays", getStringValue(responseNode, ""));
+			} 
 		}
 		return toReturn;		
 	}
@@ -537,6 +537,7 @@ class XMLParser {
 		String urlLinkNameValue = "";
 		String urlValue = "";
 		int imageType = 3;
+		boolean isEditForm = false;
 
 		List<ZCChoice> choices  = new ArrayList<ZCChoice>(); 
 		List<ZCField> subFormFields = new ArrayList<ZCField>();
@@ -597,6 +598,7 @@ class XMLParser {
 					for(int k=0; k<recordsList.getLength(); k++) {
 						Node recordNode = recordsList.item(k);
 						if(recordNode.getNodeName().equals("record")) {
+							isEditForm = true;
 							ZCRecord zcRecord = parseAndSetRecord(null, recordNode, subFormFields,false);
 							subFormEntries.add(zcRecord);
 						}
@@ -702,6 +704,7 @@ class XMLParser {
 				NodeList subFormRecordsNodeList = fieldPropetyNode.getChildNodes();
 				for(int m=0; m<subFormRecordsNodeList.getLength(); m++) {
 					Node subFormRecordsNode = subFormRecordsNodeList.item(m);
+					isEditForm = true;
 					ZCRecord record = parseAndSetRecord(null, subFormRecordsNode, subFormFields,false);
 					subFormEntries.add(record);
 				}
@@ -854,7 +857,7 @@ class XMLParser {
 		zcField.setUrlTitleReq(urlTitleReq);
 		zcField.setImageType(imageType);
 		zcField.setNewEntriesAllowed(isNewEntriesAllowed);
-		
+
 		if(refFormLinkName != null && refAppLinkName != null ) {
 			zcField.setRefFormComponent(new ZCComponent(appOwner, refAppLinkName, ZCComponent.FORM, "", refFormLinkName, -1));
 			zcField.setRefFieldLinkName(refFieldLinkName);
@@ -874,9 +877,12 @@ class XMLParser {
 			editSubForm.addFields(subFormEditFields);
 			zcField.setEditSubForm(editSubForm);
 		}
-		for(int i=0;i<defaultRows;i++)
+		if(!isEditForm)
 		{
-			zcField.addSubFormEntry(new ZCRecord(zcField.getSubForm().getRecordValuesForNewEntryInSubForm()));
+			for(int i=0;i<defaultRows;i++)
+			{
+				zcField.addSubFormEntry(new ZCRecord(zcField.getSubForm().getRecordValuesForNewEntryInSubForm()));
+			}
 		}
 		return zcField;
 	}

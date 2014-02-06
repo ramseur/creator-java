@@ -201,7 +201,7 @@ public class ZCRecordValue {
 		return choices;
 	}
 
-	public void addChoices(List<ZCChoice> choices) {
+	void addChoices(List<ZCChoice> choices) {
 		this.choices = choices;		
 	}
 
