@@ -259,7 +259,7 @@ public class ZOHOCreator {
 		ZCComponent comp = getCurrentComponent();
 		URLPair formMetaURLPair = ZCURL.formMetaURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner(), ZCForm.FORM_ALONE, null);
 		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
-		ZCForm zcForm = XMLParser.parseForForm(rootDocument, comp.getAppLinkName(), comp.getAppOwner(), comp.getQueryString());
+		ZCForm zcForm = XMLParser.parseForForm(rootDocument, comp.getAppLinkName(), comp.getAppOwner(), comp.getQueryString(),false);
 		if(zcForm == null) {
 			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
 		}
@@ -291,11 +291,11 @@ public class ZOHOCreator {
 		}
 	}
 
-	public static void loadFormForAddToLookup(ZCField lookupField,List<ZCRecordValue> recordValues,int recordPosition) throws ZCException {
+	public static void loadFormForAddToLookup(ZCField lookupField,List<ZCRecordValue> recordValuesForNewEntryInSubForm,int recordPosition) throws ZCException {
 		ZCComponent refComponent = lookupField.getRefFormComponent();
 		ZCForm zcForm = lookupField.getBaseForm();
 		List<NameValuePair> params = getAdditionalParamsForForm(zcForm, lookupField);
-		params.addAll(ZOHOCreator.getCurrentForm().getFieldParamValues(recordValues,recordPosition));
+		params.addAll(ZOHOCreator.getCurrentForm().getFieldParamValues(recordValuesForNewEntryInSubForm,recordPosition));
 		ZCForm lookupForm =  getForm(refComponent.getAppLinkName(), refComponent.getComponentLinkName(), refComponent.getAppOwner(), ZCForm.FORM_LOOKUP_ADD_FORM, params);
 		lookupField.setLookupForm(lookupForm);
 		if (lookupForm.hasOnLoad()) {
@@ -307,7 +307,7 @@ public class ZOHOCreator {
 	private static ZCForm getForm(String appLinkName, String formLinkName, String appOwner, int formType, List<NameValuePair> params) throws ZCException {
 		URLPair formMetaURLPair = ZCURL.formMetaURL(appLinkName, formLinkName, appOwner,  formType, params);
 		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
-		ZCForm toReturn = XMLParser.parseForForm(rootDocument, appLinkName, appOwner, null);
+		ZCForm toReturn = XMLParser.parseForForm(rootDocument, appLinkName, appOwner, null,false);
 		if(toReturn == null) {
 			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
 		}
@@ -324,7 +324,7 @@ public class ZOHOCreator {
 		Long recordLinkId = record.getRecordId();
 		URLPair formMetaURLPair = ZCURL.editFormMetaURL(appLinkName, appOwner, viewLinkName, recordLinkId);
 		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
-		ZCForm editRecordForm = XMLParser.parseForForm(rootDocument, appLinkName, appOwner,null);
+		ZCForm editRecordForm = XMLParser.parseForForm(rootDocument, appLinkName, appOwner,null,true);
 		if(editRecordForm == null) {
 			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
 		}
@@ -346,7 +346,7 @@ public class ZOHOCreator {
 		String viewLinkName = currentView.getComponentLinkName();
 		URLPair formMetaURLPair = ZCURL.bulkEditFormMetaURL(appLinkName, appOwner, viewLinkName);
 		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
-		ZCForm bulkEditForm = XMLParser.parseForForm(rootDocument, appLinkName, appOwner,null);
+		ZCForm bulkEditForm = XMLParser.parseForForm(rootDocument, appLinkName, appOwner,null,false);
 		if(bulkEditForm == null) {
 			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
 		}

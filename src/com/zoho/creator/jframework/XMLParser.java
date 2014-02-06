@@ -312,7 +312,7 @@ class XMLParser {
 		return toReturn;		
 	}
 
-	static ZCForm parseForForm(Document rootDocument, String appLinkName, String appOwner,String queryString) throws ZCException {
+	static ZCForm parseForForm(Document rootDocument, String appLinkName, String appOwner,String queryString,boolean isEditForm) throws ZCException {
 		NodeList nl = rootDocument.getChildNodes();
 		ZCForm toReturn = null;
 		Hashtable<String,String> queryStringTable = new Hashtable<String, String>();
@@ -403,6 +403,13 @@ class XMLParser {
 									if(fieldNode.getNodeName().equalsIgnoreCase("field")) {
 										ZCField field = parseField(fieldNode,appLinkName,componentLinkName, appOwner, false,queryStringTable);
 										if(field != null) {
+											if(!isEditForm)
+											{
+												for(int m=0;m<field.getDefaultRows();m++)
+												{
+													field.addSubFormEntry(new ZCRecord(field.getSubForm().getRecordValuesForNewEntryInSubForm()));
+												}
+											}
 											fields.add(field);
 										}
 									} 
@@ -537,7 +544,7 @@ class XMLParser {
 		String urlLinkNameValue = "";
 		String urlValue = "";
 		int imageType = 3;
-		boolean isEditForm = false;
+
 
 		List<ZCChoice> choices  = new ArrayList<ZCChoice>(); 
 		List<ZCField> subFormFields = new ArrayList<ZCField>();
@@ -598,7 +605,7 @@ class XMLParser {
 					for(int k=0; k<recordsList.getLength(); k++) {
 						Node recordNode = recordsList.item(k);
 						if(recordNode.getNodeName().equals("record")) {
-							isEditForm = true;
+
 							ZCRecord zcRecord = parseAndSetRecord(null, recordNode, subFormFields,false);
 							subFormEntries.add(zcRecord);
 						}
@@ -704,7 +711,7 @@ class XMLParser {
 				NodeList subFormRecordsNodeList = fieldPropetyNode.getChildNodes();
 				for(int m=0; m<subFormRecordsNodeList.getLength(); m++) {
 					Node subFormRecordsNode = subFormRecordsNodeList.item(m);
-					isEditForm = true;
+
 					ZCRecord record = parseAndSetRecord(null, subFormRecordsNode, subFormFields,false);
 					subFormEntries.add(record);
 				}
@@ -877,13 +884,7 @@ class XMLParser {
 			editSubForm.addFields(subFormEditFields);
 			zcField.setEditSubForm(editSubForm);
 		}
-		if(!isEditForm)
-		{
-			for(int i=0;i<defaultRows;i++)
-			{
-				zcField.addSubFormEntry(new ZCRecord(zcField.getSubForm().getRecordValuesForNewEntryInSubForm()));
-			}
-		}
+
 		return zcField;
 	}
 
