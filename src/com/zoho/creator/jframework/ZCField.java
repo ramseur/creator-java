@@ -53,7 +53,7 @@ public class ZCField implements Comparable<ZCField> {
 
 	private List<ZCRecord> subFormEntries = new ArrayList<ZCRecord>();
 	private List<ZCRecord> removedSubFormEntries = new ArrayList<ZCRecord>();
-	
+
 
 	private boolean isHidden = false;
 	private boolean isDisabled = false;
@@ -230,7 +230,7 @@ public class ZCField implements Comparable<ZCField> {
 	void setHasOnUserInput(boolean hasOnUserInput) {
 		this.hasOnUserInput = hasOnUserInput;
 	}
-	
+
 
 	public String getRefFieldLinkName() {
 		return refFieldLinkName;
@@ -250,16 +250,18 @@ public class ZCField implements Comparable<ZCField> {
 				ZCRecordValue recordValue = recordValues.get(j);
 				ZCField recordValueField = recordValue.getField();
 				if(recordValueField.getFieldName().equals(subFormRecordValue.getField().getFieldName())) {
-					if(FieldType.isMultiChoiceField(recordValueField.getType())) {
-						subFormRecordValue.setChoiceValues(recordValue.getChoiceValues());
-					} 
-					else if(FieldType.isSingleChoiceField(recordValueField.getType()))
-					{
-						subFormRecordValue.setChoiceValue(recordValue.getChoiceValue());
+					if(FieldType.isMultiChoiceField(recordValueField.getType()) || FieldType.isSingleChoiceField(recordValueField.getType())) {
+						subFormRecordValue.setLastReachedForChoices(recordValue.isLastReachedForChoices());
+						subFormRecordValue.addChoices(recordValue.getChoices());
+						if(FieldType.isMultiChoiceField(recordValueField.getType()))
+						{
+							subFormRecordValue.setChoiceValues(recordValue.getChoiceValues());
+						} 
+						else if(FieldType.isSingleChoiceField(recordValueField.getType()))
+						{
+							subFormRecordValue.setChoiceValue(recordValue.getChoiceValue());
+						}
 					}
-					//else if(recordValueField.getType().equals(FieldType.FILE_UPLOAD) || recordValueField.getType().equals(FieldType.IMAGE)) {
-					//						
-					//} 
 					else {
 						subFormRecordValue.setValue(recordValue.getValue());
 					}
@@ -425,14 +427,14 @@ public class ZCField implements Comparable<ZCField> {
 		return maximumRows;
 	}
 
-    void setMaximumRows(int maximumRows) {
+	void setMaximumRows(int maximumRows) {
 		this.maximumRows = maximumRows;
 	}
 	public int getDefaultRows()
 	{
 		return defaultRows;
 	}
-	
+
 	void setDefaultRows(int defaultRows){
 		this.defaultRows = defaultRows;
 	}
@@ -440,34 +442,34 @@ public class ZCField implements Comparable<ZCField> {
 	public int getDecimalLength() {
 		return decimalLength;
 	}
-    void setDecimalLength(int decimalLength) {
+	void setDecimalLength(int decimalLength) {
 		this.decimalLength = decimalLength;
 	}
-    
-//	public void setExternalFieldType(ExternalField externalFieldType) {
-//		// TODO Auto-generated method stub
-//		this.externalFieldType  = externalFieldType;
-//	}
-//	
-//	public ExternalField getExternalFieldType(){
-//		return externalFieldType;
-//	}
-	
-    boolean isFileReUploaded()
-    {
-    	return isFileReUploaded;
-    }
-    public void setFileUploaded(boolean isFileReUploaded)
-    {
-    	this.isFileReUploaded = isFileReUploaded;
-    }
+
+	//	public void setExternalFieldType(ExternalField externalFieldType) {
+	//		// TODO Auto-generated method stub
+	//		this.externalFieldType  = externalFieldType;
+	//	}
+	//	
+	//	public ExternalField getExternalFieldType(){
+	//		return externalFieldType;
+	//	}
+
+	boolean isFileReUploaded()
+	{
+		return isFileReUploaded;
+	}
+	public void setFileUploaded(boolean isFileReUploaded)
+	{
+		this.isFileReUploaded = isFileReUploaded;
+	}
 
 	public int getImageType() {
 		return imageType;
 	}
 
-    void setImageType(int imageType) {
+	void setImageType(int imageType) {
 		this.imageType = imageType;
 	}
-    
+
 }

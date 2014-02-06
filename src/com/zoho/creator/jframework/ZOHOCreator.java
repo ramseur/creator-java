@@ -682,7 +682,7 @@ public class ZOHOCreator {
 		ZCChoice choice = new ZCChoice("Android", "Android");
 		choices.add(choice);//No I18N
 		ZCRecordValue recValue = new ZCRecordValue(platformField, choice);
-		recValue.addChoices(choices);
+		//recValue.addChoices(choices);
 		platformField.setRecordValue(recValue);//No I18N
 		platformField.setHidden(true);
 		platformField.setRebuildRequired(true);
@@ -859,7 +859,7 @@ public class ZOHOCreator {
 		} else {
 			formAccessType = ZCForm.FORM_ALONE;
 		}
-		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), fieldName, size, searchForChoices, subformComponent,formAccessType,getAdditionalParamsForForm(baseForm,field),field);
+URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), fieldName, size, searchForChoices, subformComponent,formAccessType,getAdditionalParamsForForm(getCurrentForm(),field),field);
 		System.out.println("choic url"+getURLString(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair()));
 		Document rootDocument = ZOHOCreator.postURLXML(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair());
 		return XMLParser.parseLookUpChoices(rootDocument);

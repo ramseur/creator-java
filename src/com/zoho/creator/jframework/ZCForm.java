@@ -1,6 +1,7 @@
 // $Id$
 package com.zoho.creator.jframework;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class ZCForm extends ZCComponent {
 	public static final int VIEW_EDIT_FORM =3;
 	public static final int VIEW_BULK_EDIT_FORM =4;
 	public static final int FORM_LOOKUP_ADD_FORM =5;
-  
+
 
 	public static final int TASK_RELOADFORM = 1;
 	public static final int TASK_CLEAR = 9;
@@ -617,6 +618,45 @@ public class ZCForm extends ZCComponent {
 	public String getErrorMessage()
 	{
 		return errorMessage;
+	}
+
+	public List<ZCRecordValue> getRecordValuesForNewEntryInSubForm()
+	{
+		List<ZCRecordValue> tempRecordValues = new ArrayList<ZCRecordValue>();
+		List<ZCField> fields = getFields();
+		System.out.println("fieldsss size.."+fields.size());
+		for(int i=0;i<fields.size();i++)
+		{
+			ZCField zcField = fields.get(i);
+			FieldType ftype = zcField.getType();
+			ZCRecordValue recordValue = null;
+			if(FieldType.isMultiChoiceField(ftype) || (FieldType.isSingleChoiceField(ftype)))
+			{
+				if(FieldType.isMultiChoiceField(ftype))
+				{
+					List<ZCChoice> choices = zcField.getRecordValue().getChoiceValues();
+					recordValue = new ZCRecordValue(zcField, choices);
+				}
+				else if(FieldType.isSingleChoiceField(ftype))
+				{
+					ZCChoice choice = zcField.getRecordValue().getChoiceValue();
+					recordValue = new ZCRecordValue(zcField, choice);
+				}
+				List<ZCChoice> zcChoices = new ArrayList<ZCChoice>();
+				for(int j=0;j<zcField.getRecordValue().getChoices().size();j++)
+				{
+					zcChoices.add(zcField.getRecordValue().getChoices().get(j));
+				}
+				recordValue.addChoices(zcChoices);
+			}
+			else
+			{
+				String value = zcField.getRecordValue().getValue();
+				recordValue = new ZCRecordValue(zcField, value);
+			}
+			tempRecordValues.add(recordValue);
+		}
+		return tempRecordValues;
 	}
 
 }

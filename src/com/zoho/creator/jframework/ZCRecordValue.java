@@ -15,13 +15,14 @@ public class ZCRecordValue {
 	private String urlLinkNameValue = null;
 	private boolean errorOccured = false;
 	private String errorMessage = null; 
+	
+	
 	private boolean isLastReachedForChoices = false;
-
 	private List<ZCChoice> choices  = new ArrayList<ZCChoice>(); 
 	private String searchForChoices = null;
 	private boolean lookupLoadingStarted = false;
-	
-	
+
+
 
 	public ZCRecordValue(ZCField field, String value) {
 		this.field = field;		
@@ -192,18 +193,15 @@ public class ZCRecordValue {
 
 	public String getErrorMessage()
 	{
-	
+
 		return errorMessage;
 	}
 
-	
-	
-	
 	public List<ZCChoice> getChoices() {
 		return choices;
 	}
 
-	void addChoices(List<ZCChoice> choices) {
+	public void addChoices(List<ZCChoice> choices) {
 		this.choices = choices;		
 	}
 
@@ -247,7 +245,7 @@ public class ZCRecordValue {
 		return new ArrayList<ZCChoice>();
 	}
 
-	
+
 	public void reloadChoices() throws ZCException {
 		choices.clear();
 		isLastReachedForChoices = false;
@@ -269,6 +267,6 @@ public class ZCRecordValue {
 	public void setLookupLoadingStarted(boolean lookupLoadingStarted) {
 		this.lookupLoadingStarted = lookupLoadingStarted;
 	}
-	
+
 
 }

@@ -9,10 +9,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Hashtable;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -730,6 +730,13 @@ class XMLParser {
 				return null;
 			}
 		}	
+		if(fieldType.equals(FieldType.EXTERNAL_FIELD) || fieldType.equals(FieldType.EXTERNAL_LINK)) {
+			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "This Form contains ZOHO CRM field which is currently not supported");
+		}
+		if(isParentSubForm && FieldType.isPhotoField(fieldType))
+		{
+			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Subform contains "+fieldType+" field which is currently not supported");
+		}
 
 		ZCField zcField = new ZCField(fieldName, fieldType, displayName);
 		for(String key:queryStringhashTable.keySet())
@@ -847,6 +854,7 @@ class XMLParser {
 		zcField.setUrlTitleReq(urlTitleReq);
 		zcField.setImageType(imageType);
 		zcField.setNewEntriesAllowed(isNewEntriesAllowed);
+		
 		if(refFormLinkName != null && refAppLinkName != null ) {
 			zcField.setRefFormComponent(new ZCComponent(appOwner, refAppLinkName, ZCComponent.FORM, "", refFormLinkName, -1));
 			zcField.setRefFieldLinkName(refFieldLinkName);
@@ -865,6 +873,10 @@ class XMLParser {
 			ZCForm editSubForm = new ZCForm(appOwner, refAppLinkName, displayName, refFormLinkName, -1, false, false, "", "", false,"","");
 			editSubForm.addFields(subFormEditFields);
 			zcField.setEditSubForm(editSubForm);
+		}
+		for(int i=0;i<defaultRows;i++)
+		{
+			zcField.addSubFormEntry(new ZCRecord(zcField.getSubForm().getRecordValuesForNewEntryInSubForm()));
 		}
 		return zcField;
 	}
@@ -1215,8 +1227,10 @@ class XMLParser {
 			{
 				if(FieldType.isMultiChoiceField(zcField.getType())) {
 					zcValue = new ZCRecordValue(zcField, parseMultiSelectValues(value, choices));
+					zcValue.addChoices(choices);
 				} else if(FieldType.isSingleChoiceField(zcField.getType())) {
 					zcValue = new ZCRecordValue(zcField, parseSingleSelectValue(value, choices));
+					zcValue.addChoices(choices);
 				} else {
 					zcValue = new ZCRecordValue(zcField, value);
 				}

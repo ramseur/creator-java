@@ -85,14 +85,14 @@ class JSONParser {
 					String rowNum = jsonObj.getString("rowNo");
 					rowNo = Integer.parseInt(rowNum.substring(rowNum.indexOf("_")+1));
 					System.out.println("number...row..."+rowNo);
-//					if(rowNum.contains("t::row"))
-//					{
-//						rowNo = Integer.parseInt(jsonObj.getString("rowNo").substring(7));
-//					}
-//					else
-//					{
-//						
-//					}	
+					//					if(rowNum.contains("t::row"))
+					//					{
+					//						rowNo = Integer.parseInt(jsonObj.getString("rowNo").substring(7));
+					//					}
+					//					else
+					//					{
+					//						
+					//					}	
 				}
 				if(jsonObj.has("infoValue"))
 				{
@@ -106,29 +106,19 @@ class JSONParser {
 					openUrlString = jsonObj.getString("urlString");
 					form.setOpenUrl(openUrlString);
 				}
-//				if(jsonObj.has("errors"))
-//				{
-//					toReturn.setError(true);
-//					toReturn.setMainErrorMessage("Invalid entries found. Please correct and submit again.");//No I18N        
-//					JSONArray jsonArray = (JSONArray) jsonObj.get("errors");
-//					for (int j=0; j<jsonArray.length(); j++) {
-//						String[] errorMessageField = jsonArray.getString(j).split(",");
-//						toReturn.addErrorMessage(form.getField(errorMessageField[0]),errorMessageField[1] );
-//					}                
-//				}
+				//				if(jsonObj.has("errors"))
+				//				{
+				//					toReturn.setError(true);
+				//					toReturn.setMainErrorMessage("Invalid entries found. Please correct and submit again.");//No I18N        
+				//					JSONArray jsonArray = (JSONArray) jsonObj.get("errors");
+				//					for (int j=0; j<jsonArray.length(); j++) {
+				//						String[] errorMessageField = jsonArray.getString(j).split(",");
+				//						toReturn.addErrorMessage(form.getField(errorMessageField[0]),errorMessageField[1] );
+				//					}                
+				//				}
 				if(jsonObj.has("message"))
 				{
 					form.setErrorMessage(jsonObj.getString("message"));
-				}
-				
-				
-				if(subFormName!=null)
-				{
-					
-					
-				} else 
-				{
-					
 				}
 				if(fieldName != null) 
 				{
@@ -148,8 +138,6 @@ class JSONParser {
 						}
 						field = subForm.getField(fieldName);
 						recordValue = field.getRecordValue();
-
-						
 						if(subFormTempRecordValues != null)
 						{
 							for(int j=0; j<subFormTempRecordValues.size(); j++) 
@@ -162,8 +150,6 @@ class JSONParser {
 								}
 							}
 						}
-						
-						
 						field.setRebuildRequired(true);
 						List<ZCField> subformFields = subForm.getFields();
 						List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
@@ -205,12 +191,6 @@ class JSONParser {
 					recordValue.clearChoices();
 					recordValue.setLastReachedForChoices(true);
 				} else if(type==ZCForm.TASK_ADDVALUE) {
-//					List<ZCChoice> moreChoices = new ArrayList<ZCChoice>();
-//					for(int k=0; k<choiceValues.size(); k++) {
-//						ZCChoice choice = new ZCChoice(choiceValues.get(k).getKey(), choiceValues.get(k).getValue());
-//						moreChoices.add(choice);
-//					}
-					System.out.println("choicevalues...."+choiceValues);
 					recordValue.appendChoices(choiceValues);
 					recordValue.setLastReachedForChoices(true);
 				} else if(type==ZCForm.TASK_SELECT) {
@@ -354,7 +334,7 @@ class JSONParser {
 							}
 							else
 							{
-							recordValue.setChoiceValue(new ZCChoice(value,value));
+								recordValue.setChoiceValue(new ZCChoice(value,value));
 							}
 						}
 						else
