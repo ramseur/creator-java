@@ -242,34 +242,44 @@ public class ZCField implements Comparable<ZCField> {
 
 	public ZCForm getEditSubForm(ZCRecord record) {
 		List<ZCField> subFormFields = editSubForm.getFields();
-		List<ZCRecordValue> recordValues = record.getValues();
+		List<ZCRecordValue> fromRecordValues = record.getValues();
+		List<ZCRecordValue> toRecordValues = new ArrayList<ZCRecordValue>();
 		for(int i=0; i<subFormFields.size(); i++) {
 			ZCField subFormField = subFormFields.get(i);
-			ZCRecordValue subFormRecordValue = subFormField.getRecordValue();
-			for(int j=0; j<recordValues.size(); j++) {
-				ZCRecordValue recordValue = recordValues.get(j);
-				ZCField recordValueField = recordValue.getField();
-				if(recordValueField.getFieldName().equals(subFormRecordValue.getField().getFieldName())) {
-					if(FieldType.isMultiChoiceField(recordValueField.getType()) || FieldType.isSingleChoiceField(recordValueField.getType())) {
-						subFormRecordValue.setLastReachedForChoices(recordValue.isLastReachedForChoices());
-						subFormRecordValue.addChoices(recordValue.getChoices());
-						if(FieldType.isMultiChoiceField(recordValueField.getType()))
+			toRecordValues.add(subFormField.getRecordValue());
+		}
+		copyRecordValues(fromRecordValues, toRecordValues);
+		return editSubForm;
+	}
+	
+	public static void copyRecordValues(List<ZCRecordValue> fromRecordValues, List<ZCRecordValue> toRecordValues) {
+		for(int i=0; i<toRecordValues.size(); i++) {
+			ZCRecordValue toRecordValue = toRecordValues.get(i);
+			for(int j=0; j<fromRecordValues.size(); j++) {
+				ZCRecordValue fromRecordValue = fromRecordValues.get(j);
+				ZCField fromRecordValueField = fromRecordValue.getField();
+				if(fromRecordValueField.getFieldName().equals(toRecordValue.getField().getFieldName())) {
+					if(FieldType.isMultiChoiceField(fromRecordValueField.getType()) || FieldType.isSingleChoiceField(fromRecordValueField.getType())) {
+						toRecordValue.setLastReachedForChoices(fromRecordValue.isLastReachedForChoices());
+						toRecordValue.addChoices(fromRecordValue.getChoices());
+						if(FieldType.isMultiChoiceField(fromRecordValueField.getType()))
 						{
-							subFormRecordValue.setChoiceValues(recordValue.getChoiceValues());
+							toRecordValue.setChoiceValues(fromRecordValue.getChoiceValues());
 						} 
-						else if(FieldType.isSingleChoiceField(recordValueField.getType()))
+						else if(FieldType.isSingleChoiceField(fromRecordValueField.getType()))
 						{
-							subFormRecordValue.setChoiceValue(recordValue.getChoiceValue());
+							toRecordValue.setChoiceValue(fromRecordValue.getChoiceValue());
 						}
 					}
 					else {
-						subFormRecordValue.setValue(recordValue.getValue());
+						toRecordValue.setValue(fromRecordValue.getValue());
 					}
 				}
 			}
 		}
-		return editSubForm;
 	}
+	
+	
 
 	void setEditSubForm(ZCForm editSubForm) {
 		this.editSubForm = editSubForm;

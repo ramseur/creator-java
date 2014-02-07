@@ -370,6 +370,8 @@ public class ZOHOCreator {
 			while(baseLookupField != null) {
 				List<String> fieldRowList = new ArrayList<String>();
 				baseForm = baseLookupField.getBaseForm();
+				
+				
 				fieldRowList.add(baseForm.getAppLinkName());
 				if(baseForm.getComponentLinkName()==null) {
 					fieldRowList.add(baseForm.getBaseSubFormField().getBaseForm().getComponentLinkName());
@@ -393,9 +395,16 @@ public class ZOHOCreator {
 		}
 
 
+		if(baseForm.getBaseSubFormField() != null) {
+			baseForm = baseForm.getBaseSubFormField().getBaseForm();
+		}
+		
+
 		ZCView viewForAdd = baseForm.getViewForAdd();
 		ZCView viewForEdit = baseForm.getViewForEdit(); 
-		System.out.println("baseForm,,,,"+baseForm.getViewForEdit());
+		
+		
+		//System.out.println("baseForm,,,,"+baseForm.getViewForEdit());
 		if(viewForAdd != null) {
 			params.add(new BasicNameValuePair("viewLinkName" , viewForAdd.getComponentLinkName()));//No I18N
 		} else if(viewForEdit != null) {
