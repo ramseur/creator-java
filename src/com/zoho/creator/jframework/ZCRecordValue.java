@@ -107,6 +107,25 @@ public class ZCRecordValue {
 		final List<ZCChoice> toReturn = new ArrayList<ZCChoice>(choiceValues);
 		return toReturn;
 	}
+	
+	public ZCRecordValue getNewRecordValue() {
+		ZCRecordValue toReturn = null;
+		if(FieldType.isMultiChoiceField(field.getType()) || FieldType.isSingleChoiceField(field.getType())) {
+			if(FieldType.isMultiChoiceField(field.getType())) {
+				toReturn = new ZCRecordValue(field, getChoiceValues());
+			} else if(FieldType.isSingleChoiceField(field.getType())) {
+				toReturn = new ZCRecordValue(field, getChoiceValue());
+			}
+			toReturn.setLastReachedForChoices(isLastReachedForChoices());
+			toReturn.addChoices(getChoices());
+		} else if(FieldType.isPhotoField(field.getType())) {
+			toReturn = new ZCRecordValue(field, getFileValue());
+		} else {
+			toReturn = new ZCRecordValue(field, getValue());
+		}
+		return toReturn;
+	}
+	
 
 	void addToValues(List<ZCChoice> valuesToAdd) {
 		if(!FieldType.isMultiChoiceField(field.getType())) {
@@ -198,7 +217,8 @@ public class ZCRecordValue {
 	}
 
 	public List<ZCChoice> getChoices() {
-		return choices;
+		final List<ZCChoice> toReturn = new ArrayList<ZCChoice>(choices);
+		return toReturn;
 	}
 
 	void addChoices(List<ZCChoice> choices) {

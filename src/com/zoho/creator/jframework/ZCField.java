@@ -262,16 +262,12 @@ public class ZCField implements Comparable<ZCField> {
 					if(FieldType.isMultiChoiceField(fromRecordValueField.getType()) || FieldType.isSingleChoiceField(fromRecordValueField.getType())) {
 						toRecordValue.setLastReachedForChoices(fromRecordValue.isLastReachedForChoices());
 						toRecordValue.addChoices(fromRecordValue.getChoices());
-						if(FieldType.isMultiChoiceField(fromRecordValueField.getType()))
-						{
+						if(FieldType.isMultiChoiceField(fromRecordValueField.getType())) {
 							toRecordValue.setChoiceValues(fromRecordValue.getChoiceValues());
-						} 
-						else if(FieldType.isSingleChoiceField(fromRecordValueField.getType()))
-						{
+						} else if(FieldType.isSingleChoiceField(fromRecordValueField.getType())) {
 							toRecordValue.setChoiceValue(fromRecordValue.getChoiceValue());
 						}
-					}
-					else {
+					} else {
 						toRecordValue.setValue(fromRecordValue.getValue());
 					}
 				}
@@ -286,8 +282,19 @@ public class ZCField implements Comparable<ZCField> {
 		editSubForm.setBaseSubFormField(this);
 	}
 
+	private ZCRecord defaultSubFormEntry = null;
+	
+	void setDefaultSubFormEntry(ZCRecord defaultSubFormEntry) {
+		this.defaultSubFormEntry = defaultSubFormEntry;
+	}
+	
+	public ZCRecord getDefaultSubFormEntry() {
+		return defaultSubFormEntry;
+	}
+
 	public ZCForm getSubForm() {
-		return subForm;
+		//return subForm;
+		return getEditSubForm(defaultSubFormEntry);
 	}
 
 	void setSubForm(ZCForm subForm) {

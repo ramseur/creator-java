@@ -550,6 +550,7 @@ class XMLParser {
 		List<ZCField> subFormFields = new ArrayList<ZCField>();
 		List<ZCField> subFormEditFields = new ArrayList<ZCField>();
 		List<ZCRecord> subFormEntries = new ArrayList<ZCRecord>();
+		ZCRecord defaultSubFormEntry = null;
 		Node fieldNode = resultNodeChild.getAttributes().getNamedItem("ishidden");
 		if(fieldNode!=null)
 		{
@@ -720,6 +721,8 @@ class XMLParser {
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("SubFormFields")) {
 				NodeList subFormFieldNodes = fieldPropetyNode.getChildNodes();
 				hasSubForm = true;
+				List<ZCRecordValue> defaultSubFormEntryValues = new ArrayList<ZCRecordValue>();
+				defaultSubFormEntry = new ZCRecord(defaultSubFormEntryValues);
 				for(int m=0; m<subFormFieldNodes.getLength(); m++) {
 					Node subFormFieldNode = subFormFieldNodes.item(m);
 					if(subFormFieldNode.getNodeName().equalsIgnoreCase("Field")) {
@@ -728,6 +731,7 @@ class XMLParser {
 						{
 							subFormFields.add(subFormField);
 							subFormEditFields.add(parseField(subFormFieldNode,appLinkName,formLinkName, appOwner, true,new Hashtable<String, String>()));
+							defaultSubFormEntryValues.add(subFormField.getRecordValue().getNewRecordValue());
 						}
 					}
 				}
@@ -877,6 +881,7 @@ class XMLParser {
 			ZCForm subForm = new ZCForm(appOwner, refAppLinkName,displayName, refFormLinkName, -1, false, false, "", "", false,"","");
 			subForm.addFields(subFormFields);
 			zcField.setSubForm(subForm);
+			zcField.setDefaultSubFormEntry(defaultSubFormEntry);
 			for(int i=0; i<subFormEntries.size(); i++) {
 				zcField.addSubFormEntry(subFormEntries.get(i));
 			}
