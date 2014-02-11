@@ -9,7 +9,7 @@ import org.json.JSONObject;
 
 class JSONParser {
 
-	static ZCResponse parseAndCallFormEvents(String response, ZCForm form,List<ZCRecordValue> subFormTempRecordValues,ZCForm currentShownForm) throws ZCException
+	static ZCResponse parseAndCallFormEvents(String response, ZCForm currentShownForm) throws ZCException
 	{
 
 		List<String> alertMessages = new ArrayList<String>();
@@ -24,7 +24,6 @@ class JSONParser {
 				String subFormName = null;
 				String fieldName=null;
 				ZCField field=null;
-				ZCField editSubFormField = null;
 				ZCRecordValue recordValue=null;
 				ZCField subFormField = null;
 				String formName=null;
@@ -33,6 +32,7 @@ class JSONParser {
 				List<String> keys = new ArrayList<String>();
 				ZCChoice zcChoice = null;
 				int rowNo = -1;
+				//List<ZCRecordValue> subFormTempRecordValues  = null;
 				JSONObject jsonObj = jArray.getJSONObject(i); // Pulling items from the array 
 				if(jsonObj.has("task"))
 				{
@@ -104,7 +104,7 @@ class JSONParser {
 				if(jsonObj.has("urlString"))
 				{
 					openUrlString = jsonObj.getString("urlString");
-					form.setOpenUrl(openUrlString);
+					currentShownForm.setOpenUrl(openUrlString);
 				}
 				//				if(jsonObj.has("errors"))
 				//				{
@@ -118,75 +118,45 @@ class JSONParser {
 				//				}
 				if(jsonObj.has("message"))
 				{
-					form.setErrorMessage(jsonObj.getString("message"));
+					currentShownForm.setErrorMessage(jsonObj.getString("message"));
 				}
 				if(fieldName != null) 
 				{
-					if(subFormName ==null)
+					ZCField baseSubFormField = currentShownForm.getBaseSubFormField();
+					ZCForm baseForm = null;
+					if(baseSubFormField == null) 
 					{
-						field=form.getField(fieldName);
+						baseForm = currentShownForm;
+					} 
+					else 
+					{
+						baseForm = baseSubFormField.getBaseForm();
+					}
+
+					if(subFormName == null)
+					{
+						field = baseForm.getField(fieldName);
 						field.setRebuildRequired(true);
 						recordValue = field.getRecordValue();
 					}
 					else
 					{
-						subFormField = form.getField(subFormName);
+						subFormField = baseForm.getField(subFormName);
 						ZCForm subForm = subFormField.getSubForm();
-						if(currentShownForm!=null)
-						{
-							subForm = currentShownForm;
-						}
 						field = subForm.getField(fieldName);
-						recordValue = field.getRecordValue();
-						if(subFormTempRecordValues != null)
-						{
-							for(int j=0; j<subFormTempRecordValues.size(); j++) 
-							{
-								ZCRecordValue subFormRecValue = subFormTempRecordValues.get(j);
-								if(subFormRecValue.getField().getFieldName().equals(fieldName))
-								{
-									recordValue = subFormRecValue;
-									break;
-								}
-							}
-						}
 						field.setRebuildRequired(true);
-						List<ZCField> subformFields = subForm.getFields();
-						List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
-						for(int l=0;l<subformFields.size();l++)
-						{
-							recordValues.add(subformFields.get(l).getRecordValue());	
-						}
-						ZCForm editSubform = subFormField.getEditSubForm(new ZCRecord(recordValues));
-						editSubFormField = editSubform.getField(fieldName);
-
+						recordValue = field.getRecordValue();
 					}
 
 				}
 				if(type==ZCForm.TASK_HIDE) {
 					field.setHidden(true);
-					if(editSubFormField!=null)
-					{
-						editSubFormField.setHidden(true);
-					}
 				} else if(type==ZCForm.TASK_SHOW) {
 					field.setHidden(false);
-					if(editSubFormField!=null)
-					{
-						editSubFormField.setHidden(false);
-					}
 				} else if(type==ZCForm.TASK_ENABLE) {
 					field.setDisabled(false);
-					if(editSubFormField!=null)
-					{
-						editSubFormField.setDisabled(false);
-					}
 				} else if(type==ZCForm.TASK_DISABLE) {
 					field.setDisabled(true);
-					if(editSubFormField!=null)
-					{
-						editSubFormField.setDisabled(true);
-					}
 				} else if(type==ZCForm.TASK_CLEAR) {
 					recordValue.clearChoices();
 					recordValue.setLastReachedForChoices(true);
@@ -224,152 +194,43 @@ class JSONParser {
 				} else if(type==ZCForm.TASK_ALERT) {
 					alertMessages.add(alertMessage);
 				} else if(type==ZCForm.TASK_RELOADFORM) {
-					form.setReLoadForm(true);
+					currentShownForm.setReLoadForm(true);
 					break;
 				} else if(type==ZCForm.TASK_SETVALUE) {
-					if(rowNo>0&&subFormField.getSubFormEntriesSize()>=rowNo)
+					List<ZCRecordValue> zcRecordValues = new ArrayList<ZCRecordValue>();
+					List<ZCRecordValue> currentShownSubFormValues = null;
+					if(rowNo>0) 
 					{
 						List<ZCRecord> records = subFormField.getUpdatedSubFormEntries();
 						records.addAll(subFormField.getAddedSubFormEntries());
-						ZCRecord zcRecord =  records.get(rowNo-1);
-						List<ZCRecordValue> zcRecordValues = zcRecord.getValues();
-						for(int l=0;l<zcRecordValues.size();l++)
+						ZCRecord zcRecord = records.get(rowNo-1);
+						zcRecordValues = zcRecord.getValues();
+						ZCField subFormBaseField = currentShownForm.getBaseSubFormField();
+						if(subFormBaseField != null )
 						{
-							ZCRecordValue subFormRecordValue = zcRecordValues.get(l);
-							if(subFormRecordValue.getField().getFieldName().equals(field.getFieldName()))
+							System.out.println("rowno.."+rowNo+(subFormBaseField.getSubFormEntryPosition()+1)+value);
+							if(rowNo == subFormBaseField.getSubFormEntryPosition()+1)
 							{
-								if(FieldType.isMultiChoiceField(field.getType())) {
-									if(currentShownForm!=null && subFormTempRecordValues == null)
-									{
-										recordValue.setChoiceValues(choiceValues);
-									}
-									else
-									{
-										subFormRecordValue.setChoiceValues(choiceValues);
-									}
-									break;
-								}
-								else if(FieldType.isSingleChoiceField(field.getType()))
-								{
-									if(currentShownForm!=null && subFormTempRecordValues == null)
-									{
-										if(zcChoice!=null)
-										{
-											recordValue.setChoiceValue(zcChoice);
-										}
-										else
-										{
-											recordValue.setChoiceValue(new ZCChoice(value,value));
-										}
-									}
-									else
-									{
-										if(zcChoice!=null)
-										{
-											subFormRecordValue.setChoiceValue(zcChoice);
-										}
-										else
-										{
-											subFormRecordValue.setChoiceValue(new ZCChoice(value,value));
-										}
-									}
-									break; 
-								}
-								else
-								{
-									if(currentShownForm!=null && subFormTempRecordValues == null)
-									{
-										recordValue.setValue(value);
-									}
-									else
-									{
-										subFormRecordValue.setValue(value);
-									}
-									break;
-								}
-							}
-						}        
-					}
-					else if(rowNo>0)
-					{
-						for(int l=0;l<subFormTempRecordValues.size();l++)
-						{
-							ZCRecordValue subFormRecordValue =subFormTempRecordValues.get(l);
-							if(subFormRecordValue.getField().getFieldName().equals(field.getFieldName()))
-							{
-								if(FieldType.isMultiChoiceField(field.getType())) {
-									subFormRecordValue.setChoiceValues(choiceValues);
-									break;
-								}
-								else if(FieldType.isSingleChoiceField(field.getType()))
-								{
-									if(zcChoice!=null)
-									{
-										subFormRecordValue.setChoiceValue(zcChoice);
-									}else
-									{
-										subFormRecordValue.setChoiceValue(new ZCChoice(value,value));
-									}
-									break;
-								}
-								else
-								{
-									System.out.println("setValue...");
-									subFormRecordValue.setValue(value);
-									break;
-								}
+								currentShownSubFormValues = currentShownForm.getRecordValues();
+								System.out.println("inside .............");
+								setValueInRecordValues(currentShownSubFormValues,field,choiceValues,zcChoice,value);
 							}
 						}
 					}
 					else
 					{
-						if(FieldType.isMultiChoiceField(field.getType())) {
-							recordValue.setChoiceValues(choiceValues);
-						}
-						else if(FieldType.isSingleChoiceField(field.getType()))
-						{
-							if(zcChoice!=null)
-							{
-								recordValue.setChoiceValue(zcChoice);
-							}
-							else
-							{
-								recordValue.setChoiceValue(new ZCChoice(value,value));
-							}
-						}
-						else
-						{
-							if(recordValue.getField().getType().equals(FieldType.NOTES)){
-								if(value.contains("<img")){
-									int indexOfImgTag = value.indexOf("<img");
-									int indexOfImgSrc = value.indexOf("src", indexOfImgTag);
-									int indexOfstartVal = value.indexOf("\"", indexOfImgSrc);
-									int count = 0;
-									for(int l=indexOfstartVal+1;;l++){
-										if(value.charAt(l) != '\"'){
-											count++;
-										}else{
-											break;
-										}
-									}
-									String substring = value.substring(indexOfstartVal+1, indexOfstartVal+count+1);
-									String[] tokens = substring.split("/");
-									String urlForImg = ZOHOCreator.getFileUploadURL(tokens[tokens.length-1], tokens[1], tokens[2], tokens[3]);
-									value = value.replace(substring, urlForImg);
-								}
-							}
-							recordValue.setValue(value);
-						}
+						zcRecordValues.add(recordValue);
 					}
+					setValueInRecordValues(zcRecordValues,field,choiceValues,zcChoice,value);
 				}
 				if(subFormName==null)
 				{
 					if(field != null && type==ZCForm.TASK_SETVALUE|| type==ZCForm.TASK_DESELECTALL ||type==ZCForm.TASK_DESELECT || type==ZCForm.TASK_SELECTALL || type==ZCForm.TASK_SELECT) {
 						if(field.isHasOnUserInputForFormula()) {
-							field.onUserInputForFormula(subFormTempRecordValues);
+							field.onUserInputForFormula(currentShownForm);
 						}
 						if(field.isHasOnUserInput()) {
-							field.onUserInput(subFormTempRecordValues);
+							field.onUserInput(currentShownForm);
 						}
 					}
 				}
@@ -381,40 +242,70 @@ class JSONParser {
 			e.printStackTrace();
 		}
 		if(alertMessages.size() >0) {
-			if(currentShownForm!=null)
-			{
-				currentShownForm.setAlertMessages(alertMessages);
-			}
-			else
-			{
-				form.setAlertMessages(alertMessages);
-			}
+			currentShownForm.setAlertMessages(alertMessages);
 		}
 		if(infoValues.size()>0)
 		{
-			if(currentShownForm!=null)
-			{
-				currentShownForm.setInfos(infoValues);
-			}
-			else
-			{
-				form.setInfos(infoValues);
-			}
+			currentShownForm.setInfos(infoValues);
 		}
 		if(openUrlString!=null)
 		{
-			if(currentShownForm!=null)
-			{
-				currentShownForm.setOpenUrl(openUrlString);
-			}
-			else
-			{
-				form.setOpenUrl(openUrlString);
-			}
+			currentShownForm.setOpenUrl(openUrlString);
 
 		}
 
 		return toReturn;
+	}
+
+	static void setValueInRecordValues(List<ZCRecordValue> zcRecordValues,ZCField field,List<ZCChoice> choiceValues,ZCChoice zcChoice,String value)
+	{
+		for(int l=0;l<zcRecordValues.size();l++)
+		{
+			ZCRecordValue zcRecordValue = zcRecordValues.get(l);
+			if(zcRecordValue.getField().getFieldName().equals(field.getFieldName()))
+			{
+				if(FieldType.isMultiChoiceField(field.getType())) {
+					zcRecordValue.setChoiceValues(choiceValues);
+					break;
+				}
+				else if(FieldType.isSingleChoiceField(field.getType()))
+				{
+					if(zcChoice!=null)
+					{
+						zcRecordValue.setChoiceValue(zcChoice);
+					}
+					else
+					{
+						zcRecordValue.setChoiceValue(new ZCChoice(value,value));
+					}
+					break; 
+				}
+				else
+				{
+					if(zcRecordValue.getField().getType().equals(FieldType.NOTES)){
+						if(value.contains("<img")){
+							int indexOfImgTag = value.indexOf("<img");
+							int indexOfImgSrc = value.indexOf("src", indexOfImgTag);
+							int indexOfstartVal = value.indexOf("\"", indexOfImgSrc);
+							int count = 0;
+							for(int m=indexOfstartVal+1;;m++){
+								if(value.charAt(m) != '\"'){
+									count++;
+								}else{
+									break;
+								}
+							}
+							String substring = value.substring(indexOfstartVal+1, indexOfstartVal+count+1);
+							String[] tokens = substring.split("/");
+							String urlForImg = ZOHOCreator.getFileUploadURL(tokens[tokens.length-1], tokens[1], tokens[2], tokens[3]);
+							value = value.replace(substring, urlForImg);
+						}
+					}
+					zcRecordValue.setValue(value);
+					break;
+				}
+			}
+		} 
 	}
 
 	static String parseForTokenForExternalField(String response){

@@ -346,8 +346,18 @@ public class ZCForm extends ZCComponent {
 		return buff.toString();
 	}
 
+	public List<ZCRecordValue> getRecordValues() {
+		List<ZCField> subFormFields = getFields();
+		List<ZCRecordValue> recordValues =  new ArrayList<ZCRecordValue>();
+		for (int j=0;j<subFormFields.size();j++) {
+			ZCField subFormField = subFormFields.get(j);
+			recordValues.add(subFormField.getRecordValue());
+		}
+		return recordValues;
+	}
 
-	List<NameValuePair> getFieldParamValues(List<ZCRecordValue> recordValues,int recordPosition) {
+
+	List<NameValuePair> getFieldParamValues() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		List<ZCField> fieldsToIterate = fields;
 		for(int i=0; i<fieldsToIterate.size(); i++) {//No I18N
@@ -370,9 +380,6 @@ public class ZCForm extends ZCComponent {
 				else if(field.getType().equals(FieldType.SUB_FORM)) {
 					//params.addAll(getParamsForEditSubFormEntries(field,field.getFieldName()))
 					params.addAll(getParamsForSubFormEntries(field,field.getFieldName()));
-					if(recordValues != null) {
-						params.addAll(getTempRecordParams(recordValues,field.getFieldName(),field.getSubFormEntriesSize()+1));
-					}
 				} else if(FieldType.isSingleChoiceField(field.getType())) {
 					if(recordValue.getChoiceValue() != null) {
 						params.add(new BasicNameValuePair(field.getFieldName(),recordValue.getChoiceValue().getKey()));
@@ -385,41 +392,7 @@ public class ZCForm extends ZCComponent {
 		return params;
 	}
 
-	private List<NameValuePair> getTempRecordParams(List<ZCRecordValue> zcRecordValues,String fieldName,int rowPosition)
-	{
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+rowPosition+").SV(record::status)","added"));
-		for(int i=0;i<zcRecordValues.size();i++)
-		{
-			ZCRecordValue recordValue = zcRecordValues.get(i);
-			ZCField field = recordValue.getField();
-			if(FieldType.isMultiChoiceField(field.getType()))
-			{
-				List<ZCChoice> choices = recordValue.getChoiceValues();
-				for(int j=0;j<choices.size();j++)
-				{
-					params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+rowPosition+").SV("+field.getFieldName()+")",choices.get(j).getKey()));
-				}
-			}
-			else
-			{
-				String value = "";
-				if(FieldType.isSingleChoiceField(field.getType()))
-				{
-					if(recordValue.getChoiceValue()!=null)
-					{
-						value = recordValue.getChoiceValue().getKey();
-					}
-				}
-				else if(!FieldType.isPhotoField(field.getType()) && !field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES))
-				{
-					value = recordValue.getValue();
-				}
-				params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+rowPosition+").SV("+field.getFieldName()+")",value));
-			}
-		}
-		return params;
-	}
+
 	private List<NameValuePair> getParamsForSubFormEntries(ZCField field,String fieldName)
 	{
 		List<ZCRecord> subFormEntries = field.getUpdatedSubFormEntries();
@@ -485,20 +458,21 @@ public class ZCForm extends ZCComponent {
 		return params;
 	}
 
-	public void onAddRowForSubForm(ZCField field,List<ZCRecordValue> recordValues,ZCForm currentShownForm) throws ZCException{
-		ZOHOCreator.callSubFormAddRow(this, field.getFieldName(),recordValues,currentShownForm,field.getSubFormEntriesSize()+1);
+	public void onAddRowForSubForm(ZCField field,ZCForm currentShownForm) throws ZCException{
+		ZOHOCreator.callSubFormAddRow(this, field.getFieldName(),currentShownForm,field.getSubFormEntriesSize());
 	}
 
 	public void onDeleteRowForSubForm(ZCField field,long id,int position) throws ZCException{
 		ZOHOCreator.callSubFormDeleteRow(this, field.getFieldName(),id,position+1);
 	}
 
-	public void onUserInputForSubFormField(ZCField onUserInputField,ZCForm currentShownForm, List<ZCRecordValue> recordValues,int entryPosition,long id) throws ZCException{
-		ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , currentShownForm,recordValues,false,entryPosition,id);
+	public void onUserInputForSubFormField(ZCField onUserInputField, int entryPosition,long id) throws ZCException{
+		ZOHOCreator.callSubFormFieldOnUser(onUserInputField.getFieldName(), this,false,entryPosition,id);
 	}
-	public void onUserInputForSubFormFieldForFormula(ZCField onUserInputField, ZCForm currentShownForm, List<ZCRecordValue> recordValues,int entryPosition,long id) throws ZCException{
-		ZOHOCreator.callSubFormFieldOnUser(ZOHOCreator.getCurrentForm(), onUserInputField.getFieldName() , currentShownForm,recordValues,true,entryPosition,id);
+	public void onUserInputForSubFormFieldForFormula(ZCField onUserInputField, int entryPosition,long id) throws ZCException{
+		ZOHOCreator.callSubFormFieldOnUser(onUserInputField.getFieldName(), this, true,entryPosition,id);
 	}
+	
 	public ZCField getBaseSubFormField() {
 		return baseSubFormField;
 	}
@@ -620,43 +594,5 @@ public class ZCForm extends ZCComponent {
 		return errorMessage;
 	}
 
-	public List<ZCRecordValue> getRecordValuesForNewEntryInSubForm()
-	{
-		List<ZCRecordValue> tempRecordValues = new ArrayList<ZCRecordValue>();
-		List<ZCField> fields = getFields();
-		System.out.println("fieldsss size.."+fields.size());
-		for(int i=0;i<fields.size();i++)
-		{
-			ZCField zcField = fields.get(i);
-			FieldType ftype = zcField.getType();
-			ZCRecordValue recordValue = null;
-			if(FieldType.isMultiChoiceField(ftype) || (FieldType.isSingleChoiceField(ftype)))
-			{
-				if(FieldType.isMultiChoiceField(ftype))
-				{
-					List<ZCChoice> choices = zcField.getRecordValue().getChoiceValues();
-					recordValue = new ZCRecordValue(zcField, choices);
-				}
-				else if(FieldType.isSingleChoiceField(ftype))
-				{
-					ZCChoice choice = zcField.getRecordValue().getChoiceValue();
-					recordValue = new ZCRecordValue(zcField, choice);
-				}
-				List<ZCChoice> zcChoices = new ArrayList<ZCChoice>();
-				for(int j=0;j<zcField.getRecordValue().getChoices().size();j++)
-				{
-					zcChoices.add(zcField.getRecordValue().getChoices().get(j));
-				}
-				recordValue.addChoices(zcChoices);
-			}
-			else
-			{
-				String value = zcField.getRecordValue().getValue();
-				recordValue = new ZCRecordValue(zcField, value);
-			}
-			tempRecordValues.add(recordValue);
-		}
-		return tempRecordValues;
-	}
 
 }

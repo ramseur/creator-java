@@ -407,7 +407,7 @@ class XMLParser {
 											{
 												for(int m=0;m<field.getDefaultRows();m++)
 												{
-													field.addSubFormEntry(new ZCRecord(field.getSubForm().getRecordValuesForNewEntryInSubForm()));
+													field.addAndGetNewSubFormEntry();
 												}
 											}
 											fields.add(field);
@@ -606,8 +606,8 @@ class XMLParser {
 					for(int k=0; k<recordsList.getLength(); k++) {
 						Node recordNode = recordsList.item(k);
 						if(recordNode.getNodeName().equals("record")) {
-
-							ZCRecord zcRecord = parseAndSetRecord(null, recordNode, subFormFields,false);
+							ZCRecord zcRecord = parseAndSetRecord(null, recordNode, subFormFields);
+							System.out.println("zcrecccc"+zcRecord);
 							subFormEntries.add(zcRecord);
 						}
 					}
@@ -705,6 +705,12 @@ class XMLParser {
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("maximumrows"))
 			{
 				maximumRows = getIntValue(fieldPropetyNode, maximumRows);
+				if(maximumRows<0)
+				{
+					maximumRows = 10000;
+				}
+				System.out.println("maximum rows.."+maximumRows);
+
 			}
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("subformrecords"))
 			{
@@ -713,7 +719,8 @@ class XMLParser {
 				for(int m=0; m<subFormRecordsNodeList.getLength(); m++) {
 					Node subFormRecordsNode = subFormRecordsNodeList.item(m);
 
-					ZCRecord record = parseAndSetRecord(null, subFormRecordsNode, subFormFields,false);
+					ZCRecord record = parseAndSetRecord(null, subFormRecordsNode, subFormFields);
+					System.out.println("zcreccforsubf"+record);
 					subFormEntries.add(record);
 				}
 
@@ -832,16 +839,12 @@ class XMLParser {
 		//			zcField.setRecordValue(new ZCRecordValue(zcField, file));}
 		else {
 			ZCRecordValue recordValue = null;
-
 			if(zcField.getType()==FieldType.URL)
 			{
-				recordValue = new ZCRecordValue(zcField, urlValue);
-				recordValue.setUrlTitleValue(urlTitleValue);
-				recordValue.setUrlLinkNameValue(urlLinkNameValue);
+				recordValue = new ZCRecordValue(zcField, urlValue,urlTitleValue,urlLinkNameValue);
 			}
 			else
 			{
-
 				recordValue = new ZCRecordValue(zcField, initialValue);
 			}
 			zcField.setRecordValue(recordValue);
@@ -850,6 +853,7 @@ class XMLParser {
 		zcField.setHidden(isHidden);
 		zcField.setDefaultRows(defaultRows);
 		zcField.setMaximumRows(maximumRows);
+		System.out.println("zcField.getmax"+zcField.getMaximumRows());
 		zcField.setDecimalLength(decimalLength);
 		if(isFilterApplied || (!isLookup))
 		{
@@ -878,16 +882,21 @@ class XMLParser {
 		}
 		// String appOwner, String appLinkName, String type, String componentName, String componentLinkName, int sequenceNumber, Long componentID, boolean hasAddOnLoad, boolean hasEditOnLoad, String successMessage, String tableName, int formLinkId
 		if(hasSubForm) { // type/sequenceNumber/componentID/formLinkId -1, hasAddOnLoad/hasEditOnLoad false,  successMessage/tableName empty string, 
+
+			/*
 			ZCForm subForm = new ZCForm(appOwner, refAppLinkName,displayName, refFormLinkName, -1, false, false, "", "", false,"","");
 			subForm.addFields(subFormFields);
 			zcField.setSubForm(subForm);
+			 */
+
 			zcField.setDefaultSubFormEntry(defaultSubFormEntry);
 			for(int i=0; i<subFormEntries.size(); i++) {
+				System.out.println("subformentr"+subFormEntries.get(i));
 				zcField.addSubFormEntry(subFormEntries.get(i));
 			}
-			ZCForm editSubForm = new ZCForm(appOwner, refAppLinkName, displayName, refFormLinkName, -1, false, false, "", "", false,"","");
-			editSubForm.addFields(subFormEditFields);
-			zcField.setEditSubForm(editSubForm);
+			ZCForm subForm = new ZCForm(appOwner, refAppLinkName, displayName, refFormLinkName, -1, false, false, "", "", false,"","");
+			subForm.addFields(subFormFields);
+			zcField.setSubForm(subForm);
 		}
 
 		return zcField;
@@ -971,7 +980,7 @@ class XMLParser {
 		return new ZCChoice(value, value);
 	}
 
-	private static List<ZCChoice> parseMultiSelectValues(String value, List<ZCChoice> choices) {
+	private static List<ZCChoice> parseMultiSelectValues(String value) {
 		List<ZCChoice> multSelVals = new ArrayList<ZCChoice>();
 		if(value.startsWith("[{"))
 		{
@@ -1013,19 +1022,7 @@ class XMLParser {
 				if(!(tokens[m].equals("")))
 				{
 					String initialValue = tokens[m];
-					boolean added = false;
-					if(choices != null) {
-						for(int i=0; i<choices.size(); i++) {
-							if(choices.get(i).getKey().equals(initialValue)) {
-								multSelVals.add(choices.get(i));
-								added = true;
-								break;
-							}
-						}
-					}
-					if(!added) {
-						multSelVals.add(new ZCChoice(initialValue, initialValue));
-					}
+					multSelVals.add(new ZCChoice(initialValue, initialValue));
 				}
 			}		
 		}
@@ -1159,7 +1156,7 @@ class XMLParser {
 					groupHeaderValues.add(getStringValue(valueNode, ""));
 				}
 			} else if(recordNode.getNodeName().equals("record")) {
-				ZCRecord record = parseAndSetRecord(zcView, recordNode, null,true);
+				ZCRecord record = parseAndSetRecord(zcView, recordNode, null);
 				records.add(record);
 				if(isViewGrouped) {
 					if(isFirstRecordInGroup && (zcGroup == null || !zcGroup.getGroupHeaderValues().equals(groupHeaderValues))) { // To check if it's not the same group of the previous set's last group
@@ -1176,7 +1173,7 @@ class XMLParser {
 		zcView.setGrouped(isViewGrouped);
 	}
 
-	private static ZCRecord parseAndSetRecord(ZCView zcView, Node recordNode, List<ZCField> subFormFields,boolean isForView) {
+	private static ZCRecord parseAndSetRecord(ZCView zcView, Node recordNode, List<ZCField> subFormFields) {
 		NamedNodeMap recordAttrMap = recordNode.getAttributes();
 		long recordid = 0L;
 		if(recordAttrMap.getNamedItem("id")!=null)
@@ -1193,6 +1190,7 @@ class XMLParser {
 			Node columnNode = columnList.item(l);
 			NamedNodeMap columAttrMap = columnNode.getAttributes();
 			String fieldName = columAttrMap.getNamedItem("name").getNodeValue(); //No I18N
+			System.out.println("fieldnammmm"+fieldName);
 			ZCField zcField = null;
 			if(zcView != null) {
 				zcField = zcView.getColumn(fieldName);
@@ -1205,58 +1203,93 @@ class XMLParser {
 					}
 				}
 			}
-			String urlLinkNameValue = "";
-			String urlTitleValue = "";
+			if(zcField == null) {
+				break;
+			}
+
 			Node valueNode = columnNode.getFirstChild();
 			String value = getStringValue(valueNode, "");
-			if(valueNode!=null)
+			NodeList columnvalueList = columnNode.getChildNodes();
+			List<ZCChoice> selectedChoices = new ArrayList<ZCChoice>();
+			ZCChoice selectedChoice = null;
+			List<ZCChoice> choices = null;
+			if(zcView == null)
 			{
-				NodeList urlTagNodes = valueNode.getChildNodes();
-				for(int m=0;m<urlTagNodes.getLength();m++)
+				choices = zcField.getRecordValue().getChoices();
+				
+				if(FieldType.isChoiceField(zcField.getType())) 
 				{
-					Node urlNode = urlTagNodes.item(m);
-					if(urlNode.getNodeName().equals("linkname")) {
-
-						urlLinkNameValue = getStringValue(urlNode, urlLinkNameValue);
-					}
-					else if(urlNode.getNodeName().equals("url"))
+					for(int i=0;i<columnvalueList.getLength();i++)
 					{
-						value = getStringValue(urlNode, "");
-					}
-					else if(urlNode.getNodeName().equals("title"))
-					{
-						urlTitleValue = getStringValue(urlNode, urlTitleValue);
-
+						Node columnvaluelistChildnode =  columnvalueList.item(i);
+						Node columnvaluelistvaluenode = columnvaluelistChildnode.getAttributes().getNamedItem("value");
+						if(columnvaluelistvaluenode!=null)
+						{
+							String key = columnvaluelistvaluenode.getNodeValue();
+							for(int j=0; j<choices.size(); j++) {
+								if(key.equals(choices.get(j).getKey())) {
+									selectedChoices.add(new ZCChoice(key,getStringValue(columnvaluelistChildnode, "")));
+									break;
+								}
+							}
+							if(zcField.isLookup()){
+								selectedChoices.add(new ZCChoice(key,getStringValue(columnvaluelistChildnode, "")));
+							}
+						}
 					}
 				}
+				if(selectedChoices.size() >0) {
+					selectedChoice = selectedChoices.get(0);
+					
+				}
+			}
+			else 
+			{
+				if(value.startsWith("[") && value.endsWith("]")) {
+					value = value.substring(1, value.length()-1);
+				}
+				String[] tokens = value.split(", ");
+				for(int m = 0;m<tokens.length;m++)
+				{
+					if(!(tokens[m].equals("")))
+					{
+						String initialValue = tokens[m];
+						selectedChoices.add(new ZCChoice(initialValue, initialValue));
+					}
+				}		
+				selectedChoice = new ZCChoice(value, value);
 			}
 			ZCRecordValue zcValue = null;
-			List<ZCChoice> choices = null;
-			if(zcView == null && zcField!=null) {
-				choices = zcField.getRecordValue().getChoices();
+			if(FieldType.isMultiChoiceField(zcField.getType())) {
+				System.out.println("selectedChoices.."+selectedChoices);
+				zcValue = new ZCRecordValue(zcField, selectedChoices);
+				zcValue.addChoices(choices);
+			} else if(FieldType.isSingleChoiceField(zcField.getType())) {
+				zcValue = new ZCRecordValue(zcField, selectedChoice);
+				zcValue.addChoices(choices);
+			} else if(zcField.getType()==FieldType.URL) {
+				String urlLinkNameValue = "";
+				String urlTitleValue = "";
+				NodeList urlTagNodes = valueNode.getChildNodes();
+				for(int m=0;m<urlTagNodes.getLength();m++) {
+					Node urlNode = urlTagNodes.item(m);
+					if(urlNode.getNodeName().equals("linkname")) {
+						urlLinkNameValue = getStringValue(urlNode, urlLinkNameValue);
+					} else if(urlNode.getNodeName().equals("url")) {
+						value = getStringValue(urlNode, "");
+					} else if(urlNode.getNodeName().equals("title")) {
+						urlTitleValue = getStringValue(urlNode, urlTitleValue);
+					}
+				}
+				zcValue = new ZCRecordValue(zcField, value,urlTitleValue,urlLinkNameValue);
+			} else {
+				zcValue = new ZCRecordValue(zcField, value);
 			}
-			if(zcField!=null)
+			if(zcView!=null)
 			{
-				if(FieldType.isMultiChoiceField(zcField.getType())) {
-					zcValue = new ZCRecordValue(zcField, parseMultiSelectValues(value, choices));
-					zcValue.addChoices(choices);
-				} else if(FieldType.isSingleChoiceField(zcField.getType())) {
-					zcValue = new ZCRecordValue(zcField, parseSingleSelectValue(value, choices));
-					zcValue.addChoices(choices);
-				} else {
-					zcValue = new ZCRecordValue(zcField, value);
-				}
-				if(zcField.getType()==FieldType.URL)
-				{
-					zcValue.setUrlTitleValue(urlTitleValue);
-					zcValue.setUrlLinkNameValue(urlLinkNameValue);
-				}
-				if(isForView)
-				{
-					zcField.setRecordValue(zcValue);
-				}
-				valueList.add(zcValue);
+			zcField.setRecordValue(zcValue);
 			}
+			valueList.add(zcValue);
 		}
 		ZCRecord record = new ZCRecord(recordid, valueList);
 		return record;

@@ -18,8 +18,6 @@ public class ZCField implements Comparable<ZCField> {
 	private int decimalLength = 0;
 	private int defaultRows = 0;
 	private int maximumRows = 0;
-	private int imageType = 3;
-
 	private boolean urlTitleReq = false;
 	private boolean urlLinkNameReq = true;
 
@@ -36,7 +34,6 @@ public class ZCField implements Comparable<ZCField> {
 
 	private ZCForm baseForm = null;
 	private ZCForm subForm = null;
-	private ZCForm editSubForm = null;
 	private ZCForm lookupForm = null;
 
 	private ZCComponent refFormComponent = null;
@@ -60,7 +57,14 @@ public class ZCField implements Comparable<ZCField> {
 	private boolean isRebuildRequired = false;
 	//private ExternalField externalFieldType = ExternalField.UNKNOWN;
 	private boolean isFileReUploaded = false;
+	
+	private int subFormEntryPosition = -1;
+	
+	public static int IMAGE_LINK = 1;
+	public static int IMAGE_LOCAL = 2;
+	public static int IMAGE_BOTH = 3;
 
+	private int imageType = IMAGE_BOTH;
 
 	ZCField(String fieldName, FieldType type, String displayName) {
 		this.fieldName = fieldName;
@@ -79,6 +83,15 @@ public class ZCField implements Comparable<ZCField> {
 			toReturn = toReturn + " - refFormLinkName:" + refFormComponent.getComponentLinkName() + " - refFormDisplayName:" +  refFormComponent.getComponentName() + " - refAppLinkName:" + refFormComponent.getAppLinkName(); //No I18N
 		}
 		return toReturn;
+	}
+	
+	public void setSubFormEntryPosition(int subFormEntryPosition)
+	{
+		this.subFormEntryPosition = subFormEntryPosition;
+	}
+	public int getSubFormEntryPosition()
+	{
+		return subFormEntryPosition;
 	}
 
 	public int getMaxChar() {
@@ -240,8 +253,9 @@ public class ZCField implements Comparable<ZCField> {
 		this.refFieldLinkName = refFieldLinkName;
 	}
 
-	public ZCForm getEditSubForm(ZCRecord record) {
-		List<ZCField> subFormFields = editSubForm.getFields();
+
+	public ZCForm getSubForm(ZCRecord record) {
+		List<ZCField> subFormFields = subForm.getFields();
 		List<ZCRecordValue> fromRecordValues = record.getValues();
 		List<ZCRecordValue> toRecordValues = new ArrayList<ZCRecordValue>();
 		for(int i=0; i<subFormFields.size(); i++) {
@@ -249,7 +263,30 @@ public class ZCField implements Comparable<ZCField> {
 			toRecordValues.add(subFormField.getRecordValue());
 		}
 		copyRecordValues(fromRecordValues, toRecordValues);
-		return editSubForm;
+		return subForm;
+	}
+	
+	public void updateSubFormEntry() {
+		ZCRecord record = getSubFormEntry(getSubFormEntryPosition());
+		List<ZCField> subFormFields = subForm.getFields();
+		List<ZCRecordValue> fromRecordValues = new ArrayList<ZCRecordValue>();
+		List<ZCRecordValue> toRecordValues = record.getValues();
+		for(int i=0; i<subFormFields.size(); i++) {
+			ZCField subFormField = subFormFields.get(i);
+			fromRecordValues.add(subFormField.getRecordValue());
+		}
+		copyRecordValues(fromRecordValues, toRecordValues);
+	}
+	
+	public ZCRecord addAndGetNewSubFormEntry() {
+		List<ZCRecordValue> toRecordValues = new ArrayList<ZCRecordValue>();
+		List<ZCRecordValue> fromRecordValues = defaultSubFormEntry.getValues();
+		for(int i=0; i<fromRecordValues.size(); i++) {
+			toRecordValues.add(fromRecordValues.get(i).getNewRecordValue());
+		}
+		ZCRecord toReturn = new ZCRecord(toRecordValues);
+		subFormEntries.add(toReturn);
+		return toReturn;
 	}
 	
 	public static void copyRecordValues(List<ZCRecordValue> fromRecordValues, List<ZCRecordValue> toRecordValues) {
@@ -259,8 +296,11 @@ public class ZCField implements Comparable<ZCField> {
 				ZCRecordValue fromRecordValue = fromRecordValues.get(j);
 				ZCField fromRecordValueField = fromRecordValue.getField();
 				if(fromRecordValueField.getFieldName().equals(toRecordValue.getField().getFieldName())) {
+					toRecordValue.setErrorOccured(fromRecordValue.isErrorOccured());
+					toRecordValue.setErrorMessage(fromRecordValue.getErrorMessage());
 					if(FieldType.isMultiChoiceField(fromRecordValueField.getType()) || FieldType.isSingleChoiceField(fromRecordValueField.getType())) {
 						toRecordValue.setLastReachedForChoices(fromRecordValue.isLastReachedForChoices());
+						toRecordValue.setLookupLoadingStarted(fromRecordValue.isLookupLoadingStarted());
 						toRecordValue.addChoices(fromRecordValue.getChoices());
 						if(FieldType.isMultiChoiceField(fromRecordValueField.getType())) {
 							toRecordValue.setChoiceValues(fromRecordValue.getChoiceValues());
@@ -277,9 +317,9 @@ public class ZCField implements Comparable<ZCField> {
 	
 	
 
-	void setEditSubForm(ZCForm editSubForm) {
-		this.editSubForm = editSubForm;
-		editSubForm.setBaseSubFormField(this);
+	void setSubForm(ZCForm subForm) {
+		this.subForm = subForm;
+		subForm.setBaseSubFormField(this);
 	}
 
 	private ZCRecord defaultSubFormEntry = null;
@@ -291,18 +331,16 @@ public class ZCField implements Comparable<ZCField> {
 	public ZCRecord getDefaultSubFormEntry() {
 		return defaultSubFormEntry;
 	}
+	
 
-	public ZCForm getSubForm() {
-		//return subForm;
-		return getEditSubForm(defaultSubFormEntry);
+
+	ZCForm getSubForm() {
+		return subForm;
 	}
+	
 
-	void setSubForm(ZCForm subForm) {
-		this.subForm = subForm;
-		subForm.setBaseSubFormField(this);
-	}
 
-	public void addSubFormEntry(ZCRecord record) {
+	void addSubFormEntry(ZCRecord record) {
 		subFormEntries.add(record);
 	}
 
@@ -317,7 +355,6 @@ public class ZCField implements Comparable<ZCField> {
 	public void removeSubFormEntry(int position) {
 		removedSubFormEntries.add(subFormEntries.remove(position));
 	}
-
 
 	List<ZCRecord> getUpdatedSubFormEntries() {
 		List<ZCRecord> updatedEntries = new ArrayList<ZCRecord>();
@@ -414,12 +451,12 @@ public class ZCField implements Comparable<ZCField> {
 		this.isDisabled = isDisabled;
 	}
 
-	public void onUserInput(List<ZCRecordValue> subFormTempRecordValues) throws ZCException{
-		ZOHOCreator.callFieldOnUser(baseForm, fieldName, false,subFormTempRecordValues);
+	public void onUserInput(ZCForm currentShownForm) throws ZCException{
+		ZOHOCreator.callFieldOnUser(baseForm, fieldName, false, currentShownForm);
 	}
 
-	public void onUserInputForFormula(List<ZCRecordValue> subFormTempRecordValues) throws ZCException{
-		ZOHOCreator.callFieldOnUser(baseForm, fieldName, true,subFormTempRecordValues);
+	public void onUserInputForFormula(ZCForm currentShownForm) throws ZCException{
+		ZOHOCreator.callFieldOnUser(baseForm, fieldName, true, currentShownForm);
 	}
 
 	public boolean isOnAddRowExists()
@@ -488,5 +525,7 @@ public class ZCField implements Comparable<ZCField> {
 	void setImageType(int imageType) {
 		this.imageType = imageType;
 	}
+	
+	
 
 }

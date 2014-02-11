@@ -11,6 +11,7 @@ public class ZCRecordValue {
 	private ZCChoice choiceValue = null;
 	private List<ZCChoice> choiceValues = null;
 	private File fileValue = null;
+	private String url = null;
 	private String urlTitleValue = null;
 	private String urlLinkNameValue = null;
 	private boolean errorOccured = false;
@@ -43,7 +44,15 @@ public class ZCRecordValue {
 		this.field = field;
 		setFileValue(fileValue);
 	}
+	
+	public ZCRecordValue(ZCField field,String url,String urlTitleValue,String urlLinkNameValue)
+	{
+		this.url = url;
+		this.urlTitleValue = urlTitleValue;
+		this.urlLinkNameValue = urlLinkNameValue;
+	}
 
+	
 	public String toString() {
 		return field.getDisplayName() + " : " + value;  //No I18N
 	}
@@ -55,6 +64,11 @@ public class ZCRecordValue {
 		return value;
 	}
 
+	public void setUrlLinkNameValue(String urlLinkNameValue)
+	{
+		this.urlLinkNameValue = urlLinkNameValue;
+	}
+	
 	public String getUrlLinkNameValue()
 	{
 		return urlLinkNameValue;
@@ -68,10 +82,17 @@ public class ZCRecordValue {
 	{
 		this.urlTitleValue = urlTitleValue;
 	}
-	public void setUrlLinkNameValue(String urlLinkNameValue)
+	public String getUrlValue()
 	{
-		this.urlLinkNameValue = urlLinkNameValue;
+		return url;
 	}
+	
+	 void setUrlValue(String url)
+	{
+		this.url = url;
+	}
+	
+	
 
 	public String getDisplayValue() {
 		if(FieldType.isMultiChoiceField(field.getType())) {
