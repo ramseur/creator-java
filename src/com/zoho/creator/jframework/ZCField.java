@@ -307,7 +307,14 @@ public class ZCField implements Comparable<ZCField> {
 						} else if(FieldType.isSingleChoiceField(fromRecordValueField.getType())) {
 							toRecordValue.setChoiceValue(fromRecordValue.getChoiceValue());
 						}
-					} else {
+					} 
+					else if(fromRecordValueField.getType()==FieldType.URL)
+						{
+						toRecordValue.setUrlValue(fromRecordValue.getUrlValue());
+						toRecordValue.setUrlTitleValue(fromRecordValue.getUrlTitleValue());
+						toRecordValue.setUrlLinkNameValue(fromRecordValue.getUrlLinkNameValue());
+						}
+					else {
 						toRecordValue.setValue(fromRecordValue.getValue());
 					}
 				}

@@ -267,8 +267,19 @@ public class ZCForm extends ZCComponent {
 					buff.append("]]>");//No I18N
 					buff.append("</value>");//No I18N
 					buff.append("</field>");//No I18N
-				} else if(!field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES)) {
-					if(FieldType.isPhotoField(field.getType()) && field.getImageType()==1 && !(recordValue.getValue().equals("")))
+				} 
+				else if(field.getType().equals(FieldType.URL))
+				{
+					buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
+					buff.append("<value>");//No I18N
+					buff.append("<![CDATA[");//No I18N
+					buff.append(recordValue.getUrlValueForSubmit());
+					buff.append("]]>");//No I18N
+					buff.append("</value>");//No I18N
+					buff.append("</field>");//No I18N
+				}
+				else if(!field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES)) {
+					if(FieldType.isPhotoField(field.getType()) && field.getImageType()==ZCField.IMAGE_LINK && !(recordValue.getValue().equals("")))
 					{
 						buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
 						buff.append("<value>");//No I18N
@@ -329,7 +340,15 @@ public class ZCForm extends ZCComponent {
 							buff.append("]]>");//No I18N	
 							buff.append("</value>");//No I18N
 						}
-					} else if(!FieldType.isPhotoField(subFormField.getType())) {
+					} else if(FieldType.URL==subFormField.getType())
+					{
+						buff.append("<value>");//No I18N
+						buff.append("<![CDATA[");//No I18N
+						buff.append(subFormRecordValue.getUrlValueForSubmit());
+						buff.append("]]>");//No I18N	
+						buff.append("</value>");//No I18N
+
+					}else if(!FieldType.isPhotoField(subFormField.getType())) {
 						buff.append("<value>");//No I18N
 						buff.append("<![CDATA[");//No I18N
 						buff.append(subFormRecordValue.getValue());
@@ -345,6 +364,7 @@ public class ZCForm extends ZCComponent {
 		}
 		return buff.toString();
 	}
+
 
 	public List<ZCRecordValue> getRecordValues() {
 		List<ZCField> subFormFields = getFields();
@@ -472,7 +492,7 @@ public class ZCForm extends ZCComponent {
 	public void onUserInputForSubFormFieldForFormula(ZCField onUserInputField, int entryPosition,long id) throws ZCException{
 		ZOHOCreator.callSubFormFieldOnUser(onUserInputField.getFieldName(), this, true,entryPosition,id);
 	}
-	
+
 	public ZCField getBaseSubFormField() {
 		return baseSubFormField;
 	}

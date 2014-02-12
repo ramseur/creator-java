@@ -16,8 +16,8 @@ public class ZCRecordValue {
 	private String urlLinkNameValue = null;
 	private boolean errorOccured = false;
 	private String errorMessage = null; 
-	
-	
+
+
 	private boolean isLastReachedForChoices = false;
 	private List<ZCChoice> choices  = new ArrayList<ZCChoice>(); 
 	private String searchForChoices = null;
@@ -44,15 +44,16 @@ public class ZCRecordValue {
 		this.field = field;
 		setFileValue(fileValue);
 	}
-	
+
 	public ZCRecordValue(ZCField field,String url,String urlTitleValue,String urlLinkNameValue)
 	{
+		this.field = field;
 		this.url = url;
 		this.urlTitleValue = urlTitleValue;
 		this.urlLinkNameValue = urlLinkNameValue;
 	}
 
-	
+
 	public String toString() {
 		return field.getDisplayName() + " : " + value;  //No I18N
 	}
@@ -68,7 +69,7 @@ public class ZCRecordValue {
 	{
 		this.urlLinkNameValue = urlLinkNameValue;
 	}
-	
+
 	public String getUrlLinkNameValue()
 	{
 		return urlLinkNameValue;
@@ -86,13 +87,13 @@ public class ZCRecordValue {
 	{
 		return url;
 	}
-	
-	 void setUrlValue(String url)
+
+	public void setUrlValue(String url)
 	{
 		this.url = url;
 	}
-	
-	
+
+
 
 	public String getDisplayValue() {
 		if(FieldType.isMultiChoiceField(field.getType())) {
@@ -113,6 +114,9 @@ public class ZCRecordValue {
 			else{
 				return choiceValue.getValue();
 			}
+		}else if(FieldType.URL==field.getType())
+		{
+			return url;
 		}
 		return value;
 	}
@@ -128,7 +132,7 @@ public class ZCRecordValue {
 		final List<ZCChoice> toReturn = new ArrayList<ZCChoice>(choiceValues);
 		return toReturn;
 	}
-	
+
 	public ZCRecordValue getNewRecordValue() {
 		ZCRecordValue toReturn = null;
 		if(FieldType.isMultiChoiceField(field.getType()) || FieldType.isSingleChoiceField(field.getType())) {
@@ -146,7 +150,7 @@ public class ZCRecordValue {
 		}
 		return toReturn;
 	}
-	
+
 
 	void addToValues(List<ZCChoice> valuesToAdd) {
 		if(!FieldType.isMultiChoiceField(field.getType())) {
@@ -307,6 +311,21 @@ public class ZCRecordValue {
 
 	public void setLookupLoadingStarted(boolean lookupLoadingStarted) {
 		this.lookupLoadingStarted = lookupLoadingStarted;
+	}
+
+	String getUrlValueForSubmit()
+	{
+		String urlValueForSubmit = "";
+		if (field.isUrlTitleReq() && field.isUrlLinkNameReq()) {
+			urlValueForSubmit = "<a href=" + "\"" + url + "\"" + " title="+ "\""+ urlTitleValue+ "\"" + " target=\"_blank\">" + urlLinkNameValue + "</a>";// No I18N
+		} else if (field.isUrlTitleReq()) {
+			urlValueForSubmit = "<a href=" + "\"" + url + "\"" + " title="+ "\"" + urlTitleValue + "\"" + " target=\"_blank\">"+ url + "</a>";// No I18N
+		} else if (field.isUrlLinkNameReq()) {
+			urlValueForSubmit = "<a href=" + "\"" + url + "\""+ " target=\"_blank\">" + urlLinkNameValue + "</a>";// No I18N
+		} else {
+			urlValueForSubmit = "<a href=" + "\"" + url + "\""+ " target=\"_blank\"></a>";// No I18N
+		}
+		return urlValueForSubmit;
 	}
 
 

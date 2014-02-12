@@ -738,6 +738,7 @@ class XMLParser {
 						{
 							subFormFields.add(subFormField);
 							subFormEditFields.add(parseField(subFormFieldNode,appLinkName,formLinkName, appOwner, true,new Hashtable<String, String>()));
+							System.out.println("inside checking"+subFormField.getRecordValue().getField().getType()+subFormField.getRecordValue().getField().getDisplayName());
 							defaultSubFormEntryValues.add(subFormField.getRecordValue().getNewRecordValue());
 						}
 					}
