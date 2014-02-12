@@ -10,7 +10,7 @@ public class ZCRecordValue {
 	private String value = null;
 	private ZCChoice choiceValue = null;
 	private List<ZCChoice> choiceValues = null;
-	private File fileValue = null;
+	private Object fileValue = null;
 	private String url = null;
 	private String urlTitleValue = null;
 	private String urlLinkNameValue = null;
@@ -40,9 +40,9 @@ public class ZCRecordValue {
 		setChoiceValues(choiceValues);
 	}
 
-	public ZCRecordValue(ZCField field, File fileValue) {
+	public ZCRecordValue(ZCField field, Object bitMapValue) {
 		this.field = field;
-		setFileValue(fileValue);
+		setFileValue(bitMapValue);
 	}
 
 	public ZCRecordValue(ZCField field,String url,String urlTitleValue,String urlLinkNameValue)
@@ -184,7 +184,7 @@ public class ZCRecordValue {
 		}
 	}
 
-	public File getFileValue() {
+	public Object getFileValue() {
 		return fileValue;
 	}
 
@@ -209,7 +209,7 @@ public class ZCRecordValue {
 		this.choiceValues = new ArrayList<ZCChoice>(choiceValues);
 	}
 
-	public void setFileValue(File fileValue) {
+	public void setFileValue(Object fileValue) {
 		if(!FieldType.isPhotoField(field.getType())) {
 			throw new RuntimeException("Use the other one");//No I18N
 		}

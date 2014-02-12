@@ -48,8 +48,8 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -89,6 +89,7 @@ public class ZOHOCreator {
 	private static String creatorURL = "creator.zoho.com";//No I18N
 	private static String prefix = "https";//No I18N
 	private static Properties props = new Properties();
+	private static ZCFileHelper fileHelper = null;
 	
 
 	public static String getLoginURL() {
@@ -151,6 +152,10 @@ public class ZOHOCreator {
 
 	public static void setServiceName(String serviceName) {
 		ZOHOCreator.serviceName = serviceName;
+	}
+	
+	public static void setFileHelper(ZCFileHelper fileHelper) {
+		ZOHOCreator.fileHelper = fileHelper;
 	}
 
 	public static String getCreatorURL() {
@@ -449,10 +454,10 @@ public class ZOHOCreator {
 				ZCField field = fields.get(i);
 				if(FieldType.isPhotoField(field.getType())) {
 					ZCRecordValue recValue = field.getRecordValue();
-					File fileToUpload = recValue.getFileValue();
+					Object bitmap = recValue.getFileValue();
 					int imageType = field.getImageType();
 					if(field.isFileReUploaded() && imageType != ZCField.IMAGE_LINK ) {
-						postImage(zcForm, field, recordId, fileToUpload, action);	
+						postImage(zcForm, field, recordId, bitmap, action);	
 					}
 				}
 			}
@@ -460,7 +465,7 @@ public class ZOHOCreator {
 		return response;		
 	}
 
-	private static void postImage(ZCForm zcForm, ZCField field, long recordId, File fileToUpload, String action) throws ZCException	{
+	private static void postImage(ZCForm zcForm, ZCField field, long recordId, Object bitmap, String action) throws ZCException	{
 		URLPair urlPair = ZCURL.fileUploadURL(zcForm.getAppOwner());
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.addAll(urlPair.getNvPair());
@@ -474,22 +479,23 @@ public class ZOHOCreator {
 		}
 		if(action == "update") {
 			params.add(new BasicNameValuePair("recordId", recordId + ""));//No I18N
-			if(getCurrentView()!=null && fileToUpload!=null) {
+			if(getCurrentView()!=null && bitmap!=null) {
 				params.add(new BasicNameValuePair("viewLinkName", getCurrentView().getComponentLinkName()));//No I18N
 				params.add(new BasicNameValuePair("operation","update"));
 			}	
 		} else {
 			params.add(new BasicNameValuePair("recordId", recordId + ""));//No I18N
 		}
-		if(fileToUpload!=null) {
-			params.add(new BasicNameValuePair("filename", fileToUpload.getName()));//No I18N
-			postFile(urlPair.getUrl(), fileToUpload, params);	
+		if(bitmap!=null) {
+			String fileName = "image" + System.currentTimeMillis();
+			params.add(new BasicNameValuePair("filename", fileName));//No I18N
+			postFile(urlPair.getUrl(), bitmap, fileName, params);	
 		} else {
 			params.add(new BasicNameValuePair("operation", "delete"));//No I18N
 			if(getCurrentView()!=null) {
 				params.add(new BasicNameValuePair("viewLinkName", getCurrentView().getComponentLinkName()));//No I18N
 			}
-			postFile(urlPair.getUrl(), null, params);
+			postFile(urlPair.getUrl(), null, "", params);
 		}
 	}
 
@@ -1313,7 +1319,7 @@ public class ZOHOCreator {
 		return getURLStringForException(url, params) + "\n\n" + getTrace(ex); //No I18N
 	}
 
-	static void postFile(String urlParam, File fileToUpload, List<NameValuePair> paramsList) throws ZCException {
+	static void postFile(String urlParam, Object bitMap, String fileName, List<NameValuePair> paramsList) throws ZCException {
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpParams httpParameters = httpclient.getParams();
 		httpParameters.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
@@ -1337,13 +1343,14 @@ public class ZOHOCreator {
 
 		String url = buff.toString();
 		HttpPost httppost = new HttpPost(url);
-		if(fileToUpload!=null)
+		if(bitMap!=null)
 		{
 			httppost.addHeader("enctype", "multipart/form-data"); //No I18N
-			ContentBody cbFile = new FileBody(fileToUpload); 
+			byte[] byteArray = fileHelper.getBytes(bitMap);
+			ContentBody cbFile = new ByteArrayBody(byteArray, fileName);			
 			MultipartEntity mpEntity = new MultipartEntity();
 			try {
-				mpEntity.addPart("filename", new StringBody(fileToUpload.getName()));//No I18N
+				mpEntity.addPart("filename", new StringBody(fileName));//No I18N
 			} catch (UnsupportedEncodingException e) {
 				throw new ZCException("Unable to upload file.", ZCException.GENERAL_ERROR, getTraceWithURL(e, urlParam, paramsList));//No I18N
 			} //No I18N
