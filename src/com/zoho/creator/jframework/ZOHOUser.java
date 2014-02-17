@@ -243,7 +243,7 @@ public class ZOHOUser {
 		}
 	}
 	
-	String getAuthToken() {
+	public String getAuthToken() {
 		return authToken;
 	}
 

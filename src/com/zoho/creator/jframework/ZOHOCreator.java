@@ -1156,8 +1156,7 @@ public class ZOHOCreator {
 		return toReturn;
 	}
 
-	private static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
-		System.out.println("posturl"+getURLString(url, params));
+	public static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
