@@ -92,6 +92,7 @@ public class ZOHOCreator {
 	private static ZCFileHelper fileHelper = null;
 	
 
+
 	public static String getLoginURL() {
 		return ZCURL.getURLString(ZCURL.getLoginUrl());
 	}
@@ -115,6 +116,7 @@ public class ZOHOCreator {
 	public static String getUserProperty(String key) {
 		return props.getProperty(key);
 	}
+	
 
 	static String getFilesDir() {
 		String str = ZOHOCreator.getUserProperty("FILES_DIR_PATH");
@@ -559,6 +561,7 @@ public class ZOHOCreator {
 
 	public static ZCNavList getNavigationListForApps() throws ZCException {
 		// check for file
+
 		File f = new File(getFilesDir()+NAV_LIST_FILE);
 		Document rootDocument = stringToDocument(readResponseFromFile(f));
 		if(rootDocument == null){
@@ -571,13 +574,17 @@ public class ZOHOCreator {
 
 	public static ZCAppList getPersonalApplicationList(List<NameValuePair> additionalParams) throws ZCException {
 
+
 		Document rootDocument = null;
 		File f1 = new File(getFilesDir()+EDIT_SUPPORT_FILE);
+
 		if(f1.exists()){
 			List<ZCApplication> zcApps = new ArrayList<ZCApplication>();
 			BufferedReader br = null;
 			try {
+
 				br = new BufferedReader(new FileReader(f1));
+
 				//String line = br.readLine();
 				while (true) {
 					String url = br.readLine();
@@ -595,6 +602,7 @@ public class ZOHOCreator {
 			}
 			return new ZCAppList(ZCAppList.PERSONAL_APPS, zcApps);
 		}else{
+
 			File f = new File(getFilesDir()+PERSONAL_APPLIST_FILE);
 			rootDocument = stringToDocument(readResponseFromFile(f));
 			if(rootDocument == null){
@@ -616,7 +624,9 @@ public class ZOHOCreator {
 
 	public static ZCAppList getSharedApplicationList(ZCSharedGroup sharedGroup) throws ZCException {
 
+
 		File f = new File(getFilesDir()+SHARED_APPLIST_FILE);
+
 		if(sharedGroup != null){
 			f = new File(getFilesDir()+"/sharedApps_"+sharedGroup.getGroupId()+"List.xml");
 		}
@@ -637,6 +647,7 @@ public class ZOHOCreator {
 
 	public static ZCAppList getWorkspaceApplicationList(String workspaceAppOwner, List<NameValuePair> additionalParams) throws ZCException {
 
+
 		File f = new File(getFilesDir()+"/workspaceApps_"+workspaceAppOwner+"List.xml");
 		Document rootDocument = stringToDocument(readResponseFromFile(f));
 		if(rootDocument == null){
@@ -654,6 +665,7 @@ public class ZOHOCreator {
 	}
 
 	public static List<ZCSection> getSectionList(String appLinkName, String appOwner, List<NameValuePair> additionalParams) throws ZCException {
+
 
 		File f = new File(getFilesDir()+"/sections_"+appOwner+"_"+appLinkName+"List.xml");
 		Document rootDocument = stringToDocument(readResponseFromFile(f));
@@ -766,6 +778,7 @@ public class ZOHOCreator {
 	}
 
 
+
 	public static void callSubFormAddRow(ZCForm zcForm, String subFormFieldLinkName,ZCForm currentShownForm, int rowPosition) throws ZCException{
 		List<NameValuePair> params = zcForm.getFieldParamValues();
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
@@ -835,7 +848,6 @@ public class ZOHOCreator {
 		}		
 		throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Trying to fetch view details. But not a view"); //No I18N
 	}
-
 
 
 	static List<ZCChoice> loadMoreChoices(ZCField field) throws ZCException {
@@ -1047,26 +1059,26 @@ public class ZOHOCreator {
 		String appOwner = zcView.getAppOwner(); 
 		URLPair customActionURLPair = ZCURL.customActionURL(appLinkName, viewLinkName, customActionId, appOwner, recordIDs);
 		String strResponse = ZOHOCreator.postURL(customActionURLPair.getUrl(), customActionURLPair.getNvPair());
-		int index = strResponse.indexOf("GenerateJS>");
-		if(index != -1){
-			while(strResponse.charAt(index) != '>'){
-				index++;
-			}
-			int startIndex = ++index;
-			index++;
-			while(strResponse.charAt(index) != '<'){
-				index++;
-			}
-			int endIndex = index;
-			strResponse = strResponse.replace(strResponse.substring(startIndex, endIndex), "");
-			index = strResponse.indexOf("]");
-			startIndex = index;
-			while(strResponse.charAt(index) != '>'){
-				index++;
-			}
-			endIndex = ++index;
-			strResponse = strResponse.replace(strResponse.substring(startIndex, endIndex), "");
-		}
+//		int index = strResponse.indexOf("GenerateJS>");
+//		if(index != -1){
+//			while(strResponse.charAt(index) != '>'){
+//				index++;
+//			}
+//			int startIndex = ++index;
+//			index++;
+//			while(strResponse.charAt(index) != '<'){
+//				index++;
+//			}
+//			int endIndex = index;
+//			strResponse = strResponse.replace(strResponse.substring(startIndex, endIndex), "");
+//			index = strResponse.indexOf("]");
+//			startIndex = index;
+//			while(strResponse.charAt(index) != '>'){
+//				index++;
+//			}
+//			endIndex = ++index;
+//			strResponse = strResponse.replace(strResponse.substring(startIndex, endIndex), "");
+//		}
 
 		Document rootDocument = stringToDocument(strResponse);
 		NodeList nl = rootDocument.getChildNodes();

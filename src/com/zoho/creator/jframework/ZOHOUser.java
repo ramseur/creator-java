@@ -32,48 +32,48 @@ public class ZOHOUser {
 	private String id;
 	private String fullName;
 	private HashMap<String,Object> userObject = new HashMap<String, Object>();
-	
-	
+
+
 	public void setObject(String key,Object object){
 		userObject.put(key, object);
 	}
-	
+
 	public Object getObject(String key){
 		return userObject.get(key);
 	}
-	
+
 	public String getDisplayName(){
 		return displayName;
 	}
-	
+
 	public String getFullName(){
 		return fullName;
 	}
-	
+
 	public String getId(){
 		return id;
 	}
-	
+
 	public int getGender(){
 		return gender;
 	}
-	
+
 	public String getCountry(){
 		return country;
 	}
-	
+
 	public String getLanguage(){
 		return language;
 	}
-	
+
 	public String getTimeZone(){
 		return timeZone;
 	}
-	
+
 	public List<String> getEmailAddresses(){
 		return eMailAddresses;
 	}
-	
+
 
 
 
@@ -82,24 +82,24 @@ public class ZOHOUser {
 			ZOHOUser.userStorage = userStorage;
 		}
 	}
-	
+
 
 	static ZOHOUser getUserObject() {
 		
-	    if(userCredential == null && userStorage != null) {
-    		String loadedAuthToken = userStorage.loadAuthToken();
-    		if(loadedAuthToken != null) {
-    			try {
+		if(userCredential == null && userStorage != null) {
+			String loadedAuthToken = userStorage.loadAuthToken();
+			if(loadedAuthToken != null) {
+				try {
 					userCredential = new ZOHOUser(loadedAuthToken);
 				} catch (ZCException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-    		}
-	    }
-	    return userCredential;
+			}
+		}
+		return userCredential;
 	}
-	
+
 	private ZOHOUser(String authToken) throws ZCException {
 		this.authToken = authToken;
 		userCredential = this;
@@ -143,99 +143,99 @@ public class ZOHOUser {
 		}
 	}
 
-	
-    private ZOHOUser(String uname, String password) throws ZCException {
-        Properties  props = new Properties();
-        int status = 105;
-        String cause = null;
-        String result = null;
+
+	private ZOHOUser(String uname, String password) throws ZCException {
+		Properties  props = new Properties();
+		int status = 105;
+		String cause = null;
+		String result = null;
+		try {
+			uname = java.net.URLEncoder.encode(uname, "UTF-8");
+			password = java.net.URLEncoder.encode(password, "UTF-8");//No I18N
+			String response = ZOHOCreator.getAuthTokenResponse(uname, password);
 			try {
-				uname = java.net.URLEncoder.encode(uname, "UTF-8");
-				password = java.net.URLEncoder.encode(password, "UTF-8");//No I18N
-				String response = ZOHOCreator.getAuthTokenResponse(uname, password);
-	            try {
-					props.load(new StringReader(response));
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} catch (UnsupportedEncodingException e) {
+				props.load(new StringReader(response));
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} //No I18N
-            
-        authToken = props.getProperty("AUTHTOKEN");
-        result = props.getProperty("RESULT");
-        if (authToken != null && result != null)
-        {
-            status = 200;
-            userCredential = this;
-         //   ZOHOUser.userStorage.saveAuthToken(authToken);
-            //String filePath = "./Login"; //No I18N
-            //EncodeObject.encode(filePath, userCredential);
+			}
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} //No I18N
 
-        }
-        else
-        {
-            cause = props.getProperty("CAUSE");
-            
- 
-            if (cause != null)
-            {
-                if (cause.equals("USER_NOT_ACTIVE"))          
-                {          
-                    status = 101;          
-                }          
-                else if (cause.equals("INVALID_PASSWORD"))          
-                {          
-                    status = 102;          
-                }          
-                else if (cause.equals("NO_SUCH_USER"))          
-                {          
-                    status = 103;          
-                }          
-                else if (cause.equals("IP_NOT_ALLOWED"))          
-                {          
-                    status = 104;          
-                }          
-                else if (cause.equals("REMOTE_SERVER_ERROR"))          
-                {          
-                    status = 105;          
-                }
-                else if (cause.equals("ACCOUNT_REGISTRATION_NOT_CONFIRMED")) 
-                {
-                    status = 106;
-                }
-            }
-        }                
-    }
+		authToken = props.getProperty("AUTHTOKEN");
+		result = props.getProperty("RESULT");
+		if (authToken != null && result != null)
+		{
+			status = 200;
+			userCredential = this;
+			//   ZOHOUser.userStorage.saveAuthToken(authToken);
+			//String filePath = "./Login"; //No I18N
+			//EncodeObject.encode(filePath, userCredential);
 
-    
-    static ZOHOUser getUserObject(String uname, String password) throws ZCException {
-        ZOHOUser currentUser = getUserObject();
-        
-        if(currentUser != null) {
-            currentUser.logout(); // logout and remove the files.
-        }
-        if(uname == null || "".equals(uname) || password == null || "".equals(password)) {
-            return null;
-        }
-        ZOHOUser user = new ZOHOUser(uname, password);
-        return user;
-    }
-	
+		}
+		else
+		{
+			cause = props.getProperty("CAUSE");
+
+
+			if (cause != null)
+			{
+				if (cause.equals("USER_NOT_ACTIVE"))          
+				{          
+					status = 101;          
+				}          
+				else if (cause.equals("INVALID_PASSWORD"))          
+				{          
+					status = 102;          
+				}          
+				else if (cause.equals("NO_SUCH_USER"))          
+				{          
+					status = 103;          
+				}          
+				else if (cause.equals("IP_NOT_ALLOWED"))          
+				{          
+					status = 104;          
+				}          
+				else if (cause.equals("REMOTE_SERVER_ERROR"))          
+				{          
+					status = 105;          
+				}
+				else if (cause.equals("ACCOUNT_REGISTRATION_NOT_CONFIRMED")) 
+				{
+					status = 106;
+				}
+			}
+		}                
+	}
+
+
+	static ZOHOUser getUserObject(String uname, String password) throws ZCException {
+		ZOHOUser currentUser = getUserObject();
+
+		if(currentUser != null) {
+			currentUser.logout(); // logout and remove the files.
+		}
+		if(uname == null || "".equals(uname) || password == null || "".equals(password)) {
+			return null;
+		}
+		ZOHOUser user = new ZOHOUser(uname, password);
+		return user;
+	}
+
 	static ZOHOUser getUserObject(String authToken) throws ZCException {
 		ZOHOUser currentUser = getUserObject();
-		
+
 		if(currentUser != null) {
 			currentUser.logout(); // logout and remove the files.
 		}
 		ZOHOUser user = new ZOHOUser(authToken);
 		ZOHOUser.userStorage.saveAuthToken(authToken);
-		
+
 		return user;
 	}
-	
+
 	void logout() {
 		if(authToken != null) {
 			ZOHOUser.userStorage.removeAuthToken();
