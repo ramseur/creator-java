@@ -607,7 +607,6 @@ class XMLParser {
 						Node recordNode = recordsList.item(k);
 						if(recordNode.getNodeName().equals("record")) {
 							ZCRecord zcRecord = parseAndSetRecord(null, recordNode, subFormFields);
-							System.out.println("zcrecccc"+zcRecord);
 							subFormEntries.add(zcRecord);
 						}
 					}
@@ -683,7 +682,7 @@ class XMLParser {
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("filter")) {
 
 				isFilterApplied = getBooleanValue(fieldPropetyNode, isFilterApplied);
-				System.out.println("filter value..."+isFilterApplied);
+				
 			} 
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("currencydisp")){
 				currencyType = getStringValue(fieldPropetyNode, "");
@@ -709,8 +708,6 @@ class XMLParser {
 				{
 					maximumRows = 10000;
 				}
-				System.out.println("maximum rows.."+maximumRows);
-
 			}
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("subformrecords"))
 			{
@@ -720,7 +717,6 @@ class XMLParser {
 					Node subFormRecordsNode = subFormRecordsNodeList.item(m);
 
 					ZCRecord record = parseAndSetRecord(null, subFormRecordsNode, subFormFields);
-					System.out.println("zcreccforsubf"+record);
 					subFormEntries.add(record);
 				}
 
@@ -738,7 +734,7 @@ class XMLParser {
 						{
 							subFormFields.add(subFormField);
 							subFormEditFields.add(parseField(subFormFieldNode,appLinkName,formLinkName, appOwner, true,new Hashtable<String, String>()));
-							System.out.println("inside checking"+subFormField.getRecordValue().getField().getType()+subFormField.getRecordValue().getField().getDisplayName());
+							
 							defaultSubFormEntryValues.add(subFormField.getRecordValue().getNewRecordValue());
 						}
 					}
@@ -854,7 +850,7 @@ class XMLParser {
 		zcField.setHidden(isHidden);
 		zcField.setDefaultRows(defaultRows);
 		zcField.setMaximumRows(maximumRows);
-		System.out.println("zcField.getmax"+zcField.getMaximumRows());
+		
 		zcField.setDecimalLength(decimalLength);
 		if(isFilterApplied || (!isLookup))
 		{
@@ -892,7 +888,7 @@ class XMLParser {
 
 			zcField.setDefaultSubFormEntry(defaultSubFormEntry);
 			for(int i=0; i<subFormEntries.size(); i++) {
-				System.out.println("subformentr"+subFormEntries.get(i));
+				
 				zcField.addSubFormEntry(subFormEntries.get(i));
 			}
 			ZCForm subForm = new ZCForm(appOwner, refAppLinkName, displayName, refFormLinkName, -1, false, false, "", "", false,"","");
@@ -929,7 +925,7 @@ class XMLParser {
 			Node choiceNode = choiceNodes.item(m);
 			String key = choiceNode.getAttributes().getNamedItem("value").getNodeValue();
 			String value = getStringValue(choiceNode, "");
-			System.out.println(value);
+			
 			choices.add(new ZCChoice(key, value));
 		}
 
@@ -1015,7 +1011,7 @@ class XMLParser {
 			String[] tokens = value.split(", ");
 			//			for(int i=1;i<tokens.length;i++)
 			//			{
-			//				System.out.println("hai"+tokens[i]+"token.....");
+			//				
 			//				//tokens[i]=tokens[i].substring(1);
 			//			}
 			for(int m = 0;m<tokens.length;m++)
@@ -1191,7 +1187,7 @@ class XMLParser {
 			Node columnNode = columnList.item(l);
 			NamedNodeMap columAttrMap = columnNode.getAttributes();
 			String fieldName = columAttrMap.getNamedItem("name").getNodeValue(); //No I18N
-			System.out.println("fieldnammmm"+fieldName);
+			
 			ZCField zcField = null;
 			if(zcView != null) {
 				zcField = zcView.getColumn(fieldName);
@@ -1217,7 +1213,6 @@ class XMLParser {
 			if(zcView == null)
 			{
 				choices = zcField.getRecordValue().getChoices();
-				
 				if(FieldType.isChoiceField(zcField.getType())) 
 				{
 					for(int i=0;i<columnvalueList.getLength();i++)
@@ -1262,7 +1257,7 @@ class XMLParser {
 			}
 			ZCRecordValue zcValue = null;
 			if(FieldType.isMultiChoiceField(zcField.getType())) {
-				System.out.println("selectedChoices.."+selectedChoices);
+				
 				zcValue = new ZCRecordValue(zcField, selectedChoices);
 				zcValue.addChoices(choices);
 			} else if(FieldType.isSingleChoiceField(zcField.getType())) {
@@ -1290,6 +1285,7 @@ class XMLParser {
 			{
 			zcField.setRecordValue(zcValue);
 			}
+
 			valueList.add(zcValue);
 		}
 		ZCRecord record = new ZCRecord(recordid, valueList);

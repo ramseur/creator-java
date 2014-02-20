@@ -173,6 +173,7 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("linkNameBased", "true"));
 		params.add(new BasicNameValuePair("recordLinkID",String.valueOf(recordLinkId)));
 		params.add(new BasicNameValuePair("recType",String.valueOf(formAccessType)));
+		params.add(new BasicNameValuePair("formAccessType",String.valueOf(formAccessType)));
 		params.addAll(additionalparams);
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}

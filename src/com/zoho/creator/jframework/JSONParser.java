@@ -84,15 +84,6 @@ class JSONParser {
 				{
 					String rowNum = jsonObj.getString("rowNo");
 					rowNo = Integer.parseInt(rowNum.substring(rowNum.indexOf("_")+1));
-					System.out.println("number...row..."+rowNo);
-					//					if(rowNum.contains("t::row"))
-					//					{
-					//						rowNo = Integer.parseInt(jsonObj.getString("rowNo").substring(7));
-					//					}
-					//					else
-					//					{
-					//						
-					//					}	
 				}
 				if(jsonObj.has("infoValue"))
 				{
@@ -208,11 +199,11 @@ class JSONParser {
 						ZCField subFormBaseField = currentShownForm.getBaseSubFormField();
 						if(subFormBaseField != null )
 						{
-							System.out.println("rowno.."+rowNo+(subFormBaseField.getSubFormEntryPosition()+1)+value);
+							
 							if(rowNo == subFormBaseField.getSubFormEntryPosition()+1)
 							{
 								currentShownSubFormValues = currentShownForm.getRecordValues();
-								System.out.println("inside .............");
+								
 								setValueInRecordValues(currentShownSubFormValues,field,choiceValues,zcChoice,value);
 							}
 						}

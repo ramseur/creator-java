@@ -90,7 +90,7 @@ public class ZOHOCreator {
 	private static String prefix = "https";//No I18N
 	private static Properties props = new Properties();
 	private static ZCFileHelper fileHelper = null;
-	
+
 
 
 	public static String getLoginURL() {
@@ -155,7 +155,7 @@ public class ZOHOCreator {
 	public static void setServiceName(String serviceName) {
 		ZOHOCreator.serviceName = serviceName;
 	}
-	
+
 	public static void setFileHelper(ZCFileHelper fileHelper) {
 		ZOHOCreator.fileHelper = fileHelper;
 	}
@@ -404,7 +404,7 @@ public class ZOHOCreator {
 		ZCView viewForEdit = baseForm.getViewForEdit(); 
 
 
-		//System.out.println("baseForm,,,,"+baseForm.getViewForEdit());
+		
 		if(viewForAdd != null) {
 			params.add(new BasicNameValuePair("viewLinkName" , viewForAdd.getComponentLinkName()));//No I18N
 		} else if(viewForEdit != null) {
@@ -728,27 +728,28 @@ public class ZOHOCreator {
 	private static void callFormOnAddOnLoad(ZCForm zcForm,int formAccessType) throws ZCException{
 		List<NameValuePair> params = zcForm.getFieldParamValues();
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
-
 		URLPair formOnAddOnLoadURL = ZCURL.formOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), params ,formAccessType);
-
+		
 		String response = ZOHOCreator.postURL(formOnAddOnLoadURL.getUrl(), formOnAddOnLoadURL.getNvPair());
-		System.out.println("response..."+response);
+		
 		JSONParser.parseAndCallFormEvents(response, zcForm);
+
 	}
 
 	static void callFormEditOnAddOnLoad(ZCForm zcForm,Long recordLinkId,int formAccessType) throws ZCException{
 		List<NameValuePair> params = zcForm.getFieldParamValues();
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
 		URLPair formEditOnAddOnLoadURL = ZCURL.formEditOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), params,recordLinkId,formAccessType);
+		
 		String response = ZOHOCreator.postURL(formEditOnAddOnLoadURL.getUrl(), formEditOnAddOnLoadURL.getNvPair());
-		System.out.println("edit response.."+response);
+		
 		JSONParser.parseAndCallFormEvents(response, zcForm);
 	}
 
 	private static void callDelugeEvents(ZCForm zcForm, URLPair urlPair) throws ZCException{
-		System.out.println("deluge url.."+ getURLString(urlPair.getUrl(), urlPair.getNvPair()));
+		
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
-		System.out.println("response.."+response);
+		
 		JSONParser.parseAndCallFormEvents(response,zcForm);
 	}
 
@@ -883,7 +884,7 @@ public class ZOHOCreator {
 			formAccessType = ZCForm.FORM_ALONE;
 		}
 		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), fieldName, size, searchForChoices, subformComponent,formAccessType,getAdditionalParamsForForm(baseForm,field),field);
-		System.out.println("choic url"+getURLString(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair()));
+		
 		Document rootDocument = ZOHOCreator.postURLXML(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair());
 		return XMLParser.parseLookUpChoices(rootDocument);
 	}
@@ -1048,7 +1049,7 @@ public class ZOHOCreator {
 	private static Document getViewXMLDocument(ZCComponent comp, List<NameValuePair> params) throws ZCException{
 		URLPair viewURLPair = ZCURL.viewURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner());
 		params.addAll(viewURLPair.getNvPair());
-		System.out.println("view url.."+getURLString(viewURLPair.getUrl(), params));
+		
 		Document toReturn = ZOHOCreator.postURLXML(viewURLPair.getUrl(), params);		
 		return toReturn;
 	}
@@ -1131,9 +1132,9 @@ public class ZOHOCreator {
 			params = new ArrayList<NameValuePair>();
 		}
 		params.addAll(xmlWriteURLPair.getNvPair());
-		System.out.println("form submit url"+getURLString(xmlWriteURLPair.getUrl(), params));
+		
 		Document rootDocument = ZOHOCreator.postURLXML(xmlWriteURLPair.getUrl(), params);
-		System.out.println("rootdocu"+getString(rootDocument));
+		
 		XPath xPath = XPathFactory.newInstance().newXPath();
 		ZCResponse toReturn = new ZCResponse();
 		try {
@@ -1268,7 +1269,7 @@ public class ZOHOCreator {
 	}
 
 	private static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-		System.out.println(getURLString(url, params)+"urllllll");
+		
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1335,7 +1336,7 @@ public class ZOHOCreator {
 		HttpParams httpParameters = httpclient.getParams();
 		httpParameters.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 		HttpConnectionParams.setTcpNoDelay(httpParameters, true);
-		System.out.println("file submit url.."+getURLString(urlParam, paramsList));
+		
 		StringBuffer buff = new StringBuffer(urlParam);
 		if(!urlParam.endsWith("/")) {
 			buff.append("/");
