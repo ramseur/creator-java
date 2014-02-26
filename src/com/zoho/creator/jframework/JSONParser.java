@@ -11,7 +11,6 @@ class JSONParser {
 
 	static ZCResponse parseAndCallFormEvents(String response, ZCForm currentShownForm) throws ZCException
 	{
-
 		List<String> alertMessages = new ArrayList<String>();
 		List<String> infoValues = new ArrayList<String>();
 		String openUrlString = null;
@@ -199,11 +198,11 @@ class JSONParser {
 						ZCField subFormBaseField = currentShownForm.getBaseSubFormField();
 						if(subFormBaseField != null )
 						{
-							
+
 							if(rowNo == subFormBaseField.getSubFormEntryPosition()+1)
 							{
 								currentShownSubFormValues = currentShownForm.getRecordValues();
-								
+
 								setValueInRecordValues(currentShownSubFormValues,field,choiceValues,zcChoice,value);
 							}
 						}
@@ -267,7 +266,14 @@ class JSONParser {
 					}
 					else
 					{
-						zcRecordValue.setChoiceValue(new ZCChoice(value,value));
+						if(value != null)
+						{
+							zcRecordValue.setChoiceValue(new ZCChoice(value,value));
+						}
+						else
+						{
+							zcRecordValue.setChoiceValue(null);
+						}
 					}
 					break; 
 				}

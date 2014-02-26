@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -58,11 +59,15 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
 
 
 public class ZOHOCreator {
@@ -116,7 +121,7 @@ public class ZOHOCreator {
 	public static String getUserProperty(String key) {
 		return props.getProperty(key);
 	}
-	
+
 
 	static String getFilesDir() {
 		String str = ZOHOCreator.getUserProperty("FILES_DIR_PATH");
@@ -235,8 +240,13 @@ public class ZOHOCreator {
 	}
 
 	public static ZCComponent getComponent(String appOwner, String appLinkName, String type, String componentLinkName,String componentName,String queryString) {
+		ZCComponent component = ZOHOCreator.getCurrentComponent();
 		ZCComponent toReturn = new ZCComponent (appOwner, appLinkName, type, componentName, componentLinkName, -1);
-		toReturn.setQueryString(queryString);
+		if(queryString == null){
+			toReturn.setQueryString(component.getQueryString());
+		}else{
+			toReturn.setQueryString(queryString);
+		}
 		return toReturn;
 
 	}
@@ -259,11 +269,12 @@ public class ZOHOCreator {
 
 	public static void loadSelectedView() throws ZCException{
 		setCurrentView(getView(getCurrentComponent()));
-	}	
+	}
 
 	public static void loadSelectedForm() throws ZCException {
 		ZCComponent comp = getCurrentComponent();
-		URLPair formMetaURLPair = ZCURL.formMetaURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner(), ZCForm.FORM_ALONE, null);
+		List<NameValuePair> params = getQueryStringParams(comp.getQueryString());
+		URLPair formMetaURLPair = ZCURL.formMetaURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner(), ZCForm.FORM_ALONE, params);
 		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
 		ZCForm zcForm = XMLParser.parseForForm(rootDocument, comp.getAppLinkName(), comp.getAppOwner(), comp.getQueryString(),false);
 		if(zcForm == null) {
@@ -289,12 +300,31 @@ public class ZOHOCreator {
 					"\"endDate\":{\"day\":" +endDateCal.get(Calendar.DAY_OF_MONTH) + ",\"month\":" + endDateCal.get(Calendar.MONTH) + ",\"year\":" + endDateCal.get(Calendar.YEAR) + ",\"hours\":"+ endDateCal.get(Calendar.HOUR_OF_DAY)  +",\"minutes\":"+ endDateCal.get(Calendar.MINUTE) +",\"seconds\":" + endDateCal.get(Calendar.SECOND) + "}};"));//No I18N
 		}
 		params.add(new BasicNameValuePair("viewLinkName", currentView.getComponentLinkName()));
+		params.addAll(getQueryStringParams(currentView.getQueryString()));
 		ZCForm form = getForm( currentView.getAppLinkName(), formLinkName, currentView.getAppOwner(), ZCForm.VIEW_ADD_FORM, params);
 		setCurrentForm(form);
 		form.setViewForAdd(getCurrentView());
 		if (form.hasOnLoad()) {
 			ZOHOCreator.callFormOnAddOnLoad(form, ZCForm.VIEW_ADD_FORM);
 		}
+	}
+
+	static List<NameValuePair> getQueryStringParams(String queryString)
+	{
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		if(queryString!=null)
+		{
+			String[] stringValues = queryString.split("&");
+			for(int p=0;p<stringValues.length;p++)
+			{
+				String[] fieldNameAndValueString = stringValues[p].split("=");
+				if(fieldNameAndValueString.length==2)
+				{
+					params.add(new BasicNameValuePair(fieldNameAndValueString[0],fieldNameAndValueString[1]));//No I18N
+				}
+			}
+		}
+		return params;
 	}
 
 	public static void loadFormForAddToLookup(ZCField lookupField) throws ZCException {
@@ -310,6 +340,7 @@ public class ZOHOCreator {
 
 
 	private static ZCForm getForm(String appLinkName, String formLinkName, String appOwner, int formType, List<NameValuePair> params) throws ZCException {
+
 		URLPair formMetaURLPair = ZCURL.formMetaURL(appLinkName, formLinkName, appOwner,  formType, params);
 		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
 		ZCForm toReturn = XMLParser.parseForForm(rootDocument, appLinkName, appOwner, null,false);
@@ -404,7 +435,7 @@ public class ZOHOCreator {
 		ZCView viewForEdit = baseForm.getViewForEdit(); 
 
 
-		
+
 		if(viewForAdd != null) {
 			params.add(new BasicNameValuePair("viewLinkName" , viewForAdd.getComponentLinkName()));//No I18N
 		} else if(viewForEdit != null) {
@@ -671,22 +702,23 @@ public class ZOHOCreator {
 		Document rootDocument = stringToDocument(readResponseFromFile(f));
 
 		if(rootDocument == null){
+
 			URLPair sectionListURLPair = ZCURL.sectionMetaURL(appLinkName, appOwner);
 			if(additionalParams == null) {
 				additionalParams = new ArrayList<NameValuePair>();
 			}
 			additionalParams.addAll(sectionListURLPair.getNvPair());
+			
 			rootDocument = ZOHOCreator.postURLXML(sectionListURLPair.getUrl(), additionalParams);
-			writeResponseToFile(getString(rootDocument), f);
+			writeResponseToFile(getString(rootDocument),f);
 		}
+		
 		return XMLParser.parseForSectionList(rootDocument, appLinkName, appOwner);
 	}
 
 	public static List<ZCSection> getSectionList(ZCApplication zcApp, List<NameValuePair> additionalParams)  throws ZCException {
 		return getSectionList(zcApp.getAppLinkName(), zcApp.getAppOwner(), additionalParams);
 	}
-
-
 
 	public static ZCForm getFeedBackForm(String preFilledLogMessage) {
 		ZCForm toReturn  = new ZCForm("zoho1", "support", "Feedback", "Feedback", 1, false, false, "Thank you for your feedback.", "dd-MMM-yyyy", false,"","");//No I18N
@@ -740,14 +772,14 @@ public class ZOHOCreator {
 		List<NameValuePair> params = zcForm.getFieldParamValues();
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
 		URLPair formEditOnAddOnLoadURL = ZCURL.formEditOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), params,recordLinkId,formAccessType);
-		
+
 		String response = ZOHOCreator.postURL(formEditOnAddOnLoadURL.getUrl(), formEditOnAddOnLoadURL.getNvPair());
-		
+
 		JSONParser.parseAndCallFormEvents(response, zcForm);
 	}
 
 	private static void callDelugeEvents(ZCForm zcForm, URLPair urlPair) throws ZCException{
-		
+
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
 		
 		JSONParser.parseAndCallFormEvents(response,zcForm);
@@ -806,6 +838,7 @@ public class ZOHOCreator {
 			if(comp.getType().equals(ZCComponent.REPORT)) {
 				params.add(new BasicNameValuePair("startIndex", "1"));//No I18N
 				params.add(new BasicNameValuePair("pageSize", ZCView.PAGE_SIZE+"")); //No I18N
+				params.addAll(getQueryStringParams(comp.getQueryString()));
 			} else if(comp.getType().equals(ZCComponent.CALENDAR)) {
 				Calendar startCalendar = Calendar.getInstance();   // this takes current date
 				startCalendar.set(Calendar.DAY_OF_MONTH, startCalendar.getActualMinimum(Calendar.DAY_OF_MONTH));
@@ -884,7 +917,7 @@ public class ZOHOCreator {
 			formAccessType = ZCForm.FORM_ALONE;
 		}
 		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), fieldName, size, searchForChoices, subformComponent,formAccessType,getAdditionalParamsForForm(baseForm,field),field);
-		
+
 		Document rootDocument = ZOHOCreator.postURLXML(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair());
 		return XMLParser.parseLookUpChoices(rootDocument);
 	}
@@ -1049,7 +1082,7 @@ public class ZOHOCreator {
 	private static Document getViewXMLDocument(ZCComponent comp, List<NameValuePair> params) throws ZCException{
 		URLPair viewURLPair = ZCURL.viewURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner());
 		params.addAll(viewURLPair.getNvPair());
-		
+
 		Document toReturn = ZOHOCreator.postURLXML(viewURLPair.getUrl(), params);		
 		return toReturn;
 	}
@@ -1060,26 +1093,27 @@ public class ZOHOCreator {
 		String appOwner = zcView.getAppOwner(); 
 		URLPair customActionURLPair = ZCURL.customActionURL(appLinkName, viewLinkName, customActionId, appOwner, recordIDs);
 		String strResponse = ZOHOCreator.postURL(customActionURLPair.getUrl(), customActionURLPair.getNvPair());
-//		int index = strResponse.indexOf("GenerateJS>");
-//		if(index != -1){
-//			while(strResponse.charAt(index) != '>'){
-//				index++;
-//			}
-//			int startIndex = ++index;
-//			index++;
-//			while(strResponse.charAt(index) != '<'){
-//				index++;
-//			}
-//			int endIndex = index;
-//			strResponse = strResponse.replace(strResponse.substring(startIndex, endIndex), "");
-//			index = strResponse.indexOf("]");
-//			startIndex = index;
-//			while(strResponse.charAt(index) != '>'){
-//				index++;
-//			}
-//			endIndex = ++index;
-//			strResponse = strResponse.replace(strResponse.substring(startIndex, endIndex), "");
-//		}
+		
+		//		int index = strResponse.indexOf("GenerateJS>");
+		//		if(index != -1){
+		//			while(strResponse.charAt(index) != '>'){
+		//				index++;
+		//			}
+		//			int startIndex = ++index;
+		//			index++;
+		//			while(strResponse.charAt(index) != '<'){
+		//				index++;
+		//			}
+		//			int endIndex = index;
+		//			strResponse = strResponse.replace(strResponse.substring(startIndex, endIndex), "");
+		//			index = strResponse.indexOf("]");
+		//			startIndex = index;
+		//			while(strResponse.charAt(index) != '>'){
+		//				index++;
+		//			}
+		//			endIndex = ++index;
+		//			strResponse = strResponse.replace(strResponse.substring(startIndex, endIndex), "");
+		//		}
 
 		Document rootDocument = stringToDocument(strResponse);
 		NodeList nl = rootDocument.getChildNodes();
@@ -1132,7 +1166,7 @@ public class ZOHOCreator {
 			params = new ArrayList<NameValuePair>();
 		}
 		params.addAll(xmlWriteURLPair.getNvPair());
-		
+
 		Document rootDocument = ZOHOCreator.postURLXML(xmlWriteURLPair.getUrl(), params);
 		
 		XPath xPath = XPathFactory.newInstance().newXPath();
@@ -1336,7 +1370,7 @@ public class ZOHOCreator {
 		HttpParams httpParameters = httpclient.getParams();
 		httpParameters.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 		HttpConnectionParams.setTcpNoDelay(httpParameters, true);
-		
+
 		StringBuffer buff = new StringBuffer(urlParam);
 		if(!urlParam.endsWith("/")) {
 			buff.append("/");
@@ -1493,4 +1527,5 @@ public class ZOHOCreator {
 			e.printStackTrace();
 		}
 	}
+	
 }

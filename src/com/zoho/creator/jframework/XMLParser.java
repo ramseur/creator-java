@@ -316,15 +316,15 @@ class XMLParser {
 		NodeList nl = rootDocument.getChildNodes();
 		ZCForm toReturn = null;
 		Hashtable<String,String> queryStringTable = new Hashtable<String, String>();
-		if(queryString!=null)
-		{
-			String[] stringValues = queryString.split("&");
-			for(int p=0;p<stringValues.length;p++)
-			{
-				String[] fieldNameAndValueString = stringValues[p].split("=");
-				queryStringTable.put(fieldNameAndValueString[0],fieldNameAndValueString[1]);
-			}
-		}
+		//		if(queryString!=null)
+		//		{
+		//			String[] stringValues = queryString.split("&");
+		//			for(int p=0;p<stringValues.length;p++)
+		//			{
+		//				String[] fieldNameAndValueString = stringValues[p].split("=");
+		//				queryStringTable.put(fieldNameAndValueString[0],fieldNameAndValueString[1]);
+		//			}
+		//		}
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
 			if(responseNode.getNodeName().equals("response")) {
@@ -682,7 +682,7 @@ class XMLParser {
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("filter")) {
 
 				isFilterApplied = getBooleanValue(fieldPropetyNode, isFilterApplied);
-				
+
 			} 
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("currencydisp")){
 				currencyType = getStringValue(fieldPropetyNode, "");
@@ -734,7 +734,7 @@ class XMLParser {
 						{
 							subFormFields.add(subFormField);
 							subFormEditFields.add(parseField(subFormFieldNode,appLinkName,formLinkName, appOwner, true,new Hashtable<String, String>()));
-							
+
 							defaultSubFormEntryValues.add(subFormField.getRecordValue().getNewRecordValue());
 						}
 					}
@@ -757,19 +757,19 @@ class XMLParser {
 		}
 
 		ZCField zcField = new ZCField(fieldName, fieldType, displayName);
-		for(String key:queryStringhashTable.keySet())
-		{
-			if(key.equals(fieldName))
-			{
-				if(FieldType.isMultiChoiceField(fieldType)){
-					initialChoiceValues = setFieldInitialValues(queryStringhashTable.get(key));
-				}
-				else
-				{
-					initialValue = queryStringhashTable.get(key);
-				}
-			}
-		}
+		//		for(String key:queryStringhashTable.keySet())
+		//		{
+		//			if(key.equals(fieldName))
+		//			{
+		//				if(FieldType.isMultiChoiceField(fieldType)){
+		//					initialChoiceValues = setFieldInitialValues(queryStringhashTable.get(key));
+		//				}
+		//				else
+		//				{
+		//					initialValue = queryStringhashTable.get(key);
+		//				}
+		//			}
+		//		}
 
 		if(FieldType.isMultiChoiceField(fieldType)) {
 			List<ZCChoice> selectedChoices = new ArrayList<ZCChoice>();// THis is used in Edit record for multichoice field. But in form builder there is no way to set initial value
@@ -778,6 +778,18 @@ class XMLParser {
 				if(keys.size()>0)
 				{
 					initialChoiceValues = keys;
+				}
+				if(initialChoiceValues.size()==1)
+				{
+					String keyValue = initialChoiceValues.get(0);
+					if(keyValue.contains(","))
+					{
+						String[] choiceValues =keyValue.split(",");
+						for(int i=0;i<choiceValues.length;i++)
+						{
+							initialChoiceValues.add(choiceValues[i]);
+						}
+					}
 				}
 				for(int j=0; j<initialChoiceValues.size(); j++) {
 					String initValue = initialChoiceValues.get(j);
@@ -827,6 +839,12 @@ class XMLParser {
 				if(keys.size()>0)
 				{
 					toAdd = new ZCChoice(keys.get(0), initialValue);
+				}else
+				{
+					if(initialValue.length()>0)
+					{
+						toAdd = new ZCChoice(initialValue, initialValue);
+					}
 				}
 				zcField.setRecordValue(new ZCRecordValue(zcField,toAdd));
 			}
@@ -850,7 +868,7 @@ class XMLParser {
 		zcField.setHidden(isHidden);
 		zcField.setDefaultRows(defaultRows);
 		zcField.setMaximumRows(maximumRows);
-		
+
 		zcField.setDecimalLength(decimalLength);
 		if(isFilterApplied || (!isLookup))
 		{
@@ -888,7 +906,7 @@ class XMLParser {
 
 			zcField.setDefaultSubFormEntry(defaultSubFormEntry);
 			for(int i=0; i<subFormEntries.size(); i++) {
-				
+
 				zcField.addSubFormEntry(subFormEntries.get(i));
 			}
 			ZCForm subForm = new ZCForm(appOwner, refAppLinkName, displayName, refFormLinkName, -1, false, false, "", "", false,"","");
@@ -925,7 +943,7 @@ class XMLParser {
 			Node choiceNode = choiceNodes.item(m);
 			String key = choiceNode.getAttributes().getNamedItem("value").getNodeValue();
 			String value = getStringValue(choiceNode, "");
-			
+
 			choices.add(new ZCChoice(key, value));
 		}
 
@@ -1187,7 +1205,7 @@ class XMLParser {
 			Node columnNode = columnList.item(l);
 			NamedNodeMap columAttrMap = columnNode.getAttributes();
 			String fieldName = columAttrMap.getNamedItem("name").getNodeValue(); //No I18N
-			
+
 			ZCField zcField = null;
 			if(zcView != null) {
 				zcField = zcView.getColumn(fieldName);
@@ -1236,7 +1254,7 @@ class XMLParser {
 				}
 				if(selectedChoices.size() >0) {
 					selectedChoice = selectedChoices.get(0);
-					
+
 				}
 			}
 			else 
@@ -1257,7 +1275,7 @@ class XMLParser {
 			}
 			ZCRecordValue zcValue = null;
 			if(FieldType.isMultiChoiceField(zcField.getType())) {
-				
+
 				zcValue = new ZCRecordValue(zcField, selectedChoices);
 				zcValue.addChoices(choices);
 			} else if(FieldType.isSingleChoiceField(zcField.getType())) {
@@ -1283,7 +1301,7 @@ class XMLParser {
 			}
 			if(zcView!=null)
 			{
-			zcField.setRecordValue(zcValue);
+				zcField.setRecordValue(zcValue);
 			}
 
 			valueList.add(zcValue);
