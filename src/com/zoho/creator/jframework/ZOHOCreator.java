@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -59,9 +58,6 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -509,25 +505,20 @@ public class ZOHOCreator {
 		int formType = form.getFormType();
 		if(!(formType==ZCForm.FORM_ALONE)) {
 			params.add(new BasicNameValuePair("formAccessType",formType+""));//No I18N
+			params.add(new BasicNameValuePair("viewLinkName", getCurrentView().getComponentLinkName()));//No I18N
 		}
 		if(action == "update") {
-			params.add(new BasicNameValuePair("recordId", recordId + ""));//No I18N
 			if(getCurrentView()!=null && bitmap!=null) {
-				params.add(new BasicNameValuePair("viewLinkName", getCurrentView().getComponentLinkName()));//No I18N
 				params.add(new BasicNameValuePair("operation","update"));
 			}	
-		} else {
-			params.add(new BasicNameValuePair("recordId", recordId + ""));//No I18N
 		}
+		params.add(new BasicNameValuePair("recordId", recordId + ""));//No I18N
 		if(bitmap!=null) {
 			String fileName = "image" + System.currentTimeMillis();
 			params.add(new BasicNameValuePair("filename", fileName));//No I18N
 			postFile(urlPair.getUrl(), bitmap, fileName, params);	
 		} else {
 			params.add(new BasicNameValuePair("operation", "delete"));//No I18N
-			if(getCurrentView()!=null) {
-				params.add(new BasicNameValuePair("viewLinkName", getCurrentView().getComponentLinkName()));//No I18N
-			}
 			postFile(urlPair.getUrl(), null, "", params);
 		}
 	}
@@ -708,11 +699,11 @@ public class ZOHOCreator {
 				additionalParams = new ArrayList<NameValuePair>();
 			}
 			additionalParams.addAll(sectionListURLPair.getNvPair());
-			
+
 			rootDocument = ZOHOCreator.postURLXML(sectionListURLPair.getUrl(), additionalParams);
 			writeResponseToFile(getString(rootDocument),f);
 		}
-		
+
 		return XMLParser.parseForSectionList(rootDocument, appLinkName, appOwner);
 	}
 
@@ -761,9 +752,9 @@ public class ZOHOCreator {
 		List<NameValuePair> params = zcForm.getFieldParamValues();
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
 		URLPair formOnAddOnLoadURL = ZCURL.formOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), params ,formAccessType);
-		
+
 		String response = ZOHOCreator.postURL(formOnAddOnLoadURL.getUrl(), formOnAddOnLoadURL.getNvPair());
-		
+
 		JSONParser.parseAndCallFormEvents(response, zcForm);
 
 	}
@@ -781,7 +772,7 @@ public class ZOHOCreator {
 	private static void callDelugeEvents(ZCForm zcForm, URLPair urlPair) throws ZCException{
 
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
-		
+
 		JSONParser.parseAndCallFormEvents(response,zcForm);
 	}
 
@@ -1093,7 +1084,7 @@ public class ZOHOCreator {
 		String appOwner = zcView.getAppOwner(); 
 		URLPair customActionURLPair = ZCURL.customActionURL(appLinkName, viewLinkName, customActionId, appOwner, recordIDs);
 		String strResponse = ZOHOCreator.postURL(customActionURLPair.getUrl(), customActionURLPair.getNvPair());
-		
+
 		//		int index = strResponse.indexOf("GenerateJS>");
 		//		if(index != -1){
 		//			while(strResponse.charAt(index) != '>'){
@@ -1166,9 +1157,10 @@ public class ZOHOCreator {
 			params = new ArrayList<NameValuePair>();
 		}
 		params.addAll(xmlWriteURLPair.getNvPair());
+		//<response><errorlist><error><code>2897</code><message><![CDATA[Permission Denied To Update Record(s).]]></message></error></errorlist></response>
 
 		Document rootDocument = ZOHOCreator.postURLXML(xmlWriteURLPair.getUrl(), params);
-		
+		System.out.println("submit response "+getString(rootDocument));
 		XPath xPath = XPathFactory.newInstance().newXPath();
 		ZCResponse toReturn = new ZCResponse();
 		try {
@@ -1183,6 +1175,14 @@ public class ZOHOCreator {
 			} else  if(status.startsWith("Success")) { //No I18N
 				xPath = XPathFactory.newInstance().newXPath();
 				String idValue = xPath.compile("/response/result/form/add/values/field[@name=\"ID\"]").evaluate(rootDocument);//No I18N
+				if(idValue.length()==0)
+				{
+					idValue = xPath.compile("/response/result/form/update/criteria").evaluate(rootDocument);//No I18N
+					if(idValue.length()>10)
+					{
+						idValue = idValue.substring(8,idValue.length()-2);
+					}
+				}
 				if(idValue.length()!=0) {
 					toReturn.setSuccessRecordID(Long.parseLong(idValue));
 					String lookUpValue = xPath.compile("/response/result/form/" + action + "/combinedlookupvalue").evaluate(rootDocument);//No I18N
@@ -1204,6 +1204,7 @@ public class ZOHOCreator {
 	}
 
 	public static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
+		System.out.println("post url..."+getURLString(url,params));
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1303,7 +1304,7 @@ public class ZOHOCreator {
 	}
 
 	private static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-		
+		System.out.println("posturl xml "+getURLString(url, params));
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1388,6 +1389,7 @@ public class ZOHOCreator {
 		}
 
 		String url = buff.toString();
+		System.out.println("postFile  "+url);
 		HttpPost httppost = new HttpPost(url);
 		if(bitMap!=null)
 		{
@@ -1527,5 +1529,5 @@ public class ZOHOCreator {
 			e.printStackTrace();
 		}
 	}
-	
+
 }

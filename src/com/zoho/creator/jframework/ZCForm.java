@@ -1,7 +1,6 @@
 // $Id$
 package com.zoho.creator.jframework;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,7 +101,7 @@ public class ZCForm extends ZCComponent {
 
 	public List<ZCField> getFields() {
 		final List<ZCField> toReturn = new ArrayList<ZCField>(fields);
-		return toReturn ;
+		return toReturn ;	
 	}
 
 	public ZCField getField(String fieldLinkName) {
