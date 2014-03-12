@@ -254,28 +254,42 @@ class JSONParser {
 			ZCRecordValue zcRecordValue = zcRecordValues.get(l);
 			if(zcRecordValue.getField().getFieldName().equals(field.getFieldName()))
 			{
+
 				if(FieldType.isMultiChoiceField(field.getType())) {
 					zcRecordValue.setChoiceValues(choiceValues);
 					break;
 				}
 				else if(FieldType.isSingleChoiceField(field.getType()))
 				{
-					if(zcChoice!=null)
-					{
-						zcRecordValue.setChoiceValue(zcChoice);
-					}
-					else
-					{
-						if(value != null)
-						{
-							zcRecordValue.setChoiceValue(new ZCChoice(value,value));
-						}
-						else
-						{
-							zcRecordValue.setChoiceValue(null);
-						}
-					}
+					List<ZCChoice> zcChoices = new ArrayList<ZCChoice>();
+							if(zcChoice!=null)
+							{
+								if(field.isLookup())
+								{    
+									zcChoices.add(zcChoice);
+									zcRecordValue.appendChoices(zcChoices);
+								}
+								zcRecordValue.setChoiceValue(zcChoice);
+							}
+							else
+							{
+								if(value != null)
+								{
+									ZCChoice choice = new ZCChoice(value, value);
+									if(field.isLookup())
+									{    
+										zcChoices.add(choice);
+										zcRecordValue.appendChoices(zcChoices);
+									}
+									zcRecordValue.setChoiceValue(choice);
+								}
+								else
+								{
+									zcRecordValue.setChoiceValue(null);
+								}
+							}
 					break; 
+
 				}
 				else
 				{

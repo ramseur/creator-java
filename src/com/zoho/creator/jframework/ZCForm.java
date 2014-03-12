@@ -278,7 +278,7 @@ public class ZCForm extends ZCComponent {
 					buff.append("</field>");//No I18N
 				}
 				else if(!field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES)) {
-					if(FieldType.isPhotoField(field.getType()) && field.getImageType()==ZCField.IMAGE_LINK && !(recordValue.getValue().equals("")))
+					if(FieldType.isPhotoField(field.getType()) && field.getImageType()==ZCField.IMAGE_LINK)
 					{
 						buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
 						buff.append("<value>");//No I18N

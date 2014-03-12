@@ -868,7 +868,7 @@ class XMLParser {
 		zcField.setHidden(isHidden);
 		zcField.setDefaultRows(defaultRows);
 		zcField.setMaximumRows(maximumRows);
-
+		zcField.setFilterApplied(isFilterApplied);
 		zcField.setDecimalLength(decimalLength);
 		if(isFilterApplied || (!isLookup))
 		{
@@ -879,6 +879,7 @@ class XMLParser {
 		zcField.setOnDeleteRowExists(onDeleteRowExists);
 		zcField.setLookup(isLookup);
 		zcField.setRequired(isRequired);
+		zcField.setUnique(isUnique);
 		zcField.setHasOnUserInput(hasOnUserInput);
 		zcField.setHasOnUserInputForFormula(hasOnUserInputForFormula);
 		zcField.setMaxChar(maxChar);

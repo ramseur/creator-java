@@ -278,7 +278,7 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("hide_signup", "true"));
 		params.add(new BasicNameValuePair("hide_remember", "true"));
 		params.add(new BasicNameValuePair("scopes", ZOHOCreator.getServiceName() + "/creatorapi,ZohoContacts/photoapi"));
-		params.add(new BasicNameValuePair("appname", ZOHOCreator.getServiceName()));
+		params.add(new BasicNameValuePair("appname", ZOHOCreator.getAuthDescription()));
 		params.add(new BasicNameValuePair("serviceurl", serverURL()));
 		return new URLPair("https://" + ZOHOCreator.getAccountsURL() + "/login", params);  //No I18N
 	}
