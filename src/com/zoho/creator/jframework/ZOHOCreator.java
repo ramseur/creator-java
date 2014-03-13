@@ -775,16 +775,12 @@ public class ZOHOCreator {
 		List<NameValuePair> params = zcForm.getFieldParamValues();
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
 		URLPair formEditOnAddOnLoadURL = ZCURL.formEditOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), params,recordLinkId,formAccessType);
-
 		String response = ZOHOCreator.postURL(formEditOnAddOnLoadURL.getUrl(), formEditOnAddOnLoadURL.getNvPair());
-
 		JSONParser.parseAndCallFormEvents(response, zcForm);
 	}
 
 	private static void callDelugeEvents(ZCForm zcForm, URLPair urlPair) throws ZCException{
-
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
-		
 		JSONParser.parseAndCallFormEvents(response,zcForm);
 	}
 
@@ -1218,7 +1214,8 @@ public class ZOHOCreator {
 	}
 
 	public static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
-				try
+		
+		try
 		{
 			HttpClient client = new DefaultHttpClient();
 			HttpPost request = new HttpPost();
