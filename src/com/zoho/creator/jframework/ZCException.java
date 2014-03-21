@@ -8,6 +8,7 @@ public class ZCException extends Exception {
 	public static final int GENERAL_ERROR = 2;
 	public static final int LICENCE_ERROR = 3;
 	public static final int ACCESS_ERROR = 4;
+	public static final int UNSUPPORTED_FIELDS = 5;
 	
 	private int type = ZCException.GENERAL_ERROR;
 	private String logMessage = null;

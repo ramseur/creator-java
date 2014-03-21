@@ -136,7 +136,7 @@ public class ZCURL {
 		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName + "/fields/", params);//No I18N
 	}
 
-	static URLPair lookupChoices(String appLinkName, String formLinkName, String appOwner,String lookupFieldName, int startIndex, String searchString, String subformComponent,int formAccessType,List<NameValuePair> additionalParams, ZCField field) {
+	static URLPair lookupChoices(String appLinkName, String formLinkName, String appOwner,String lookupFieldName, int startIndex, String searchString, String subformComponent,int formAccessType,List<NameValuePair> additionalParams) {
 		List<NameValuePair> params = getDefaultParams();
 		params.add(new BasicNameValuePair("limit", 50 + ""));
 		params.add(new BasicNameValuePair("appendRows", "true"));
@@ -329,11 +329,10 @@ public class ZCURL {
 
 	public static URLPair externalFieldTokenURL(String accessToken) {
 		// TODO Auto-generated method stub
-		//grant_type=authorization_code&code=%@&client_id=3MVG9Y6d_Btp4xp5MNbwoUX5SZA0SD0OO15kwh0D4sVVDVIeWoWNL2qIWQYxS6zNukVuxHdCt.SLq87xwXxGk&client_secret=4406449787548088942&redirect_uri=https://creator.zoho.com",
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("grant_type", "authorization_code"));
 		params.add(new BasicNameValuePair("code", accessToken));//No I18N
-		params.add(new BasicNameValuePair("client_id", "3MVG9Y6d_Btp4xp5MNbwoUX5SZA0SD0OO15kwh0D4sVVDVIeWoWNL2qIWQYxS6zNukVuxHdCt.SLq87xwXxGk"));//No I18N
+		params.add(new BasicNameValuePair("client_id", ""));//No I18N
 		params.add(new BasicNameValuePair("client_secret", "4406449787548088942"));//No I18N
 		params.add(new BasicNameValuePair("redirect_uri", "https://creator.zoho.com"));//No I18N
 		return new URLPair("https://login.salesforce.com/services/oauth2/token", params);

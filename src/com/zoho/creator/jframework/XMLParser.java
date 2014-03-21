@@ -148,6 +148,22 @@ class XMLParser {
 
 		return new ZCNavList(sharedWithGroupList, sharedWithWorkSpaceList);
 	}
+	
+//	static ZCNavList parseForNavigationListForAppsJson(String response) {
+//		List<ZCSharedGroup> sharedWithGroupList = new ArrayList<ZCSharedGroup>();
+//		List<String> sharedWithWorkSpaceList = new ArrayList<String>();
+//		JSONArray jArray;
+//		try {
+//			jArray = new JSONArray(response);
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		for (int i=0; i < jArray.length(); i++) {
+//		
+//		}
+//		return new ZCNavList(sharedWithGroupList, sharedWithWorkSpaceList);
+//	}
 
 	static List<ZCApplication> parseForApplicationList(Document rootDocument) throws ZCException {
 		List<ZCApplication> toReturn = new ArrayList<ZCApplication>();
@@ -749,11 +765,11 @@ class XMLParser {
 			}
 		}	
 		if(fieldType.equals(FieldType.EXTERNAL_FIELD) || fieldType.equals(FieldType.EXTERNAL_LINK)) {
-			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "This Form contains ZOHO CRM field which is currently not supported");
+			throw new ZCException("An error has occured.", ZCException.UNSUPPORTED_FIELDS, "This Form contains ZOHO CRM field which is currently not supported");
 		}
 		if(isParentSubForm && FieldType.isPhotoField(fieldType))
 		{
-			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Subform contains "+fieldType+" field which is currently not supported");
+			throw new ZCException("An error has occured.", ZCException.UNSUPPORTED_FIELDS, "Subform contains "+fieldType+" field which is currently not supported");
 		}
 
 		ZCField zcField = new ZCField(fieldName, fieldType, displayName);
