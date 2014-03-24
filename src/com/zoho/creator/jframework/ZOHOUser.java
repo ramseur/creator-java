@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
+import org.json.JSONArray;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -141,6 +142,14 @@ public class ZOHOUser {
 		}
 	}
 
+	
+	//private ZOHOUser(String authToken)
+//	{
+//		this.authToken = authToken;
+//		userCredential = this;
+//		//String response = ZOHOCreator.getUserDocument();
+//		JSONArray jArray = new JSONArray(response);
+//	}
 
 	private ZOHOUser(String uname, String password) throws ZCException {
 		Properties  props = new Properties();

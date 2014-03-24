@@ -105,9 +105,7 @@ public class ZCURL {
 
 	static URLPair fileUploadURL(String appOwner) {
 		return new URLPair(serverURL() + "/api/xml/fileupload/", getParamsWithOwner(appOwner));//No I18N
-
 	}
-
 
 	static URLPair bulkEditFormMetaURL(String appLinkName, String appOwner, String viewLinkName) {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);

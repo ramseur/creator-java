@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -659,7 +660,6 @@ public class ZOHOCreator {
 			try {
 
 				br = new BufferedReader(new FileReader(f1));
-
 				//String line = br.readLine();
 				while (true) {
 					String url = br.readLine();
@@ -1055,7 +1055,6 @@ public class ZOHOCreator {
 		if(filterBuff.length() > 0) {
 			params.add(new BasicNameValuePair("filterVal", filterBuff.toString())); //No I18N
 		}
-
 		//GROUP BY
 		List<ZCColumn> groupByColumns = zcView.getGroupByColumns();
 		if(groupByColumns.size()>0) {
@@ -1257,6 +1256,7 @@ public class ZOHOCreator {
 	}
 
 	public static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
+		
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1383,8 +1383,8 @@ public class ZOHOCreator {
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
+					
 					return toReturn;
-
 				} catch (ParserConfigurationException e) {
 					throw new ZCException("An error has occured", ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
 				} catch (SAXException e) {
