@@ -22,7 +22,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -941,7 +940,7 @@ public class ZOHOCreator {
 			subformComponent = field.getFieldName();
 			fieldName = subFormField.getFieldName();
 			size = subFormField.getRecordValue().getChoices().size();
-			searchForChoices = subFormField.getRecordValue().getSearchForChoices();
+			searchForChoices = field.getRecordValue().getSearchForChoices();
 		}
 
 		if(field.getBaseForm().getFormType()==ZCForm.FORM_LOOKUP_ADD_FORM) {
