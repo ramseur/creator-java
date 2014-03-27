@@ -1,5 +1,3 @@
-	// $Id$
-
 package com.zoho.creator.jframework;
 
 public class ZCException extends Exception {
@@ -9,20 +7,27 @@ public class ZCException extends Exception {
 	public static final int LICENCE_ERROR = 3;
 	public static final int ACCESS_ERROR = 4;
 	public static final int UNSUPPORTED_FIELDS = 5;
-	
+	public static final int ACCESSED_COMPONENTS_ERROR = 6;
+
 	private int type = ZCException.GENERAL_ERROR;
 	private String logMessage = null;
-	
+
 	public ZCException(String message,int type) {
 		this(message, type, null);
 	}
 
 	public ZCException(String message,int type, String logMessage) {
 		super(message);
-		this.type = type;
+		if(ZOHOCreator.getAccessedComponents() && type == GENERAL_ERROR){
+			this.type = ACCESSED_COMPONENTS_ERROR;
+		}
+		else{
+			this.type = type;
+		}
+
 		this.logMessage = logMessage;
 	}
-	
+
 	public int getType(){
 		return type;
 	}

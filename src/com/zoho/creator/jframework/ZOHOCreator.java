@@ -1,5 +1,3 @@
-// $Id$
-
 package com.zoho.creator.jframework;
 
 import java.io.BufferedReader;
@@ -95,6 +93,7 @@ public class ZOHOCreator {
 	private static String appLinkName = null;
 	private static String appOwner = null;
 	private static String layout = null;
+	private static Boolean accessedComponents = false;
 
 
 
@@ -157,6 +156,14 @@ public class ZOHOCreator {
 
 	public static String getUserProperty(String key) {
 		return props.getProperty(key);
+	}
+	
+	public static void setAccessedComponents(Boolean state){
+		accessedComponents = state;
+	}
+	
+	public static Boolean getAccessedComponents(){
+		return accessedComponents;
 	}
 
 
@@ -291,7 +298,7 @@ public class ZOHOCreator {
 	public static ZCComponent getComponent(String appOwner, String appLinkName, String type, String componentLinkName,String componentName,String queryString) {
 		ZCComponent component = ZOHOCreator.getCurrentComponent();
 		ZCComponent toReturn = new ZCComponent (appOwner, appLinkName, type, componentName, componentLinkName, -1);
-		if(queryString == null){
+		if(queryString == null && component != null){
 			toReturn.setQueryString(component.getQueryString());
 		}else{
 			toReturn.setQueryString(queryString);
@@ -1255,7 +1262,7 @@ public class ZOHOCreator {
 	}
 
 	public static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
-		
+
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1275,7 +1282,7 @@ public class ZOHOCreator {
 				}
 			};
 			byte[] response = client.execute(request, handler);
-			
+
 			return new String(response);
 		} catch(UnknownHostException uhe) {
 			throw new ZCException("No network connection.", ZCException.NETWORK_ERROR);//No I18N
@@ -1356,7 +1363,7 @@ public class ZOHOCreator {
 	}
 
 	private static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-		
+
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1382,7 +1389,7 @@ public class ZOHOCreator {
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
-					
+
 					return toReturn;
 				} catch (ParserConfigurationException e) {
 					throw new ZCException("An error has occured", ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
