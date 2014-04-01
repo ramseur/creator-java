@@ -792,7 +792,7 @@ class XMLParser {
 		}
 		if(isParentSubForm && FieldType.isPhotoField(fieldType))
 		{
-			throw new ZCException("An error has occured.", ZCException.ERROR_OCCURED, "Subform contains "+fieldType+" field which is currently not supported");
+			throw new ZCException("Subform contains "+fieldType+" field which is currently not supported", ZCException.ERROR_OCCURED,"" );
 		}
 
 		ZCField zcField = new ZCField(fieldName, fieldType, displayName);
