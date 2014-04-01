@@ -156,7 +156,7 @@ class JSONParser {
 				} else if(type==ZCForm.TASK_SELECT) {
 					if(FieldType.isMultiChoiceField(field.getType())) {
 						if(subFormName==null) {
-							recordValue.addToValues(choiceValues);
+							recordValue.addToValues(getAvailableChoices(choiceValues, recordValue));
 						}
 					} else if(FieldType.isSingleChoiceField(field.getType())) {
 						recordValue.setChoiceValue(choiceValues.get(0));
@@ -198,11 +198,9 @@ class JSONParser {
 						ZCField subFormBaseField = currentShownForm.getBaseSubFormField();
 						if(subFormBaseField != null )
 						{
-
 							if(rowNo == subFormBaseField.getSubFormEntryPosition()+1)
 							{
 								currentShownSubFormValues = currentShownForm.getRecordValues();
-
 								setValueInRecordValues(currentShownSubFormValues,field,choiceValues,zcChoice,value);
 							}
 						}
@@ -252,11 +250,19 @@ class JSONParser {
 		for(int l=0;l<zcRecordValues.size();l++)
 		{
 			ZCRecordValue zcRecordValue = zcRecordValues.get(l);
+			
 			if(zcRecordValue.getField().getFieldName().equals(field.getFieldName()))
 			{
-
 				if(FieldType.isMultiChoiceField(field.getType())) {
-					zcRecordValue.setChoiceValues(choiceValues);
+					
+					if(field.isLookup())
+					{    
+						zcRecordValue.appendChoices(choiceValues);
+						zcRecordValue.setChoiceValues(choiceValues);
+					}else
+					{
+						zcRecordValue.setChoiceValues(getAvailableChoices(choiceValues, zcRecordValue));
+					}
 					break;
 				}
 				else if(FieldType.isSingleChoiceField(field.getType()))
@@ -268,8 +274,12 @@ class JSONParser {
 								{    
 									zcChoices.add(zcChoice);
 									zcRecordValue.appendChoices(zcChoices);
+									zcRecordValue.setChoiceValue(zcChoice);
 								}
-								zcRecordValue.setChoiceValue(zcChoice);
+								else
+								{
+									zcRecordValue.setChoiceValue(getAvailableChoice(zcChoice,zcRecordValue));
+								}	
 							}
 							else
 							{
@@ -280,8 +290,11 @@ class JSONParser {
 									{    
 										zcChoices.add(choice);
 										zcRecordValue.appendChoices(zcChoices);
+										zcRecordValue.setChoiceValue(choice);
+									}else
+									{
+										zcRecordValue.setChoiceValue(getAvailableChoice(choice,zcRecordValue));
 									}
-									zcRecordValue.setChoiceValue(choice);
 								}
 								else
 								{
@@ -319,6 +332,32 @@ class JSONParser {
 		} 
 	}
 
+	private static ZCChoice getAvailableChoice(ZCChoice zcChoice, ZCRecordValue recValue) {
+		List<ZCChoice> fieldChoices = recValue.getChoices();
+		for(int i=0; i<fieldChoices.size(); i++) {
+			ZCChoice choice = fieldChoices.get(i);
+			if(choice.getKey().equals(zcChoice.getKey())) {
+				return choice;
+			}
+		}
+		return null;
+	}
+	
+	private static List<ZCChoice> getAvailableChoices(List<ZCChoice> zcChoices,ZCRecordValue recValue){
+		List<ZCChoice> fieldChoices = recValue.getChoices();
+		List<ZCChoice> availableChoices = new ArrayList<ZCChoice>();
+		for(int i=0; i<fieldChoices.size(); i++) {
+			ZCChoice choice = fieldChoices.get(i);
+			for(int j=0;j<zcChoices.size();j++){
+				ZCChoice zcChoice = zcChoices.get(j); 
+				if(choice.getKey().equals(zcChoice.getKey())) {
+					availableChoices.add(zcChoice);
+					break;
+				}
+			}	
+		}
+		return availableChoices;	
+	}
 	static String parseForTokenForExternalField(String response){
 		String toReturn = "";
 		try {

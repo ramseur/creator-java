@@ -148,22 +148,22 @@ class XMLParser {
 
 		return new ZCNavList(sharedWithGroupList, sharedWithWorkSpaceList);
 	}
-	
-//	static ZCNavList parseForNavigationListForAppsJson(String response) {
-//		List<ZCSharedGroup> sharedWithGroupList = new ArrayList<ZCSharedGroup>();
-//		List<String> sharedWithWorkSpaceList = new ArrayList<String>();
-//		JSONArray jArray;
-//		try {
-//			jArray = new JSONArray(response);
-//		} catch (JSONException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		for (int i=0; i < jArray.length(); i++) {
-//		
-//		}
-//		return new ZCNavList(sharedWithGroupList, sharedWithWorkSpaceList);
-//	}
+
+	//	static ZCNavList parseForNavigationListForAppsJson(String response) {
+	//		List<ZCSharedGroup> sharedWithGroupList = new ArrayList<ZCSharedGroup>();
+	//		List<String> sharedWithWorkSpaceList = new ArrayList<String>();
+	//		JSONArray jArray;
+	//		try {
+	//			jArray = new JSONArray(response);
+	//		} catch (JSONException e) {
+	//			// TODO Auto-generated catch block
+	//			e.printStackTrace();
+	//		}
+	//		for (int i=0; i < jArray.length(); i++) {
+	//		
+	//		}
+	//		return new ZCNavList(sharedWithGroupList, sharedWithWorkSpaceList);
+	//	}
 
 	static List<ZCApplication> parseForApplicationList(Document rootDocument) throws ZCException {
 		List<ZCApplication> toReturn = new ArrayList<ZCApplication>();
@@ -343,7 +343,26 @@ class XMLParser {
 		//		}
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
-			if(responseNode.getNodeName().equals("response")) {
+			if(responseNode.getNodeName().equals("errorlist"))
+			{
+				NodeList errorListNodes = responseNode.getChildNodes();
+				for(int j=0; j<errorListNodes.getLength(); j++) {
+					Node errorNode = errorListNodes.item(j);
+					if(errorNode.getNodeName().equals("error"))
+					{
+						NodeList messageNodes = errorNode.getChildNodes();
+						for(int k=0;k<messageNodes.getLength();k++)
+						{
+							Node messageNode = messageNodes.item(k);
+							if(messageNode.getNodeName().equals("message"))
+							{
+								throw new ZCException(getStringValue(messageNode,""), ZCException.ERROR_OCCURED,"" );
+							}
+						}
+					}
+				}
+			}
+			else if(responseNode.getNodeName().equals("response")) {
 				boolean hasAddOnLoad = false;
 				boolean hasEditOnLoad = false;
 				String successMessage = "";
@@ -375,7 +394,11 @@ class XMLParser {
 							} else if(resultNodeChild.getNodeName().equalsIgnoreCase("hasEditOnLoad")) { 
 								String nodeValue = getStringValue(resultNodeChild, "");
 								hasEditOnLoad = Boolean.valueOf(nodeValue);
-							} else if(resultNodeChild.getNodeName().equalsIgnoreCase("successMessage")) { 
+							} 
+							else if(resultNodeChild.getNodeName().equalsIgnoreCase("captcha")) { 
+								throw new ZCException("Captcha enabled forms are currently not supported", ZCException.ERROR_OCCURED, "");
+							}
+							else if(resultNodeChild.getNodeName().equalsIgnoreCase("successMessage")) { 
 								successMessage = getStringValue(resultNodeChild, "");
 							} else if(resultNodeChild.getNodeName().equalsIgnoreCase("dateFormat")) {
 								dateFormat = getStringValue(resultNodeChild,"");
@@ -765,11 +788,11 @@ class XMLParser {
 			}
 		}	
 		if(fieldType.equals(FieldType.EXTERNAL_FIELD) || fieldType.equals(FieldType.EXTERNAL_LINK)) {
-			throw new ZCException("An error has occured.", ZCException.UNSUPPORTED_FIELDS, "This Form contains ZOHO CRM field which is currently not supported");
+			throw new ZCException("This Form contains ZOHO CRM field which is currently not supported", ZCException.ERROR_OCCURED, "");
 		}
 		if(isParentSubForm && FieldType.isPhotoField(fieldType))
 		{
-			throw new ZCException("An error has occured.", ZCException.UNSUPPORTED_FIELDS, "Subform contains "+fieldType+" field which is currently not supported");
+			throw new ZCException("An error has occured.", ZCException.ERROR_OCCURED, "Subform contains "+fieldType+" field which is currently not supported");
 		}
 
 		ZCField zcField = new ZCField(fieldName, fieldType, displayName);

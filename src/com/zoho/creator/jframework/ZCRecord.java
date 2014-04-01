@@ -65,6 +65,11 @@ public class ZCRecord implements Comparable<ZCRecord>{
 	public long getRecordId() {
 		return recordId;
 	}
+	
+	void setRecordId(long recordId)
+	{
+		this.recordId = recordId;
+	}
 
 	public Date getEventDate() {
 		return eventDate;

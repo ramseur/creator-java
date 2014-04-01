@@ -56,7 +56,7 @@ public class ZCField implements Comparable<ZCField> {
 	private boolean isDisabled = false;
 	private boolean isRebuildRequired = false;
 	//private ExternalField externalFieldType = ExternalField.UNKNOWN;
-	private boolean isFileReUploaded = false;
+
 	private boolean hasFilterApplied = false;
 	
 	private int subFormEntryPosition = -1;
@@ -525,14 +525,7 @@ public class ZCField implements Comparable<ZCField> {
 	//		return externalFieldType;
 	//	}
 
-	boolean isFileReUploaded()
-	{
-		return isFileReUploaded;
-	}
-	public void setFileUploaded(boolean isFileReUploaded)
-	{
-		this.isFileReUploaded = isFileReUploaded;
-	}
+	
 
 	public int getImageType() {
 		return imageType;

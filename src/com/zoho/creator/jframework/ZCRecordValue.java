@@ -21,6 +21,7 @@ public class ZCRecordValue {
 	private List<ZCChoice> choices  = new ArrayList<ZCChoice>(); 
 	private String searchForChoices = null;
 	private boolean lookupLoadingStarted = false;
+	private boolean isFileReUploaded = false;
 
 
 
@@ -64,6 +65,16 @@ public class ZCRecordValue {
 		return value;
 	}
 
+
+	boolean isFileReUploaded()
+	{
+		return isFileReUploaded;
+	}
+	public void setFileUploaded(boolean isFileReUploaded)
+	{
+		this.isFileReUploaded = isFileReUploaded;
+	}
+	
 	public void setUrlLinkNameValue(String urlLinkNameValue)
 	{
 		this.urlLinkNameValue = urlLinkNameValue;
@@ -201,9 +212,18 @@ public class ZCRecordValue {
 		this.choiceValue = choiceValue;
 	}
 
-	public void setChoiceValues(List<ZCChoice> choiceValues) {
+	public void setChoiceValues(List<ZCChoice> zcChoices) {
 		if(!FieldType.isMultiChoiceField(field.getType())) {
 			throw new RuntimeException("Use the other one");//No I18N
+		}
+		List<ZCChoice> choiceValues = new ArrayList<ZCChoice>();
+		for(int i=0;i<zcChoices.size();i++) 
+		{
+			ZCChoice valueToAdd = zcChoices.get(i);
+			if(!choiceValues.contains(valueToAdd))
+			{
+				choiceValues.add(valueToAdd);
+			}
 		}
 		this.choiceValues = new ArrayList<ZCChoice>(choiceValues);
 	}

@@ -32,6 +32,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
@@ -532,7 +533,7 @@ public class ZOHOCreator {
 					params.add(new BasicNameValuePair("childFieldLabelName" , baseLookupField.getFieldName()));//No I18N
 				}
 				params.addAll(getAdditionalParamsForForm(zcForm, baseLookupField));
-				response =  postXMLString(zcForm.getAppOwner(), xmlString, action, params);		
+				response =  postXMLString(zcForm.getAppOwner(), xmlString, action, params,zcForm);		
 			}
 			if(response.isError()) {
 				return response;
@@ -545,8 +546,36 @@ public class ZOHOCreator {
 					ZCRecordValue recValue = field.getRecordValue();
 					Object bitmap = recValue.getFileValue();
 					int imageType = field.getImageType();
-					if(field.isFileReUploaded() && imageType != ZCField.IMAGE_LINK ) {
+					if(recValue.isFileReUploaded() && imageType != ZCField.IMAGE_LINK ) {
 						postImage(zcForm, field, recordId, bitmap, action);	
+					}
+				}
+				if(FieldType.SUB_FORM==field.getType())
+				{
+					ZCForm subForm = field.getSubForm();
+					List<ZCRecord> subformRecords = field.getUpdatedSubFormEntries();
+					subformRecords.addAll(field.getAddedSubFormEntries());
+					List<ZCField> subformFields = subForm.getFields();
+					for(int j=0;j<subformFields.size();j++)
+					{
+						ZCField subformField = subformFields.get(j);
+						if(FieldType.isPhotoField(subformField.getType()))
+						{
+							for(int k=0;k<subformRecords.size();k++)
+							{
+								ZCRecord subformRecord = subformRecords.get(i);	
+								List<ZCRecordValue> recordValues = subformRecord.getValues();
+								for(int l=0;l<recordValues.size();l++)
+								{
+									ZCRecordValue subformRecordValue = recordValues.get(l);
+									if(subformField.getFieldName().equals(subformRecordValue.getField().getFieldName()))
+									{
+										postImage(zcForm, field, recordId, subformRecordValue.getFileValue(), action);	
+									}
+								}
+
+							}
+						}
 					}
 				}
 			}
@@ -585,11 +614,11 @@ public class ZOHOCreator {
 
 
 	static ZCResponse duplicateRecords(ZCView zcView, List<Long> recordIDs) throws ZCException {
-		return postXMLString(zcView.getAppOwner(), zcView.getRecordIDXMLString(recordIDs, "duplicate"), "duplicate", null);//No I18N		
+		return postXMLString(zcView.getAppOwner(), zcView.getRecordIDXMLString(recordIDs, "duplicate"), "duplicate", null,null);//No I18N		
 	}
 
 	static ZCResponse deleteRecords(ZCView zcView, List<Long> recordIDs) throws ZCException {
-		return postXMLString(zcView.getAppOwner(), zcView.getRecordIDXMLString(recordIDs, "delete"), "delete", null);//No I18N		
+		return postXMLString(zcView.getAppOwner(), zcView.getRecordIDXMLString(recordIDs, "delete"), "delete", null,null);//No I18N		
 	}
 
 
@@ -1206,7 +1235,7 @@ public class ZOHOCreator {
 	}
 
 
-	private static ZCResponse postXMLString(String appOwner, String xmlString, String action, List<NameValuePair> params) throws ZCException{
+	private static ZCResponse postXMLString(String appOwner, String xmlString, String action, List<NameValuePair> params,ZCForm zcForm) throws ZCException{
 
 		URLPair xmlWriteURLPair = ZCURL.xmlWriteURL(appOwner, xmlString);
 		if(params == null) {
@@ -1244,6 +1273,41 @@ public class ZOHOCreator {
 						toReturn.setSuccessRecordID(Long.parseLong(idValue));
 						String lookUpValue = xPath.compile("/response/result/form/" + action + "/combinedlookupvalue").evaluate(rootDocument);//No I18N
 						toReturn.setSuccessLookUpChoiceValue(new ZCChoice(idValue, lookUpValue));
+					}
+				}
+
+				Object result = xPath.compile("/response/result/form/"+ action +"/values").evaluate(rootDocument, XPathConstants.NODESET);
+				NodeList nodes = (NodeList) result;
+				System.out.println("nodes size "+nodes.getLength());
+				for(int k=0;k<nodes.getLength();k++)
+				{
+					Node valuesNode=nodes.item(k);
+					NodeList childValuesNode = valuesNode.getChildNodes();
+					System.out.println("nodes size "+childValuesNode.getLength());
+					for(int i=0;i<childValuesNode.getLength();i++)
+					{
+						Node childNode = childValuesNode.item(i);
+						if(childNode.getNodeName().equals("field"))
+						{
+							NodeList fieldNodes = childNode.getChildNodes();
+							List<ZCRecord> records = new ArrayList<ZCRecord>();
+							for(int j=0;j<fieldNodes.getLength();j++)
+							{
+								Node actionNode = fieldNodes.item(j);
+								if(actionNode.getNodeName().equals("add")||actionNode.getNodeName().equals("update"))
+								{
+									ZCField zcField = zcForm.getField(childNode.getAttributes().getNamedItem("name").getNodeValue());
+									System.out.println("subform fieldname "+childNode.getAttributes().getNamedItem("name").getNodeValue());
+									if(j==0)
+									{
+										records = zcField.getUpdatedSubFormEntries();
+										records.addAll(zcField.getAddedSubFormEntries());	
+									}
+									records.get(j).setRecordId(Long.valueOf(actionNode.getAttributes().getNamedItem("ID").getNodeValue()));
+									System.out.println("subform record id "+Long.valueOf(actionNode.getAttributes().getNamedItem("ID").getNodeValue()));
+								}
+							}
+						}
 					}
 				}
 			} 
