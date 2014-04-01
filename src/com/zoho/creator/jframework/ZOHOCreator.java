@@ -158,11 +158,11 @@ public class ZOHOCreator {
 	public static String getUserProperty(String key) {
 		return props.getProperty(key);
 	}
-	
+
 	public static void setAccessedComponents(Boolean state){
 		accessedComponents = state;
 	}
-	
+
 	public static Boolean getAccessedComponents(){
 		return accessedComponents;
 	}
@@ -1275,15 +1275,12 @@ public class ZOHOCreator {
 						toReturn.setSuccessLookUpChoiceValue(new ZCChoice(idValue, lookUpValue));
 					}
 				}
-
 				Object result = xPath.compile("/response/result/form/"+ action +"/values").evaluate(rootDocument, XPathConstants.NODESET);
 				NodeList nodes = (NodeList) result;
-				System.out.println("nodes size "+nodes.getLength());
 				for(int k=0;k<nodes.getLength();k++)
 				{
 					Node valuesNode=nodes.item(k);
 					NodeList childValuesNode = valuesNode.getChildNodes();
-					System.out.println("nodes size "+childValuesNode.getLength());
 					for(int i=0;i<childValuesNode.getLength();i++)
 					{
 						Node childNode = childValuesNode.item(i);
@@ -1297,14 +1294,12 @@ public class ZOHOCreator {
 								if(actionNode.getNodeName().equals("add")||actionNode.getNodeName().equals("update"))
 								{
 									ZCField zcField = zcForm.getField(childNode.getAttributes().getNamedItem("name").getNodeValue());
-									System.out.println("subform fieldname "+childNode.getAttributes().getNamedItem("name").getNodeValue());
 									if(j==0)
 									{
 										records = zcField.getUpdatedSubFormEntries();
 										records.addAll(zcField.getAddedSubFormEntries());	
 									}
 									records.get(j).setRecordId(Long.valueOf(actionNode.getAttributes().getNamedItem("ID").getNodeValue()));
-									System.out.println("subform record id "+Long.valueOf(actionNode.getAttributes().getNamedItem("ID").getNodeValue()));
 								}
 							}
 						}
