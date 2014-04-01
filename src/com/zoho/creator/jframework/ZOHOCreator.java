@@ -1275,36 +1275,6 @@ public class ZOHOCreator {
 						toReturn.setSuccessLookUpChoiceValue(new ZCChoice(idValue, lookUpValue));
 					}
 				}
-				Object result = xPath.compile("/response/result/form/"+ action +"/values").evaluate(rootDocument, XPathConstants.NODESET);
-				NodeList nodes = (NodeList) result;
-				for(int k=0;k<nodes.getLength();k++)
-				{
-					Node valuesNode=nodes.item(k);
-					NodeList childValuesNode = valuesNode.getChildNodes();
-					for(int i=0;i<childValuesNode.getLength();i++)
-					{
-						Node childNode = childValuesNode.item(i);
-						if(childNode.getNodeName().equals("field"))
-						{
-							NodeList fieldNodes = childNode.getChildNodes();
-							List<ZCRecord> records = new ArrayList<ZCRecord>();
-							for(int j=0;j<fieldNodes.getLength();j++)
-							{
-								Node actionNode = fieldNodes.item(j);
-								if(actionNode.getNodeName().equals("add")||actionNode.getNodeName().equals("update"))
-								{
-									ZCField zcField = zcForm.getField(childNode.getAttributes().getNamedItem("name").getNodeValue());
-									if(j==0)
-									{
-										records = zcField.getUpdatedSubFormEntries();
-										records.addAll(zcField.getAddedSubFormEntries());	
-									}
-									records.get(j).setRecordId(Long.valueOf(actionNode.getAttributes().getNamedItem("ID").getNodeValue()));
-								}
-							}
-						}
-					}
-				}
 			} 
 			else {
 				String errorCodeMessage = xPath.compile("/response/errorlist/error/message").evaluate(rootDocument);//No I18N
@@ -1321,7 +1291,7 @@ public class ZOHOCreator {
 	}
 
 	public static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
-
+		
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1341,7 +1311,7 @@ public class ZOHOCreator {
 				}
 			};
 			byte[] response = client.execute(request, handler);
-
+			
 			return new String(response);
 		} catch(UnknownHostException uhe) {
 			throw new ZCException("No network connection.", ZCException.NETWORK_ERROR);//No I18N
@@ -1422,7 +1392,7 @@ public class ZOHOCreator {
 	}
 
 	private static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-
+		
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1448,7 +1418,6 @@ public class ZOHOCreator {
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
-
 					return toReturn;
 				} catch (ParserConfigurationException e) {
 					throw new ZCException("An error has occured", ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
