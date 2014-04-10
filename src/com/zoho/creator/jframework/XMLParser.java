@@ -109,7 +109,6 @@ class XMLParser {
 											if(workspaceownerNode.getNodeName().equals("workspaceowner")) {
 												String workspaceowner = getStringValue(workspaceownerNode, null);
 												sharedWithWorkSpaceList.add(workspaceowner);
-
 											}
 										}
 									}
@@ -331,6 +330,7 @@ class XMLParser {
 	static ZCForm parseForForm(Document rootDocument, String appLinkName, String appOwner,String queryString,boolean isEditForm) throws ZCException {
 		NodeList nl = rootDocument.getChildNodes();
 		ZCForm toReturn = null;
+		
 		Hashtable<String,String> queryStringTable = new Hashtable<String, String>();
 		//		if(queryString!=null)
 		//		{
@@ -903,7 +903,7 @@ class XMLParser {
 			}
 			zcField.setRecordValue(recordValue);
 		}
-
+		zcField.setExternalFieldType(externalFieldType);
 		zcField.setHidden(isHidden);
 		zcField.setDefaultRows(defaultRows);
 		zcField.setMaximumRows(maximumRows);

@@ -55,17 +55,17 @@ public class ZCField implements Comparable<ZCField> {
 	private boolean isHidden = false;
 	private boolean isDisabled = false;
 	private boolean isRebuildRequired = false;
-	//private ExternalField externalFieldType = ExternalField.UNKNOWN;
 
 	private boolean hasFilterApplied = false;
-	
+
 	private int subFormEntryPosition = -1;
-	
+
 	public static int IMAGE_LINK = 1;
 	public static int IMAGE_LOCAL = 2;
 	public static int IMAGE_BOTH = 3;
 
 	private int imageType = IMAGE_BOTH;
+	private ExternalField externalFieldType = ExternalField.UNKNOWN;
 
 	ZCField(String fieldName, FieldType type, String displayName) {
 		this.fieldName = fieldName;
@@ -85,7 +85,18 @@ public class ZCField implements Comparable<ZCField> {
 		}
 		return toReturn;
 	}
-	
+
+
+	void setExternalFieldType(ExternalField externalFieldType)
+	{
+		this.externalFieldType = externalFieldType;
+	}
+
+	public ExternalField getExternalFieldType()
+	{
+		return externalFieldType;
+	}
+
 	public void setSubFormEntryPosition(int subFormEntryPosition)
 	{
 		this.subFormEntryPosition = subFormEntryPosition;
@@ -274,7 +285,7 @@ public class ZCField implements Comparable<ZCField> {
 		copyRecordValues(fromRecordValues, toRecordValues);
 		return subForm;
 	}
-	
+
 	public void updateSubFormEntry() {
 		ZCRecord record = getSubFormEntry(getSubFormEntryPosition());
 		List<ZCField> subFormFields = subForm.getFields();
@@ -286,7 +297,7 @@ public class ZCField implements Comparable<ZCField> {
 		}
 		copyRecordValues(fromRecordValues, toRecordValues);
 	}
-	
+
 	public ZCRecord addAndGetNewSubFormEntry() {
 		List<ZCRecordValue> toRecordValues = new ArrayList<ZCRecordValue>();
 		List<ZCRecordValue> fromRecordValues = defaultSubFormEntry.getValues();
@@ -297,7 +308,7 @@ public class ZCField implements Comparable<ZCField> {
 		subFormEntries.add(toReturn);
 		return toReturn;
 	}
-	
+
 	public static void copyRecordValues(List<ZCRecordValue> fromRecordValues, List<ZCRecordValue> toRecordValues) {
 		for(int i=0; i<toRecordValues.size(); i++) {
 			ZCRecordValue toRecordValue = toRecordValues.get(i);
@@ -318,11 +329,11 @@ public class ZCField implements Comparable<ZCField> {
 						}
 					} 
 					else if(fromRecordValueField.getType()==FieldType.URL)
-						{
+					{
 						toRecordValue.setUrlValue(fromRecordValue.getUrlValue());
 						toRecordValue.setUrlTitleValue(fromRecordValue.getUrlTitleValue());
 						toRecordValue.setUrlLinkNameValue(fromRecordValue.getUrlLinkNameValue());
-						}
+					}
 					else {
 						toRecordValue.setValue(fromRecordValue.getValue());
 					}
@@ -330,8 +341,8 @@ public class ZCField implements Comparable<ZCField> {
 			}
 		}
 	}
-	
-	
+
+
 
 	void setSubForm(ZCForm subForm) {
 		this.subForm = subForm;
@@ -339,21 +350,21 @@ public class ZCField implements Comparable<ZCField> {
 	}
 
 	private ZCRecord defaultSubFormEntry = null;
-	
+
 	void setDefaultSubFormEntry(ZCRecord defaultSubFormEntry) {
 		this.defaultSubFormEntry = defaultSubFormEntry;
 	}
-	
+
 	public ZCRecord getDefaultSubFormEntry() {
 		return defaultSubFormEntry;
 	}
-	
+
 
 
 	ZCForm getSubForm() {
 		return subForm;
 	}
-	
+
 
 
 	void addSubFormEntry(ZCRecord record) {
@@ -516,17 +527,6 @@ public class ZCField implements Comparable<ZCField> {
 		this.decimalLength = decimalLength;
 	}
 
-	//	public void setExternalFieldType(ExternalField externalFieldType) {
-	//		// TODO Auto-generated method stub
-	//		this.externalFieldType  = externalFieldType;
-	//	}
-	//	
-	//	public ExternalField getExternalFieldType(){
-	//		return externalFieldType;
-	//	}
-
-	
-
 	public int getImageType() {
 		return imageType;
 	}
@@ -534,7 +534,7 @@ public class ZCField implements Comparable<ZCField> {
 	void setImageType(int imageType) {
 		this.imageType = imageType;
 	}
-	
-	
+
+
 
 }

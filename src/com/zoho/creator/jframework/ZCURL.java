@@ -163,6 +163,7 @@ public class ZCURL {
 		params.addAll(additionalParams);
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}
+	
 	static URLPair formEditOnLoad(String appLinkName, String formLinkName, String appOwner,List<NameValuePair> additionalparams,Long recordLinkId,int formAccessType) {
 		List<NameValuePair> params=getDefaultParams();
 		params.add(new BasicNameValuePair("sharedBy", appOwner));
@@ -298,6 +299,13 @@ public class ZCURL {
 		List<NameValuePair> params = getDefaultParams();
 		params.add(new BasicNameValuePair("AUTHTOKEN", authToken));
 		return new URLPair("https://" + ZOHOCreator.getAccountsURL() + "/apiauthtoken/delete", params);
+	}
+	
+	static URLPair editAccessURL(String appOwner,String appLinkName)
+	{
+		List<NameValuePair> params = getDefaultParams();
+		params.add(new BasicNameValuePair("emailid","edit@zohocreator.com"));
+		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/developer/add",params);	
 	}
 
 	private static String serverURL() {

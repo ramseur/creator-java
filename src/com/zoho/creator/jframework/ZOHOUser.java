@@ -84,7 +84,7 @@ public class ZOHOUser {
 
 
 	static ZOHOUser getUserObject() {
-		
+
 		if(userCredential == null && userStorage != null) {
 			String loadedAuthToken = userStorage.loadAuthToken();
 			if(loadedAuthToken != null) {
@@ -102,7 +102,9 @@ public class ZOHOUser {
 	private ZOHOUser(String authToken) throws ZCException {
 		this.authToken = authToken;
 		userCredential = this;
+		
 		Document rootDocument = ZOHOCreator.getUserDocument();
+		
 		NodeList nl = rootDocument.getChildNodes();
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
@@ -142,14 +144,14 @@ public class ZOHOUser {
 		}
 	}
 
-	
+
 	//private ZOHOUser(String authToken)
-//	{
-//		this.authToken = authToken;
-//		userCredential = this;
-//		//String response = ZOHOCreator.getUserDocument();
-//		JSONArray jArray = new JSONArray(response);
-//	}
+	//	{
+	//		this.authToken = authToken;
+	//		userCredential = this;
+	//		//String response = ZOHOCreator.getUserDocument();
+	//		JSONArray jArray = new JSONArray(response);
+	//	}
 
 	private ZOHOUser(String uname, String password) throws ZCException {
 		Properties  props = new Properties();
@@ -239,7 +241,6 @@ public class ZOHOUser {
 		}
 		ZOHOUser user = new ZOHOUser(authToken);
 		ZOHOUser.userStorage.saveAuthToken(authToken);
-
 		return user;
 	}
 
@@ -249,7 +250,7 @@ public class ZOHOUser {
 			userCredential = null;
 		}
 	}
-	
+
 	public String getAuthToken() {
 		return authToken;
 	}

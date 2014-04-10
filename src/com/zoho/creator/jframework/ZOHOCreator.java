@@ -32,7 +32,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
@@ -62,8 +61,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-
 
 public class ZOHOCreator {
 
@@ -654,6 +651,7 @@ public class ZOHOCreator {
 	}
 
 	public static ZOHOUser getZohoUser() {
+	
 		return ZOHOUser.getUserObject();
 	}
 
@@ -756,8 +754,6 @@ public class ZOHOCreator {
 	}
 
 	public static ZCAppList getWorkspaceApplicationList(String workspaceAppOwner, List<NameValuePair> additionalParams) throws ZCException {
-
-
 		File f = new File(getFilesDir()+"/workspaceApps_"+workspaceAppOwner+"List.xml");
 		Document rootDocument = stringToDocument(readResponseFromFile(f));
 		if(rootDocument == null){
@@ -799,9 +795,9 @@ public class ZOHOCreator {
 		return getSectionList(zcApp.getAppLinkName(), zcApp.getAppOwner(), additionalParams);
 	}
 
-	public static ZCForm getFeedBackForm(String preFilledLogMessage) {
+	public static ZCForm getFeedBackForm(String preFilledLogMessage,boolean isGeneralErrorOccured) {
 		ZCForm toReturn  = new ZCForm("zoho1", "support", "Feedback", "Feedback", 1, false, false, "Thank you for your feedback.", "dd-MMM-yyyy", false,"","");//No I18N
-
+		ZCField editAccessField   = new ZCField("edit_access_field",FieldType.DROPDOWN,"Allow edit access to support");
 		ZCField platformField = new ZCField("Platform", FieldType.DROPDOWN, "Platform");//No I18N
 		List<ZCChoice> choices = new ArrayList<ZCChoice>();
 		//choices.add(new ZCChoice("iOS", "iOS"));//No I18N
@@ -812,14 +808,53 @@ public class ZOHOCreator {
 		platformField.setRecordValue(recValue);//No I18N
 		platformField.setHidden(true);
 		platformField.setRebuildRequired(true);
-
+		editAccessField.setLookup(true); 
+		List<ZCApplication> zcApps = new ArrayList<ZCApplication>();
+//		try {
+//			zcApps = getPersonalApplicationList(null).getApps();
+//		} catch (ZCException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		List<ZCChoice> zcChoices = new ArrayList<ZCChoice>();
+		if(zcApps!=null)
+		{
+			for(int i=0;i<zcApps.size();i++)
+			{
+				ZCApplication zcApp = zcApps.get(i);
+				ZCChoice zcAppChoice = new ZCChoice(zcApp.getAppLinkName(),zcApp.getAppName());
+				zcChoices.add(zcAppChoice);		
+			}
+		}
+		ZCChoice zcChoice = null;
 		ZCField titleField = new ZCField("Title", FieldType.SINGLE_LINE, "Title");//No I18N
 		titleField.setRecordValue(new ZCRecordValue(titleField, ""));
-
 		ZCField messageField = new ZCField("Message", FieldType.MULTI_LINE, "Message");//No I18N
 		messageField.setRecordValue(new ZCRecordValue(messageField, preFilledLogMessage));
-
 		List<ZCField> fields = new ArrayList<ZCField>();
+		if(isGeneralErrorOccured)
+		{
+			String personalAppsOwner = "";
+			if(zcApps!=null&&zcApps.size()>0)
+			{
+				personalAppsOwner = zcApps.get(0).getAppOwner();	
+				if(ZOHOCreator.getCurrentApplication()!=null)
+				{
+					String currentApplictionOwner =ZOHOCreator.getCurrentApplication().getAppOwner();
+					if(currentApplictionOwner.equals(personalAppsOwner))
+					{
+						zcChoice = new ZCChoice(ZOHOCreator.getCurrentApplication().getAppLinkName(),ZOHOCreator.getCurrentApplication().getAppName());
+					}
+				}
+			}
+		}
+		editAccessField.setRecordValue(new ZCRecordValue(editAccessField, zcChoice));
+		editAccessField.getRecordValue().addChoices(zcChoices);
+		editAccessField.getRecordValue().setLastReachedForChoices(true);
+		if(zcChoices.size()>0)
+		{
+			fields.add(editAccessField);
+		}
 		fields.add(platformField);	
 		fields.add(titleField);//No I18N
 		fields.add(messageField);//No I18N
@@ -834,7 +869,11 @@ public class ZOHOCreator {
 
 
 
-
+	public static void giveEditAccessToTheApplication(String appOwner,String appLinkName) throws ZCException
+	{
+		URLPair editAccessUrl  = ZCURL.editAccessURL(appOwner, appLinkName);
+		ZOHOCreator.postURLXML(editAccessUrl.getUrl(), editAccessUrl.getNvPair());
+	}
 
 	private static void callFormOnAddOnLoad(ZCForm zcForm,int formAccessType) throws ZCException{
 		List<NameValuePair> params = zcForm.getFieldParamValues();
@@ -1029,20 +1068,15 @@ public class ZOHOCreator {
 			endCalendar.set(Calendar.SECOND, 59);
 			endCalendar.set(Calendar.MILLISECOND, 999);
 			SimpleDateFormat endDateFormat = new SimpleDateFormat("yyyy-MM-dd");//No I18N
-
 			params.add(new BasicNameValuePair("startDateStr", startDateFormat.format(startCalendar.getTime())));//No I18N
 			params.add(new BasicNameValuePair("endDateStr", endDateFormat.format(endCalendar.getTime()))); //No I18N
-
 		} else {
 			params.add(new BasicNameValuePair("startIndex", zcView.getRecords().size()+1 + ""));//No I18N
 			params.add(new BasicNameValuePair("pageSize", ZCView.PAGE_SIZE+"")); //No I18N
 		}
 		params.add(new BasicNameValuePair("viewmeta", "false")); //No I18N
 		List<ZCColumn> columns = zcView.getColumns();
-
-
 		StringBuffer filterBuff = new StringBuffer();
-
 		ZCCustomFilter selectedCustomFilter = zcView.getSelectedCustomFilter();
 		if(selectedCustomFilter != null) {
 			filterBuff.append("CustomFilter:");//No I18N
@@ -1354,9 +1388,7 @@ public class ZOHOCreator {
 				}
 			}
 		}
-
 		return sb.toString();
-
 	}
 
 	private static String getURLStringForException(String url, List<NameValuePair> params) {
@@ -1387,7 +1419,6 @@ public class ZOHOCreator {
 				}
 			}
 		}
-
 		return buff.toString();
 	}
 
@@ -1415,9 +1446,11 @@ public class ZOHOCreator {
 				InputStream is = null;
 				try {
 					is = entity.getContent();
+					
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
+					
 					return toReturn;
 				} catch (ParserConfigurationException e) {
 					throw new ZCException("An error has occured", ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
@@ -1439,7 +1472,6 @@ public class ZOHOCreator {
 			throw new ZCException("Network Error.", ZCException.NETWORK_ERROR);//No I18N
 		}
 		throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, getURLStringForException(url, params)); //No I18N
-
 	}
 
 	private static String getTrace(Exception ex) {
