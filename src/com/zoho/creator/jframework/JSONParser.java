@@ -1,6 +1,9 @@
 package com.zoho.creator.jframework;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -134,83 +137,92 @@ class JSONParser {
 						subFormField = baseForm.getField(subFormName);
 						ZCForm subForm = subFormField.getSubForm();
 						field = subForm.getField(fieldName);
-						field.setRebuildRequired(true);
-						recordValue = field.getRecordValue();
+						if(field!=null)
+						{
+							field.setRebuildRequired(true);
+							recordValue = field.getRecordValue();
+						}
 					}
 
 				}
-				if(type==ZCForm.TASK_HIDE) {
-					field.setHidden(true);
-				} else if(type==ZCForm.TASK_SHOW) {
-					field.setHidden(false);
-				} else if(type==ZCForm.TASK_ENABLE) {
-					field.setDisabled(false);
-				} else if(type==ZCForm.TASK_DISABLE) {
-					field.setDisabled(true);
-				} else if(type==ZCForm.TASK_CLEAR) {
-					recordValue.clearChoices();
-					recordValue.setLastReachedForChoices(true);
-				} else if(type==ZCForm.TASK_ADDVALUE) {
-					recordValue.appendChoices(choiceValues);
-					recordValue.setLastReachedForChoices(true);
-				} else if(type==ZCForm.TASK_SELECT) {
-					if(FieldType.isMultiChoiceField(field.getType())) {
-						if(subFormName==null) {
-							recordValue.addToValues(getAvailableChoices(choiceValues, recordValue));
-						}
-					} else if(FieldType.isSingleChoiceField(field.getType())) {
-						recordValue.setChoiceValue(choiceValues.get(0));
-					}
-				} 
-				else if(type==ZCForm.TASK_SELECTALL) {
-					if(FieldType.isMultiChoiceField(field.getType())) {
-						List<ZCChoice> choices = recordValue.getChoices();
-						choiceValues = new ArrayList<ZCChoice>();
-						for(int k=0; k<choices.size(); k++) {
-							choiceValues.add(choices.get(k));
-						}
-						recordValue.setChoiceValues(choiceValues);
-					} 
-				} else if(type==ZCForm.TASK_DESELECT) {
-					if(FieldType.isMultiChoiceField(field.getType())) {
-						recordValue.removeFromValues(choiceValues);
-					} else {
-						recordValue.setValue(null);
-					}
-				} else if(type==ZCForm.TASK_DESELECTALL) {
-					if(FieldType.isMultiChoiceField(field.getType())) {
-						recordValue.setChoiceValues(new ArrayList<ZCChoice>());
-					}
-				} else if(type==ZCForm.TASK_ALERT) {
-					alertMessages.add(alertMessage);
-				} else if(type==ZCForm.TASK_RELOADFORM) {
-					currentShownForm.setReLoadForm(true);
-					break;
-				} else if(type==ZCForm.TASK_SETVALUE) {
-					List<ZCRecordValue> zcRecordValues = new ArrayList<ZCRecordValue>();
-					List<ZCRecordValue> currentShownSubFormValues = null;
-					if(rowNo>0) 
-					{
-						List<ZCRecord> records = subFormField.getUpdatedSubFormEntries();
-						records.addAll(subFormField.getAddedSubFormEntries());
-						ZCRecord zcRecord = records.get(rowNo-1);
-						zcRecordValues = zcRecord.getValues();
-						ZCField subFormBaseField = currentShownForm.getBaseSubFormField();
-						if(subFormBaseField != null )
-						{
-							if(rowNo == subFormBaseField.getSubFormEntryPosition()+1)
+				if(field!=null)
+				{
+					if(type==ZCForm.TASK_HIDE) {
+						field.setHidden(true);
+					} else if(type==ZCForm.TASK_SHOW) {
+						field.setHidden(false);
+					} else if(type==ZCForm.TASK_ENABLE) {
+						field.setDisabled(false);
+					} else if(type==ZCForm.TASK_DISABLE) {
+						field.setDisabled(true);
+					} else if(type==ZCForm.TASK_CLEAR) {
+						recordValue.clearChoices();
+						recordValue.setLastReachedForChoices(true);
+					} else if(type==ZCForm.TASK_ADDVALUE) {
+						recordValue.appendChoices(choiceValues);
+						recordValue.setLastReachedForChoices(true);
+					} else if(type==ZCForm.TASK_SELECT) {
+						if(FieldType.isMultiChoiceField(field.getType())) {
+							if(subFormName==null) {
+								recordValue.addToValues(getAvailableChoices(choiceValues, recordValue));
+							}
+						} else if(FieldType.isSingleChoiceField(field.getType())) {
+							if(choiceValues.size()>0)
 							{
-								currentShownSubFormValues = currentShownForm.getRecordValues();
-								setValueInRecordValues(currentShownSubFormValues,field,choiceValues,zcChoice,value);
+							recordValue.setChoiceValue(choiceValues.get(0));
 							}
 						}
+					} 
+					else if(type==ZCForm.TASK_SELECTALL) {
+						if(FieldType.isMultiChoiceField(field.getType())) {
+							List<ZCChoice> choices = recordValue.getChoices();
+							choiceValues = new ArrayList<ZCChoice>();
+							for(int k=0; k<choices.size(); k++) {
+								choiceValues.add(choices.get(k));
+							}
+							recordValue.setChoiceValues(choiceValues);
+						} 
+					} else if(type==ZCForm.TASK_DESELECT) {
+						if(FieldType.isMultiChoiceField(field.getType())) {
+							recordValue.removeFromValues(choiceValues);
+						} else {
+							recordValue.setValue(null);
+						}
+					} else if(type==ZCForm.TASK_DESELECTALL) {
+						if(FieldType.isMultiChoiceField(field.getType())) {
+							recordValue.setChoiceValues(new ArrayList<ZCChoice>());
+						}
+					} else if(type==ZCForm.TASK_SETVALUE) {
+						List<ZCRecordValue> zcRecordValues = new ArrayList<ZCRecordValue>();
+						List<ZCRecordValue> currentShownSubFormValues = null;
+						if(rowNo>0) 
+						{
+							List<ZCRecord> records = subFormField.getUpdatedSubFormEntries();
+							records.addAll(subFormField.getAddedSubFormEntries());
+							ZCRecord zcRecord = records.get(rowNo-1);
+							zcRecordValues = zcRecord.getValues();
+							ZCField subFormBaseField = currentShownForm.getBaseSubFormField();
+							if(subFormBaseField != null )
+							{
+								if(rowNo == subFormBaseField.getSubFormEntryPosition()+1)
+								{
+									currentShownSubFormValues = currentShownForm.getRecordValues();
+									setValueInRecordValues(currentShownSubFormValues,field,choiceValues,zcChoice,value);
+								}
+							}
+						}
+						else
+						{
+							zcRecordValues.add(recordValue);
+						}
+						setValueInRecordValues(zcRecordValues,field,choiceValues,zcChoice,value);
 					}
-					else
-					{
-						zcRecordValues.add(recordValue);
-					}
-					setValueInRecordValues(zcRecordValues,field,choiceValues,zcChoice,value);
-				}
+				}if(type==ZCForm.TASK_ALERT) {
+					alertMessages.add(alertMessage);
+				}else if(type==ZCForm.TASK_RELOADFORM) {
+					currentShownForm.setReLoadForm(true);
+					break;
+				} 
 				if(subFormName==null)
 				{
 					if(field != null && type==ZCForm.TASK_SETVALUE|| type==ZCForm.TASK_DESELECTALL ||type==ZCForm.TASK_DESELECT || type==ZCForm.TASK_SELECTALL || type==ZCForm.TASK_SELECT) {
@@ -250,11 +262,11 @@ class JSONParser {
 		for(int l=0;l<zcRecordValues.size();l++)
 		{
 			ZCRecordValue zcRecordValue = zcRecordValues.get(l);
-			
+
 			if(zcRecordValue.getField().getFieldName().equals(field.getFieldName()))
 			{
 				if(FieldType.isMultiChoiceField(field.getType())) {
-					
+
 					if(field.isLookup())
 					{    
 						zcRecordValue.appendChoices(choiceValues);
@@ -268,39 +280,39 @@ class JSONParser {
 				else if(FieldType.isSingleChoiceField(field.getType()))
 				{
 					List<ZCChoice> zcChoices = new ArrayList<ZCChoice>();
-							if(zcChoice!=null)
+					if(zcChoice!=null)
+					{
+						if(field.isLookup())
+						{    
+							zcChoices.add(zcChoice);
+							zcRecordValue.appendChoices(zcChoices);
+							zcRecordValue.setChoiceValue(zcChoice);
+						}
+						else
+						{
+							zcRecordValue.setChoiceValue(getAvailableChoice(zcChoice,zcRecordValue));
+						}	
+					}
+					else
+					{
+						if(value != null)
+						{
+							ZCChoice choice = new ZCChoice(value, value);
+							if(field.isLookup())
+							{    
+								zcChoices.add(choice);
+								zcRecordValue.appendChoices(zcChoices);
+								zcRecordValue.setChoiceValue(choice);
+							}else
 							{
-								if(field.isLookup())
-								{    
-									zcChoices.add(zcChoice);
-									zcRecordValue.appendChoices(zcChoices);
-									zcRecordValue.setChoiceValue(zcChoice);
-								}
-								else
-								{
-									zcRecordValue.setChoiceValue(getAvailableChoice(zcChoice,zcRecordValue));
-								}	
+								zcRecordValue.setChoiceValue(getAvailableChoice(choice,zcRecordValue));
 							}
-							else
-							{
-								if(value != null)
-								{
-									ZCChoice choice = new ZCChoice(value, value);
-									if(field.isLookup())
-									{    
-										zcChoices.add(choice);
-										zcRecordValue.appendChoices(zcChoices);
-										zcRecordValue.setChoiceValue(choice);
-									}else
-									{
-										zcRecordValue.setChoiceValue(getAvailableChoice(choice,zcRecordValue));
-									}
-								}
-								else
-								{
-									zcRecordValue.setChoiceValue(null);
-								}
-							}
+						}
+						else
+						{
+							zcRecordValue.setChoiceValue(null);
+						}
+					}
 					break; 
 
 				}
@@ -342,7 +354,7 @@ class JSONParser {
 		}
 		return null;
 	}
-	
+
 	private static List<ZCChoice> getAvailableChoices(List<ZCChoice> zcChoices,ZCRecordValue recValue){
 		List<ZCChoice> fieldChoices = recValue.getChoices();
 		List<ZCChoice> availableChoices = new ArrayList<ZCChoice>();
@@ -371,6 +383,88 @@ class JSONParser {
 			e.printStackTrace();
 		}
 
+		return toReturn;
+	}
+
+	static List<ZCApplication> parseForApplicationList(String response) throws ZCException {
+		List<ZCApplication> toReturn = new ArrayList<ZCApplication>();
+		String appOwner = "";
+		String remainingDays = "";
+		boolean licenceEnabled = true;
+		try {
+			JSONObject resultObj =new JSONObject(response);
+			if(resultObj.has("result"))
+			{
+				String resultObjChildResponse = resultObj.getString("result");
+				
+				JSONObject resultObjChild = new JSONObject(resultObj.getString("result"));
+				if(resultObjChild.has("application_owner"))
+				{
+					appOwner = resultObjChild.getString("application_owner");
+				}
+				if(resultObjChild.has("application_list"))
+				{
+					JSONObject applicationListChildObj = new JSONObject(resultObjChild.getString("application_list"));
+					if(applicationListChildObj.has("applications"))
+					{
+						JSONArray applicationsListJArray = new JSONArray(applicationListChildObj.getString("applications"));
+						for(int i=0;i<applicationsListJArray.length();i++)
+						{
+							JSONObject applicationsObj = applicationsListJArray.getJSONObject(i);
+							if(applicationsObj.has("application"))
+							{
+								JSONArray applicationJArray = new JSONArray(applicationsObj.getString("application"));
+								for(int j=0;j<applicationJArray.length();j++)
+								{
+									String appName = null;
+									String linkName = null;
+									Date createdTime = null;
+									boolean isPrivate = true;
+									JSONObject applicationObj = applicationJArray.getJSONObject(j);
+									if(applicationObj.has("application_name"))
+									{
+										appName = applicationObj.getString("application_name");
+									}
+									if(applicationObj.has("link_name"))
+									{
+										linkName = applicationObj.getString("link_name");
+									}
+									if(applicationObj.has("access"))
+									{
+										isPrivate = applicationObj.getString("access").equals("private");
+									}
+									if(applicationObj.has("created_time"))
+									{
+										String s =applicationObj.getString("created_time");
+										SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+										try {
+											createdTime = simpleDateFormat.parse(s);
+										} catch (ParseException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
+									}
+									if(applicationObj.has("sharedBy"))
+									{
+										appOwner = applicationObj.getString("sharedBy");
+									}
+									ZCApplication zcApp = new ZCApplication(appOwner, appName, linkName, isPrivate, createdTime);
+									toReturn.add(zcApp);
+								}	
+							}
+						}
+					}
+				}
+				if(resultObjChild.has("license_enabled"))
+				{
+					licenceEnabled = resultObjChild.getBoolean("license_enabled");			
+				}
+
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return toReturn;
 	}
 }

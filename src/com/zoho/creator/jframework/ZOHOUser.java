@@ -72,10 +72,7 @@ public class ZOHOUser {
 	public List<String> getEmailAddresses(){
 		return eMailAddresses;
 	}
-
-
-
-
+	
 	public static void setUserStorage(UserStorage userStorage) {
 		if(userStorage != null) {
 			ZOHOUser.userStorage = userStorage;
@@ -84,9 +81,12 @@ public class ZOHOUser {
 
 
 	static ZOHOUser getUserObject() {
+		
+		
 
 		if(userCredential == null && userStorage != null) {
 			String loadedAuthToken = userStorage.loadAuthToken();
+			
 			if(loadedAuthToken != null) {
 				try {
 					userCredential = new ZOHOUser(loadedAuthToken);
@@ -104,38 +104,40 @@ public class ZOHOUser {
 		userCredential = this;
 		
 		Document rootDocument = ZOHOCreator.getUserDocument();
-		
-		NodeList nl = rootDocument.getChildNodes();
-		for(int i=0; i<nl.getLength(); i++) {
-			Node responseNode = nl.item(i);
-			if(responseNode.getNodeName().equals("response")) {
-				NodeList responseNodes = responseNode.getChildNodes();
-				for(int j=0; j<responseNodes.getLength(); j++) {
-					Node resultNode = responseNodes.item(j);
-					if(resultNode.getNodeName().equals("result")) {
-						NodeList resultNodes = resultNode.getChildNodes();		
-						for(int k=0; k<resultNodes.getLength(); k++) {
-							Node resultNodeChild = resultNodes.item(k);
-							if(resultNodeChild.getNodeName().equals("DISPLAY_NAME")) {
-								displayName = XMLParser.getStringValue(resultNodeChild, ""); //No I18N
-							} else if(resultNodeChild.getNodeName().equals("ZUID")) {
-								id = XMLParser.getStringValue(resultNodeChild, ""); //No I18N
-							} else if(resultNodeChild.getNodeName().equals("FULL_NAME")) {
-								fullName = XMLParser.getStringValue(resultNodeChild, ""); //No I18N
-							} else if(resultNodeChild.getNodeName().equals("GENDER")) {
-								gender = XMLParser.getIntValue(resultNodeChild, 0); //No I18N
-							} else if(resultNodeChild.getNodeName().equals("EMAIL_ID")) {
-								String eMailList = XMLParser.getStringValue(resultNodeChild, ""); //No I18N
-								String[] tokens = eMailList.split(",");
-								for(int m =0 ;m<tokens.length;m++){
-									eMailAddresses.add(tokens[m]);
+		if(rootDocument!=null)
+		{
+			NodeList nl = rootDocument.getChildNodes();
+			for(int i=0; i<nl.getLength(); i++) {
+				Node responseNode = nl.item(i);
+				if(responseNode.getNodeName().equals("response")) {
+					NodeList responseNodes = responseNode.getChildNodes();
+					for(int j=0; j<responseNodes.getLength(); j++) {
+						Node resultNode = responseNodes.item(j);
+						if(resultNode.getNodeName().equals("result")) {
+							NodeList resultNodes = resultNode.getChildNodes();		
+							for(int k=0; k<resultNodes.getLength(); k++) {
+								Node resultNodeChild = resultNodes.item(k);
+								if(resultNodeChild.getNodeName().equals("DISPLAY_NAME")) {
+									displayName = XMLParser.getStringValue(resultNodeChild, ""); //No I18N
+								} else if(resultNodeChild.getNodeName().equals("ZUID")) {
+									id = XMLParser.getStringValue(resultNodeChild, ""); //No I18N
+								} else if(resultNodeChild.getNodeName().equals("FULL_NAME")) {
+									fullName = XMLParser.getStringValue(resultNodeChild, ""); //No I18N
+								} else if(resultNodeChild.getNodeName().equals("GENDER")) {
+									gender = XMLParser.getIntValue(resultNodeChild, 0); //No I18N
+								} else if(resultNodeChild.getNodeName().equals("EMAIL_ID")) {
+									String eMailList = XMLParser.getStringValue(resultNodeChild, ""); //No I18N
+									String[] tokens = eMailList.split(",");
+									for(int m =0 ;m<tokens.length;m++){
+										eMailAddresses.add(tokens[m]);
+									}
+								} else if(resultNodeChild.getNodeName().equals("LOCALE_INFO")) {
+									String localeInfo = XMLParser.getStringValue(resultNodeChild, ""); //No I18N
+									String[] tokens = localeInfo.split("|");
+									language = tokens[1];
+									country = tokens[0];
+									timeZone = tokens[2];
 								}
-							} else if(resultNodeChild.getNodeName().equals("LOCALE_INFO")) {
-								String localeInfo = XMLParser.getStringValue(resultNodeChild, ""); //No I18N
-								String[] tokens = localeInfo.split("|");
-								language = tokens[1];
-								country = tokens[0];
-								timeZone = tokens[2];
 							}
 						}
 					}

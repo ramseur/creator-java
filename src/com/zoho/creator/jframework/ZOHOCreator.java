@@ -92,6 +92,7 @@ public class ZOHOCreator {
 	private static String appOwner = null;
 	private static String layout = null;
 	private static Boolean accessedComponents = false;
+	private static boolean isGettingUserDetails = false;
 
 
 
@@ -162,6 +163,16 @@ public class ZOHOCreator {
 
 	public static Boolean getAccessedComponents(){
 		return accessedComponents;
+	}
+
+	public static void setGettingUserDetails(boolean isGettingUserDetails)
+	{
+		ZOHOCreator.isGettingUserDetails = isGettingUserDetails;
+	}
+	
+	public static boolean isGettingUserDetails()
+	{
+		return isGettingUserDetails;
 	}
 
 
@@ -459,8 +470,6 @@ public class ZOHOCreator {
 			while(baseLookupField != null) {
 				List<String> fieldRowList = new ArrayList<String>();
 				baseForm = baseLookupField.getBaseForm();
-
-
 				fieldRowList.add(baseForm.getAppLinkName());
 				if(baseForm.getComponentLinkName()==null) {
 					fieldRowList.add(baseForm.getBaseSubFormField().getBaseForm().getComponentLinkName());
@@ -651,7 +660,7 @@ public class ZOHOCreator {
 	}
 
 	public static ZOHOUser getZohoUser() {
-	
+
 		return ZOHOUser.getUserObject();
 	}
 
@@ -810,12 +819,41 @@ public class ZOHOCreator {
 		platformField.setRebuildRequired(true);
 		editAccessField.setLookup(true); 
 		List<ZCApplication> zcApps = new ArrayList<ZCApplication>();
-//		try {
-//			zcApps = getPersonalApplicationList(null).getApps();
-//		} catch (ZCException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		File file = new File(getFilesDir()+PERSONAL_APPLIST_FILE);
+		StringBuilder sb = new StringBuilder();
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new FileReader(file));
+			String line = br.readLine();
+			while (line != null) {
+				sb.append(line);
+				sb.append('\n');
+				line = br.readLine();
+			}	
+		} 
+		catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if(br != null){
+					br.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if(!(sb.toString().equals("")))
+		{
+			try {
+				zcApps = getPersonalApplicationList(null).getApps();
+			} catch (ZCException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		List<ZCChoice> zcChoices = new ArrayList<ZCChoice>();
 		if(zcApps!=null)
 		{
@@ -878,9 +916,11 @@ public class ZOHOCreator {
 	private static void callFormOnAddOnLoad(ZCForm zcForm,int formAccessType) throws ZCException{
 		List<NameValuePair> params = zcForm.getFieldParamValues();
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
-		URLPair formOnAddOnLoadURL = ZCURL.formOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), params ,formAccessType);
 
+		URLPair formOnAddOnLoadURL = ZCURL.formOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), params ,formAccessType);
+		
 		String response = ZOHOCreator.postURL(formOnAddOnLoadURL.getUrl(), formOnAddOnLoadURL.getNvPair());
+		
 		JSONParser.parseAndCallFormEvents(response, zcForm);
 
 	}
@@ -894,7 +934,9 @@ public class ZOHOCreator {
 	}
 
 	private static void callDelugeEvents(ZCForm zcForm, URLPair urlPair) throws ZCException{
+
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
+		
 		JSONParser.parseAndCallFormEvents(response,zcForm);
 	}
 
@@ -907,11 +949,13 @@ public class ZOHOCreator {
 	static void callFieldOnUser(ZCForm zcForm, String fieldLinkName, boolean isFormula, ZCForm currentShownForm) throws ZCException {
 		List<NameValuePair> params = zcForm.getFieldParamValues();
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
+
 		URLPair urlPair = ZCURL.fieldOnUser(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), fieldLinkName, zcForm.getAppOwner(),params, isFormula,zcForm.getFormType());
 		if(currentShownForm!=null)
 		{
 			zcForm = currentShownForm;
 		}
+		
 		callDelugeEvents(zcForm, urlPair);
 	}
 
@@ -974,6 +1018,7 @@ public class ZOHOCreator {
 			}
 
 			Document rootDocument = getViewXMLDocument(comp, params);
+			
 			Calendar cal = Calendar.getInstance();
 			ZCView toReturn =  XMLParser.parseForView(rootDocument, comp.getAppLinkName(), comp.getAppOwner(), comp.getType(), cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
 			if(toReturn == null) {
@@ -1403,6 +1448,8 @@ public class ZOHOCreator {
 		return getURLString(url, newParams);
 	}
 
+
+
 	private static String getURLString(String url, List<NameValuePair> params) {
 		StringBuffer buff = new StringBuffer(url);
 		if(!url.endsWith("/")) {
@@ -1446,7 +1493,7 @@ public class ZOHOCreator {
 				InputStream is = null;
 				try {
 					is = entity.getContent();
-					
+
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
@@ -1455,7 +1502,15 @@ public class ZOHOCreator {
 				} catch (ParserConfigurationException e) {
 					throw new ZCException("An error has occured", ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
 				} catch (SAXException e) {
-					throw new ZCException("An error has occured", ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
+					
+					if(isGettingUserDetails)
+					{
+						isGettingUserDetails = false;
+						return null;
+					}else
+					{
+						throw new ZCException("An error has occured", ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
+					}
 				}  
 				finally {
 					if(is != null) {

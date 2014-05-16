@@ -60,9 +60,6 @@ public class ZCForm extends ZCComponent {
 	public static final int TASK_ERRORS= 1007;
 	public static final int TASK_OPENURL = 280;
 
-
-
-
 	ZCForm(String appOwner, String appLinkName, String componentName, String componentLinkName, int sequenceNumber, boolean hasAddOnLoad, boolean hasEditOnLoad, String successMessage, String dateFormat, boolean isStateLess,String openurlType,String openurlValue) {
 		super( appOwner,  appLinkName,  ZCComponent.FORM,  componentName,  componentLinkName,  sequenceNumber);
 
@@ -220,6 +217,7 @@ public class ZCForm extends ZCComponent {
 		for(int i=0; i<fieldsToIterate.size(); i++) {//No I18N
 			ZCField field = fieldsToIterate.get(i);
 			ZCRecordValue recordValue = field.getRecordValue();
+			
 			if(recordValue != null) 
 			{
 				if(FieldType.isMultiChoiceField(field.getType())) 
@@ -242,10 +240,13 @@ public class ZCForm extends ZCComponent {
 					}
 					else
 					{
-						buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
-						buff.append("<options>");//No I18N
-						buff.append("</options>");//No I18N
-						buff.append("</field>");//No I18N
+						if(!field.isRequired())
+						{
+							buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
+							buff.append("<options>");//No I18N
+							buff.append("</options>");//No I18N
+							buff.append("</field>");//No I18N
+						}
 					}
 				} else if(field.getType().equals(FieldType.SUB_FORM)) {
 					buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
@@ -257,10 +258,13 @@ public class ZCForm extends ZCComponent {
 					buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
 					buff.append("<value>");//No I18N
 					buff.append("<![CDATA[");//No I18N
+					
 					if(recordValue.getChoiceValue() != null) {
+						
 						buff.append(recordValue.getChoiceValue().getKey());
 					}else
 					{
+						
 						buff.append("");	
 					}
 					buff.append("]]>");//No I18N
@@ -402,6 +406,10 @@ public class ZCForm extends ZCComponent {
 				} else if(FieldType.isSingleChoiceField(field.getType())) {
 					if(recordValue.getChoiceValue() != null) {
 						params.add(new BasicNameValuePair(field.getFieldName(),recordValue.getChoiceValue().getKey()));
+					}
+					else
+					{
+						params.add(new BasicNameValuePair(field.getFieldName(),""));
 					}
 				} else if(!FieldType.isPhotoField(field.getType()) && !field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES)) {
 					params.add(new BasicNameValuePair(field.getFieldName(),recordValue.getValue()));

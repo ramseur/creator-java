@@ -174,6 +174,7 @@ class XMLParser {
 			Node responseNode = nl.item(i);
 			if(responseNode.getNodeName().equals("response")) {
 				NodeList responseNodes = responseNode.getChildNodes();
+				
 				for(int j=0; j<responseNodes.getLength(); j++) {
 					Node resultNode = responseNodes.item(j);
 					if(resultNode.getNodeName().equals("result")) {
@@ -242,6 +243,7 @@ class XMLParser {
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
 			if(responseNode.getNodeName().equals("Response")) {
+				
 				NodeList responseNodes = responseNode.getChildNodes();
 				for(int j=0; j<responseNodes.getLength(); j++) {
 					Node responseNodeChild = responseNodes.item(j);
@@ -1214,7 +1216,7 @@ class XMLParser {
 				ZCRecord record = parseAndSetRecord(zcView, recordNode, null);
 				records.add(record);
 				if(isViewGrouped) {
-					if(isFirstRecordInGroup && (zcGroup == null || !zcGroup.getGroupHeaderValues().equals(groupHeaderValues))) { // To check if it's not the same group of the previous set's last group
+					if(isFirstRecordInGroup && (zcGroup == null || !zcGroup.getGroupHeaderValues().equals(groupHeaderValues))) {// To check if it's not the same group of the previous set's last group
 						zcGroup = new ZCGroup(groupHeaderValues);
 						zcGroups.add(zcGroup);
 						isFirstRecordInGroup = false;

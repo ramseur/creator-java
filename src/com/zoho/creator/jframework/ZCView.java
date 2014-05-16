@@ -342,7 +342,8 @@ public class ZCView extends ZCComponent {
 	public List<ZCRecord> loadMore() throws ZCException{
 		if(!lastReached) {
 			int lastIndex = records.size();
-			ZOHOCreator.loadRecords(this);			
+			ZOHOCreator.loadRecords(this);
+			
 			List<ZCRecord> toReturn = records.subList(lastIndex, records.size());			
 			return toReturn;
 		}
