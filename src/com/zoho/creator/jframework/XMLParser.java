@@ -174,7 +174,7 @@ class XMLParser {
 			Node responseNode = nl.item(i);
 			if(responseNode.getNodeName().equals("response")) {
 				NodeList responseNodes = responseNode.getChildNodes();
-				
+
 				for(int j=0; j<responseNodes.getLength(); j++) {
 					Node resultNode = responseNodes.item(j);
 					if(resultNode.getNodeName().equals("result")) {
@@ -243,7 +243,7 @@ class XMLParser {
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
 			if(responseNode.getNodeName().equals("Response")) {
-				
+
 				NodeList responseNodes = responseNode.getChildNodes();
 				for(int j=0; j<responseNodes.getLength(); j++) {
 					Node responseNodeChild = responseNodes.item(j);
@@ -332,7 +332,7 @@ class XMLParser {
 	static ZCForm parseForForm(Document rootDocument, String appLinkName, String appOwner,String queryString,boolean isEditForm) throws ZCException {
 		NodeList nl = rootDocument.getChildNodes();
 		ZCForm toReturn = null;
-		
+
 		Hashtable<String,String> queryStringTable = new Hashtable<String, String>();
 		//		if(queryString!=null)
 		//		{
@@ -386,9 +386,11 @@ class XMLParser {
 					Node responseNodeChild = responseNodes.item(j);
 					if(responseNodeChild.getNodeName().equals("result"))
 					{
+
 						NodeList resultNodes = responseNodeChild.getChildNodes();
 						for(int k=0;k<resultNodes.getLength();k++)
 						{
+
 							Node resultNodeChild = resultNodes.item(k);
 							if(resultNodeChild.getNodeName().equalsIgnoreCase("hasAddOnLoad")) { 
 								String nodeValue = getStringValue(resultNodeChild, "");
