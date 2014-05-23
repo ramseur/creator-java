@@ -112,177 +112,177 @@ public class ZCCondition {
 	
 	public static int getOperatorValue(String operatorString){
 		int operatorValue = 0;
-		switch(operatorString){
-		case "Is":
-			operatorValue = EQUAL;
-			break;
-		case "Is Not":
-			operatorValue = NOT_EQUAL;
-			break;
-		case "Is Empty":
-			operatorValue = EMPTY;
-			break;
-		case "Is Not Empty":
-			operatorValue = NOT_EMPTY;
-			break;
-		case "Less Than":
-			operatorValue = LESS_THAN;
-			break;
-		case "Greater Than":
-			operatorValue = GREATER_THAN;
-			break;
-		case "Before" :
-			operatorValue = LESS_THAN;
-			break;
-		case "After":
-			operatorValue = GREATER_THAN;
-			break;
-		case "Less than or equal to":
-			operatorValue = LESS_EQUAL;
-			break;
-		case "Greater than or equal to":
-			operatorValue = GREATER_EQUAL;
-			break;	
-		case "Between":
-			operatorValue = BETWEEN;
-			break;
-		case "True":
-			operatorValue = TRUE;
-			break;
-		case "False":
-			operatorValue = FALSE;
-			break;	
-		case "Contains":
-			operatorValue = CONTAINS;
-			break;
-		case "Not Contains":
-			operatorValue = NOT_CONTAINS;
-			break;
-		case "Starts With":
-			operatorValue = STARTS_WITH;
-			break;
-		case "Ends With":
-			operatorValue = ENDS_WITH;
-			break;
-		case "Like":
-			operatorValue = LIKE;
-			break;
-		case "Yesterday":
-			operatorValue = YESTERDAY;
-			break;
-		case "Today":
-			operatorValue = TODAY;
-			break;
-		case "Tomorrow":
-			operatorValue = TOMORROW;
-			break;	
-		case "Last 7 Days":
-			operatorValue = LAST_7_DAYS;
-			break;	
-		case "Last 30 Days":
-			operatorValue = LAST_30_DAYS;
-			break;
-		case "Last 60 Days":
-			operatorValue = LAST_60_DAYS;
-			break;
-		case "Last 90 Days":
-			operatorValue = LAST_90_DAYS;
-			break;
-		case "Last 120 Days":
-			operatorValue = LAST_120_DAYS;
-			break;
-		case "Last N Days":
-			operatorValue = LAST_N_DAYS;
-			break;
-		case "Next 7 Days":
-			operatorValue =NEXT_7_DAYS;
-			break;
-		case "Next 30 Days":
-			operatorValue =NEXT_30_DAYS;
-			break;	
-		case "Next 60 Days":
-			operatorValue =NEXT_60_DAYS;
-			break;
-		case "Next 90 Days":
-			operatorValue =NEXT_90_DAYS;
-			break;
-		case "Next 120 Days":
-			operatorValue =NEXT_120_DAYS;
-			break;
-		case "Next N Days":
-			operatorValue =NEXT_N_DAYS;
-			break;
-		case "Last Week":
-			operatorValue =LAST_WEEK;
-			break;
-		case "This Week":
-			operatorValue =THIS_WEEK;
-			break;
-		case "Next Week":
-			operatorValue =NEXT_WEEK;
-			break;
-		case "Current and Previous Week":
-			operatorValue =CURRENT_PREVIOUS_WEEK;
-			break;
-		case "Current and Next Week":
-			operatorValue =CURRENT_NEXT_WEEK;
-			break;
-		case "Last N Week":
-			operatorValue =LAST_N_WEEK;
-			break;
-		case "Next N Week":
-			operatorValue =NEXT_N_WEEK;
-			break;	
-		case "Last Month":
-			operatorValue =LAST_MONTH;
-			break;
-		case "This Month":
-			operatorValue =THIS_MONTH;
-			break;
-		case "Next Month":
-			operatorValue =NEXT_MONTH;
-			break;	
-		case "Current and Previous Month":
-			operatorValue =CURR_PREV_MONTH;
-			break;
-		case "Current and Next Month":
-			operatorValue =CURR_NEXT_MONTH;
-			break;
-		case "Last N Month":
-			operatorValue =LAST_N_MONTH;
-			break;
-		case "Next N Month":
-			operatorValue =NEXT_N_MONTH;
-			break;
-		case "Last Year":
-			operatorValue =LAST_YEAR;
-			break;
-		case "This Year":
-			operatorValue = CURRENT_YEAR;
-			break;
-		case "Next Year":
-			operatorValue =NEXT_YEAR;
-			break;
-		case "Last 2 Year":
-			operatorValue =PREVIOUS_2_YEAR;
-			break;
-		case "Next 2 Year":
-			operatorValue =NEXT_2_YEAR;
-			break;
-		case "Current and Previous Year":
-			operatorValue =CURRENT_PREVIOUS_YEAR;
-			break;
-		case "Current and Next Year":
-			operatorValue =CURRENT_NEXT_YEAR;
-			break;
-		case "Last N Year":
-			operatorValue =LAST_N_YEAR;
-			break;
-		case "Next N Year":
-			operatorValue =NEXT_N_YEAR;
-			break;
-			
-		}
+//		switch(operatorString){
+//		case "Is":
+//			operatorValue = EQUAL;
+//			break;
+//		case "Is Not":
+//			operatorValue = NOT_EQUAL;
+//			break;
+//		case "Is Empty":
+//			operatorValue = EMPTY;
+//			break;
+//		case "Is Not Empty":
+//			operatorValue = NOT_EMPTY;
+//			break;
+//		case "Less Than":
+//			operatorValue = LESS_THAN;
+//			break;
+//		case "Greater Than":
+//			operatorValue = GREATER_THAN;
+//			break;
+//		case "Before" :
+//			operatorValue = LESS_THAN;
+//			break;
+//		case "After":
+//			operatorValue = GREATER_THAN;
+//			break;
+//		case "Less than or equal to":
+//			operatorValue = LESS_EQUAL;
+//			break;
+//		case "Greater than or equal to":
+//			operatorValue = GREATER_EQUAL;
+//			break;	
+//		case "Between":
+//			operatorValue = BETWEEN;
+//			break;
+//		case "True":
+//			operatorValue = TRUE;
+//			break;
+//		case "False":
+//			operatorValue = FALSE;
+//			break;	
+//		case "Contains":
+//			operatorValue = CONTAINS;
+//			break;
+//		case "Not Contains":
+//			operatorValue = NOT_CONTAINS;
+//			break;
+//		case "Starts With":
+//			operatorValue = STARTS_WITH;
+//			break;
+//		case "Ends With":
+//			operatorValue = ENDS_WITH;
+//			break;
+//		case "Like":
+//			operatorValue = LIKE;
+//			break;
+//		case "Yesterday":
+//			operatorValue = YESTERDAY;
+//			break;
+//		case "Today":
+//			operatorValue = TODAY;
+//			break;
+//		case "Tomorrow":
+//			operatorValue = TOMORROW;
+//			break;	
+//		case "Last 7 Days":
+//			operatorValue = LAST_7_DAYS;
+//			break;	
+//		case "Last 30 Days":
+//			operatorValue = LAST_30_DAYS;
+//			break;
+//		case "Last 60 Days":
+//			operatorValue = LAST_60_DAYS;
+//			break;
+//		case "Last 90 Days":
+//			operatorValue = LAST_90_DAYS;
+//			break;
+//		case "Last 120 Days":
+//			operatorValue = LAST_120_DAYS;
+//			break;
+//		case "Last N Days":
+//			operatorValue = LAST_N_DAYS;
+//			break;
+//		case "Next 7 Days":
+//			operatorValue =NEXT_7_DAYS;
+//			break;
+//		case "Next 30 Days":
+//			operatorValue =NEXT_30_DAYS;
+//			break;	
+//		case "Next 60 Days":
+//			operatorValue =NEXT_60_DAYS;
+//			break;
+//		case "Next 90 Days":
+//			operatorValue =NEXT_90_DAYS;
+//			break;
+//		case "Next 120 Days":
+//			operatorValue =NEXT_120_DAYS;
+//			break;
+//		case "Next N Days":
+//			operatorValue =NEXT_N_DAYS;
+//			break;
+//		case "Last Week":
+//			operatorValue =LAST_WEEK;
+//			break;
+//		case "This Week":
+//			operatorValue =THIS_WEEK;
+//			break;
+//		case "Next Week":
+//			operatorValue =NEXT_WEEK;
+//			break;
+//		case "Current and Previous Week":
+//			operatorValue =CURRENT_PREVIOUS_WEEK;
+//			break;
+//		case "Current and Next Week":
+//			operatorValue =CURRENT_NEXT_WEEK;
+//			break;
+//		case "Last N Week":
+//			operatorValue =LAST_N_WEEK;
+//			break;
+//		case "Next N Week":
+//			operatorValue =NEXT_N_WEEK;
+//			break;	
+//		case "Last Month":
+//			operatorValue =LAST_MONTH;
+//			break;
+//		case "This Month":
+//			operatorValue =THIS_MONTH;
+//			break;
+//		case "Next Month":
+//			operatorValue =NEXT_MONTH;
+//			break;	
+//		case "Current and Previous Month":
+//			operatorValue =CURR_PREV_MONTH;
+//			break;
+//		case "Current and Next Month":
+//			operatorValue =CURR_NEXT_MONTH;
+//			break;
+//		case "Last N Month":
+//			operatorValue =LAST_N_MONTH;
+//			break;
+//		case "Next N Month":
+//			operatorValue =NEXT_N_MONTH;
+//			break;
+//		case "Last Year":
+//			operatorValue =LAST_YEAR;
+//			break;
+//		case "This Year":
+//			operatorValue = CURRENT_YEAR;
+//			break;
+//		case "Next Year":
+//			operatorValue =NEXT_YEAR;
+//			break;
+//		case "Last 2 Year":
+//			operatorValue =PREVIOUS_2_YEAR;
+//			break;
+//		case "Next 2 Year":
+//			operatorValue =NEXT_2_YEAR;
+//			break;
+//		case "Current and Previous Year":
+//			operatorValue =CURRENT_PREVIOUS_YEAR;
+//			break;
+//		case "Current and Next Year":
+//			operatorValue =CURRENT_NEXT_YEAR;
+//			break;
+//		case "Last N Year":
+//			operatorValue =LAST_N_YEAR;
+//			break;
+//		case "Next N Year":
+//			operatorValue =NEXT_N_YEAR;
+//			break;
+//			
+//		}
 		
 		return operatorValue;
 	}
