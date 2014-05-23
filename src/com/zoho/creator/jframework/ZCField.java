@@ -527,6 +527,16 @@ public class ZCField implements Comparable<ZCField> {
 		this.decimalLength = decimalLength;
 	}
 
+//		public void setExternalFieldType(ExternalField externalFieldType) {
+//			// TODO Auto-generated method stub
+//			this.externalFieldType  = externalFieldType;
+//		}
+//		
+//		public ExternalField getExternalFieldType(){
+//			return externalFieldType;
+//		}
+
+
 	public int getImageType() {
 		return imageType;
 	}

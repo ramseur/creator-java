@@ -214,7 +214,9 @@ public enum FieldType   {
 			fieldType = FieldType.SUB_FORM;
 		} else if(type.equals("EXTERNAL_FIELD")){
 			fieldType = EXTERNAL_FIELD;
-		} 
+		} else if(type.equals("AUTO_NUMBER")){
+			fieldType = AUTO_NUMBER;
+		}
     		
 		return fieldType;
     }

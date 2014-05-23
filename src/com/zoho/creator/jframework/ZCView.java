@@ -66,7 +66,7 @@ public class ZCView extends ZCComponent {
 		super(appOwner, appLinkName, componentType, componentName, componentLinkName, -1);
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	public String toString() {
 		return super.toString() + " - dateFormat: " + dateFormat + " - baseFormLinkName: " + baseFormLinkName +   //No I18N
 				" - isAddAllowed: " + isAddAllowed + " - isEditAllowed: " + isEditAllowed + " - isDeleteAllowed: " + isDeleteAllowed +    //No I18N
@@ -477,6 +477,17 @@ public class ZCView extends ZCComponent {
 	}
 	public int getRecordsCount(){
 		return recordsCount;
+	}
+	
+	public List<ZCColumn> getCopiedColumnsList(){
+		final List<ZCColumn> zcColumns = new ArrayList<ZCColumn>(columns);
+		List<ZCColumn> newZCColumnList = new ArrayList<ZCColumn>();
+		for(int i =0; i < zcColumns.size(); i++){
+			ZCColumn newZCColumn = new ZCColumn(zcColumns.get(i).getFieldName(), zcColumns.get(i).getType(), zcColumns.get(i).getDisplayName());
+			newZCColumn.setCondition(zcColumns.get(i).getCondition());
+			newZCColumnList.add(newZCColumn);
+		}
+		return newZCColumnList;
 	}
 
 }

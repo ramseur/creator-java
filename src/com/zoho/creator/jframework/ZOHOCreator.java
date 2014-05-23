@@ -1226,7 +1226,10 @@ public class ZOHOCreator {
 					onceForSearch = true;
 					params.add(new BasicNameValuePair("searchCrit", "true"));//No I18N
 				}
-				params.add(new BasicNameValuePair(fieldName, condition.getValue()));//No I18N
+				if(! ZCCondition.isDateFieldWithoutValues(condition.getOperator()))
+				{
+					params.add(new BasicNameValuePair(fieldName, condition.getValue()));//No I18N
+				}
 				params.add(new BasicNameValuePair(fieldName + "_op", condition.getOperator() + ""));//No I18N
 			}
 
@@ -1482,7 +1485,6 @@ public class ZOHOCreator {
 	}
 
 	private static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-		
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
