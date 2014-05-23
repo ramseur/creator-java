@@ -169,7 +169,7 @@ class JSONParser {
 						} else if(FieldType.isSingleChoiceField(field.getType())) {
 							if(choiceValues.size()>0)
 							{
-							recordValue.setChoiceValue(choiceValues.get(0));
+								recordValue.setChoiceValue(choiceValues.get(0));
 							}
 						}
 					} 
@@ -266,7 +266,6 @@ class JSONParser {
 			if(zcRecordValue.getField().getFieldName().equals(field.getFieldName()))
 			{
 				if(FieldType.isMultiChoiceField(field.getType())) {
-
 					if(field.isLookup())
 					{    
 						zcRecordValue.appendChoices(choiceValues);
@@ -337,7 +336,10 @@ class JSONParser {
 							value = value.replace(substring, urlForImg);
 						}
 					}
-					zcRecordValue.setValue(value);
+					if(!(FieldType.isChoiceField(zcRecordValue.getField().getType())))
+					{
+						zcRecordValue.setValue(value);
+					}
 					break;
 				}
 			}
@@ -396,7 +398,7 @@ class JSONParser {
 			if(resultObj.has("result"))
 			{
 				String resultObjChildResponse = resultObj.getString("result");
-				
+
 				JSONObject resultObjChild = new JSONObject(resultObj.getString("result"));
 				if(resultObjChild.has("application_owner"))
 				{
