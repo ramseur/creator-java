@@ -248,7 +248,7 @@ class XMLParser {
 				for(int j=0; j<responseNodes.getLength(); j++) {
 					Node responseNodeChild = responseNodes.item(j);
 					if(responseNodeChild.getNodeName().equals("error")) {
-						throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, getStringValue(responseNodeChild, "error"));
+						throw new ZCException(getStringValue(responseNodeChild, "error"), ZCException.ERROR_OCCURED,"" );
 					}
 					else if(responseNodeChild.getNodeName().equals("Sections")) {
 
@@ -1228,6 +1228,7 @@ class XMLParser {
 				}
 			}
 		}
+		
 		zcView.addRecords(records);
 		zcView.setGrouped(isViewGrouped);
 	}
@@ -1354,7 +1355,7 @@ class XMLParser {
 		return record;
 	}
 
-	static ZCView parseForView(Document rootDocument, String appLinkName, String appOwner, String componentType, int month, int year) {		
+	static ZCView parseForView(Document rootDocument, String appLinkName, String appOwner, String componentType, int month, int year){		
 		NodeList nl = rootDocument.getChildNodes();
 		ZCView toReturn = null;
 		for(int i=0; i<nl.getLength(); i++) {

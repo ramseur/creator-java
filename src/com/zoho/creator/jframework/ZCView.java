@@ -273,7 +273,9 @@ public class ZCView extends ZCComponent {
 	}
     
 	void addRecords(List<ZCRecord> records) {
+		
 		if(records.size() < ZCView.PAGE_SIZE) {
+			
 			lastReached = true;
 		}
 		this.records.addAll(records);
@@ -340,6 +342,7 @@ public class ZCView extends ZCComponent {
 	}
 	
 	public List<ZCRecord> loadMore() throws ZCException{
+		
 		if(!lastReached) {
 			int lastIndex = records.size();
 			ZOHOCreator.loadRecords(this);

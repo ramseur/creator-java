@@ -39,6 +39,7 @@ public class ZCField implements Comparable<ZCField> {
 	private ZCComponent refFormComponent = null;
 	private String refFieldLinkName = null;
 	private String currencyType = null;
+	private List<Long> subFormRecordIds = new ArrayList<Long>();
 
 
 
@@ -527,14 +528,14 @@ public class ZCField implements Comparable<ZCField> {
 		this.decimalLength = decimalLength;
 	}
 
-//		public void setExternalFieldType(ExternalField externalFieldType) {
-//			// TODO Auto-generated method stub
-//			this.externalFieldType  = externalFieldType;
-//		}
-//		
-//		public ExternalField getExternalFieldType(){
-//			return externalFieldType;
-//		}
+	//		public void setExternalFieldType(ExternalField externalFieldType) {
+	//			// TODO Auto-generated method stub
+	//			this.externalFieldType  = externalFieldType;
+	//		}
+	//		
+	//		public ExternalField getExternalFieldType(){
+	//			return externalFieldType;
+	//		}
 
 
 	public int getImageType() {
@@ -545,6 +546,13 @@ public class ZCField implements Comparable<ZCField> {
 		this.imageType = imageType;
 	}
 
+	void setSubFormRecordIds(List<Long> subFormRecordIds)
+	{
+		this.subFormRecordIds = subFormRecordIds;
+	}
 
-
+	List<Long> getSubFormRecordIds()
+	{
+		return subFormRecordIds;
+	}
 }

@@ -141,7 +141,7 @@ public class ZOHOCreator {
 	{
 		ZOHOCreator.appOwner = appOwner;
 	}
-	public static String getPersonalPhotoURL() {
+	public static String getPersonalPhotoURL() throws ZCException{
 		return ZCURL.getURLString(ZCURL.getURLForPersonalPhoto());
 	}
 
@@ -463,9 +463,21 @@ public class ZOHOCreator {
 	static List<NameValuePair> getAdditionalParamsForForm(ZCForm zcForm, ZCField baseLookupField) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		ZCForm baseForm = null;
+//		ZCForm baseSubForm = zcForm;
+//		while(baseSubForm.getBaseLookupField()!=null)
+//		{
+//			ZCField tempLookUpField = baseSubForm.getBaseLookupField();
+//			baseSubForm = tempLookUpField.getBaseForm();
+//			if(baseSubForm.getBaseLookupField()==null && baseSubForm.getBaseSubFormField()!=null)
+//			{
+//				params.add(new BasicNameValuePair("zc_childsubformfield_1", tempLookUpField.getFieldName()));
+//				break;  
+//			}
+//		}
 		if(baseLookupField == null) {
 			baseForm = zcForm;
-		} else {
+		} else 
+		{
 			List<List<String>> fieldList = new ArrayList<List<String>>(); 
 			while(baseLookupField != null) {
 				List<String> fieldRowList = new ArrayList<String>();
@@ -479,6 +491,12 @@ public class ZOHOCreator {
 				fieldRowList.add(baseLookupField.getFieldName());
 				fieldList.add(fieldRowList);
 				baseLookupField = baseForm.getBaseLookupField();
+//				if(baseLookupField==null)
+//				{
+//					if(baseForm.getBaseSubFormField() != null) {
+//
+//					}
+//				}
 			}
 			if(fieldList.size()>0) {
 				params.add(new BasicNameValuePair("zc_lookupCount", fieldList.size() + ""));//No I18N
@@ -494,10 +512,13 @@ public class ZOHOCreator {
 		if(baseForm.getBaseSubFormField() != null) {
 			baseForm = baseForm.getBaseSubFormField().getBaseForm();
 		}
+//		ZCForm form = ZOHOCreator.getCurrentForm();
+//		if(form!=null)
+//		{
+//			params.add(new BasicNameValuePair("childFormAccessType", form.getFormType()+""));//NoI18N
+//		}
 		ZCView viewForAdd = baseForm.getViewForAdd();
 		ZCView viewForEdit = baseForm.getViewForEdit(); 
-
-
 
 		if(viewForAdd != null) {
 			params.add(new BasicNameValuePair("viewLinkName" , viewForAdd.getComponentLinkName()));//No I18N
@@ -553,10 +574,10 @@ public class ZOHOCreator {
 					Object bitmap = recValue.getFileValue();
 					int imageType = field.getImageType();
 					if(recValue.isFileReUploaded() && imageType != ZCField.IMAGE_LINK ) {
-						postImage(zcForm, field, recordId, bitmap, action);	
+						postImage(zcForm, field, recordId, bitmap, action,null,-1l);	
 					}
 				}
-				if(FieldType.SUB_FORM==field.getType())
+				if(FieldType.SUB_FORM == field.getType())
 				{
 					ZCForm subForm = field.getSubForm();
 					List<ZCRecord> subformRecords = field.getUpdatedSubFormEntries();
@@ -567,35 +588,46 @@ public class ZOHOCreator {
 						ZCField subformField = subformFields.get(j);
 						if(FieldType.isPhotoField(subformField.getType()))
 						{
+							List<Long> subFormRecordIds = field.getSubFormRecordIds();
 							for(int k=0;k<subformRecords.size();k++)
 							{
-								ZCRecord subformRecord = subformRecords.get(i);	
+								ZCRecord subformRecord = subformRecords.get(k);	
 								List<ZCRecordValue> recordValues = subformRecord.getValues();
+
 								for(int l=0;l<recordValues.size();l++)
 								{
 									ZCRecordValue subformRecordValue = recordValues.get(l);
-									if(subformField.getFieldName().equals(subformRecordValue.getField().getFieldName()))
+									String subFormFieldName = subformField.getFieldName();
+									if(subFormFieldName.equals(subformRecordValue.getField().getFieldName()))
 									{
-										postImage(zcForm, field, recordId, subformRecordValue.getFileValue(), action);	
+										postImage(zcForm, field, recordId, subformRecordValue.getFileValue(), action,subFormFieldName,subFormRecordIds.get(k));	
 									}
 								}
 
 							}
+
 						}
 					}
+					field.setSubFormRecordIds(new ArrayList<Long>());
 				}
 			}
 		}
 		return response;		
 	}
 
-	private static void postImage(ZCForm zcForm, ZCField field, long recordId, Object bitmap, String action) throws ZCException	{
+	private static void postImage(ZCForm zcForm, ZCField field, long recordId, Object bitmap, String action,String subFormFieldName,long subFormRecId) throws ZCException	{
 		URLPair urlPair = ZCURL.fileUploadURL(zcForm.getAppOwner());
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.addAll(urlPair.getNvPair());
 		params.add(new BasicNameValuePair("applinkname", zcForm.getAppLinkName()));//No I18N
 		params.add(new BasicNameValuePair("formname", zcForm.getComponentLinkName()));//No I18N
 		params.add(new BasicNameValuePair("fieldname", field.getFieldName()));//No I18N
+		params.add(new BasicNameValuePair("recordId", recordId + ""));//No I18N
+		if(subFormFieldName!=null)
+		{
+			params.add(new BasicNameValuePair("subformFieldName", subFormFieldName));
+			params.add(new BasicNameValuePair("subformRecId",subFormRecId +""));
+		}
 		ZCForm form = field.getBaseForm();
 		int formType = form.getFormType();
 		if(!(formType==ZCForm.FORM_ALONE)) {
@@ -607,7 +639,7 @@ public class ZOHOCreator {
 				params.add(new BasicNameValuePair("operation","update"));
 			}	
 		}
-		params.add(new BasicNameValuePair("recordId", recordId + ""));//No I18N
+
 		if(bitmap!=null) {
 			String fileName = "image" + System.currentTimeMillis();
 			params.add(new BasicNameValuePair("filename", fileName));//No I18N
@@ -660,11 +692,10 @@ public class ZOHOCreator {
 	}
 
 	public static ZOHOUser getZohoUser() {
-
 		return ZOHOUser.getUserObject();
 	}
 
-	public static void logout() {
+	public static void logout(){
 		ZOHOUser user = ZOHOCreator.getZohoUser();
 		if(user != null) {
 			URLPair delAuthTokenURL = ZCURL.deleteAuthToken(user.getAuthToken());
@@ -1071,8 +1102,6 @@ public class ZOHOCreator {
 		if(subFormField != null) {
 			subformComponent = field.getFieldName();
 			fieldName = subFormField.getFieldName();
-			size = subFormField.getRecordValue().getChoices().size();
-			searchForChoices = field.getRecordValue().getSearchForChoices();
 		}
 
 		if(field.getBaseForm().getFormType()==ZCForm.FORM_LOOKUP_ADD_FORM) {
@@ -1369,6 +1398,50 @@ public class ZOHOCreator {
 						toReturn.setSuccessLookUpChoiceValue(new ZCChoice(idValue, lookUpValue));
 					}
 				}
+				if(form!=null)
+				{
+					List<ZCField> zcFields = form.getFields();
+					for(int i=0;i<zcFields.size();i++)
+					{
+
+						ZCField zcField = zcFields.get(i);
+						if(zcField.getType().equals(FieldType.SUB_FORM))
+						{
+							List<ZCField> subFormFields = zcField.getSubForm().getFields();
+							for(int j=0;j<subFormFields.size();j++)
+							{
+								ZCField subFormField = subFormFields.get(j);
+								if(FieldType.isPhotoField(subFormField.getType()))
+								{
+									NodeList nodes = rootDocument.getElementsByTagName("field");
+									for(int k=0;k<nodes.getLength();k++)
+									{
+
+										Node node = nodes.item(k);
+										if(node.getAttributes().getNamedItem("name").getNodeValue().equals(zcField.getFieldName()))
+										{
+											NodeList childNodes = node.getChildNodes();
+											List<Long> subFormRecordIds = new ArrayList<Long>();
+											for(int l=0;l<childNodes.getLength();l++)
+											{
+												Node childNode = childNodes.item(l);
+												if(childNode.getNodeName().equals("update"))
+												{
+													subFormRecordIds.add(Long.parseLong(childNode.getAttributes().getNamedItem("ID").getNodeValue()));
+												}
+												else if(childNode.getNodeName().equals("add"))
+												{
+													subFormRecordIds.add(Long.parseLong(childNode.getAttributes().getNamedItem("ID").getNodeValue()));
+												}
+											}
+											zcField.setSubFormRecordIds(subFormRecordIds);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
 			} 
 			else {
 				String errorCodeMessage = xPath.compile("/response/errorlist/error/message").evaluate(rootDocument);//No I18N
@@ -1485,6 +1558,7 @@ public class ZOHOCreator {
 	}
 
 	private static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
+		
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1510,7 +1584,7 @@ public class ZOHOCreator {
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
-					
+					System.out.println("docu "+getString(toReturn));
 					return toReturn;
 				} catch (ParserConfigurationException e) {
 					throw new ZCException("An error has occured", ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N

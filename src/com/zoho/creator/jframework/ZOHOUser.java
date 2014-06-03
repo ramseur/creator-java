@@ -80,7 +80,7 @@ public class ZOHOUser {
 	}
 
 
-	static ZOHOUser getUserObject() {
+	static ZOHOUser getUserObject(){
 		
 		
 

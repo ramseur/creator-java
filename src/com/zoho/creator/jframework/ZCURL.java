@@ -288,7 +288,6 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("servicename", ZOHOCreator.getServiceName()));//No I18N		
 		params.add(new BasicNameValuePair("serviceurl", serverURL()+"/dashboard?showpage=upgradeplan&from=Android"));
 		params.add(new BasicNameValuePair("hide_signup", "true"));
-		params.add(new BasicNameValuePair("LOGIN_ID", ZOHOCreator.getZohoUser().getEmailAddresses().get(0)));
 		return new URLPair("https://" + ZOHOCreator.getAccountsURL() + "/login", params);  //No I18N
 	}
 
