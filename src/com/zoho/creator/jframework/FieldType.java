@@ -7,8 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public enum FieldType   {
+
+public enum FieldType{
 	
 	SINGLE_LINE (1), MULTI_LINE (2), EMAIL (3), NUMBER(5), CURRENCY(8), PERCENTAGE(7), DECISION_CHECK_BOX(16), DATE(10), NOTES(24), FORMULA(20), FILE_UPLOAD(19), DECIMAL(6), IMAGE(18), URL(17), DATE_TIME(11), SUB_FORM(21), RICH_TEXT(4), AUTO_NUMBER(9), DROPDOWN(12), RADIO(13) , MULTISELECT(14), CHECKBOXES(15), NEW_PICKLIST(1100), NEW_RADIO(1101),EXTERNAL_FIELD(22),EXTERNAL_LINK(23),UNKNOWN(-1);
 
@@ -245,6 +248,5 @@ public enum FieldType   {
 		return toReturn ;
 	}
 	
-
 }
 

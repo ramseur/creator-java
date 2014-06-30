@@ -1,8 +1,13 @@
 // $Id$
 package com.zoho.creator.jframework;
 
+import java.io.Serializable;
 
-public class ZCCustomAction {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+
+public class ZCCustomAction{
 	private String type = null;
 	private String name = null;
 	private long id = -1l;
@@ -12,6 +17,8 @@ public class ZCCustomAction {
 		this.name = name;
 		this.id = id;
 	}
+	
+	
 	
 	public String toString() {
 		return "Custom Action Type: " + type + " - Name: " + name + " - id: " + id;  //No I18N
@@ -40,5 +47,7 @@ public class ZCCustomAction {
 	void setName(String name) {
 		this.name = name;
 	}
+	
+	
 
 }

@@ -1,10 +1,15 @@
 // $Id$
 package com.zoho.creator.jframework;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ZCField implements Comparable<ZCField> {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class ZCField implements Comparable<ZCField>{
+	static final long serialVersionUID = 2l;
 	private String fieldName = null;
 	private FieldType type;
 	private String displayName = null;
@@ -41,8 +46,6 @@ public class ZCField implements Comparable<ZCField> {
 	private String currencyType = null;
 	private List<Long> subFormRecordIds = new ArrayList<Long>();
 
-
-
 	private ZCRecordValue recordValue = null;
 	private boolean isLookup = false; // This is purely for display checks....
 	private boolean newEntriesAllowed = false; // This is purely for display checks....
@@ -60,13 +63,16 @@ public class ZCField implements Comparable<ZCField> {
 	private boolean hasFilterApplied = false;
 
 	private int subFormEntryPosition = -1;
+	private int imageType = IMAGE_BOTH;
+	private ExternalField externalFieldType = ExternalField.UNKNOWN;
 
 	public static int IMAGE_LINK = 1;
 	public static int IMAGE_LOCAL = 2;
 	public static int IMAGE_BOTH = 3;
 
-	private int imageType = IMAGE_BOTH;
-	private ExternalField externalFieldType = ExternalField.UNKNOWN;
+	int baseFormFieldSize = 0;
+
+
 
 	ZCField(String fieldName, FieldType type, String displayName) {
 		this.fieldName = fieldName;
@@ -555,4 +561,5 @@ public class ZCField implements Comparable<ZCField> {
 	{
 		return subFormRecordIds;
 	}
+
 }

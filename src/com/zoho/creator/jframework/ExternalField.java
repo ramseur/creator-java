@@ -3,7 +3,10 @@ package com.zoho.creator.jframework;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum ExternalField {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public enum ExternalField{
 	ZOHO_CRM (1) , SALES_FORCE (4) , UNKNOWN(-1);
 	private static Map<Integer, ExternalField> typeMap;
 
@@ -37,4 +40,6 @@ public enum ExternalField {
 	    	}
 	    	return toReturn;
 	    }
+	    
+	   
 }

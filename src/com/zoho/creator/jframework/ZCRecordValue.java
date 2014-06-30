@@ -4,11 +4,11 @@ package com.zoho.creator.jframework;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ZCRecordValue {
+public class ZCRecordValue{
 	private ZCField field = null;
 	private String value = null;
 	private ZCChoice choiceValue = null;
-	private List<ZCChoice> choiceValues = null;
+	private List<ZCChoice> choiceValues = new ArrayList<ZCChoice>();
 	private Object fileValue = null;
 	private String url = null;
 	private String urlTitleValue = null;
@@ -22,6 +22,7 @@ public class ZCRecordValue {
 	private String searchForChoices = null;
 	private boolean lookupLoadingStarted = false;
 	private boolean isFileReUploaded = false;
+	private boolean isWriteToParcel = false;
 
 
 
@@ -45,6 +46,16 @@ public class ZCRecordValue {
 		setFileValue(bitMapValue);
 	}
 
+	void setWriteToParcel(boolean isWriteToParcel)
+	{
+		this.isWriteToParcel = isWriteToParcel;
+	}
+
+	boolean isWriteToParcel()
+	{
+		return isWriteToParcel;
+	}
+
 	public ZCRecordValue(ZCField field,String url,String urlTitleValue,String urlLinkNameValue)
 	{
 		this.field = field;
@@ -52,7 +63,6 @@ public class ZCRecordValue {
 		this.urlTitleValue = urlTitleValue;
 		this.urlLinkNameValue = urlLinkNameValue;
 	}
-
 
 	public String toString() {
 		return field.getDisplayName() + " : " + value;  //No I18N
@@ -74,7 +84,7 @@ public class ZCRecordValue {
 	{
 		this.isFileReUploaded = isFileReUploaded;
 	}
-	
+
 	public void setUrlLinkNameValue(String urlLinkNameValue)
 	{
 		this.urlLinkNameValue = urlLinkNameValue;
@@ -103,7 +113,10 @@ public class ZCRecordValue {
 		this.url = url;
 	}
 
-
+	void setField(ZCField field)
+	{
+		this.field = field;
+	}
 
 	public String getDisplayValue() {
 		if(FieldType.isMultiChoiceField(field.getType())) {
@@ -345,6 +358,4 @@ public class ZCRecordValue {
 		}
 		return urlValueForSubmit;
 	}
-
-
 }

@@ -2,23 +2,26 @@
 package com.zoho.creator.jframework;
 
 
-public class ZCColumn extends ZCField {
 
-	private ZCCondition zcCondition = null;
+
+
+
+public class ZCColumn extends ZCField{
 	private boolean isSortOrderForGroupByAscending = true;
 	private boolean isSortOrderForSortByAscending = true;
 	private boolean isHidden = false;
-	
-	
+	private ZCCondition zcCondition = null;
+
+
 	ZCColumn(String fieldName, FieldType type, String displayName) {
 		super(fieldName, type, displayName);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public void setCondition(ZCCondition zcCondition ) {
 		this.zcCondition = zcCondition;
 	}
-	
+
 	public ZCCondition getCondition() {
 		return zcCondition;
 	}
@@ -26,7 +29,7 @@ public class ZCColumn extends ZCField {
 	public void setSortOrderForGroupByAscending(boolean isSortOrderForGroupByAscending) {
 		this.isSortOrderForGroupByAscending= isSortOrderForGroupByAscending; 
 	}
-	
+
 	public boolean isSortOrderForGroupByAscending() {
 		return isSortOrderForGroupByAscending;
 	}
@@ -46,7 +49,6 @@ public class ZCColumn extends ZCField {
 	public void setHidden(boolean isHidden) {
 		this.isHidden = isHidden;
 	}
-	
 
-
+	 
 }

@@ -1,6 +1,11 @@
 // $Id$
 package com.zoho.creator.jframework;
 
+import java.io.Serializable;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
 public class ZCCustomFilter {
 
 	private String name = null;
@@ -10,7 +15,7 @@ public class ZCCustomFilter {
 		this.name = name;
 		this.id = id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -18,4 +23,8 @@ public class ZCCustomFilter {
 	public long getId() {
 		return id;
 	}
+	
+	
+	
+	
 }

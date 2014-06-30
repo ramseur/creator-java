@@ -1,6 +1,11 @@
 // $Id$
 package com.zoho.creator.jframework;
 
+import java.io.Serializable;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
 
 
 public class ZCButton implements Comparable<ZCButton>{
@@ -44,7 +49,7 @@ public class ZCButton implements Comparable<ZCButton>{
 	public ZCButtonType getButtonType() {
 		return buttonType;
 	}
-	
+
 	ZCForm getForm() {
 		return zcForm;
 	}
@@ -57,12 +62,12 @@ public class ZCButton implements Comparable<ZCButton>{
 	}
 
 	void setForm(ZCForm zcForm) {
-		if(!formIsSet) {
+//		if(!formIsSet) {
 			this.zcForm = zcForm;
-			formIsSet = true;
-		} else {
-			throw new RuntimeException ("You cannot set more than once"); //No I18N
-		}
+//			formIsSet = true;
+//		} else {
+//			throw new RuntimeException ("You cannot set more than once"); //No I18N
+//		}
 	}
 
 	void setOnClickExists(boolean onClickExists)
@@ -78,6 +83,8 @@ public class ZCButton implements Comparable<ZCButton>{
 	public ZCResponse click() throws ZCException{
 		return ZOHOCreator.submitForm(this);
 	}
+
+	
 
 
 }

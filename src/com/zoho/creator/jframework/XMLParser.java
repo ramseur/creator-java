@@ -725,7 +725,6 @@ class XMLParser {
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("filter")) {
 
 				isFilterApplied = getBooleanValue(fieldPropetyNode, isFilterApplied);
-
 			} 
 			else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("currencydisp")){
 				currencyType = getStringValue(fieldPropetyNode, "");

@@ -149,12 +149,12 @@ public class ZCAPIDemo {
 	}
 	
 	public static void printCompsList() {
-		try {
-			ZOHOCreator.loadSelectedApplication(null);
-		} catch (ZCException e) {
-			System.out.println(e.getMessage());
-			return;
-		}
+//		try {
+//			//ZOHOCreator.loadSelectedApplication(null);
+//		} catch (ZCException e) {
+//			System.out.println(e.getMessage());
+//			return;
+//		}
 		List<ZCSection> zcSections = ZOHOCreator.getCurrentSectionList();
 		
 		int compsCounter = 1;
@@ -211,12 +211,12 @@ public class ZCAPIDemo {
 	}
 
 	public static void printForm() {
-		try {
-			ZOHOCreator.loadSelectedForm();
-		} catch (ZCException e) {
-			System.out.println(e.getMessage());
-			return;
-		}
+//		try {
+//			//ZOHOCreator.loadSelectedForm();
+//		} catch (ZCException e) {
+//			System.out.println(e.getMessage());
+//			return;
+//		}
 		ZCForm zcForm = ZOHOCreator.getCurrentForm();
 		List<ZCField> fields = zcForm.getFields();
 		for(int i=0; i<fields.size(); i++) {

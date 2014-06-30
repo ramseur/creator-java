@@ -2,7 +2,8 @@
 package com.zoho.creator.jframework;
 
 
-public class ZCChoice {
+
+public class ZCChoice{
 
 	private String key = null;
 	private String value = null;
@@ -11,7 +12,7 @@ public class ZCChoice {
 		this.key = key;
 		this.value = value;
 	}
-	
+
 	public String toString() {
 		return  value; //No I18N
 	}
@@ -35,5 +36,7 @@ public class ZCChoice {
         }
         return key.equals(((ZCChoice)toCheck).getKey());
 	}
+	
+	
 
 }

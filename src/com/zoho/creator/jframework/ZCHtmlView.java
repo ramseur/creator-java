@@ -1,7 +1,11 @@
 // $Id$
 package com.zoho.creator.jframework;
 
-public class ZCHtmlView extends ZCComponent {
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
+
+public class ZCHtmlView extends ZCComponent{
 
 	
 	private String htmlContent = "";
@@ -14,5 +18,6 @@ public class ZCHtmlView extends ZCComponent {
 	public String getHtmlContent() {
 		return htmlContent;
 	}
+	
 
 }

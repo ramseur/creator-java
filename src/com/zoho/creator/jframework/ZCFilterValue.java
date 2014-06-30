@@ -1,8 +1,12 @@
 // $Id$
 package com.zoho.creator.jframework;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 
-public class ZCFilterValue {
+
+public class ZCFilterValue{
 
 	private String value = null;
 	private boolean isSelected = false;
@@ -12,7 +16,7 @@ public class ZCFilterValue {
 		this.value = value;
 		this.dispValue  = dispValue;
 	}
-	
+
 	public String toString() {
 		return "value  : " + value + " - " + isSelected;  //No I18N
 	}
@@ -32,5 +36,7 @@ public class ZCFilterValue {
 	public String getDisplayValue() {
 		return dispValue;
 	}
+	
+	
 
 }

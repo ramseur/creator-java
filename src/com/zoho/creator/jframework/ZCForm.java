@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-public class ZCForm extends ZCComponent {
+public class ZCForm extends ZCComponent{
 
 	private boolean hasAddOnLoad = false;
 	private boolean hasEditOnLoad = false;
@@ -62,7 +62,6 @@ public class ZCForm extends ZCComponent {
 
 	ZCForm(String appOwner, String appLinkName, String componentName, String componentLinkName, int sequenceNumber, boolean hasAddOnLoad, boolean hasEditOnLoad, String successMessage, String dateFormat, boolean isStateLess,String openurlType,String openurlValue) {
 		super( appOwner,  appLinkName,  ZCComponent.FORM,  componentName,  componentLinkName,  sequenceNumber);
-
 		this.hasAddOnLoad = hasAddOnLoad;
 		this.hasEditOnLoad = hasEditOnLoad;
 		this.successMessage = successMessage;
@@ -70,7 +69,6 @@ public class ZCForm extends ZCComponent {
 		this.isStateLess = isStateLess;
 		this.openurlType = openurlType;
 		this.openurlValue = openurlValue;
-
 	}
 
 	public String toString() {
@@ -86,7 +84,6 @@ public class ZCForm extends ZCComponent {
 		}
 		return false;
 	}
-
 
 	public String getSuccessMessage() {
 		return successMessage;
@@ -217,7 +214,7 @@ public class ZCForm extends ZCComponent {
 		for(int i=0; i<fieldsToIterate.size(); i++) {//No I18N
 			ZCField field = fieldsToIterate.get(i);
 			ZCRecordValue recordValue = field.getRecordValue();
-			
+
 			if(recordValue != null) 
 			{
 				if(FieldType.isMultiChoiceField(field.getType())) 
@@ -258,13 +255,13 @@ public class ZCForm extends ZCComponent {
 					buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
 					buff.append("<value>");//No I18N
 					buff.append("<![CDATA[");//No I18N
-					
+
 					if(recordValue.getChoiceValue() != null) {
-						
+
 						buff.append(recordValue.getChoiceValue().getKey());
 					}else
 					{
-						
+
 						buff.append("");	
 					}
 					buff.append("]]>");//No I18N
@@ -621,4 +618,6 @@ public class ZCForm extends ZCComponent {
 		return errorMessage;
 	}
 
+
+	
 }

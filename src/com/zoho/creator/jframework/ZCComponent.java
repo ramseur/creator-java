@@ -1,14 +1,18 @@
 // $Id$
 package com.zoho.creator.jframework;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 
 
-public class ZCComponent  {
+
+public class ZCComponent  implements Parcelable{
 
 	public static final String FORM = "form"; //No I18N
 	public static final String REPORT = "view"; //No I18N
 	public static final String CALENDAR = "calendar"; //No I18N
 	public static final String PAGE = "html"; //No I18N
+	public static final String SUMMARY = "summary";//No I18N
 
 
 	private String appOwner = null;
@@ -27,6 +31,17 @@ public class ZCComponent  {
 		this.componentName = componentName;
 		this.componentLinkName = componentLinkName;
 		this.sequenceNumber = sequenceNumber;
+	}
+	
+	
+	public ZCComponent(Parcel in) {
+		// TODO Auto-generated constructor stub
+		appOwner = in.readString();	
+	    appLinkName = in.readString();
+		type = in.readString();
+		componentName = in.readString();
+		componentLinkName = in.readString();
+		sequenceNumber = in.readInt();
 	}
 
 	public String toString() {
@@ -70,5 +85,32 @@ public class ZCComponent  {
 	void setQueryString(String queryString)
 	{
 		this.queryString = queryString;
+	}
+	
+	public static final Parcelable.Creator<ZCComponent> CREATOR = new Creator<ZCComponent>() {  
+		public ZCComponent createFromParcel(Parcel in) {  
+			return new ZCComponent(in);  
+		}  
+		public ZCComponent[] newArray(int size) {  
+			return new ZCComponent[size];  
+		}  
+	}; 
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel parcel, int arg1) {
+		// TODO Auto-generated method stu
+		parcel.writeString(appOwner);
+		parcel.writeString(appLinkName);
+		parcel.writeString(type);
+		parcel.writeString(componentName);
+		parcel.writeString(componentLinkName);
+		parcel.writeInt(sequenceNumber);
+		
 	}
 }

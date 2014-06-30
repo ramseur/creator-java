@@ -2,10 +2,14 @@
 
 package com.zoho.creator.jframework;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ZCGroup {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class ZCGroup{
 
 	private List<String> groupHeaderValues = new ArrayList<String>();
 	private List<ZCRecord> groupRecords = new ArrayList<ZCRecord>();
@@ -13,7 +17,7 @@ public class ZCGroup {
 	ZCGroup(List<String> groupHeaderValues) {
 		this.groupHeaderValues = groupHeaderValues;
 	}
-	
+
 	public String toString() {
 		return groupHeaderValues + " --> " + groupRecords;
  	}
@@ -29,5 +33,7 @@ public class ZCGroup {
 	public List<ZCRecord> getGroupRecords() {
 		return groupRecords;
 	}
+	
+
 	
 }

@@ -10,18 +10,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
-import org.json.JSONArray;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class ZOHOUser {
+
+public class ZOHOUser implements Parcelable{
 
 	private String authToken = null;
 	private static ZOHOUser userCredential = null;
 	private static UserStorage userStorage = new BasicUserStorage();
-
 	private String country;
 	private String language;
 	private String timeZone;
@@ -30,6 +32,7 @@ public class ZOHOUser {
 	private String displayName;
 	private String id;
 	private String fullName;
+	private Bitmap bitmap = null;
 	private HashMap<String,Object> userObject = new HashMap<String, Object>();
 
 
@@ -39,6 +42,16 @@ public class ZOHOUser {
 
 	public Object getObject(String key){
 		return userObject.get(key);
+	}
+	
+	public void setBitmap(Bitmap bitmap)
+	{
+		this.bitmap = bitmap;
+	}
+	
+	public Bitmap getBitmap()
+	{
+		return bitmap;
 	}
 
 	public String getDisplayName(){
@@ -82,11 +95,8 @@ public class ZOHOUser {
 
 	static ZOHOUser getUserObject(){
 		
-		
-
 		if(userCredential == null && userStorage != null) {
 			String loadedAuthToken = userStorage.loadAuthToken();
-			
 			if(loadedAuthToken != null) {
 				try {
 					userCredential = new ZOHOUser(loadedAuthToken);
@@ -257,4 +267,35 @@ public class ZOHOUser {
 		return authToken;
 	}
 
+	
+	public static final Parcelable.Creator<ZOHOUser> CREATOR = new Creator<ZOHOUser>() {  
+		public ZOHOUser createFromParcel(Parcel in) {  
+			return new ZOHOUser(in);  
+		}  
+		public ZOHOUser[] newArray(int size) {  
+			return new ZOHOUser[size];  
+		}  
+	}; 
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	@Override
+	public void writeToParcel(Parcel parcel, int arg1) {
+		// TODO Auto-generated method stub
+		parcel.writeString(displayName);
+		parcel.writeList(eMailAddresses);
+		parcel.writeParcelable(bitmap, arg1);	 
+	}
+	
+	public ZOHOUser(Parcel in)
+	{
+		displayName = in.readString();
+		in.readList(eMailAddresses, String.class.getClassLoader());
+		bitmap = in.readParcelable(Bitmap.class.getClassLoader());
+	}
 }

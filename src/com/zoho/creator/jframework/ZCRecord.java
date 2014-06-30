@@ -7,7 +7,7 @@ import java.util.List;
 
 
 public class ZCRecord implements Comparable<ZCRecord>{
-	private List<ZCRecordValue> values = null;	
+	private List<ZCRecordValue> values = new ArrayList<ZCRecordValue>();	
 	private long recordId = -1l;
 	private Date eventDate = null;
 	private Date startTime = null;
@@ -18,21 +18,21 @@ public class ZCRecord implements Comparable<ZCRecord>{
 	public ZCRecord(List<ZCRecordValue> values) {
 		this.values = values;
 	}
-	
+
 	ZCRecord(long recordId, List<ZCRecordValue> values) {
 		this.recordId = recordId;
 		this.values = values;
 	}
-	
+
 	public String toString() {
 		return "recordID: " + recordId +  " - values: " + values;  //No I18N
 	}
-	
+
 	public List<ZCRecordValue> getValues() {
 		final List<ZCRecordValue> toReturn = new ArrayList<ZCRecordValue>(values);
 		return toReturn ;
 	}
-	
+
 	private String getDisplay(List<ZCRecordValue> recValues) {
 		StringBuffer buff = new StringBuffer();
 		for(int i=0; i<recValues.size(); i++) {
@@ -44,20 +44,20 @@ public class ZCRecord implements Comparable<ZCRecord>{
 		}
 		return buff.toString();
 	}
-	
+
 	public String getPrimaryDisplay() {
 		return getDisplay(getPrimaryValues());
 	}
-	
+
 	public String getSecondaryDisplay() {
 		return getDisplay(getSecondaryValues());
 	}
 
-	
+
 	public List<ZCRecordValue> getPrimaryValues() {
 		return FieldType.getDisplayValues(true, values);
 	}
-	
+
 	public List<ZCRecordValue> getSecondaryValues() {
 		return FieldType.getDisplayValues(false, values);
 	}
@@ -65,7 +65,7 @@ public class ZCRecord implements Comparable<ZCRecord>{
 	public long getRecordId() {
 		return recordId;
 	}
-	
+
 	void setRecordId(long recordId)
 	{
 		this.recordId = recordId;
@@ -110,13 +110,13 @@ public class ZCRecord implements Comparable<ZCRecord>{
 		if(getStartTime() != null && toCompare.getStartTime() != null) {
 			return getStartTime().getTime() > toCompare.getStartTime().getTime() ? 1 
 					: toCompare.getStartTime().getTime() > getStartTime().getTime() ? -1 
-					: 0;
+							: 0;
 		} else if(getEventDate() != null && toCompare.getEventDate() != null) {
 			return getEventDate().getTime() > toCompare.getEventDate().getTime() ? 1 
 					: toCompare.getEventDate().getTime() > getEventDate().getTime() ? -1 
-					: 0;
+							: 0;
 		}
- 		return 0;
+		return 0;
 	}
 	public boolean isRecordError()
 	{
@@ -126,4 +126,7 @@ public class ZCRecord implements Comparable<ZCRecord>{
 	{
 		this.isRecordError = isRecordError;
 	}
+
+	
+
 }

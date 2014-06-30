@@ -5,7 +5,10 @@ package com.zoho.creator.jframework;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ZCFilter {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class ZCFilter{
 	private String filterName = null;
 	private String filterLinkName = null;
 	private List<ZCFilterValue> values = new ArrayList<ZCFilterValue>();
@@ -49,6 +52,8 @@ public class ZCFilter {
 			throw new RuntimeException ("You cannot add more than once"); //No I18N
 		}
 	}
+
+	
 	
 
 }

@@ -7,12 +7,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 
 
 
-public class ZCView extends ZCComponent {
 
+public class ZCView extends ZCComponent{
+	
 	private String dateFormat = null;
 	private String baseFormLinkName = null;
 	private boolean isAddAllowed = false;
@@ -43,7 +48,6 @@ public class ZCView extends ZCComponent {
 	
 	private List<ZCCustomAction> recordCustomActions = new ArrayList<ZCCustomAction>();
 	private boolean recordCustomActionAdded = false;
-	
 	private List<ZCRecord> records = new ArrayList<ZCRecord>();
 	private HashMap<Date, List<ZCRecord>> eventsMap = new HashMap<Date, List<ZCRecord>>();
 
@@ -59,14 +63,12 @@ public class ZCView extends ZCComponent {
 
 	private ZCPair<Integer, Integer> recordsMonthYear = null;
 	private int recordsCount = -1;
-
-
 	
 	ZCView(String appOwner, String appLinkName, String componentType, String componentName, String componentLinkName) {
 		super(appOwner, appLinkName, componentType, componentName, componentLinkName, -1);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public String toString() {
 		return super.toString() + " - dateFormat: " + dateFormat + " - baseFormLinkName: " + baseFormLinkName +   //No I18N
 				" - isAddAllowed: " + isAddAllowed + " - isEditAllowed: " + isEditAllowed + " - isDeleteAllowed: " + isDeleteAllowed +    //No I18N
@@ -273,9 +275,7 @@ public class ZCView extends ZCComponent {
 	}
     
 	void addRecords(List<ZCRecord> records) {
-		
 		if(records.size() < ZCView.PAGE_SIZE) {
-			
 			lastReached = true;
 		}
 		this.records.addAll(records);
@@ -342,7 +342,6 @@ public class ZCView extends ZCComponent {
 	}
 	
 	public List<ZCRecord> loadMore() throws ZCException{
-		
 		if(!lastReached) {
 			int lastIndex = records.size();
 			ZOHOCreator.loadRecords(this);
@@ -492,5 +491,4 @@ public class ZCView extends ZCComponent {
 		}
 		return newZCColumnList;
 	}
-
 }

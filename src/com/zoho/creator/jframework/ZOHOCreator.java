@@ -178,6 +178,7 @@ public class ZOHOCreator {
 
 	static String getFilesDir() {
 		String str = ZOHOCreator.getUserProperty("FILES_DIR_PATH");
+		str = "/data/data/com.zoho.creator.a/files";
 		if(str == null){
 			str = "/";
 		}
@@ -316,8 +317,10 @@ public class ZOHOCreator {
 
 	}
 
-	public static void loadSelectedApplication(List<NameValuePair> additionalParams)  throws ZCException {
-		setCurrentSectionList(getSectionList(getCurrentApplication(), additionalParams));
+	public static List<ZCSection> loadSelectedApplication(ZCApplication zcApp,List<NameValuePair> additionalParams)  throws ZCException {
+		List<ZCSection> sections = getSectionList(zcApp, additionalParams);
+		setCurrentSectionList(sections);
+		return sections;
 	}
 
 	public static void setCurrentSectionList(List<ZCSection> sectionList) {
@@ -336,12 +339,12 @@ public class ZOHOCreator {
 		setCurrentView(getView(getCurrentComponent()));
 	}
 
-	public static void loadSelectedForm() throws ZCException {
-		ZCComponent comp = getCurrentComponent();
-		List<NameValuePair> params = getQueryStringParams(comp.getQueryString());
-		URLPair formMetaURLPair = ZCURL.formMetaURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner(), ZCForm.FORM_ALONE, params);
+	public static void loadSelectedForm(ZCComponent zcComponent) throws ZCException {
+
+		List<NameValuePair> params = getQueryStringParams(zcComponent.getQueryString());
+		URLPair formMetaURLPair = ZCURL.formMetaURL(zcComponent.getAppLinkName(), zcComponent.getComponentLinkName(), zcComponent.getAppOwner(), ZCForm.FORM_ALONE, params);
 		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
-		ZCForm zcForm = XMLParser.parseForForm(rootDocument, comp.getAppLinkName(), comp.getAppOwner(), comp.getQueryString(),false);
+		ZCForm zcForm = XMLParser.parseForForm(rootDocument, zcComponent.getAppLinkName(), zcComponent.getAppOwner(), zcComponent.getQueryString(),false);
 		if(zcForm == null) {
 			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
 		}
@@ -352,7 +355,7 @@ public class ZOHOCreator {
 		}	
 	}
 
-	public static void loadFormForAddRecord(Date calSelectedStartDate , Date calSelectedEndDate) throws ZCException {
+	public static ZCForm loadFormForAddRecord(Date calSelectedStartDate , Date calSelectedEndDate) throws ZCException {
 		ZCView currentView = getCurrentView();
 		String formLinkName = currentView.getBaseFormLinkName();
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -366,12 +369,13 @@ public class ZOHOCreator {
 		}
 		params.add(new BasicNameValuePair("viewLinkName", currentView.getComponentLinkName()));
 		params.addAll(getQueryStringParams(currentView.getQueryString()));
-		ZCForm form = getForm( currentView.getAppLinkName(), formLinkName, currentView.getAppOwner(), ZCForm.VIEW_ADD_FORM, params);
+		ZCForm form = getForm(currentView.getAppLinkName(), formLinkName, currentView.getAppOwner(), ZCForm.VIEW_ADD_FORM, params);
 		setCurrentForm(form);
 		form.setViewForAdd(getCurrentView());
 		if (form.hasOnLoad()) {
 			ZOHOCreator.callFormOnAddOnLoad(form, ZCForm.VIEW_ADD_FORM);
 		}
+		return form;
 	}
 
 	static List<NameValuePair> getQueryStringParams(String queryString)
@@ -416,7 +420,7 @@ public class ZOHOCreator {
 		return toReturn;
 	}
 
-	public static void loadFormForEditRecord(ZCRecord record) throws ZCException {
+	public static ZCForm loadFormForEditRecord(ZCRecord record) throws ZCException {
 		ZCView currentView = getCurrentView();
 		String appLinkName = currentView.getAppLinkName();
 		String appOwner = currentView.getAppOwner();
@@ -435,10 +439,11 @@ public class ZOHOCreator {
 		if (editRecordForm.hasOnLoad()) {
 			ZOHOCreator.callFormEditOnAddOnLoad(editRecordForm, record.getRecordId(),ZCForm.VIEW_EDIT_FORM);
 		}
+		return editRecordForm;
 	}
 
 
-	public static void loadFormForBulkEditRecords() throws ZCException {
+	public static ZCForm loadFormForBulkEditRecords() throws ZCException {
 		List<ZCRecord> records = getCurrentBulkEditRecords();
 		ZCView currentView = getCurrentView();
 		String appLinkName = currentView.getAppLinkName();
@@ -456,6 +461,7 @@ public class ZOHOCreator {
 		for(int i=0; i<records.size(); i++) {
 			bulkEditForm.addEditRecord(records.get(i));
 		}
+		return bulkEditForm;
 	}
 
 
@@ -463,17 +469,17 @@ public class ZOHOCreator {
 	static List<NameValuePair> getAdditionalParamsForForm(ZCForm zcForm, ZCField baseLookupField) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		ZCForm baseForm = null;
-//		ZCForm baseSubForm = zcForm;
-//		while(baseSubForm.getBaseLookupField()!=null)
-//		{
-//			ZCField tempLookUpField = baseSubForm.getBaseLookupField();
-//			baseSubForm = tempLookUpField.getBaseForm();
-//			if(baseSubForm.getBaseLookupField()==null && baseSubForm.getBaseSubFormField()!=null)
-//			{
-//				params.add(new BasicNameValuePair("zc_childsubformfield_1", tempLookUpField.getFieldName()));
-//				break;  
-//			}
-//		}
+		//		ZCForm baseSubForm = zcForm;
+		//		while(baseSubForm.getBaseLookupField()!=null)
+		//		{
+		//			ZCField tempLookUpField = baseSubForm.getBaseLookupField();
+		//			baseSubForm = tempLookUpField.getBaseForm();
+		//			if(baseSubForm.getBaseLookupField()==null && baseSubForm.getBaseSubFormField()!=null)
+		//			{
+		//				params.add(new BasicNameValuePair("zc_childsubformfield_1", tempLookUpField.getFieldName()));
+		//				break;  
+		//			}
+		//		}
 		if(baseLookupField == null) {
 			baseForm = zcForm;
 		} else 
@@ -491,12 +497,12 @@ public class ZOHOCreator {
 				fieldRowList.add(baseLookupField.getFieldName());
 				fieldList.add(fieldRowList);
 				baseLookupField = baseForm.getBaseLookupField();
-//				if(baseLookupField==null)
-//				{
-//					if(baseForm.getBaseSubFormField() != null) {
-//
-//					}
-//				}
+				//				if(baseLookupField==null)
+				//				{
+				//					if(baseForm.getBaseSubFormField() != null) {
+				//
+				//					}
+				//				}
 			}
 			if(fieldList.size()>0) {
 				params.add(new BasicNameValuePair("zc_lookupCount", fieldList.size() + ""));//No I18N
@@ -512,11 +518,11 @@ public class ZOHOCreator {
 		if(baseForm.getBaseSubFormField() != null) {
 			baseForm = baseForm.getBaseSubFormField().getBaseForm();
 		}
-//		ZCForm form = ZOHOCreator.getCurrentForm();
-//		if(form!=null)
-//		{
-//			params.add(new BasicNameValuePair("childFormAccessType", form.getFormType()+""));//NoI18N
-//		}
+		//		ZCForm form = ZOHOCreator.getCurrentForm();
+		//		if(form!=null)
+		//		{
+		//			params.add(new BasicNameValuePair("childFormAccessType", form.getFormType()+""));//NoI18N
+		//		}
 		ZCView viewForAdd = baseForm.getViewForAdd();
 		ZCView viewForEdit = baseForm.getViewForEdit(); 
 
@@ -630,7 +636,7 @@ public class ZOHOCreator {
 		}
 		ZCForm form = field.getBaseForm();
 		int formType = form.getFormType();
-		if(!(formType==ZCForm.FORM_ALONE)) {
+		if(!(formType==ZCForm.FORM_ALONE)&& !(formType==ZCForm.FORM_LOOKUP_ADD_FORM)) {
 			params.add(new BasicNameValuePair("formAccessType",formType+""));//No I18N
 			params.add(new BasicNameValuePair("viewLinkName", getCurrentView().getComponentLinkName()));//No I18N
 		}
@@ -666,7 +672,7 @@ public class ZOHOCreator {
 	}
 
 
-	private static void setCurrentView(ZCView view) {
+	public static void setCurrentView(ZCView view) {
 		ZOHOCreator.view = view;
 		setCurrentBulkEditRecords(null);
 	}
@@ -714,16 +720,18 @@ public class ZOHOCreator {
 		File f = new File(getFilesDir()+NAV_LIST_FILE);
 		Document rootDocument = stringToDocument(readResponseFromFile(f));
 		if(rootDocument == null){
+			
 			URLPair navigationListURL = ZCURL.navigationListURL();
 			rootDocument = ZOHOCreator.postURLXML(navigationListURL.getUrl(), navigationListURL.getNvPair());
 			writeResponseToFile(getString(rootDocument),f);
 		}
+
+		
+		
 		return XMLParser.parseForNavigationListForApps(rootDocument);
 	}
 
 	public static ZCAppList getPersonalApplicationList(List<NameValuePair> additionalParams) throws ZCException {
-
-
 		Document rootDocument = null;
 		File f1 = new File(getFilesDir()+EDIT_SUPPORT_FILE);
 
@@ -1033,9 +1041,9 @@ public class ZOHOCreator {
 	}
 
 	public static ZCView getView(ZCComponent comp) throws ZCException{
-		if(comp.getType().equals(ZCComponent.REPORT) || comp.getType().equals(ZCComponent.CALENDAR)) {
+		if(comp.getType().equals(ZCComponent.REPORT) || comp.getType().equals(ZCComponent.CALENDAR) ||comp.getType().equals(ZCComponent.SUMMARY)) {
 			List<NameValuePair> params = new ArrayList<NameValuePair>(); //URLConstructor.getDefaultParams(comp.getAppOwner());
-			if(comp.getType().equals(ZCComponent.REPORT)) {
+			if(comp.getType().equals(ZCComponent.REPORT) || comp.getType().equals(ZCComponent.SUMMARY)) {
 				params.add(new BasicNameValuePair("startIndex", "1"));//No I18N
 				params.add(new BasicNameValuePair("pageSize", ZCView.PAGE_SIZE+"")); //No I18N
 				params.addAll(getQueryStringParams(comp.getQueryString()));
@@ -1055,7 +1063,6 @@ public class ZOHOCreator {
 				endCalendar.set(Calendar.SECOND, 59);
 				endCalendar.set(Calendar.MILLISECOND, 999);
 				SimpleDateFormat endDateFormat = new SimpleDateFormat("yyyy-MM-dd");//No I18N
-
 				params.add(new BasicNameValuePair("startDateStr", startDateFormat.format(startCalendar.getTime())));//No I18N
 				params.add(new BasicNameValuePair("endDateStr", endDateFormat.format(endCalendar.getTime()))); //No I18N
 			}
@@ -1089,17 +1096,16 @@ public class ZOHOCreator {
 		ZCField subFormField = field.getBaseForm().getBaseSubFormField();
 		ZCForm baseForm = field.getBaseForm();
 		String fieldName = field.getFieldName();
-		if(baseForm==ZOHOCreator.getCurrentSubForm()) {
-			baseForm = ZOHOCreator.getCurrentForm();
-		}
+//		if(baseForm==ZOHOCreator.getCurrentSubForm()) {
+//			baseForm = ZOHOCreator.getCurrentForm();
+//		}
 		String subformComponent = null;
 		int formAccessType = 0;
-
-
 		int size = field.getRecordValue().getChoices().size();
 		String searchForChoices = field.getRecordValue().getSearchForChoices();
 
 		if(subFormField != null) {
+			baseForm = subFormField.getBaseForm();
 			subformComponent = field.getFieldName();
 			fieldName = subFormField.getFieldName();
 		}
@@ -1584,6 +1590,7 @@ public class ZOHOCreator {
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
+					
 					return toReturn;
 				} catch (ParserConfigurationException e) {
 					throw new ZCException("An error has occured", ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
