@@ -67,7 +67,7 @@ public class ZCURL {
 	}
 
 	static URLPair appListURL() {
-		return new URLPair(serverURL() + "/api/xml/applications/", getDefaultParams()); //No I18N
+		return new URLPair(serverURL() + "/api/json/applications/", getDefaultParams()); //No I18N
 	}
 
 	static URLPair sharedAppListURL(Long groupid) {
@@ -75,7 +75,7 @@ public class ZCURL {
 		if(groupid != null) {
 			params.add(new BasicNameValuePair("groupid", groupid+""));//No I18N
 		}
-		return new URLPair(serverURL() + "/api/xml/sharedapplications/", params); //No I18N
+		return new URLPair(serverURL() + "/api/json/sharedapplications/", params); //No I18N
 	}
 
 	static URLPair workSpaceAppListURL(String workSpaceOwner) {
@@ -84,7 +84,7 @@ public class ZCURL {
 		}
 		List<NameValuePair> params = getDefaultParams();
 		params.add(new BasicNameValuePair("workSpaceOwner", workSpaceOwner));//No I18N
-		return new URLPair(serverURL() + "/api/xml/workspaceapplications/", params); //No I18N
+		return new URLPair(serverURL() + "/api/json/workspaceapplications/", params); //No I18N
 	}
 
 	static URLPair sectionMetaURL(String appLinkName, String appOwner) {
@@ -112,14 +112,14 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("metaData","complete"));//No I18N
 		params.add(new BasicNameValuePair("zcRefValue","true"));//No I18N
 		params.add(new BasicNameValuePair("formAccessType", String.valueOf(ZCForm.VIEW_BULK_EDIT_FORM)));//No I18N
-		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"view/"+ viewLinkName + "/bulkeditfields/", params);//No I18N
+		return new URLPair(serverURL() + "/api/"+appOwner+"/json/" + appLinkName + "/" +"view/"+ viewLinkName + "/bulkeditfields/", params);//No I18N
 	}
 	
 	static URLPair editFormMetaURL(String appLinkName, String appOwner, String viewLinkName, Long recordLinkId) {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);
 		params.add(new BasicNameValuePair("metaData","complete"));//No I18N
 		params.add(new BasicNameValuePair("zcRefValue","true"));//No I18N
-		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/view/"+ viewLinkName + "/record/" + recordLinkId + "/edit/", params);//No I18N
+		return new URLPair(serverURL() + "/api/"+appOwner+"/json/" + appLinkName + "/view/"+ viewLinkName + "/record/" + recordLinkId + "/edit/", params);//No I18N
 	}
 	
 	
@@ -131,7 +131,7 @@ public class ZCURL {
 		if(additionalParams != null) {
 			params.addAll(additionalParams);
 		}
-		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName + "/fields/", params);//No I18N
+		return new URLPair(serverURL() + "/api/"+appOwner+"/json/" + appLinkName + "/" +"form/"+ formLinkName + "/fields/", params);//No I18N
 	}
 
 	static URLPair lookupChoices(String appLinkName, String formLinkName, String appOwner,String lookupFieldName, int startIndex, String searchString, String subformComponent,int formAccessType,List<NameValuePair> additionalParams) {

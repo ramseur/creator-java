@@ -556,10 +556,8 @@ public class ZCField implements Comparable<ZCField>{
 	{
 		this.subFormRecordIds = subFormRecordIds;
 	}
-
 	List<Long> getSubFormRecordIds()
 	{
 		return subFormRecordIds;
 	}
-
 }

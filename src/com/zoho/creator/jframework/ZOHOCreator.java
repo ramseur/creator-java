@@ -66,8 +66,8 @@ public class ZOHOCreator {
 
 	private static final String NAV_LIST_FILE = "/navList.xml";//No I18N
 	private static final String EDIT_SUPPORT_FILE = "/editSupportURL.txt";//No I18N
-	private static final String PERSONAL_APPLIST_FILE = "/personalAppList.xml";//No I18N
-	private static final String SHARED_APPLIST_FILE = "/sharedAppsList.xml";//No I18N
+	private static final String PERSONAL_APPLIST_FILE = "/personalAppList.json";//No I18N
+	private static final String SHARED_APPLIST_FILE = "/sharedAppsList.json";//No I18N
 
 	private static ZCApplication zcApp = null;
 	private static List<ZCSection> sectionList = null;
@@ -339,12 +339,14 @@ public class ZOHOCreator {
 		setCurrentView(getView(getCurrentComponent()));
 	}
 
-	public static void loadSelectedForm(ZCComponent zcComponent) throws ZCException {
 
-		List<NameValuePair> params = getQueryStringParams(zcComponent.getQueryString());
-		URLPair formMetaURLPair = ZCURL.formMetaURL(zcComponent.getAppLinkName(), zcComponent.getComponentLinkName(), zcComponent.getAppOwner(), ZCForm.FORM_ALONE, params);
-		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
-		ZCForm zcForm = XMLParser.parseForForm(rootDocument, zcComponent.getAppLinkName(), zcComponent.getAppOwner(), zcComponent.getQueryString(),false);
+	public static void loadSelectedForm() throws ZCException {
+		ZCComponent comp = getCurrentComponent();
+		List<NameValuePair> params = getQueryStringParams(comp.getQueryString());
+		URLPair formMetaURLPair = ZCURL.formMetaURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner(), ZCForm.FORM_ALONE, params);
+//		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
+		String response = ZOHOCreator.postURL(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
+		ZCForm zcForm = JSONParser.parseForForm(response, comp.getAppLinkName(), comp.getAppOwner(), comp.getQueryString(),false);
 		if(zcForm == null) {
 			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
 		}
@@ -411,8 +413,9 @@ public class ZOHOCreator {
 	private static ZCForm getForm(String appLinkName, String formLinkName, String appOwner, int formType, List<NameValuePair> params) throws ZCException {
 
 		URLPair formMetaURLPair = ZCURL.formMetaURL(appLinkName, formLinkName, appOwner,  formType, params);
-		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
-		ZCForm toReturn = XMLParser.parseForForm(rootDocument, appLinkName, appOwner, null,false);
+//		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
+		String response = ZOHOCreator.postURL(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
+		ZCForm toReturn = JSONParser.parseForForm(response, appLinkName, appOwner, null,false);
 		if(toReturn == null) {
 			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
 		}
@@ -427,8 +430,9 @@ public class ZOHOCreator {
 		String viewLinkName = currentView.getComponentLinkName();
 		Long recordLinkId = record.getRecordId();
 		URLPair formMetaURLPair = ZCURL.editFormMetaURL(appLinkName, appOwner, viewLinkName, recordLinkId);
-		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
-		ZCForm editRecordForm = XMLParser.parseForForm(rootDocument, appLinkName, appOwner,null,true);
+//		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
+		String response = ZOHOCreator.postURL(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
+		ZCForm editRecordForm = JSONParser.parseForForm(response, appLinkName, appOwner,null,true);
 		if(editRecordForm == null) {
 			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
 		}
@@ -450,8 +454,9 @@ public class ZOHOCreator {
 		String appOwner = currentView.getAppOwner();
 		String viewLinkName = currentView.getComponentLinkName();
 		URLPair formMetaURLPair = ZCURL.bulkEditFormMetaURL(appLinkName, appOwner, viewLinkName);
-		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
-		ZCForm bulkEditForm = XMLParser.parseForForm(rootDocument, appLinkName, appOwner,null,false);
+//		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
+		String response = ZOHOCreator.postURL(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
+		ZCForm bulkEditForm = JSONParser.parseForForm(response, appLinkName, appOwner,null,false);
 		if(bulkEditForm == null) {
 			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
 		}
@@ -734,6 +739,7 @@ public class ZOHOCreator {
 	public static ZCAppList getPersonalApplicationList(List<NameValuePair> additionalParams) throws ZCException {
 		Document rootDocument = null;
 		File f1 = new File(getFilesDir()+EDIT_SUPPORT_FILE);
+		String response = null;
 
 		if(f1.exists()){
 			List<ZCApplication> zcApps = new ArrayList<ZCApplication>();
@@ -758,19 +764,21 @@ public class ZOHOCreator {
 			}
 			return new ZCAppList(ZCAppList.PERSONAL_APPS, zcApps);
 		}else{
-
 			File f = new File(getFilesDir()+PERSONAL_APPLIST_FILE);
-			rootDocument = stringToDocument(readResponseFromFile(f));
-			if(rootDocument == null){
+//			rootDocument = stringToDocument(readResponseFromFile(f));
+			response = readResponseFromFile(f);
+			if(response == null){
 				URLPair appListURLPair = ZCURL.appListURL();
 				if(additionalParams == null) {
 					additionalParams = new ArrayList<NameValuePair>();
 				}
 				additionalParams.addAll(appListURLPair.getNvPair());
-				rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), additionalParams);
-				writeResponseToFile(getString(rootDocument), f);
+//				rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), additionalParams);
+//				writeResponseToFile(getString(rootDocument), f);
+				response = ZOHOCreator.postURL(appListURLPair.getUrl(), additionalParams);
+				writeResponseToFile(response, f);
 			}
-			return new ZCAppList(ZCAppList.PERSONAL_APPS, XMLParser.parseForApplicationList(rootDocument));
+			return new ZCAppList(ZCAppList.PERSONAL_APPS, JSONParser.parseForApplicationList(response, JSONParser.PERSONAL_APPS));
 		}
 	}
 
@@ -784,36 +792,45 @@ public class ZOHOCreator {
 		File f = new File(getFilesDir()+SHARED_APPLIST_FILE);
 
 		if(sharedGroup != null){
-			f = new File(getFilesDir()+"/sharedApps_"+sharedGroup.getGroupId()+"List.xml");
+			f = new File(getFilesDir()+"/sharedApps_"+sharedGroup.getGroupId()+"List.json");
 		}
-		Document rootDocument = stringToDocument(readResponseFromFile(f));
-		if(rootDocument == null){
+//		Document rootDocument = stringToDocument(readResponseFromFile(f));
+		String response = readResponseFromFile(f);
+		if(response == null){
 			URLPair appListURLPair = ZCURL.sharedAppListURL(null); 
 			if(sharedGroup != null) {
 				appListURLPair = ZCURL.sharedAppListURL(sharedGroup.getGroupId()); 
 			}
-			rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), appListURLPair.getNvPair());
-			writeResponseToFile(getString(rootDocument), f);
+//			rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), appListURLPair.getNvPair());
+//			writeResponseToFile(getString(rootDocument), f);
+			
+			response = ZOHOCreator.postURL(appListURLPair.getUrl(), appListURLPair.getNvPair());
+			writeResponseToFile(response, f);
+			
 		}
-		List<ZCApplication> apps = XMLParser.parseForApplicationList(rootDocument);
+		List<ZCApplication> apps = JSONParser.parseForApplicationList(response, JSONParser.SHARED_APPS);
 		ZCAppList toReturn = new ZCAppList(ZCAppList.SHARED_APPS, apps);
 		toReturn.setSharedGroup(sharedGroup);
 		return toReturn;
 	}
 
 	public static ZCAppList getWorkspaceApplicationList(String workspaceAppOwner, List<NameValuePair> additionalParams) throws ZCException {
-		File f = new File(getFilesDir()+"/workspaceApps_"+workspaceAppOwner+"List.xml");
-		Document rootDocument = stringToDocument(readResponseFromFile(f));
-		if(rootDocument == null){
+		File f = new File(getFilesDir()+"/workspaceApps_"+workspaceAppOwner+"List.json");
+//		Document rootDocument = stringToDocument(readResponseFromFile(f));
+		String response = readResponseFromFile(f);
+		if(response == null){
 			URLPair appListURLPair = ZCURL.workSpaceAppListURL(workspaceAppOwner); 
 			if(additionalParams == null) {
 				additionalParams = new ArrayList<NameValuePair>();
 			}
 			additionalParams.addAll(appListURLPair.getNvPair());
-			rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), additionalParams);
-			writeResponseToFile(getString(rootDocument), f);
+//			rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), additionalParams);
+//			writeResponseToFile(getString(rootDocument), f);
+			
+			response = ZOHOCreator.postURL(appListURLPair.getUrl(), additionalParams);
+			writeResponseToFile(response, f);
 		}
-		ZCAppList toReturn = new ZCAppList(ZCAppList.WORKSPACE_APPS, XMLParser.parseForApplicationList(rootDocument));
+		ZCAppList toReturn = new ZCAppList(ZCAppList.WORKSPACE_APPS, JSONParser.parseForApplicationList(response, JSONParser.WORKSPACE_APPS));
 		toReturn.setWorkspaceAppOwner(workspaceAppOwner);
 		return toReturn;
 	}
@@ -1464,7 +1481,6 @@ public class ZOHOCreator {
 	}
 
 	public static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
-		
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1477,6 +1493,7 @@ public class ZOHOCreator {
 				public byte[] handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
 					HttpEntity entity = response.getEntity();
 					if (entity != null) {
+						
 						return EntityUtils.toByteArray(entity);
 					} else {
 						throw new RuntimeException("Unable to convert response for " + getURLStringForException(url, params));//No I18N
@@ -1564,7 +1581,6 @@ public class ZOHOCreator {
 	}
 
 	private static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-		
 		try
 		{
 			HttpClient client = new DefaultHttpClient();

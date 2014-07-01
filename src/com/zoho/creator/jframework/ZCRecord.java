@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 public class ZCRecord implements Comparable<ZCRecord>{
 	private List<ZCRecordValue> values = new ArrayList<ZCRecordValue>();	
 	private long recordId = -1l;
@@ -126,7 +125,4 @@ public class ZCRecord implements Comparable<ZCRecord>{
 	{
 		this.isRecordError = isRecordError;
 	}
-
-	
-
 }

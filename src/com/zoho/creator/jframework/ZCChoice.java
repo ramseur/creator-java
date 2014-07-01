@@ -1,6 +1,8 @@
 // $Id$
 package com.zoho.creator.jframework;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 
 
 public class ZCChoice{
@@ -36,7 +38,6 @@ public class ZCChoice{
         }
         return key.equals(((ZCChoice)toCheck).getKey());
 	}
-	
 	
 
 }

@@ -1,6 +1,10 @@
 // $Id$
 package com.zoho.creator.jframework;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -332,7 +336,6 @@ class XMLParser {
 	static ZCForm parseForForm(Document rootDocument, String appLinkName, String appOwner,String queryString,boolean isEditForm) throws ZCException {
 		NodeList nl = rootDocument.getChildNodes();
 		ZCForm toReturn = null;
-
 		Hashtable<String,String> queryStringTable = new Hashtable<String, String>();
 		//		if(queryString!=null)
 		//		{
@@ -622,6 +625,7 @@ class XMLParser {
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("imgTitleReq")) {
 				imgTitleReq = getBooleanValue(fieldPropetyNode, imgTitleReq);
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("Initial") || fieldPropetyNode.getNodeName().equals("value")) {
+				
 				NodeList urlTagsList = fieldPropetyNode.getChildNodes();
 				boolean isImage = false;
 				for(int q=0;q<urlTagsList.getLength();q++)
@@ -775,7 +779,7 @@ class XMLParser {
 						if(subFormField != null)
 						{
 							subFormFields.add(subFormField);
-							subFormEditFields.add(parseField(subFormFieldNode,appLinkName,formLinkName, appOwner, true,new Hashtable<String, String>()));
+							//subFormEditFields.add(parseField(subFormFieldNode,appLinkName,formLinkName, appOwner, true,new Hashtable<String, String>()));
 
 							defaultSubFormEntryValues.add(subFormField.getRecordValue().getNewRecordValue());
 						}
@@ -986,7 +990,6 @@ class XMLParser {
 			Node choiceNode = choiceNodes.item(m);
 			String key = choiceNode.getAttributes().getNamedItem("value").getNodeValue();
 			String value = getStringValue(choiceNode, "");
-
 			choices.add(new ZCChoice(key, value));
 		}
 
@@ -1317,6 +1320,7 @@ class XMLParser {
 				}		
 				selectedChoice = new ZCChoice(value, value);
 			}
+			
 			ZCRecordValue zcValue = null;
 			if(FieldType.isMultiChoiceField(zcField.getType())) {
 

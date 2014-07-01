@@ -4,7 +4,9 @@ package com.zoho.creator.jframework;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class ZCRecordValue{
+
 	private ZCField field = null;
 	private String value = null;
 	private ZCChoice choiceValue = null;

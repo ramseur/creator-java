@@ -1,11 +1,6 @@
 // $Id$
 package com.zoho.creator.jframework;
 
-
-
-
-
-
 public class ZCColumn extends ZCField{
 	private boolean isSortOrderForGroupByAscending = true;
 	private boolean isSortOrderForSortByAscending = true;
@@ -52,3 +47,4 @@ public class ZCColumn extends ZCField{
 
 	 
 }
+

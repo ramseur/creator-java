@@ -8,6 +8,7 @@ import android.os.Parcelable;
 
 
 
+
 public class ZCButton implements Comparable<ZCButton>{
 
 	private String name = null;
@@ -83,8 +84,5 @@ public class ZCButton implements Comparable<ZCButton>{
 	public ZCResponse click() throws ZCException{
 		return ZOHOCreator.submitForm(this);
 	}
-
-	
-
 
 }

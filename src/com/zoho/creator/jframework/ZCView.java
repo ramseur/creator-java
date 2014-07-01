@@ -7,14 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
-
-import android.os.Parcel;
-import android.os.Parcelable;
-
-
-
-
 
 public class ZCView extends ZCComponent{
 	
