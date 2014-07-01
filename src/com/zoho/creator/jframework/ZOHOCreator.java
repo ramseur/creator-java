@@ -339,7 +339,6 @@ public class ZOHOCreator {
 		setCurrentView(getView(getCurrentComponent()));
 	}
 
-
 	public static void loadSelectedForm() throws ZCException {
 		ZCComponent comp = getCurrentComponent();
 		List<NameValuePair> params = getQueryStringParams(comp.getQueryString());
@@ -725,14 +724,14 @@ public class ZOHOCreator {
 		File f = new File(getFilesDir()+NAV_LIST_FILE);
 		Document rootDocument = stringToDocument(readResponseFromFile(f));
 		if(rootDocument == null){
-			
+
 			URLPair navigationListURL = ZCURL.navigationListURL();
 			rootDocument = ZOHOCreator.postURLXML(navigationListURL.getUrl(), navigationListURL.getNvPair());
 			writeResponseToFile(getString(rootDocument),f);
 		}
 
-		
-		
+
+
 		return XMLParser.parseForNavigationListForApps(rootDocument);
 	}
 
@@ -1113,9 +1112,9 @@ public class ZOHOCreator {
 		ZCField subFormField = field.getBaseForm().getBaseSubFormField();
 		ZCForm baseForm = field.getBaseForm();
 		String fieldName = field.getFieldName();
-//		if(baseForm==ZOHOCreator.getCurrentSubForm()) {
-//			baseForm = ZOHOCreator.getCurrentForm();
-//		}
+		//		if(baseForm==ZOHOCreator.getCurrentSubForm()) {
+		//			baseForm = ZOHOCreator.getCurrentForm();
+		//		}
 		String subformComponent = null;
 		int formAccessType = 0;
 		int size = field.getRecordValue().getChoices().size();
@@ -1501,7 +1500,7 @@ public class ZOHOCreator {
 				}
 			};
 			byte[] response = client.execute(request, handler);
-			
+
 			return new String(response);
 		} catch(UnknownHostException uhe) {
 			throw new ZCException("No network connection.", ZCException.NETWORK_ERROR);//No I18N
@@ -1606,7 +1605,7 @@ public class ZOHOCreator {
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
-					
+
 					return toReturn;
 				} catch (ParserConfigurationException e) {
 					throw new ZCException("An error has occured", ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
