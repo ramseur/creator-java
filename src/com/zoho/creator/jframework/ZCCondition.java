@@ -122,7 +122,7 @@ public class ZCCondition {
 	    	conditionMap.put("Current and Previous Week", CURRENT_PREVIOUS_WEEK);
 	    	conditionMap.put("Current and Next Week", CURRENT_NEXT_WEEK);
 	    	conditionMap.put("Last N Week", LAST_N_WEEK);
-	    	conditionMap.put("Next N Week", NEXT_N_WEEKS);
+	    	conditionMap.put("Next N Week", NEXT_N_WEEK);
 	    	conditionMap.put("Last Month", LAST_MONTH);
 	    	conditionMap.put("This Month", THIS_MONTH);
 	    	conditionMap.put("Next Month", NEXT_MONTH);
