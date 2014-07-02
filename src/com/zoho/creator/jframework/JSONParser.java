@@ -944,21 +944,11 @@ class JSONParser {
 					}
 					else
 					{
-						for(int j=0; j<initialChoiceValues.size(); j++) {
-							String initValue = initialChoiceValues.get(j);
-							ZCChoice toAdd = null;
-							for(int i=0; i<choices.size(); i++) {
-								ZCChoice choice = choices.get(i);
-								if(choice.getKey().equals(initValue)) {
-									toAdd = choice;
-									break;
-								}
-							}
-							if(toAdd != null) {
-								selectedChoices.add(toAdd);
-							}
+						for(int i=0;i<keys.size();i++)
+						{
+							selectedChoices.add(new ZCChoice(keys.get(i), initialChoiceValues.get(i)));
 						}
-						zcField.setRecordValue(new ZCRecordValue(zcField, selectedChoices));
+						zcField.setRecordValue(new ZCRecordValue(zcField,selectedChoices));
 					}
 
 				}
