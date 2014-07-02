@@ -19,7 +19,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 class JSONParser {
-	
+
 	public static final int PERSONAL_APPS = 1;
 	public static final int SHARED_APPS = 2;
 	public static final int WORKSPACE_APPS = 3;
@@ -404,7 +404,7 @@ class JSONParser {
 		List<ZCApplication> toReturn = new ArrayList<ZCApplication>();
 		try {
 			JSONObject resultObj =new JSONObject(response);
-			
+
 			if(type == JSONParser.PERSONAL_APPS){
 				if(resultObj.has("result"))
 				{	
@@ -415,24 +415,24 @@ class JSONParser {
 			else{
 				toReturn = parseForApplicationList(resultObj);
 			}
-			
-			
+
+
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return toReturn;
 	}
-	
+
 	private static List<ZCApplication> parseForApplicationList(JSONObject jsonObject) throws ZCException{
-		
+
 		List<ZCApplication> toReturn = new ArrayList<ZCApplication>();
 		String appOwner = "";
 		boolean licenceEnabled = true;
-		
+
 		try {
-		
+
 			if(jsonObject.has("application_owner"))
 			{
 				appOwner = jsonObject.getString("application_owner");
@@ -494,7 +494,7 @@ class JSONParser {
 			{
 				licenceEnabled = jsonObject.getBoolean("license_enabled");			
 			}
-		
+
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -504,7 +504,7 @@ class JSONParser {
 		}
 		return toReturn;
 	}
-	
+
 	static ZCForm parseForForm(String response, String appLinkName, String appOwner,String queryString,boolean isEditForm) throws ZCException{
 		boolean hasAddOnLoad = false;
 		boolean hasEditOnLoad = false;
@@ -517,9 +517,9 @@ class JSONParser {
 		String openurlValue = "";
 		List<ZCButton> buttons = new ArrayList<ZCButton>();
 		List<ZCField> fields = new ArrayList<ZCField>();
-		
+
 		ZCForm toReturn = null;
-		
+
 		try {
 			JSONObject resultObject = new JSONObject(response);
 			if(resultObject.has("response")){
@@ -552,7 +552,7 @@ class JSONParser {
 				if(responseObject.has("labelname")){
 					componentLinkName = responseObject.getString("labelname");
 				}
-				
+
 				if(responseObject.has("nexturl")){
 					JSONObject nextUrlObject = new JSONObject(responseObject.getString("nexturl"));
 					if(nextUrlObject.has("value")){
@@ -562,47 +562,47 @@ class JSONParser {
 						openurlType = nextUrlObject.getString("type");
 					}
 				}
-				
-//				if(responseObject.has("buttons")){
-//					JSONArray buttonsArray = new JSONArray(responseObject.getString("buttons"));
-//					for(int i =0; i< buttonsArray.length(); i++){
-//						String buttonDisplayName = null;
-//						String buttonLinkName = null;
-//						ZCButtonType buttonType = null;
-//						int buttonSequenceNumber = -1;
-//						int actiontype = 1;
-//						boolean isOnClickExists = false;
-//						
-//						JSONObject buttonObject = buttonsArray.getJSONObject(i);
-//						
-//						if(buttonObject.has("sequencenumber")){
-//							buttonSequenceNumber = buttonObject.getInt("sequencenumber");
-//						}
-//						if(buttonObject.has("labelname")){
-//							buttonLinkName = buttonObject.getString("labelname");
-//						}
-//						if(buttonObject.has("actiontype")){
-//							actiontype = buttonObject.getInt("actiontype");
-//						}
-//						if(buttonObject.has("type")){
-//							buttonType = ZCButtonType.getButtonType(buttonObject.getInt("type"));
-//						}
-//						if(buttonObject.has("displayname")){
-//							buttonDisplayName = buttonObject.getString("displayname");
-//						}
-//						if(buttonObject.has("onclickexists")){
-//							isOnClickExists = buttonObject.getBoolean("onclickexists");
-//						}
-//						
-//						ZCButton button = new ZCButton(buttonDisplayName, buttonLinkName, buttonType);
-//						if(isStateLess)
-//						{
-//							button.setOnClickExists(isOnClickExists);
-//						}
-//						buttons.add(button);
-//					}
-//				}
-//				
+
+				//				if(responseObject.has("buttons")){
+				//					JSONArray buttonsArray = new JSONArray(responseObject.getString("buttons"));
+				//					for(int i =0; i< buttonsArray.length(); i++){
+				//						String buttonDisplayName = null;
+				//						String buttonLinkName = null;
+				//						ZCButtonType buttonType = null;
+				//						int buttonSequenceNumber = -1;
+				//						int actiontype = 1;
+				//						boolean isOnClickExists = false;
+				//						
+				//						JSONObject buttonObject = buttonsArray.getJSONObject(i);
+				//						
+				//						if(buttonObject.has("sequencenumber")){
+				//							buttonSequenceNumber = buttonObject.getInt("sequencenumber");
+				//						}
+				//						if(buttonObject.has("labelname")){
+				//							buttonLinkName = buttonObject.getString("labelname");
+				//						}
+				//						if(buttonObject.has("actiontype")){
+				//							actiontype = buttonObject.getInt("actiontype");
+				//						}
+				//						if(buttonObject.has("type")){
+				//							buttonType = ZCButtonType.getButtonType(buttonObject.getInt("type"));
+				//						}
+				//						if(buttonObject.has("displayname")){
+				//							buttonDisplayName = buttonObject.getString("displayname");
+				//						}
+				//						if(buttonObject.has("onclickexists")){
+				//							isOnClickExists = buttonObject.getBoolean("onclickexists");
+				//						}
+				//						
+				//						ZCButton button = new ZCButton(buttonDisplayName, buttonLinkName, buttonType);
+				//						if(isStateLess)
+				//						{
+				//							button.setOnClickExists(isOnClickExists);
+				//						}
+				//						buttons.add(button);
+				//					}
+				//				}
+				//				
 				if(responseObject.has("fields")){
 					JSONArray fieldsArray = new JSONArray(responseObject.getString("fields"));
 					for(int i = 0; i < fieldsArray.length(); i++){
@@ -616,11 +616,11 @@ class JSONParser {
 									field.addAndGetNewSubFormEntry();
 								}
 							}
-						fields.add(field);
+							fields.add(field);
 						}
 					}
 				}
-				
+
 				if(responseObject.has("buttons")){
 					JSONArray buttonsArray = new JSONArray(responseObject.getString("buttons"));
 					for(int i =0; i< buttonsArray.length(); i++){
@@ -649,7 +649,7 @@ class JSONParser {
 						if(buttonObject.has("onclickexists")){
 							isOnClickExists = buttonObject.getBoolean("onclickexists");
 						}
-						
+
 						ZCButton button = new ZCButton(buttonDisplayName, buttonLinkName, buttonType);
 						if(isStateLess)
 						{
@@ -658,7 +658,7 @@ class JSONParser {
 						buttons.add(button);
 					}
 				}
-				
+
 				Collections.sort(buttons);
 
 				// String appOwner, String appLinkName, String type, String componentName, String componentLinkName, int sequenceNumber, Long componentID, boolean hasAddOnLoad, boolean hasEditOnLoad, String successMessage, String tableName, int formLinkId
@@ -667,43 +667,43 @@ class JSONParser {
 				if(buttons.size()>0) {
 					toReturn.addButtons(buttons);	
 				}
-				
+
 			} else if(resultObject.has("message")){
 				throw new ZCException(resultObject.getString("message"), ZCException.ERROR_OCCURED,"" );
 			}
-			
-			
-			
+
+
+
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return toReturn;
 	}
-	
+
 	private static ZCField parseField(JSONObject fieldObject,String applinkName,String formlinkName, String appOwner,boolean isParentSubForm) throws ZCException{
-		
+
 		String fieldName = null;
 		String displayName = "";
 		String refFormLinkName = null;
 		String refAppLinkName = null;
 		String currencyType = "USD";//No I18N
 		String initialValue = "";
-		
+
 		String urlTitleValue = "";
 		String urlLinkNameValue = "";
 		String urlValue = "";
-		
+
 		String appLinkName = applinkName;
 		String formLinkName = formlinkName;
-		
+
 		int maxChar = 255;
 		int decimalLength = 0;
 		int imageType = 3;
 		int defaultRows = 0;
 		int maximumRows = 0;
-		
+
 		boolean isUnique = false;
 		boolean isRequired = false;
 		boolean allowOtherChoice = false;
@@ -718,20 +718,20 @@ class JSONParser {
 		boolean onDeleteRowExists = false;
 		boolean isFilterApplied = false;
 		boolean urlTitleReq = false;
-		
+
 		FieldType fieldType = FieldType.SINGLE_LINE;
 		ZCRecord defaultSubFormEntry = null;
 		List<ZCField> subFormFields = new ArrayList<ZCField>();
 		List<ZCRecord> subFormEntries = new ArrayList<ZCRecord>();
-		
+
 		List<ZCChoice> choices  = new ArrayList<ZCChoice>(); 
-		
+
 		List<String> initialChoiceValues = new ArrayList<String>(); 		
 		List<String> keys = new ArrayList<String>();	
-		
+
 		ZCField zcField = null;
-		
-		
+
+
 		try {
 			if(fieldObject.has("ishidden")){
 				isHidden = fieldObject.getBoolean("ishidden");
@@ -826,7 +826,7 @@ class JSONParser {
 							initialChoiceValues.add(fieldValueObject.getString("value"));
 						}
 					}
-					
+
 				}
 				else if(fieldObject.get("value") instanceof JSONObject){
 					JSONObject fieldValueObject = new JSONObject(fieldObject.getString("value"));
@@ -894,13 +894,24 @@ class JSONParser {
 			{
 				throw new ZCException("This Form contains Subform field which contains "+fieldType+" field which is currently not supported", ZCException.ERROR_OCCURED,"" );
 			}
-			
+
 			zcField = new ZCField(fieldName, fieldType, displayName);
-			
+
 			if(FieldType.isMultiChoiceField(fieldType)){
 				List<ZCChoice> selectedChoices = new ArrayList<ZCChoice>();
 				if(!isLookup){
-					
+					if(initialChoiceValues.size()==1) 
+					{ 
+						String keyValue = initialChoiceValues.get(0); 
+						if(keyValue.contains(",")) 
+						{ 
+							initialChoiceValues = new ArrayList<String>();
+							String[] choiceValues =keyValue.split(","); for(int i=0;i<choiceValues.length;i++) 
+							{ 
+								initialChoiceValues.add(choiceValues[i]); 
+							}
+						} 
+					}
 					for(int j=0; j<initialChoiceValues.size(); j++) {
 						String initValue = initialChoiceValues.get(j);
 						ZCChoice toAdd = null;
@@ -918,21 +929,38 @@ class JSONParser {
 					zcField.setRecordValue(new ZCRecordValue(zcField, selectedChoices));
 				}
 				else{
-					for(int j=0; j<initialChoiceValues.size(); j++) {
-						String initValue = initialChoiceValues.get(j);
-						ZCChoice toAdd = null;
-						for(int i=0; i<choices.size(); i++) {
-							ZCChoice choice = choices.get(i);
-							if(choice.getKey().equals(initValue)) {
-								toAdd = choice;
-								break;
+					if(initialValue!=null&&initialValue.length()>0)
+					{ 
+						String keyValue = initialValue;
+						if(keyValue.contains(",")) 
+						{ 
+							String[] choiceValues =keyValue.split(","); 
+							for(int i=0;i<choiceValues.length;i++) 
+							{ 
+								selectedChoices.add(new ZCChoice(choiceValues[i], choiceValues[i])) ;
+							}
+						} 
+						zcField.setRecordValue(new ZCRecordValue(zcField, selectedChoices));
+					}
+					else
+					{
+						for(int j=0; j<initialChoiceValues.size(); j++) {
+							String initValue = initialChoiceValues.get(j);
+							ZCChoice toAdd = null;
+							for(int i=0; i<choices.size(); i++) {
+								ZCChoice choice = choices.get(i);
+								if(choice.getKey().equals(initValue)) {
+									toAdd = choice;
+									break;
+								}
+							}
+							if(toAdd != null) {
+								selectedChoices.add(toAdd);
 							}
 						}
-						if(toAdd != null) {
-							selectedChoices.add(toAdd);
-						}
+						zcField.setRecordValue(new ZCRecordValue(zcField, selectedChoices));
 					}
-					zcField.setRecordValue(new ZCRecordValue(zcField, selectedChoices));
+
 				}
 			}else if(FieldType.isSingleChoiceField(fieldType)) {
 				ZCChoice toAdd = null;
@@ -972,7 +1000,7 @@ class JSONParser {
 				}
 				zcField.setRecordValue(recordValue);
 			}
-//			zcField.setExternalFieldType(externalFieldType);
+			//			zcField.setExternalFieldType(externalFieldType);
 			zcField.setHidden(isHidden);
 			zcField.setDefaultRows(defaultRows);
 			zcField.setMaximumRows(maximumRows);
@@ -996,15 +1024,15 @@ class JSONParser {
 			zcField.setUrlTitleReq(urlTitleReq);
 			zcField.setImageType(imageType);
 			zcField.setNewEntriesAllowed(isNewEntriesAllowed);
-			
+
 			if(refFormLinkName != null && refAppLinkName != null ) {
 				zcField.setRefFormComponent(new ZCComponent(appOwner, refAppLinkName, ZCComponent.FORM, "", refFormLinkName, -1));
-//				zcField.setRefFieldLinkName(refFieldLinkName);
+				//				zcField.setRefFieldLinkName(refFieldLinkName);
 				if(fieldType != FieldType.SUB_FORM) {
 					zcField.setNewEntriesAllowed(true);
 				}
 			}
-			
+
 			if(hasSubForm) { 
 				zcField.setDefaultSubFormEntry(defaultSubFormEntry);
 				for(int i=0; i<subFormEntries.size(); i++) {
@@ -1017,15 +1045,15 @@ class JSONParser {
 			}
 
 
-			
+
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return zcField;
 	}
-	
+
 	private static List<ZCChoice> parseLookUpChoices(JSONArray choicesArray){
 		List<ZCChoice> toReturn = new ArrayList<ZCChoice>();
 		try {
@@ -1042,22 +1070,22 @@ class JSONParser {
 				toReturn.add(new ZCChoice(key, value));
 			}
 		} catch (JSONException e) {
-		// TODO Auto-generated catch block
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return toReturn;
 	}
-	
+
 	private static ZCRecord parseAndSetRecord(ZCView zcView, JSONObject recordObject, List<ZCField> subFormFields){
 		long recordId = 0L;
 		List<ZCRecordValue> valueList  = new ArrayList<ZCRecordValue>();
-		
+
 		try {
-//			if(recordObject.has("ID")){
-//				recordId = recordObject.getLong("ID");
-//			}
+			//			if(recordObject.has("ID")){
+			//				recordId = recordObject.getLong("ID");
+			//			}
 			Iterator<?> recordObjectkeys = recordObject.keys();
-			
+
 			while(recordObjectkeys.hasNext()){
 				String recordObjectKey = (String) recordObjectkeys.next();
 				String fieldName = "";
@@ -1069,7 +1097,7 @@ class JSONParser {
 					String urlLinkNameValue = "";
 					String urlTitleValue = "";
 					String value = "";
-					
+
 					ZCField zcField = null;
 					if(zcView != null) {
 						zcField = zcView.getColumn(fieldName);
@@ -1082,44 +1110,44 @@ class JSONParser {
 							}
 						}
 					}
-					
+
 					if(zcField == null) {
 						break;
 					}
-					
-					
+
+
 					List<ZCChoice> choices = null;
 					List<ZCChoice> selectedChoices = new ArrayList<ZCChoice>();
 					ZCChoice selectedChoice = null;
 					ZCRecordValue zcValue = null;
-					
+
 					if(zcView == null){
 						choices = zcField.getRecordValue().getChoices();
-						
+
 						if(recordObject.get(fieldName) instanceof JSONArray){
 							JSONArray recordValuesArray = new JSONArray(recordObject.getString(fieldName));
-							
+
 							if(FieldType.isChoiceField(zcField.getType())) {
 								for(int i = 0; i < recordValuesArray.length(); i++){
 									JSONObject recordValueObject = recordValuesArray.getJSONObject(i);
 									String key = null;
 									String recordValue  = null;
-									
+
 									if(recordValueObject.has("key")){
 										key = recordValueObject.getString("key");
 									}
 									if(recordValueObject.has("value")){
 										recordValue = recordValueObject.getString("value");
 									}
-									
+
 									for(int j=0; j<choices.size(); j++) {
 										if(key.equals(choices.get(j).getKey())) {
 											selectedChoices.add(new ZCChoice(key,recordValue));
 											break;
 										}
 									}
-									
-									
+
+
 								}
 							}
 						}else if(recordObject.get(fieldName) instanceof JSONObject){
@@ -1135,18 +1163,18 @@ class JSONParser {
 									value = recordValueObject.getString("url");
 								}
 							}
-							
+
 							if(FieldType.isChoiceField(zcField.getType())) {
 								String key = null;
 								String recordValue  = null;
-								
+
 								if(recordValueObject.has("key")){
 									key = recordValueObject.getString("key");
 								}
 								if(recordValueObject.has("value")){
 									recordValue = recordValueObject.getString("value");
 								}
-								
+
 								for(int j=0; j<choices.size(); j++) {
 									if(key.equals(choices.get(j).getKey())) {
 										selectedChoices.add(new ZCChoice(key,recordValue));
@@ -1156,19 +1184,19 @@ class JSONParser {
 								if(zcField.isLookup()){
 									selectedChoices.add(new ZCChoice(key,recordValue));
 								}
-								
+
 							}
 						}
 						else{
 							value = recordObject.getString(fieldName);
 						}
-						
+
 						if(selectedChoices.size() >0) {
 							selectedChoice = selectedChoices.get(0);
 						}
 					}
-					
-					
+
+
 					if(FieldType.isMultiChoiceField(zcField.getType())) {
 
 						zcValue = new ZCRecordValue(zcField, selectedChoices);
@@ -1190,24 +1218,24 @@ class JSONParser {
 					valueList.add(zcValue);
 				}
 			}
-			
+
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		ZCRecord record = new ZCRecord(recordId, valueList);
 		return record;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
 }
