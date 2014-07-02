@@ -5,18 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
-import javax.tools.FileObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 class JSONParser {
 
@@ -519,7 +513,6 @@ class JSONParser {
 		List<ZCField> fields = new ArrayList<ZCField>();
 
 		ZCForm toReturn = null;
-
 		try {
 			JSONObject resultObject = new JSONObject(response);
 			if(resultObject.has("response")){
