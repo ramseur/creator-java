@@ -1,12 +1,8 @@
 // $Id$
 package com.zoho.creator.jframework;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import android.os.Parcel;
-import android.os.Parcelable;
 
 public class ZCField implements Comparable<ZCField>{
 	static final long serialVersionUID = 2l;

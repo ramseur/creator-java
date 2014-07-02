@@ -811,6 +811,7 @@ class JSONParser {
 			}
 			if(fieldObject.has("initial")){
 				initialValue = fieldObject.getString("initial");
+				initialChoiceValues.add(initialValue);
 			}
 			if(fieldObject.has("value")){
 				boolean isImage = false;
@@ -851,6 +852,7 @@ class JSONParser {
 				}
 				else if(!isImage){
 					initialValue = fieldObject.getString("value");
+					initialChoiceValues.add(initialValue);
 				}
 			}
 			if(fieldObject.has("choices")){
