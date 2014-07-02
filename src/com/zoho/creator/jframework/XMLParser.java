@@ -671,6 +671,7 @@ class XMLParser {
 					}
 					if(!isImage)
 					{
+						System.out.println("inside initial value.....");
 						initialValue = getStringValue(fieldPropetyNode, initialValue);
 						initialChoiceValues.add(initialValue);
 					}	
@@ -780,7 +781,6 @@ class XMLParser {
 						{
 							subFormFields.add(subFormField);
 							//subFormEditFields.add(parseField(subFormFieldNode,appLinkName,formLinkName, appOwner, true,new Hashtable<String, String>()));
-
 							defaultSubFormEntryValues.add(subFormField.getRecordValue().getNewRecordValue());
 						}
 					}
@@ -944,13 +944,11 @@ class XMLParser {
 		}
 		// String appOwner, String appLinkName, String type, String componentName, String componentLinkName, int sequenceNumber, Long componentID, boolean hasAddOnLoad, boolean hasEditOnLoad, String successMessage, String tableName, int formLinkId
 		if(hasSubForm) { // type/sequenceNumber/componentID/formLinkId -1, hasAddOnLoad/hasEditOnLoad false,  successMessage/tableName empty string, 
-
 			/*
 			ZCForm subForm = new ZCForm(appOwner, refAppLinkName,displayName, refFormLinkName, -1, false, false, "", "", false,"","");
 			subForm.addFields(subFormFields);
 			zcField.setSubForm(subForm);
 			 */
-
 			zcField.setDefaultSubFormEntry(defaultSubFormEntry);
 			for(int i=0; i<subFormEntries.size(); i++) {
 

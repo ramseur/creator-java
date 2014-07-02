@@ -952,6 +952,10 @@ class JSONParser {
 					if(keys.size() > 0 && initialChoiceValues.size() > 0){
 						toAdd = new ZCChoice(keys.get(0), initialChoiceValues.get(0));
 					}
+					else if(initialValue!=null&&initialValue.length()>0)
+					{
+						toAdd = new ZCChoice(initialValue, initialValue);
+					}
 					zcField.setRecordValue(new ZCRecordValue(zcField,toAdd));
 				}
 			}else{
