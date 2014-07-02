@@ -1486,7 +1486,7 @@ public class ZOHOCreator {
 	}
 
 	public static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
-		System.out.println("url.."+getURLString(url, params));
+	
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1507,7 +1507,7 @@ public class ZOHOCreator {
 				}
 			};
 			byte[] response = client.execute(request, handler);
-			System.out.println("response.."+new String(response));
+
 			return new String(response);
 		} catch(UnknownHostException uhe) {
 			throw new ZCException("No network connection.", ZCException.NETWORK_ERROR);//No I18N
@@ -1587,7 +1587,7 @@ public class ZOHOCreator {
 	}
 
 	private static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-		System.out.println("url..."+getURLString(url, params));
+	
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1613,7 +1613,7 @@ public class ZOHOCreator {
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
-					System.out.println("docu.."+getString(toReturn));
+					
 					return toReturn;
 				} catch (ParserConfigurationException e) {
 					throw new ZCException("An error has occured", ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N

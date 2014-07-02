@@ -671,7 +671,6 @@ class XMLParser {
 					}
 					if(!isImage)
 					{
-						System.out.println("inside initial value.....");
 						initialValue = getStringValue(fieldPropetyNode, initialValue);
 						initialChoiceValues.add(initialValue);
 					}	
