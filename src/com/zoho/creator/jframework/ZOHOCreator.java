@@ -346,10 +346,10 @@ public class ZOHOCreator {
 		ZCComponent comp = getCurrentComponent();
 		List<NameValuePair> params = getQueryStringParams(comp.getQueryString());
 		URLPair formMetaURLPair = ZCURL.formMetaURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner(), ZCForm.FORM_ALONE, params);
-		//				Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
-		//				ZCForm zcForm = XMLParser.parseForForm(rootDocument, appLinkName, appOwner, null, false);
-		String response = ZOHOCreator.postURL(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
-		ZCForm zcForm = JSONParser.parseForForm(response, comp.getAppLinkName(), comp.getAppOwner(), comp.getQueryString(),false);
+//		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
+//		ZCForm zcForm = XMLParser.parseForForm(rootDocument, appLinkName, appOwner, null, false);
+				String response = ZOHOCreator.postURL(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
+				ZCForm zcForm = JSONParser.parseForForm(response, comp.getAppLinkName(), comp.getAppOwner(), comp.getQueryString(),false);
 		if(zcForm == null) {
 			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
 		}
@@ -1486,7 +1486,6 @@ public class ZOHOCreator {
 	}
 
 	public static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
-	
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1507,7 +1506,6 @@ public class ZOHOCreator {
 				}
 			};
 			byte[] response = client.execute(request, handler);
-
 			return new String(response);
 		} catch(UnknownHostException uhe) {
 			throw new ZCException("No network connection.", ZCException.NETWORK_ERROR);//No I18N
@@ -1587,7 +1585,6 @@ public class ZOHOCreator {
 	}
 
 	private static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-	
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1695,7 +1692,6 @@ public class ZOHOCreator {
 			httppost.setEntity(mpEntity);
 		}
 		try {
-
 			ResponseHandler<String> responseHandler=new BasicResponseHandler();
 			String responseBody = httpclient.execute(httppost, responseHandler);
 			//HttpResponse httpResponse = httpclient.execute(httppost);

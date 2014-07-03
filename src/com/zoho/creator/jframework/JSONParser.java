@@ -683,6 +683,7 @@ class JSONParser {
 		String refAppLinkName = null;
 		String currencyType = "USD";//No I18N
 		String initialValue = "";
+		String text = "";
 
 		String urlTitleValue = "";
 		String urlLinkNameValue = "";
@@ -737,6 +738,9 @@ class JSONParser {
 			}
 			if(fieldObject.has("maxchar")){
 				maxChar = fieldObject.getInt("maxchar");
+			}
+			if(fieldObject.has("text")){
+				text = fieldObject.getString("text");
 			}
 			if(fieldObject.has("decimallength")){
 				decimalLength = fieldObject.getInt("decimallength");
@@ -977,8 +981,11 @@ class JSONParser {
 				{
 					recordValue = new ZCRecordValue(zcField, urlValue,urlTitleValue,urlLinkNameValue);
 				}
-				else
+				else if(zcField.getType()==FieldType.NOTES)
 				{
+					recordValue = new ZCRecordValue(zcField, text);
+				}
+				else{
 					recordValue = new ZCRecordValue(zcField, initialValue);
 				}
 				zcField.setRecordValue(recordValue);
