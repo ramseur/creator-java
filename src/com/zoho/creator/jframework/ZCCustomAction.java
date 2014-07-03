@@ -1,10 +1,6 @@
 // $Id$
 package com.zoho.creator.jframework;
 
-import java.io.Serializable;
-
-import android.os.Parcel;
-import android.os.Parcelable;
 
 
 public class ZCCustomAction{

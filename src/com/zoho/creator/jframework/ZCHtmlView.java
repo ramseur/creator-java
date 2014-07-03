@@ -1,9 +1,6 @@
 // $Id$
 package com.zoho.creator.jframework;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.os.Parcelable.Creator;
 
 public class ZCHtmlView extends ZCComponent{
 

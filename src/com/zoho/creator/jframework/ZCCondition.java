@@ -4,9 +4,6 @@ package com.zoho.creator.jframework;
 
 import java.util.HashMap;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 
 public class ZCCondition {
 
