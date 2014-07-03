@@ -791,6 +791,9 @@ class JSONParser {
 			if(fieldObject.has("formulaexists")){
 				hasOnUserInputForFormula = fieldObject.getBoolean("formulaexists");
 			}
+			if(fieldObject.has("dynamicpicklistexists")){
+				hasOnUserInputForFormula = fieldObject.getBoolean("dynamicpicklistexists");
+			}
 			if(fieldObject.has("defaultrows")){
 				defaultRows = fieldObject.getInt("defaultrows");
 			}
