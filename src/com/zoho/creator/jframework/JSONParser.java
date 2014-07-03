@@ -1076,7 +1076,6 @@ class JSONParser {
 	private static ZCRecord parseAndSetRecord(ZCView zcView, JSONObject recordObject, List<ZCField> subFormFields){
 		long recordId = 0L;
 		List<ZCRecordValue> valueList  = new ArrayList<ZCRecordValue>();
-
 		try {
 			//			if(recordObject.has("ID")){
 			//				recordId = recordObject.getLong("ID");
@@ -1094,7 +1093,6 @@ class JSONParser {
 					String urlLinkNameValue = "";
 					String urlTitleValue = "";
 					String value = "";
-
 					ZCField zcField = null;
 					if(zcView != null) {
 						zcField = zcView.getColumn(fieldName);
@@ -1111,8 +1109,6 @@ class JSONParser {
 					if(zcField == null) {
 						break;
 					}
-
-
 					List<ZCChoice> choices = null;
 					List<ZCChoice> selectedChoices = new ArrayList<ZCChoice>();
 					ZCChoice selectedChoice = null;
@@ -1129,7 +1125,6 @@ class JSONParser {
 									JSONObject recordValueObject = recordValuesArray.getJSONObject(i);
 									String key = null;
 									String recordValue  = null;
-
 									if(recordValueObject.has("key")){
 										key = recordValueObject.getString("key");
 									}
@@ -1143,8 +1138,10 @@ class JSONParser {
 											break;
 										}
 									}
-
-
+									if(zcField.isLookup())
+									{
+										selectedChoices.add(new ZCChoice(key,recordValue));
+									}
 								}
 							}
 						}else if(recordObject.get(fieldName) instanceof JSONObject){
