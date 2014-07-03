@@ -940,6 +940,10 @@ class JSONParser {
 								selectedChoices.add(new ZCChoice(choiceValues[i], choiceValues[i])) ;
 							}
 						} 
+						else
+						{
+							selectedChoices.add(new ZCChoice(initialValue,initialValue));
+						}
 						zcField.setRecordValue(new ZCRecordValue(zcField, selectedChoices));
 					}
 					else
