@@ -99,7 +99,7 @@ public class ZOHOCreator {
 	private static Boolean accessedComponents = false;
 	private static boolean isGettingUserDetails = false;
 	
-	private static ResourceBundle resourceString = ResourceBundle.getBundle("com.zoho.creator.jframework.ResourceString", Locale.getDefault());
+	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());
 
 
 

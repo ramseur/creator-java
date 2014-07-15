@@ -20,7 +20,7 @@ class JSONParser {
 	public static final int SHARED_APPS = 2;
 	public static final int WORKSPACE_APPS = 3;
 	
-	private static ResourceBundle resourceString = ResourceBundle.getBundle("com.zoho.creator.jframework.ResourceString", Locale.getDefault());
+	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());
 
 	static ZCResponse parseAndCallFormEvents(String response, ZCForm currentShownForm) throws ZCException
 	{

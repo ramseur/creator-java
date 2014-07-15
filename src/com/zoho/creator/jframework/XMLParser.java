@@ -37,7 +37,7 @@ import org.w3c.dom.NodeList;
 
 class XMLParser {
 	
-	private static ResourceBundle resourceString = ResourceBundle.getBundle("com.zoho.creator.jframework.ResourceString", Locale.getDefault());
+	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());
 
 	static String getStringValue(Node node, String defaultValue) {
 		if(node != null && node.getFirstChild() != null) {

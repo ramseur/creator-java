@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 
 public class ZCCondition {
 	
-	private static ResourceBundle resourceString = ResourceBundle.getBundle("com.zoho.creator.jframework.ResourceString", Locale.getDefault());
+	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());
 
 	public static final int EQUAL=18;
 	public static final int NOT_EQUAL=19;
