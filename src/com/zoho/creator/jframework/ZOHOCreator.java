@@ -20,8 +20,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -62,6 +64,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import android.content.res.Resources;
+
+
 public class ZOHOCreator {
 
 	private static final String NAV_LIST_FILE = "/navList.xml";//No I18N
@@ -93,6 +98,8 @@ public class ZOHOCreator {
 	private static String layout = null;
 	private static Boolean accessedComponents = false;
 	private static boolean isGettingUserDetails = false;
+	
+	private static ResourceBundle resourceString = ResourceBundle.getBundle("com.zoho.creator.jframework.ResourceString", Locale.getDefault());
 
 
 
@@ -351,7 +358,7 @@ public class ZOHOCreator {
 				String response = ZOHOCreator.postURL(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
 				ZCForm zcForm = JSONParser.parseForForm(response, comp.getAppLinkName(), comp.getAppOwner(), comp.getQueryString(),false);
 		if(zcForm == null) {
-			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
+			throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, resourceString.getString("unable_to_get")+ getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
 		}
 		zcForm.setFormType(ZCForm.FORM_ALONE);
 		setCurrentForm(zcForm);
@@ -422,7 +429,7 @@ public class ZOHOCreator {
 		//Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
 		//ZCForm toReturn = XMLParser.parseForForm(rootDocument, appLinkName, appOwner, null, false);
 		if(toReturn == null) {
-			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
+			throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, resourceString.getString("unable_to_get") + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
 		}
 		toReturn.setFormType(formType);
 		return toReturn;
@@ -439,7 +446,7 @@ public class ZOHOCreator {
 		String response = ZOHOCreator.postURL(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
 		ZCForm editRecordForm = JSONParser.parseForForm(response, appLinkName, appOwner,null,true);
 		if(editRecordForm == null) {
-			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
+			throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, resourceString.getString("unable_to_get") + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
 		}
 		editRecordForm.setFormType(ZCForm.VIEW_EDIT_FORM);
 		setCurrentForm(editRecordForm);		
@@ -463,7 +470,7 @@ public class ZOHOCreator {
 		String response = ZOHOCreator.postURL(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
 		ZCForm bulkEditForm = JSONParser.parseForForm(response, appLinkName, appOwner,null,false);
 		if(bulkEditForm == null) {
-			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
+			throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, resourceString.getString("unable_to_get") + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
 		}
 		bulkEditForm.setFormType(ZCForm.VIEW_BULK_EDIT_FORM);
 		setCurrentForm(bulkEditForm);
@@ -707,12 +714,18 @@ public class ZOHOCreator {
 		return ZOHOUser.getUserObject(uname, password);
 	}
 
-	public static ZOHOUser getZohoUser() {
+	public static ZOHOUser getZohoUser() throws ZCException {
 		return ZOHOUser.getUserObject();
 	}
 
 	public static void logout(){
-		ZOHOUser user = ZOHOCreator.getZohoUser();
+		ZOHOUser user = null;
+		try {
+			user = ZOHOCreator.getZohoUser();
+		} catch (ZCException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		if(user != null) {
 			URLPair delAuthTokenURL = ZCURL.deleteAuthToken(user.getAuthToken());
 			try {
@@ -730,7 +743,6 @@ public class ZOHOCreator {
 		File f = new File(getFilesDir()+NAV_LIST_FILE);
 		Document rootDocument = stringToDocument(readResponseFromFile(f));
 		if(rootDocument == null){
-
 			URLPair navigationListURL = ZCURL.navigationListURL();
 			rootDocument = ZOHOCreator.postURLXML(navigationListURL.getUrl(), navigationListURL.getNvPair());
 			writeResponseToFile(getString(rootDocument),f);
@@ -742,6 +754,7 @@ public class ZOHOCreator {
 	}
 
 	public static ZCAppList getPersonalApplicationList(List<NameValuePair> additionalParams) throws ZCException {
+
 		Document rootDocument = null;
 		File f1 = new File(getFilesDir()+EDIT_SUPPORT_FILE);
 		String response = null;
@@ -866,8 +879,8 @@ public class ZOHOCreator {
 	}
 
 	public static ZCForm getFeedBackForm(String preFilledLogMessage,boolean isGeneralErrorOccured) {
-		ZCForm toReturn  = new ZCForm("zoho1", "support", "Feedback", "Feedback", 1, false, false, "Thank you for your feedback.", "dd-MMM-yyyy", false,"","");//No I18N
-		ZCField editAccessField   = new ZCField("edit_access_field",FieldType.DROPDOWN,"Allow edit access to support");
+		ZCForm toReturn  = new ZCForm("zoho1", "support", "Feedback", "Feedback", 1, false, false, resourceString.getString("thank_you_for_your_feedback"), "dd-MMM-yyyy", false,"","");//No I18N
+		ZCField editAccessField   = new ZCField("edit_access_field",FieldType.DROPDOWN,resourceString.getString("allow_edit_access_to_support"));
 		ZCField platformField = new ZCField("Platform", FieldType.DROPDOWN, "Platform");//No I18N
 		List<ZCChoice> choices = new ArrayList<ZCChoice>();
 		//choices.add(new ZCChoice("iOS", "iOS"));//No I18N
@@ -934,7 +947,7 @@ public class ZOHOCreator {
 		if(isGeneralErrorOccured)
 		{
 			String personalAppsOwner = "";
-			title = title + "Error occured";
+			title = title + resourceString.getString("error_occured");
 			ZCComponent comp = ZOHOCreator.getCurrentComponent();
 			ZCApplication zcapp = ZOHOCreator.getCurrentApplication();
 			if(comp!=null)
@@ -971,8 +984,8 @@ public class ZOHOCreator {
 			fields.add(editAccessField);
 		}
 		List<ZCButton> buttons = new ArrayList<ZCButton>();
-		buttons.add(new ZCButton("Submit", "submit", ZCButtonType.SUBMIT));//No I18N
-		buttons.add(new ZCButton("Reset", "reset", ZCButtonType.RESET));//No I18N
+		buttons.add(new ZCButton(resourceString.getString("submit"), "submit", ZCButtonType.SUBMIT));//No I18N
+		buttons.add(new ZCButton(resourceString.getString("reset"), "reset", ZCButtonType.RESET));//No I18N
 		toReturn.addFields(fields);
 		toReturn.addButtons(buttons);
 		return toReturn;
@@ -1094,11 +1107,11 @@ public class ZOHOCreator {
 			Calendar cal = Calendar.getInstance();
 			ZCView toReturn =  XMLParser.parseForView(rootDocument, comp.getAppLinkName(), comp.getAppOwner(), comp.getType(), cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
 			if(toReturn == null) {
-				throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Unable to get " + getURLStringForException((ZCURL.viewURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner())).getUrl(), params)); //No I18N
+				throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, resourceString.getString("unable_to_get") + getURLStringForException((ZCURL.viewURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner())).getUrl(), params)); //No I18N
 			}
 			return toReturn;
 		}
-		throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Trying to fetch view details. But not a view. " + comp); //No I18N
+		throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, resourceString.getString("trying_to_fetch_view_details_but_not_a_view") + comp); //No I18N
 	}
 
 
@@ -1110,7 +1123,7 @@ public class ZOHOCreator {
 			return new ZCHtmlView( comp.getAppOwner(), comp.getAppLinkName(), comp.getType(), comp.getComponentName(), comp.getComponentLinkName(), htmlString);
 			//return ZOHOCreator.postURLXML(viewURLPair.getUrl(), params);
 		}		
-		throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, "Trying to fetch view details. But not a view"); //No I18N
+		throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, resourceString.getString("trying_to_fetch_view_details_but_not_a_view")); //No I18N
 	}
 
 
@@ -1480,7 +1493,7 @@ public class ZOHOCreator {
 			}
 		}
 		catch (XPathExpressionException e) {
-			throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, getTrace(e));//No I18N
+			throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getTrace(e));//No I18N
 		}
 		return toReturn;
 	}
@@ -1508,17 +1521,17 @@ public class ZOHOCreator {
 			byte[] response = client.execute(request, handler);
 			return new String(response);
 		} catch(UnknownHostException uhe) {
-			throw new ZCException("No network connection.", ZCException.NETWORK_ERROR);//No I18N
+			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
 		} catch(HttpHostConnectException uhe) {
-			throw new ZCException("No network connection.", ZCException.NETWORK_ERROR);//No I18N
+			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
 		} catch (ClientProtocolException e) {
-			throw new ZCException("Unable to connect with "+appDisplayName, ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
+			throw new ZCException(resourceString.getString("unable_to_connect_with")+appDisplayName, ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
 		} catch (IOException e) {
-			throw new ZCException("Network Error.",ZCException.NETWORK_ERROR);//No I18N
+			throw new ZCException(resourceString.getString("network_error"),ZCException.NETWORK_ERROR);//No I18N
 		} catch (URISyntaxException e) {
-			throw new ZCException("An error has occured", ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
+			throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
 		} catch (RuntimeException ee) {
-			throw new ZCException("An error has occured", ZCException.GENERAL_ERROR, getTraceWithURL(ee, url, params));//No I18N
+			throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getTraceWithURL(ee, url, params));//No I18N
 		}
 	}
 
@@ -1585,7 +1598,6 @@ public class ZOHOCreator {
 	}
 
 	private static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-		
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1596,13 +1608,13 @@ public class ZOHOCreator {
 			try {
 				request.setURI(new URI(url));
 			} catch (URISyntaxException e) {
-				throw new ZCException("An error has occured", ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
+				throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
 			}
 			HttpEntity entity = null;
 			try {
 				entity = client.execute(request).getEntity();
 			} catch (ClientProtocolException e) {
-				throw new ZCException("Unable to connect with"+ appDisplayName, ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
+				throw new ZCException(resourceString.getString("unable_to_connect_with")+ appDisplayName, ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
 			} 
 			if(entity != null) {
 				InputStream is = null;
@@ -1614,7 +1626,7 @@ public class ZOHOCreator {
 					
 					return toReturn;
 				} catch (ParserConfigurationException e) {
-					throw new ZCException("An error has occured", ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
+					throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
 				} catch (SAXException e) {
 
 					if(isGettingUserDetails)
@@ -1623,7 +1635,7 @@ public class ZOHOCreator {
 						return null;
 					}else
 					{
-						throw new ZCException("An error has occured", ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
+						throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
 					}
 				}  
 				finally {
@@ -1634,13 +1646,13 @@ public class ZOHOCreator {
 			}
 
 		} catch(UnknownHostException uhe) {
-			throw new ZCException("No network connection.", ZCException.NETWORK_ERROR);//No I18N
+			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
 		} catch(HttpHostConnectException uhe) {
-			throw new ZCException("No network connection.", ZCException.NETWORK_ERROR);//No I18N
+			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
 		} catch (IOException e) {
-			throw new ZCException("Network Error.", ZCException.NETWORK_ERROR);//No I18N
+			throw new ZCException(resourceString.getString("network_error"), ZCException.NETWORK_ERROR);//No I18N
 		}
-		throw new ZCException("An error has occured.", ZCException.GENERAL_ERROR, getURLStringForException(url, params)); //No I18N
+		throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getURLStringForException(url, params)); //No I18N
 	}
 
 	private static String getTrace(Exception ex) {
@@ -1687,7 +1699,7 @@ public class ZOHOCreator {
 			try {
 				mpEntity.addPart("filename", new StringBody(fileName));//No I18N
 			} catch (UnsupportedEncodingException e) {
-				throw new ZCException("Unable to upload file.", ZCException.GENERAL_ERROR, getTraceWithURL(e, urlParam, paramsList));//No I18N
+				throw new ZCException(resourceString.getString("unable_to_upload_file"), ZCException.GENERAL_ERROR, getTraceWithURL(e, urlParam, paramsList));//No I18N
 			} //No I18N
 			mpEntity.addPart("file", cbFile); //No I18N
 			httppost.setEntity(mpEntity);
@@ -1698,11 +1710,11 @@ public class ZOHOCreator {
 			//HttpResponse httpResponse = httpclient.execute(httppost);
 
 		} catch(UnknownHostException uhe) {
-			throw new ZCException("No network connection.", ZCException.NETWORK_ERROR);//No I18N
+			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
 		} catch(HttpHostConnectException uhe) {
-			throw new ZCException("No network connection.", ZCException.NETWORK_ERROR);//No I18N
+			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
 		} catch (IOException e) {
-			throw new ZCException("Network Error.",ZCException.NETWORK_ERROR);//No I18N
+			throw new ZCException(resourceString.getString("network_error"),ZCException.NETWORK_ERROR);//No I18N
 		}
 		httpclient.getConnectionManager().shutdown();
 	}
@@ -1815,5 +1827,4 @@ public class ZOHOCreator {
 			e.printStackTrace();
 		}
 	}
-
 }

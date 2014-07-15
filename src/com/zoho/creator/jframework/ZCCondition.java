@@ -3,9 +3,13 @@
 package com.zoho.creator.jframework;
 
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 
 public class ZCCondition {
+	
+	private static ResourceBundle resourceString = ResourceBundle.getBundle("com.zoho.creator.jframework.ResourceString", Locale.getDefault());
 
 	public static final int EQUAL=18;
 	public static final int NOT_EQUAL=19;
@@ -80,62 +84,62 @@ public class ZCCondition {
 	    
 	    static{
 	    	conditionMap = new HashMap<String, Integer>();
-	    	conditionMap.put("Is", EQUAL);
-	    	conditionMap.put("Is Not", NOT_EQUAL);
-	    	conditionMap.put("Is Empty", EMPTY);
-	    	conditionMap.put("Is Not Empty", NOT_EMPTY);
-	    	conditionMap.put("Before", LESS_THAN);
-	    	conditionMap.put("Less Than", LESS_THAN);
-	    	conditionMap.put("After", GREATER_THAN);
-	    	conditionMap.put("Greater Than", GREATER_THAN);
-	    	conditionMap.put("Less than or equal to", LESS_EQUAL);
-	    	conditionMap.put("Greater than or equal to", GREATER_EQUAL);
-	    	conditionMap.put("Between", BETWEEN);
-	    	conditionMap.put("True", TRUE);
-	    	conditionMap.put("False", FALSE);
-	    	conditionMap.put("Contains", CONTAINS);
-	    	conditionMap.put("Not Contains", NOT_CONTAINS);
-	    	conditionMap.put("Starts With", STARTS_WITH);
-	    	conditionMap.put("Ends With", ENDS_WITH);
-	    	conditionMap.put("Like", LIKE);
-	    	conditionMap.put("Yesterday", YESTERDAY);
-	    	conditionMap.put("Today", TODAY);
-	    	conditionMap.put("Tomorrow", TOMORROW);
-	    	conditionMap.put("Last 7 Days", LAST_7_DAYS);
-	    	conditionMap.put("Last 30 Days", LAST_30_DAYS);
-	    	conditionMap.put("Last 60 Days", LAST_60_DAYS);
-	    	conditionMap.put("Last 90 Days", LAST_90_DAYS);
-	    	conditionMap.put("Last 120 Days", LAST_120_DAYS);
-	    	conditionMap.put("Last N Days", LAST_N_DAYS);
-	    	conditionMap.put("Next 7 Days", NEXT_7_DAYS);
-	    	conditionMap.put("Next 30 Days", NEXT_30_DAYS);
-	    	conditionMap.put("Next 60 Days", NEXT_60_DAYS);
-	    	conditionMap.put("Next 90 Days", NEXT_90_DAYS);
-	    	conditionMap.put("Next 120 Days", NEXT_120_DAYS);
-	    	conditionMap.put("Next N Days", NEXT_N_DAYS);
-	    	conditionMap.put("Last Week", LAST_WEEK);
-	    	conditionMap.put("This Week", THIS_WEEK);
-	    	conditionMap.put("Next Week", NEXT_WEEK);
-	    	conditionMap.put("Current and Previous Week", CURRENT_PREVIOUS_WEEK);
-	    	conditionMap.put("Current and Next Week", CURRENT_NEXT_WEEK);
-	    	conditionMap.put("Last N Week", LAST_N_WEEK);
-	    	conditionMap.put("Next N Week", NEXT_N_WEEK);
-	    	conditionMap.put("Last Month", LAST_MONTH);
-	    	conditionMap.put("This Month", THIS_MONTH);
-	    	conditionMap.put("Next Month", NEXT_MONTH);
-	    	conditionMap.put("Current and Previous Month", CURR_PREV_MONTH);
-	    	conditionMap.put("Current and Next Month", CURR_NEXT_MONTH);
-	    	conditionMap.put("Last N Month", LAST_N_MONTH);
-	    	conditionMap.put("Next N Month", NEXT_N_MONTH);
-	    	conditionMap.put("Last Year", LAST_YEAR);
-	    	conditionMap.put("This Year", CURRENT_YEAR);
-	    	conditionMap.put("Next Year", NEXT_YEAR);
-	    	conditionMap.put("Last 2 Year", PREVIOUS_2_YEAR);
-	    	conditionMap.put("Next 2 Year", NEXT_2_YEAR);
-	    	conditionMap.put("Current and Previous Year", CURRENT_PREVIOUS_YEAR);
-	    	conditionMap.put("Current and Next Year", CURRENT_NEXT_YEAR);
-	    	conditionMap.put("Last N Year", LAST_N_YEAR);
-	    	conditionMap.put("Next N Year", NEXT_N_YEAR);
+	    	conditionMap.put(resourceString.getString("is"), EQUAL);
+	    	conditionMap.put(resourceString.getString("is_not"), NOT_EQUAL);
+	    	conditionMap.put(resourceString.getString("is_empty"), EMPTY);
+	    	conditionMap.put(resourceString.getString("is_not_empty"), NOT_EMPTY);
+	    	conditionMap.put(resourceString.getString("before"), LESS_THAN);
+	    	conditionMap.put(resourceString.getString("less_than"), LESS_THAN);
+	    	conditionMap.put(resourceString.getString("after"), GREATER_THAN);
+	    	conditionMap.put(resourceString.getString("greater_then"), GREATER_THAN);
+	    	conditionMap.put(resourceString.getString("less_than_or_equal_to"), LESS_EQUAL);
+	    	conditionMap.put(resourceString.getString("greater_than_or_equal_to"), GREATER_EQUAL);
+	    	conditionMap.put(resourceString.getString("between"), BETWEEN);
+	    	conditionMap.put(resourceString.getString("true"), TRUE);
+	    	conditionMap.put(resourceString.getString("false"), FALSE);
+	    	conditionMap.put(resourceString.getString("contains"), CONTAINS);
+	    	conditionMap.put(resourceString.getString("not_contains"), NOT_CONTAINS);
+	    	conditionMap.put(resourceString.getString("starts_with"), STARTS_WITH);
+	    	conditionMap.put(resourceString.getString("ends_with"), ENDS_WITH);
+	    	conditionMap.put(resourceString.getString("like"), LIKE);
+	    	conditionMap.put(resourceString.getString("yesterday"), YESTERDAY);
+	    	conditionMap.put(resourceString.getString("today"), TODAY);
+	    	conditionMap.put(resourceString.getString("tomorrow"), TOMORROW);
+	    	conditionMap.put(resourceString.getString("last_7_days"), LAST_7_DAYS);
+	    	conditionMap.put(resourceString.getString("last_30_days"), LAST_30_DAYS);
+	    	conditionMap.put(resourceString.getString("last_60_days"), LAST_60_DAYS);
+	    	conditionMap.put(resourceString.getString("last_90_days"), LAST_90_DAYS);
+	    	conditionMap.put(resourceString.getString("last_120_days"), LAST_120_DAYS);
+	    	conditionMap.put(resourceString.getString("last_n_days"), LAST_N_DAYS);
+	    	conditionMap.put(resourceString.getString("next_7_days"), NEXT_7_DAYS);
+	    	conditionMap.put(resourceString.getString("next_30_days"), NEXT_30_DAYS);
+	    	conditionMap.put(resourceString.getString("next_60_days"), NEXT_60_DAYS);
+	    	conditionMap.put(resourceString.getString("next_90_days"), NEXT_90_DAYS);
+	    	conditionMap.put(resourceString.getString("next_120_days"), NEXT_120_DAYS);
+	    	conditionMap.put(resourceString.getString("next_n_days"), NEXT_N_DAYS);
+	    	conditionMap.put(resourceString.getString("last_week"), LAST_WEEK);
+	    	conditionMap.put(resourceString.getString("this_week"), THIS_WEEK);
+	    	conditionMap.put(resourceString.getString("next_week"), NEXT_WEEK);
+	    	conditionMap.put(resourceString.getString("current_and_previous_week"), CURRENT_PREVIOUS_WEEK);
+	    	conditionMap.put(resourceString.getString("current_and_next_week"), CURRENT_NEXT_WEEK);
+	    	conditionMap.put(resourceString.getString("last_n_week"), LAST_N_WEEK);
+	    	conditionMap.put(resourceString.getString("next_n_week"), NEXT_N_WEEK);
+	    	conditionMap.put(resourceString.getString("last_month"), LAST_MONTH);
+	    	conditionMap.put(resourceString.getString("this_month"), THIS_MONTH);
+	    	conditionMap.put(resourceString.getString("next_month"), NEXT_MONTH);
+	    	conditionMap.put(resourceString.getString("current_and_previous_month"), CURR_PREV_MONTH);
+	    	conditionMap.put(resourceString.getString("current_and_next_month"), CURR_NEXT_MONTH);
+	    	conditionMap.put(resourceString.getString("last_n_month"), LAST_N_MONTH);
+	    	conditionMap.put(resourceString.getString("next_n_month"), NEXT_N_MONTH);
+	    	conditionMap.put(resourceString.getString("last_year"), LAST_YEAR);
+	    	conditionMap.put(resourceString.getString("this_year"), CURRENT_YEAR);
+	    	conditionMap.put(resourceString.getString("next_year"), NEXT_YEAR);
+	    	conditionMap.put(resourceString.getString("last_2_year"), PREVIOUS_2_YEAR);
+	    	conditionMap.put(resourceString.getString("next_2_year"), NEXT_2_YEAR);
+	    	conditionMap.put(resourceString.getString("current_and_previous_year"), CURRENT_PREVIOUS_YEAR);
+	    	conditionMap.put(resourceString.getString("current_and_next_year"), CURRENT_NEXT_YEAR);
+	    	conditionMap.put(resourceString.getString("last_n_year"), LAST_N_YEAR);
+	    	conditionMap.put(resourceString.getString("next_n_year"), NEXT_N_YEAR);
 	    }
 
 	public ZCCondition(String value, int operator) {
@@ -356,170 +360,170 @@ public class ZCCondition {
 		String operatorString = null; 
 		switch(operator){
 		case EQUAL :
-			operatorString = "Is";
+			operatorString = resourceString.getString("is");
 			break;
 		case NOT_EQUAL:
-			operatorString ="Is Not" ;
+			operatorString =resourceString.getString("is_not") ;
 			break;
 		case EMPTY:
-			operatorString = "Is Empty" ;
+			operatorString = resourceString.getString("is_empty") ;
 			break;
 		case  NOT_EMPTY :
-			operatorString ="Is Not Empty";
+			operatorString =resourceString.getString("is_not_empty");
 			break;
 		case LESS_THAN :
-			operatorString = "Less Than";
+			operatorString = resourceString.getString("less_than");
 			break;
 		case GREATER_THAN:
-			operatorString =  "Greater Than";
+			operatorString =  resourceString.getString("greater_then");
 			break;
 		case LESS_EQUAL:
-			operatorString =  "Less than or equal to";
+			operatorString =  resourceString.getString("less_than_or_equal_to");
 			break;
 		case GREATER_EQUAL :
-			operatorString = "Greater than or equal to";
+			operatorString = resourceString.getString("greater_than_or_equal_to");
 			break;	
 		case BETWEEN:
-			operatorString =  "Between";
+			operatorString =  resourceString.getString("between");
 			break;
 		case  TRUE:
-			operatorString = "True";
+			operatorString = resourceString.getString("true");
 			break;
 		case FALSE:
-			operatorString =  "False";
+			operatorString =  resourceString.getString("false");
 			break;	
 		case  CONTAINS:
-			operatorString = "Contains";
+			operatorString = resourceString.getString("contains");
 			break;
 		case NOT_CONTAINS:
-			operatorString =  "Not Contains";
+			operatorString = resourceString.getString("not_contains");
 			break;
 		case STARTS_WITH:
-			operatorString =  "Starts With";
+			operatorString =  resourceString.getString("starts_with");
 			break;
 		case ENDS_WITH :
-			operatorString = "Ends With";
+			operatorString = resourceString.getString("ends_with");
 			break;
 		case  LIKE :
-			operatorString ="Like";
+			operatorString =resourceString.getString("like");
 			break;
 
 		case  YESTERDAY :
-			operatorString ="Yesterday";
+			operatorString =resourceString.getString("yesterday");
 			break;
 		case  TODAY :
-			operatorString ="Today";
+			operatorString =resourceString.getString("today");
 			break;
 		case  TOMORROW :
-			operatorString ="Tomorrow";
+			operatorString =resourceString.getString("tomorrow");
 			break;
 		case  LAST_7_DAYS :
-			operatorString ="Last 7 Days";
+			operatorString =resourceString.getString("last_7_days");
 			break;
 		case  LAST_30_DAYS :
-			operatorString ="Last 30 Days";
+			operatorString =resourceString.getString("last_30_days");
 			break;
 		case  LAST_60_DAYS :
-			operatorString ="Last 60 Days";
+			operatorString =resourceString.getString("last_60_days");
 			break;
 		case  LAST_90_DAYS :
-			operatorString ="Last 90 Days";
+			operatorString =resourceString.getString("last_90_days");
 			break;
 		case  LAST_120_DAYS :
-			operatorString ="Last 120 Days";
+			operatorString =resourceString.getString("last_120_days");
 			break;
 		case  LAST_N_DAYS :
-			operatorString ="Last N Days";
+			operatorString =resourceString.getString("last_n_days");
 			break;
 		case  NEXT_7_DAYS :
-			operatorString ="Next 7 Days";
+			operatorString =resourceString.getString("next_7_days");
 			break;	
 		case  NEXT_30_DAYS :
-			operatorString ="Next 30 Days";
+			operatorString =resourceString.getString("next_30_days");
 			break;
 		case  NEXT_60_DAYS :
-			operatorString ="Next 60 Days";
+			operatorString =resourceString.getString("next_60_days");
 			break;
 		case  NEXT_90_DAYS :
-			operatorString ="Next 90 Days";
+			operatorString =resourceString.getString("next_90_days");
 			break;
 		case  NEXT_120_DAYS :
-			operatorString ="Next 120 Days";
+			operatorString =resourceString.getString("next_120_days");
 			break;
 		case  NEXT_N_DAYS :
-			operatorString ="Next N Days";
+			operatorString =resourceString.getString("next_n_days");
 			break;
 
 		case  LAST_WEEK :
-			operatorString ="Last Week";
+			operatorString =resourceString.getString("last_week");
 			break;
 		case  THIS_WEEK :
-			operatorString ="This Week";
+			operatorString =resourceString.getString("this_week");
 			break;
 		case  NEXT_WEEK :
-			operatorString ="Next Week";
+			operatorString =resourceString.getString("next_week");
 			break;
 		case  CURRENT_PREVIOUS_WEEK :
-			operatorString ="Current and Previous Week";
+			operatorString =resourceString.getString("current_and_previous_week");
 			break;
 		case  CURRENT_NEXT_WEEK :
-			operatorString ="Current and Next Week";
+			operatorString =resourceString.getString("current_and_next_week");
 			break;
 		case  LAST_N_WEEK :
-			operatorString ="Last N Week";
+			operatorString =resourceString.getString("last_n_week");
 			break;
 		case  NEXT_N_WEEK :
-			operatorString ="Next N Week";
+			operatorString =resourceString.getString("next_n_week");
 			break;
 
 		case  LAST_MONTH :
-			operatorString ="Last Month";
+			operatorString =resourceString.getString("last_month");
 			break;
 		case  THIS_MONTH :
-			operatorString ="This Month";
+			operatorString =resourceString.getString("this_month");
 			break;
 		case  NEXT_MONTH :
-			operatorString ="Next Month";
+			operatorString =resourceString.getString("next_month");
 			break;
 		case  CURR_PREV_MONTH :
-			operatorString ="Current and Previous Month";
+			operatorString =resourceString.getString("current_and_previous_month");
 			break;
 		case  CURR_NEXT_MONTH :
-			operatorString ="Current and Next Month";
+			operatorString =resourceString.getString("current_and_next_month");
 			break;	
 		case  LAST_N_MONTH :
-			operatorString ="Last N Month";
+			operatorString =resourceString.getString("last_n_month");
 			break;	
 		case  NEXT_N_MONTH :
-			operatorString ="Next N Month";
+			operatorString =resourceString.getString("next_n_month");
 			break;	
 
 		case  LAST_YEAR :
-			operatorString ="Last Year";
+			operatorString =resourceString.getString("last_year");
 			break;	
 		case  CURRENT_YEAR :
-			operatorString ="This Year";
+			operatorString =resourceString.getString("this_year");
 			break;
 		case  NEXT_YEAR :
-			operatorString ="Next Year";
+			operatorString =resourceString.getString("next_year");
 			break;
 		case  PREVIOUS_2_YEAR :
-			operatorString ="Last 2 Year";
+			operatorString =resourceString.getString("last_2_year");
 			break;	
 		case  NEXT_2_YEAR :
-			operatorString ="Next 2 Year";
+			operatorString =resourceString.getString("next_2_year");
 			break;
 		case  CURRENT_PREVIOUS_YEAR :
-			operatorString ="Current and Previous Year";
+			operatorString =resourceString.getString("current_and_previous_year");
 			break;
 		case  CURRENT_NEXT_YEAR :
-			operatorString ="Current and Next Year";
+			operatorString =resourceString.getString("current_and_next_year");
 			break;
 		case  LAST_N_YEAR :
-			operatorString ="Last N Year";
+			operatorString =resourceString.getString("last_n_year");
 			break;
 		case  NEXT_N_YEAR :
-			operatorString ="Next N Year";
+			operatorString =resourceString.getString("next_n_year");
 			break;			
 		}
 		return operatorString;

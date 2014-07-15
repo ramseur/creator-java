@@ -15,6 +15,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -34,6 +36,8 @@ import org.w3c.dom.NodeList;
 
 
 class XMLParser {
+	
+	private static ResourceBundle resourceString = ResourceBundle.getBundle("com.zoho.creator.jframework.ResourceString", Locale.getDefault());
 
 	static String getStringValue(Node node, String defaultValue) {
 		if(node != null && node.getFirstChild() != null) {
@@ -236,7 +240,7 @@ class XMLParser {
 		}
 
 		if(!licenceEnabled) {
-			throw new ZCException("Please subscribe to Professional Edition and get access", ZCException.LICENCE_ERROR); //No I18N
+			throw new ZCException(resourceString.getString("please_subscribe_to_professional_edition_and_get_access"), ZCException.LICENCE_ERROR); //No I18N
 		}
 		return toReturn;
 	}
@@ -324,7 +328,7 @@ class XMLParser {
 			} 
 			else if(responseNode.getNodeName().equals("license_enabled")) { //No I18N
 				if(!getBooleanValue(responseNode, false)) {
-					throw new ZCException("Please subscribe to Professional Edition and get access", ZCException.LICENCE_ERROR); //No I18N
+					throw new ZCException(resourceString.getString("please_subscribe_to_professional_edition_and_get_access"), ZCException.LICENCE_ERROR); //No I18N
 				}
 			} else if(responseNode.getNodeName().equals("evaluationDays")) { //No I18N
 				ZOHOCreator.setUserProperty("evaluationDays", getStringValue(responseNode, ""));
@@ -403,7 +407,7 @@ class XMLParser {
 								hasEditOnLoad = Boolean.valueOf(nodeValue);
 							} 
 							else if(resultNodeChild.getNodeName().equalsIgnoreCase("captcha")) { 
-								throw new ZCException("Captcha enabled forms are currently not supported", ZCException.ERROR_OCCURED, "");
+								throw new ZCException(resourceString.getString("captcha_enabled_forms_are_currently_not_supported"), ZCException.ERROR_OCCURED, "");
 							}
 							else if(resultNodeChild.getNodeName().equalsIgnoreCase("successMessage")) { 
 								successMessage = getStringValue(resultNodeChild, "");
@@ -794,11 +798,11 @@ class XMLParser {
 			}
 		}	
 		if(fieldType.equals(FieldType.EXTERNAL_FIELD) || fieldType.equals(FieldType.EXTERNAL_LINK)) {
-			throw new ZCException("This Form contains ZOHO CRM field which is currently not supported", ZCException.ERROR_OCCURED, "");
+			throw new ZCException(resourceString.getString("this_form_contains_zoho_crm_field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED, "");
 		}
 		if(isParentSubForm && FieldType.isPhotoField(fieldType))
 		{
-			throw new ZCException("This Form contains Subform field which contains "+fieldType+" field which is currently not supported", ZCException.ERROR_OCCURED,"" );
+			throw new ZCException(resourceString.getString("this_form_contains_subform_field_which_contains")+fieldType+" " + resourceString.getString("field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
 		}
 
 		ZCField zcField = new ZCField(fieldName, fieldType, displayName);

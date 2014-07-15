@@ -21,7 +21,12 @@ public class ZCURL {
 
 	private static List<NameValuePair> getDefaultParams() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("authtoken", ZOHOCreator.getZohoUser().getAuthToken()));//No I18N
+		try {
+			params.add(new BasicNameValuePair("authtoken", ZOHOCreator.getZohoUser().getAuthToken()));
+		} catch (ZCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}//No I18N
 		params.add(new BasicNameValuePair("scope", "creatorapi"));//No I18N
 		return params;
 	}
@@ -320,7 +325,12 @@ public class ZCURL {
 		List<NameValuePair> params = getDefaultParams();
 		params.add(new BasicNameValuePair("fs", "thumb"));//No I18N
 		params.add(new BasicNameValuePair("t", "user"));//No I18N
-		params.add(new BasicNameValuePair("ID", ZOHOCreator.getZohoUser().getId()));//No I18N
+		try {
+			params.add(new BasicNameValuePair("ID", ZOHOCreator.getZohoUser().getId()));
+		} catch (ZCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}//No I18N
 		return new URLPair("https://contacts.zoho.com/file/download", params);  //No I18N
 	}
 

@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,6 +19,8 @@ class JSONParser {
 	public static final int PERSONAL_APPS = 1;
 	public static final int SHARED_APPS = 2;
 	public static final int WORKSPACE_APPS = 3;
+	
+	private static ResourceBundle resourceString = ResourceBundle.getBundle("com.zoho.creator.jframework.ResourceString", Locale.getDefault());
 
 	static ZCResponse parseAndCallFormEvents(String response, ZCForm currentShownForm) throws ZCException
 	{
@@ -152,7 +156,7 @@ class JSONParser {
 
 				}
 				if(field!=null)
-				{
+				{	
 					if(type==ZCForm.TASK_HIDE) {
 						field.setHidden(true);
 					} else if(type==ZCForm.TASK_SHOW) {
@@ -494,7 +498,7 @@ class JSONParser {
 			e.printStackTrace();
 		}
 		if(!licenceEnabled) {
-			throw new ZCException("Please subscribe to Professional Edition and get access", ZCException.LICENCE_ERROR); //No I18N
+			throw new ZCException(resourceString.getString("please_subscribe_to_professional_edition_and_get_access"), ZCException.LICENCE_ERROR); //No I18N
 		}
 		return toReturn;
 	}
@@ -525,7 +529,7 @@ class JSONParser {
 					hasEditOnLoad = responseObject.getBoolean("haseditonload");
 				}
 				if(responseObject.has("captcha")) { 
-					throw new ZCException("Captcha enabled forms are currently not supported", ZCException.ERROR_OCCURED, "");
+					throw new ZCException(resourceString.getString("captcha_enabled_forms_are_currently_not_supported"), ZCException.ERROR_OCCURED, "");
 				}
 				if(responseObject.has("dateformat")){
 					dateFormat = responseObject.getString("dateformat");
@@ -888,11 +892,11 @@ class JSONParser {
 				}
 			}
 			if(fieldType.equals(FieldType.EXTERNAL_FIELD) || fieldType.equals(FieldType.EXTERNAL_LINK)) {
-				throw new ZCException("This Form contains ZOHO CRM field which is currently not supported", ZCException.ERROR_OCCURED, "");
+				throw new ZCException(resourceString.getString("this_form_contains_zoho_crm_field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED, "");
 			}
 			if(isParentSubForm && FieldType.isPhotoField(fieldType))
 			{
-				throw new ZCException("This Form contains Subform field which contains "+fieldType+" field which is currently not supported", ZCException.ERROR_OCCURED,"" );
+				throw new ZCException(resourceString.getString("this_form_contains_subform_field_which_contains")+fieldType+" "+resourceString.getString("field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
 			}
 
 			zcField = new ZCField(fieldName, fieldType, displayName);
@@ -1119,7 +1123,7 @@ class JSONParser {
 
 						if(recordObject.get(fieldName) instanceof JSONArray){
 							JSONArray recordValuesArray = new JSONArray(recordObject.getString(fieldName));
-
+							
 							if(FieldType.isChoiceField(zcField.getType())) {
 								for(int i = 0; i < recordValuesArray.length(); i++){
 									JSONObject recordValueObject = recordValuesArray.getJSONObject(i);
@@ -1138,8 +1142,8 @@ class JSONParser {
 											break;
 										}
 									}
-									if(zcField.isLookup())
-									{
+
+									if(zcField.isLookup()){
 										selectedChoices.add(new ZCChoice(key,recordValue));
 									}
 								}
