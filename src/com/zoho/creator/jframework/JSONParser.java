@@ -205,7 +205,7 @@ class JSONParser {
 					} else if(type==ZCForm.TASK_SETVALUE) {
 						List<ZCRecordValue> zcRecordValues = new ArrayList<ZCRecordValue>();
 						List<ZCRecordValue> currentShownSubFormValues = null;
-						if(rowNo>0) 
+						if(rowNo>0)
 						{
 							List<ZCRecord> records = subFormField.getUpdatedSubFormEntries();
 							records.addAll(subFormField.getAddedSubFormEntries());

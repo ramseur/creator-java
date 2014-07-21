@@ -403,6 +403,9 @@ public class ZOHOCreator {
 				{
 					params.add(new BasicNameValuePair(fieldNameAndValueString[0],fieldNameAndValueString[1]));//No I18N
 				}
+				else if(fieldNameAndValueString.length==1){
+					params.add(new BasicNameValuePair(fieldNameAndValueString[0],""));//No I18N
+				}
 			}
 		}
 		return params;
@@ -1020,7 +1023,6 @@ public class ZOHOCreator {
 	}
 
 	private static void callDelugeEvents(ZCForm zcForm, URLPair urlPair) throws ZCException{
-
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
 
 		JSONParser.parseAndCallFormEvents(response,zcForm);
@@ -1117,7 +1119,8 @@ public class ZOHOCreator {
 
 	private static ZCHtmlView getHtmlView(ZCComponent comp) throws ZCException {
 		if(comp.getType().equals(ZCComponent.PAGE)) {
-			URLPair htmlViewURLPair = ZCURL.htmlViewURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner());
+			List<NameValuePair> params = getQueryStringParams(comp.getQueryString());
+			URLPair htmlViewURLPair = ZCURL.htmlViewURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner(),params);
 			//params.addAll(viewURLPair.getNvPair());
 			String htmlString = ZOHOCreator.postURL(htmlViewURLPair.getUrl(), htmlViewURLPair.getNvPair());
 			return new ZCHtmlView( comp.getAppOwner(), comp.getAppLinkName(), comp.getType(), comp.getComponentName(), comp.getComponentLinkName(), htmlString);

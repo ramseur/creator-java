@@ -101,10 +101,13 @@ public class ZCURL {
 				getParamsWithOwner(appOwner)); //No I18N
 	}
 
-	static URLPair htmlViewURL(String appLinkName, String viewLinkName, String appOwner) {
+	static URLPair htmlViewURL(String appLinkName, String viewLinkName, String appOwner, List<NameValuePair> additionalParams ) {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);
 		params.add(new BasicNameValuePair("appLinkName", appLinkName));//No I18N
 		params.add(new BasicNameValuePair("viewLinkName", viewLinkName));//No I18N
+		if(additionalParams != null) {
+			params.addAll(additionalParams);
+		}
 		return new URLPair (serverURL() + "/showHtmlViewApi.do", params); //No I18N
 	}
 
