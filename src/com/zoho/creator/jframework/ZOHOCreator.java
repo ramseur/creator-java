@@ -99,7 +99,8 @@ public class ZOHOCreator {
 	
 	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());
 
-
+	private static boolean cacheResponse = true;
+	private static boolean readResponseFromFileForAPI = false;
 
 	public static String getLoginURL() {
 		return ZCURL.getURLString(ZCURL.getLoginUrl());
@@ -742,15 +743,17 @@ public class ZOHOCreator {
 		// check for file
 
 		File f = new File(getFilesDir()+NAV_LIST_FILE);
-		Document rootDocument = stringToDocument(readResponseFromFile(f));
+		Document rootDocument = null;
+		if(cacheResponse)  {
+			rootDocument = stringToDocument(readResponseFromFile(f));
+		}
 		if(rootDocument == null){
 			URLPair navigationListURL = ZCURL.navigationListURL();
 			rootDocument = ZOHOCreator.postURLXML(navigationListURL.getUrl(), navigationListURL.getNvPair());
-			writeResponseToFile(getString(rootDocument),f);
+			if(cacheResponse) {
+				writeResponseToFile(getString(rootDocument),f);
+			}
 		}
-
-
-
 		return XMLParser.parseForNavigationListForApps(rootDocument);
 	}
 
@@ -785,7 +788,9 @@ public class ZOHOCreator {
 		}else{
 			File f = new File(getFilesDir()+PERSONAL_APPLIST_FILE);
 			//			rootDocument = stringToDocument(readResponseFromFile(f));
-			response = readResponseFromFile(f);
+			if(cacheResponse){
+				response = readResponseFromFile(f);
+			}
 			if(response == null){
 				URLPair appListURLPair = ZCURL.appListURL();
 				if(additionalParams == null) {
@@ -795,7 +800,9 @@ public class ZOHOCreator {
 				//				rootDocument = ZOHOCreator.postURLXML(appListURLPair.getUrl(), additionalParams);
 				//				writeResponseToFile(getString(rootDocument), f);
 				response = ZOHOCreator.postURL(appListURLPair.getUrl(), additionalParams);
-				writeResponseToFile(response, f);
+				if(cacheResponse){
+					writeResponseToFile(response, f);
+				}
 			}
 			return new ZCAppList(ZCAppList.PERSONAL_APPS, JSONParser.parseForApplicationList(response, JSONParser.PERSONAL_APPS));
 		}
@@ -814,7 +821,10 @@ public class ZOHOCreator {
 			f = new File(getFilesDir()+"/sharedApps_"+sharedGroup.getGroupId()+"List.json");
 		}
 		//		Document rootDocument = stringToDocument(readResponseFromFile(f));
-		String response = readResponseFromFile(f);
+		String response = null;
+		if(cacheResponse){
+			response = readResponseFromFile(f);
+		}
 		if(response == null){
 			URLPair appListURLPair = ZCURL.sharedAppListURL(null); 
 			if(sharedGroup != null) {
@@ -824,8 +834,9 @@ public class ZOHOCreator {
 			//			writeResponseToFile(getString(rootDocument), f);
 
 			response = ZOHOCreator.postURL(appListURLPair.getUrl(), appListURLPair.getNvPair());
-			writeResponseToFile(response, f);
-
+			if(cacheResponse){
+				writeResponseToFile(response, f);
+			}
 		}
 		List<ZCApplication> apps = JSONParser.parseForApplicationList(response, JSONParser.SHARED_APPS);
 		ZCAppList toReturn = new ZCAppList(ZCAppList.SHARED_APPS, apps);
@@ -836,7 +847,10 @@ public class ZOHOCreator {
 	public static ZCAppList getWorkspaceApplicationList(String workspaceAppOwner, List<NameValuePair> additionalParams) throws ZCException {
 		File f = new File(getFilesDir()+"/workspaceApps_"+workspaceAppOwner+"List.json");
 		//		Document rootDocument = stringToDocument(readResponseFromFile(f));
-		String response = readResponseFromFile(f);
+		String response = null;
+		if(cacheResponse){
+			response = readResponseFromFile(f);
+		}
 		if(response == null){
 			URLPair appListURLPair = ZCURL.workSpaceAppListURL(workspaceAppOwner); 
 			if(additionalParams == null) {
@@ -847,7 +861,9 @@ public class ZOHOCreator {
 			//			writeResponseToFile(getString(rootDocument), f);
 
 			response = ZOHOCreator.postURL(appListURLPair.getUrl(), additionalParams);
-			writeResponseToFile(response, f);
+			if(cacheResponse){
+				writeResponseToFile(response, f);
+			}
 		}
 		ZCAppList toReturn = new ZCAppList(ZCAppList.WORKSPACE_APPS, JSONParser.parseForApplicationList(response, JSONParser.WORKSPACE_APPS));
 		toReturn.setWorkspaceAppOwner(workspaceAppOwner);
@@ -858,8 +874,10 @@ public class ZOHOCreator {
 
 
 		File f = new File(getFilesDir()+"/sections_"+appOwner+"_"+appLinkName+"List.xml");
-		Document rootDocument = stringToDocument(readResponseFromFile(f));
-
+		Document rootDocument = null;
+		if(cacheResponse){
+			rootDocument = stringToDocument(readResponseFromFile(f));
+		}
 		if(rootDocument == null){
 
 			URLPair sectionListURLPair = ZCURL.sectionMetaURL(appLinkName, appOwner);
@@ -869,7 +887,9 @@ public class ZOHOCreator {
 			additionalParams.addAll(sectionListURLPair.getNvPair());
 
 			rootDocument = ZOHOCreator.postURLXML(sectionListURLPair.getUrl(), additionalParams);
-			writeResponseToFile(getString(rootDocument),f);
+			if(cacheResponse){
+				writeResponseToFile(getString(rootDocument),f);
+			}
 		}
 
 		return XMLParser.parseForSectionList(rootDocument, appLinkName, appOwner);
@@ -894,39 +914,15 @@ public class ZOHOCreator {
 		platformField.setRebuildRequired(true);
 		editAccessField.setLookup(true); 
 		List<ZCApplication> zcApps = new ArrayList<ZCApplication>();
-		File file = new File(getFilesDir()+PERSONAL_APPLIST_FILE);
-		StringBuilder sb = new StringBuilder();
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(file));
-			String line = br.readLine();
-			while (line != null) {
-				sb.append(line);
-				sb.append('\n');
-				line = br.readLine();
-			}	
-		} 
-		catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		finally {
-			try {
-				if(br != null){
-					br.close();
+		if(cacheResponse){
+			if(!(readResponseFromFile(new File(getFilesDir()+PERSONAL_APPLIST_FILE)).equals("")))
+			{
+				try {
+					zcApps = getPersonalApplicationList(null).getApps();
+				} catch (ZCException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		if(!(sb.toString().equals("")))
-		{
-			try {
-				zcApps = getPersonalApplicationList(null).getApps();
-			} catch (ZCException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
 		List<ZCChoice> zcChoices = new ArrayList<ZCChoice>();
@@ -1500,6 +1496,9 @@ public class ZOHOCreator {
 	}
 
 	public static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
+		if(readResponseFromFileForAPI) {
+			return (getResponseString(getURLString(url, params)));
+		}
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1546,7 +1545,7 @@ public class ZOHOCreator {
 		String line;
 		try {
 
-			br = new BufferedReader(new InputStreamReader(is));
+			br = new BufferedReader(new InputStreamReader(is));	
 			while ((line = br.readLine()) != null) {
 				sb.append(line);
 			}
@@ -1599,6 +1598,10 @@ public class ZOHOCreator {
 	}
 
 	private static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
+		if(readResponseFromFileForAPI)
+		{
+			return getResponseDocument(getURLString(url, params));
+		}
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1624,7 +1627,6 @@ public class ZOHOCreator {
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
-					
 					return toReturn;
 				} catch (ParserConfigurationException e) {
 					throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
@@ -1827,5 +1829,48 @@ public class ZOHOCreator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+//Methods for APITest
+
+	public static void setCacheResponse(boolean cacheResponse){
+		ZOHOCreator.cacheResponse = cacheResponse;
+	}
+	public static void setReadResponseFromFileForAPI(boolean readResponseFromFileForAPI){
+		ZOHOCreator.readResponseFromFileForAPI = readResponseFromFileForAPI;
+	}
+
+	private static Document getResponseDocument(String urlString) {
+		Properties responseProp = new Properties();
+				try {
+					FileReader reader = new FileReader("property/Response.properties");
+					responseProp.load(reader);
+					String respFileName = responseProp.getProperty(urlString);
+					return stringToDocument(readResponseFromFile(new File(respFileName)));
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		return null;
+	}
+
+	private static String getResponseString(String urlString){
+		Properties responseProp = new Properties();
+				try {
+					FileReader reader = new FileReader("property/Response.properties");
+					responseProp.load(reader);
+					String respFileName = responseProp.getProperty(urlString);
+					return readResponseFromFile(new File(respFileName));
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		return null;
 	}
 }
