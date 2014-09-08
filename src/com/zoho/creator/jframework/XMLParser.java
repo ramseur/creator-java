@@ -61,6 +61,40 @@ class XMLParser {
 		return defaultValue;
 	}
 
+	static String parsePivotViewURL(Document document)
+	{
+		String pivotViewUrl = "";
+		NodeList nl = document.getChildNodes();
+		for(int i=0; i<nl.getLength(); i++) {
+			Node responseNode = nl.item(i);
+			if(responseNode.getNodeName().equals("response")) {
+				
+				NodeList responseNodes = responseNode.getChildNodes();
+				for(int j=0;j<responseNodes.getLength();j++)
+				{
+					Node resultNode = responseNodes.item(j);
+					
+					if(resultNode.getNodeName().equals("result")) {
+
+						NodeList resultNodes = resultNode.getChildNodes();
+						
+						for(int k=0;k<resultNodes.getLength();k++)
+						{
+
+							Node reportsUrl = resultNodes.item(k);
+							
+							if(reportsUrl.getNodeName().equals("reportsUrl")) {
+								
+								pivotViewUrl = getStringValue(reportsUrl, pivotViewUrl);
+							}
+						}
+					}
+				}
+			}
+		}
+		return pivotViewUrl;
+	}
+
 	private static boolean getBooleanValue(Node node, boolean defaultValue) {
 		if(node != null && node.getFirstChild() != null) {
 			return Boolean.valueOf(node.getFirstChild().getNodeValue());
@@ -313,7 +347,10 @@ class XMLParser {
 														componentID = Long.valueOf(nodeValue);
 													}
 												}
-												comps.add(new ZCComponent (appOwner, appLinkName, type, componentName, componentLinkName, sequenceNumber));
+												if(ZCComponent.isCompTypeSupported(type))
+												{
+													comps.add(new ZCComponent (appOwner, appLinkName, type, componentName, componentLinkName, sequenceNumber));
+												}
 											}
 										}
 									}
@@ -629,7 +666,7 @@ class XMLParser {
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("imgTitleReq")) {
 				imgTitleReq = getBooleanValue(fieldPropetyNode, imgTitleReq);
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("Initial") || fieldPropetyNode.getNodeName().equals("value")) {
-				
+
 				NodeList urlTagsList = fieldPropetyNode.getChildNodes();
 				boolean isImage = false;
 				for(int q=0;q<urlTagsList.getLength();q++)
@@ -1231,7 +1268,7 @@ class XMLParser {
 				}
 			}
 		}
-		
+
 		zcView.addRecords(records);
 		zcView.setGrouped(isViewGrouped);
 	}
@@ -1321,7 +1358,7 @@ class XMLParser {
 				}		
 				selectedChoice = new ZCChoice(value, value);
 			}
-			
+
 			ZCRecordValue zcValue = null;
 			if(FieldType.isMultiChoiceField(zcField.getType())) {
 

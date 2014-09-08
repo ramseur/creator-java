@@ -13,6 +13,10 @@ public class ZCComponent  implements Parcelable{
 	public static final String CALENDAR = "calendar"; //No I18N
 	public static final String PAGE = "html"; //No I18N
 	public static final String SUMMARY = "summary";//No I18N
+	public static final String GRID = "grid";//No I18N
+	public static final String SPREADSHEET = "spreadsheet";//No I18N
+	public static final String PIVOT_CHART = "pivotchart";//No I18N
+	public static final String PIVOT_TABLE = "pivottable";//No I18N
 
 
 	private String appOwner = null;
@@ -32,12 +36,12 @@ public class ZCComponent  implements Parcelable{
 		this.componentLinkName = componentLinkName;
 		this.sequenceNumber = sequenceNumber;
 	}
-	
-	
+
+
 	public ZCComponent(Parcel in) {
 		// TODO Auto-generated constructor stub
 		appOwner = in.readString();	
-	    appLinkName = in.readString();
+		appLinkName = in.readString();
 		type = in.readString();
 		componentName = in.readString();
 		componentLinkName = in.readString();
@@ -86,7 +90,7 @@ public class ZCComponent  implements Parcelable{
 	{
 		this.queryString = queryString;
 	}
-	
+
 	public static final Parcelable.Creator<ZCComponent> CREATOR = new Creator<ZCComponent>() {  
 		public ZCComponent createFromParcel(Parcel in) {  
 			return new ZCComponent(in);  
@@ -111,6 +115,16 @@ public class ZCComponent  implements Parcelable{
 		parcel.writeString(componentName);
 		parcel.writeString(componentLinkName);
 		parcel.writeInt(sequenceNumber);
-		
+
+	}
+
+
+	static boolean isCompTypeSupported(String type)
+	{
+		if(type.equals(ZCComponent.FORM)||type.equals(ZCComponent.REPORT)||type.equals(ZCComponent.CALENDAR)||type.equals(ZCComponent.PAGE)||type.equals(ZCComponent.SUMMARY)||type.equals(ZCComponent.GRID)||type.equals(ZCComponent.SPREADSHEET)||type.equals(ZCComponent.PIVOT_TABLE)||type.equals(ZCComponent.PIVOT_CHART))
+		{
+            return true;
+		}
+		return false;
 	}
 }

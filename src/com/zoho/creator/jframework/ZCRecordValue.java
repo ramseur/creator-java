@@ -145,6 +145,8 @@ public class ZCRecordValue{
 		}
 		return value;
 	}
+	
+	
 
 	public ZCChoice getChoiceValue() {
 		if(!FieldType.isSingleChoiceField(field.getType())) {
@@ -169,7 +171,13 @@ public class ZCRecordValue{
 			toReturn.setLastReachedForChoices(isLastReachedForChoices());
 			toReturn.addChoices(getChoices());
 		} else if(FieldType.isPhotoField(field.getType())) {
-			toReturn = new ZCRecordValue(field, getFileValue());
+			if(field.getImageType()!=ZCField.IMAGE_LINK)
+			{
+				toReturn = new ZCRecordValue(field, getFileValue());
+			}else
+			{
+				toReturn = new ZCRecordValue(field,getValue());
+			}
 		} else {
 			toReturn = new ZCRecordValue(field, getValue());
 		}

@@ -22,7 +22,7 @@ public class ZCColumn extends ZCField{
 	}
 
 	public void setSortOrderForGroupByAscending(boolean isSortOrderForGroupByAscending) {
-		this.isSortOrderForGroupByAscending= isSortOrderForGroupByAscending; 
+		this.isSortOrderForGroupByAscending = isSortOrderForGroupByAscending; 
 	}
 
 	public boolean isSortOrderForGroupByAscending() {

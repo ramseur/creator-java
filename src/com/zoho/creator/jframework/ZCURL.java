@@ -100,6 +100,13 @@ public class ZCURL {
 		return new URLPair (serverURL() + "/api/mobile/xml/" + appLinkName + "/view/" + viewLinkName + "/", //No I18N
 				getParamsWithOwner(appOwner)); //No I18N
 	}
+	
+	static URLPair pivotViewURL(String appLinkName, String viewLinkName, String appOwner) {
+		List<NameValuePair> params = getParamsWithOwner(appOwner);
+		params.add(new BasicNameValuePair("applinkname", appLinkName));//No I18N
+		params.add(new BasicNameValuePair("reportlinkname", "piv"));//No I18N
+		return new URLPair (serverURL() + "/getReportsUrl.do" , params);//No I18N
+	}
 
 	static URLPair htmlViewURL(String appLinkName, String viewLinkName, String appOwner, List<NameValuePair> additionalParams ) {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);
@@ -129,6 +136,8 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("zcRefValue","true"));//No I18N
 		return new URLPair(serverURL() + "/api/"+appOwner+"/json/" + appLinkName + "/view/"+ viewLinkName + "/record/" + recordLinkId + "/edit/", params);//No I18N
 	}
+	
+	
 	
 	
 	static URLPair formMetaURL(String appLinkName, String formLinkName, String appOwner, int formAccessType, List<NameValuePair> additionalParams) {
@@ -290,6 +299,22 @@ public class ZCURL {
 		return new URLPair("https://" + ZOHOCreator.getAccountsURL() + "/login", params);  //No I18N
 	}
 
+	static URLPair getPortalLoginUrl() {
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("_sh", "false"));//No I18N		
+		params.add(new BasicNameValuePair("hideidp", "true"));
+		params.add(new BasicNameValuePair("portal", ZOHOCreator.getPortalValue()));
+		params.add(new BasicNameValuePair("client_portal", "true"));
+		params.add(new BasicNameValuePair("scopes", ZOHOCreator.getServiceName() + "/creatorapi,ZohoContacts/photoapi"));
+		params.add(new BasicNameValuePair("servicename", ZOHOCreator.getServiceName()));
+		params.add(new BasicNameValuePair("appname", ZOHOCreator.getAuthDescription()));
+		params.add(new BasicNameValuePair("serviceurl", serverURL()));
+		params.add(new BasicNameValuePair("hide_signup", "true"));
+		return new URLPair("https://" + ZOHOCreator.getAccountsURL() + "/accounts/signin", params);  //No I18N
+	}
+	
+	
 	static URLPair getCreatorUpgradeUrl() {
 		//https://accounts.zoho.com/login?servicename=ZohoCreator&serviceurl=https://creator.zoho.com/dashboard?showpage=upgradeplan&hide_signup=true&LOGIN_ID="+ZOHOCreator.getZohoUser().getEmailAddresses().get(0)
 		List<NameValuePair> params = new ArrayList<NameValuePair>();

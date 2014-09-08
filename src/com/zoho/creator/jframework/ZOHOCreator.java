@@ -96,19 +96,37 @@ public class ZOHOCreator {
 	private static String layout = null;
 	private static Boolean accessedComponents = false;
 	private static boolean isGettingUserDetails = false;
-	
+
+
 	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());
 
 	private static boolean cacheResponse = true;
 	private static boolean readResponseFromFileForAPI = false;
 
+	private static String portal = null;
+
+
 	public static String getLoginURL() {
 		return ZCURL.getURLString(ZCURL.getLoginUrl());
+	}
+
+	public static String getPortalLoginURL() {
+		return ZCURL.getURLString(ZCURL.getPortalLoginUrl());
 	}
 
 	public static String getCreatorUpgradeURL() {
 		return ZCURL.getURLString(ZCURL.getCreatorUpgradeUrl());
 	}
+
+	public static String getPortalValue() {
+		return portal;
+	}
+
+	public static void setPortal(String portal) {
+		
+		ZOHOCreator.portal = portal;
+	}
+
 
 	public static String getAppDisplayName()
 	{
@@ -352,12 +370,14 @@ public class ZOHOCreator {
 		ZCComponent comp = getCurrentComponent();
 		List<NameValuePair> params = getQueryStringParams(comp.getQueryString());
 		URLPair formMetaURLPair = ZCURL.formMetaURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner(), ZCForm.FORM_ALONE, params);
-//		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
-//		ZCForm zcForm = XMLParser.parseForForm(rootDocument, appLinkName, appOwner, null, false);
-				String response = ZOHOCreator.postURL(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
-				ZCForm zcForm = JSONParser.parseForForm(response, comp.getAppLinkName(), comp.getAppOwner(), comp.getQueryString(),false);
+		//		Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
+		//		ZCForm zcForm = XMLParser.parseForForm(rootDocument, appLinkName, appOwner, null, false);
+		String response = ZOHOCreator.postURL(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
+		ZCForm zcForm = JSONParser.parseForForm(response, comp.getAppLinkName(), comp.getAppOwner(), comp.getQueryString(),false);
 		if(zcForm == null) {
+
 			throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, resourceString.getString("unable_to_get")+ getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
+
 		}
 		zcForm.setFormType(ZCForm.FORM_ALONE);
 		setCurrentForm(zcForm);
@@ -431,7 +451,9 @@ public class ZOHOCreator {
 		//Document rootDocument = ZOHOCreator.postURLXML(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
 		//ZCForm toReturn = XMLParser.parseForForm(rootDocument, appLinkName, appOwner, null, false);
 		if(toReturn == null) {
+
 			throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, resourceString.getString("unable_to_get") + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
+
 		}
 		toReturn.setFormType(formType);
 		return toReturn;
@@ -448,6 +470,7 @@ public class ZOHOCreator {
 		String response = ZOHOCreator.postURL(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
 		ZCForm editRecordForm = JSONParser.parseForForm(response, appLinkName, appOwner,null,true);
 		if(editRecordForm == null) {
+
 			throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, resourceString.getString("unable_to_get") + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
 		}
 		editRecordForm.setFormType(ZCForm.VIEW_EDIT_FORM);
@@ -472,7 +495,9 @@ public class ZOHOCreator {
 		String response = ZOHOCreator.postURL(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
 		ZCForm bulkEditForm = JSONParser.parseForForm(response, appLinkName, appOwner,null,false);
 		if(bulkEditForm == null) {
+
 			throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, resourceString.getString("unable_to_get") + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
+
 		}
 		bulkEditForm.setFormType(ZCForm.VIEW_BULK_EDIT_FORM);
 		setCurrentForm(bulkEditForm);
@@ -537,11 +562,11 @@ public class ZOHOCreator {
 		if(baseForm.getBaseSubFormField() != null) {
 			baseForm = baseForm.getBaseSubFormField().getBaseForm();
 		}
-		//		ZCForm form = ZOHOCreator.getCurrentForm();
-		//		if(form!=null)
-		//		{
-		//			params.add(new BasicNameValuePair("childFormAccessType", form.getFormType()+""));//NoI18N
-		//		}
+		ZCForm form = ZOHOCreator.getCurrentForm();
+		if(form!=null)
+		{
+			params.add(new BasicNameValuePair("childFormAccessType", form.getFormType()+""));//NoI18N
+		}
 		ZCView viewForAdd = baseForm.getViewForAdd();
 		ZCView viewForEdit = baseForm.getViewForEdit(); 
 
@@ -604,6 +629,7 @@ public class ZOHOCreator {
 				}
 				if(FieldType.SUB_FORM == field.getType())
 				{
+					
 					ZCForm subForm = field.getSubForm();
 					List<ZCRecord> subformRecords = field.getUpdatedSubFormEntries();
 					subformRecords.addAll(field.getAddedSubFormEntries());
@@ -625,6 +651,7 @@ public class ZOHOCreator {
 									String subFormFieldName = subformField.getFieldName();
 									if(subFormFieldName.equals(subformRecordValue.getField().getFieldName()))
 									{
+										
 										postImage(zcForm, field, recordId, subformRecordValue.getFileValue(), action,subFormFieldName,subFormRecordIds.get(k));	
 									}
 								}
@@ -887,9 +914,11 @@ public class ZOHOCreator {
 			additionalParams.addAll(sectionListURLPair.getNvPair());
 
 			rootDocument = ZOHOCreator.postURLXML(sectionListURLPair.getUrl(), additionalParams);
+
 			if(cacheResponse){
 				writeResponseToFile(getString(rootDocument),f);
 			}
+
 		}
 
 		return XMLParser.parseForSectionList(rootDocument, appLinkName, appOwner);
@@ -1072,9 +1101,9 @@ public class ZOHOCreator {
 	}
 
 	public static ZCView getView(ZCComponent comp) throws ZCException{
-		if(comp.getType().equals(ZCComponent.REPORT) || comp.getType().equals(ZCComponent.CALENDAR) ||comp.getType().equals(ZCComponent.SUMMARY)) {
+		if(comp.getType().equals(ZCComponent.REPORT) || comp.getType().equals(ZCComponent.CALENDAR) ||comp.getType().equals(ZCComponent.SUMMARY) || comp.getType().equals(ZCComponent.GRID)||comp.getType().equals(ZCComponent.SPREADSHEET)) {
 			List<NameValuePair> params = new ArrayList<NameValuePair>(); //URLConstructor.getDefaultParams(comp.getAppOwner());
-			if(comp.getType().equals(ZCComponent.REPORT) || comp.getType().equals(ZCComponent.SUMMARY)) {
+			if(comp.getType().equals(ZCComponent.REPORT) || comp.getType().equals(ZCComponent.SUMMARY) ||comp.getType().equals(ZCComponent.GRID)||comp.getType().equals(ZCComponent.SPREADSHEET)) {
 				params.add(new BasicNameValuePair("startIndex", "1"));//No I18N
 				params.add(new BasicNameValuePair("pageSize", ZCView.PAGE_SIZE+"")); //No I18N
 				params.addAll(getQueryStringParams(comp.getQueryString()));
@@ -1318,6 +1347,14 @@ public class ZOHOCreator {
 		XMLParser.parseAndAddRecords(rootDocument, zcView);
 	}
 
+	public static String getPivotViewURL() throws ZCException
+	{
+		ZCComponent zccomp = getCurrentComponent();
+		URLPair viewURLPair = ZCURL.pivotViewURL(zccomp.getAppLinkName(), zccomp.getComponentLinkName(), zccomp.getAppOwner());
+		Document toReturn = ZOHOCreator.postURLXML(viewURLPair.getUrl(), viewURLPair.getNvPair());	
+		return XMLParser.parsePivotViewURL(toReturn);
+	}
+
 	private static Document getViewXMLDocument(ZCComponent comp, List<NameValuePair> params) throws ZCException{
 		URLPair viewURLPair = ZCURL.viewURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner());
 		params.addAll(viewURLPair.getNvPair());
@@ -1496,6 +1533,7 @@ public class ZOHOCreator {
 	}
 
 	public static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
+
 		if(readResponseFromFileForAPI) {
 			return (getResponseString(getURLString(url, params)));
 		}
@@ -1598,10 +1636,12 @@ public class ZOHOCreator {
 	}
 
 	private static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
+
 		if(readResponseFromFileForAPI)
 		{
 			return getResponseDocument(getURLString(url, params));
 		}
+
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1612,7 +1652,9 @@ public class ZOHOCreator {
 			try {
 				request.setURI(new URI(url));
 			} catch (URISyntaxException e) {
+
 				throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
+
 			}
 			HttpEntity entity = null;
 			try {
@@ -1627,9 +1669,11 @@ public class ZOHOCreator {
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
+
 					return toReturn;
 				} catch (ParserConfigurationException e) {
 					throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
+
 				} catch (SAXException e) {
 
 					if(isGettingUserDetails)
@@ -1638,7 +1682,9 @@ public class ZOHOCreator {
 						return null;
 					}else
 					{
+
 						throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
+
 					}
 				}  
 				finally {
@@ -1691,11 +1737,12 @@ public class ZOHOCreator {
 		}
 
 		String url = buff.toString();
-
+		
 		HttpPost httppost = new HttpPost(url);
 		if(bitMap!=null)
 		{
 			httppost.addHeader("enctype", "multipart/form-data"); //No I18N
+			
 			byte[] byteArray = fileHelper.getBytes(bitMap);
 			ContentBody cbFile = new ByteArrayBody(byteArray, fileName);			
 			MultipartEntity mpEntity = new MultipartEntity();
@@ -1831,7 +1878,7 @@ public class ZOHOCreator {
 		}
 	}
 
-//Methods for APITest
+	//Methods for APITest
 
 	public static void setCacheResponse(boolean cacheResponse){
 		ZOHOCreator.cacheResponse = cacheResponse;
@@ -1842,35 +1889,35 @@ public class ZOHOCreator {
 
 	private static Document getResponseDocument(String urlString) {
 		Properties responseProp = new Properties();
-				try {
-					FileReader reader = new FileReader("property/Response.properties");
-					responseProp.load(reader);
-					String respFileName = responseProp.getProperty(urlString);
-					return stringToDocument(readResponseFromFile(new File(respFileName)));
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		try {
+			FileReader reader = new FileReader("property/Response.properties");
+			responseProp.load(reader);
+			String respFileName = responseProp.getProperty(urlString);
+			return stringToDocument(readResponseFromFile(new File(respFileName)));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 
 	private static String getResponseString(String urlString){
 		Properties responseProp = new Properties();
-				try {
-					FileReader reader = new FileReader("property/Response.properties");
-					responseProp.load(reader);
-					String respFileName = responseProp.getProperty(urlString);
-					return readResponseFromFile(new File(respFileName));
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		try {
+			FileReader reader = new FileReader("property/Response.properties");
+			responseProp.load(reader);
+			String respFileName = responseProp.getProperty(urlString);
+			return readResponseFromFile(new File(respFileName));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 }

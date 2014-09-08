@@ -138,19 +138,26 @@ class JSONParser {
 
 					if(subFormName == null)
 					{
+
 						field = baseForm.getField(fieldName);
-						field.setRebuildRequired(true);
-						recordValue = field.getRecordValue();
-					}
-					else
-					{
-						subFormField = baseForm.getField(subFormName);
-						ZCForm subForm = subFormField.getSubForm();
-						field = subForm.getField(fieldName);
 						if(field!=null)
 						{
 							field.setRebuildRequired(true);
 							recordValue = field.getRecordValue();
+						}
+					}
+					else
+					{
+						subFormField = baseForm.getField(subFormName);
+						if(subFormField!=null)
+						{
+							ZCForm subForm = subFormField.getSubForm();
+							field = subForm.getField(fieldName);
+							if(field!=null)
+							{
+								field.setRebuildRequired(true);
+								recordValue = field.getRecordValue();
+							}
 						}
 					}
 
@@ -894,6 +901,7 @@ class JSONParser {
 			if(fieldType.equals(FieldType.EXTERNAL_FIELD) || fieldType.equals(FieldType.EXTERNAL_LINK)) {
 				throw new ZCException(resourceString.getString("this_form_contains_zoho_crm_field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED, "");
 			}
+
 			if(isParentSubForm && FieldType.isPhotoField(fieldType))
 			{
 				throw new ZCException(resourceString.getString("this_form_contains_subform_field_which_contains")+fieldType+" "+resourceString.getString("field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
