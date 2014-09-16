@@ -123,7 +123,7 @@ public class ZOHOCreator {
 	}
 
 	public static void setPortal(String portal) {
-		
+
 		ZOHOCreator.portal = portal;
 	}
 
@@ -619,7 +619,7 @@ public class ZOHOCreator {
 			long recordId = response.getSuccessRecordID();
 			for(int i=0; i<fields.size(); i++) {
 				ZCField field = fields.get(i);
-				if(FieldType.isPhotoField(field.getType())) {
+				if(FieldType.isPhotoField(field.getType())||FieldType.SIGNATURE==field.getType()) {
 					ZCRecordValue recValue = field.getRecordValue();
 					Object bitmap = recValue.getFileValue();
 					int imageType = field.getImageType();
@@ -629,7 +629,7 @@ public class ZOHOCreator {
 				}
 				if(FieldType.SUB_FORM == field.getType())
 				{
-					
+
 					ZCForm subForm = field.getSubForm();
 					List<ZCRecord> subformRecords = field.getUpdatedSubFormEntries();
 					subformRecords.addAll(field.getAddedSubFormEntries());
@@ -651,7 +651,7 @@ public class ZOHOCreator {
 									String subFormFieldName = subformField.getFieldName();
 									if(subFormFieldName.equals(subformRecordValue.getField().getFieldName()))
 									{
-										
+
 										postImage(zcForm, field, recordId, subformRecordValue.getFileValue(), action,subFormFieldName,subFormRecordIds.get(k));	
 									}
 								}
@@ -679,6 +679,10 @@ public class ZOHOCreator {
 		{
 			params.add(new BasicNameValuePair("subformFieldName", subFormFieldName));
 			params.add(new BasicNameValuePair("subformRecId",subFormRecId +""));
+		}
+		if(field.getType().equals(FieldType.SIGNATURE))
+		{
+			params.add(new BasicNameValuePair("isNativeMobileApp", "true"));
 		}
 		ZCForm form = field.getBaseForm();
 		int formType = form.getFormType();
@@ -944,13 +948,16 @@ public class ZOHOCreator {
 		editAccessField.setLookup(true); 
 		List<ZCApplication> zcApps = new ArrayList<ZCApplication>();
 		if(cacheResponse){
-			if(!(readResponseFromFile(new File(getFilesDir()+PERSONAL_APPLIST_FILE)).equals("")))
+			if(readResponseFromFile(new File(getFilesDir()+PERSONAL_APPLIST_FILE))!=null)
 			{
-				try {
-					zcApps = getPersonalApplicationList(null).getApps();
-				} catch (ZCException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if(!(readResponseFromFile(new File(getFilesDir()+PERSONAL_APPLIST_FILE)).equals("")))
+				{
+					try {
+						zcApps = getPersonalApplicationList(null).getApps();
+					} catch (ZCException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -1423,6 +1430,7 @@ public class ZOHOCreator {
 
 	static Document getUserDocument() throws ZCException {
 		URLPair userPersonalInfoURL = ZCURL.userPersonalInfoURL();
+		
 		return ZOHOCreator.postURLXML(userPersonalInfoURL.getUrl(), userPersonalInfoURL.getNvPair());
 	}
 
@@ -1537,6 +1545,7 @@ public class ZOHOCreator {
 		if(readResponseFromFileForAPI) {
 			return (getResponseString(getURLString(url, params)));
 		}
+		
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1557,6 +1566,7 @@ public class ZOHOCreator {
 				}
 			};
 			byte[] response = client.execute(request, handler);
+			
 			return new String(response);
 		} catch(UnknownHostException uhe) {
 			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
@@ -1641,7 +1651,7 @@ public class ZOHOCreator {
 		{
 			return getResponseDocument(getURLString(url, params));
 		}
-
+		
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1669,7 +1679,7 @@ public class ZOHOCreator {
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
-
+					
 					return toReturn;
 				} catch (ParserConfigurationException e) {
 					throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
@@ -1719,7 +1729,6 @@ public class ZOHOCreator {
 		HttpParams httpParameters = httpclient.getParams();
 		httpParameters.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 		HttpConnectionParams.setTcpNoDelay(httpParameters, true);
-
 		StringBuffer buff = new StringBuffer(urlParam);
 		if(!urlParam.endsWith("/")) {
 			buff.append("/");
@@ -1739,11 +1748,13 @@ public class ZOHOCreator {
 		String url = buff.toString();
 		
 		HttpPost httppost = new HttpPost(url);
+		
 		if(bitMap!=null)
 		{
 			httppost.addHeader("enctype", "multipart/form-data"); //No I18N
-			
+
 			byte[] byteArray = fileHelper.getBytes(bitMap);
+
 			ContentBody cbFile = new ByteArrayBody(byteArray, fileName);			
 			MultipartEntity mpEntity = new MultipartEntity();
 			try {

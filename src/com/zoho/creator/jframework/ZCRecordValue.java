@@ -252,7 +252,7 @@ public class ZCRecordValue{
 	}
 
 	public void setFileValue(Object fileValue) {
-		if(!FieldType.isPhotoField(field.getType())) {
+		if((!FieldType.isPhotoField(field.getType()))&&(!(field.getType()==FieldType.SIGNATURE)) ){
 			throw new RuntimeException("Use the other one");//No I18N
 		}
 		this.fileValue = fileValue;

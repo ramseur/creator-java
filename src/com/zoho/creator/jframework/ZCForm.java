@@ -279,7 +279,7 @@ public class ZCForm extends ZCComponent{
 					buff.append("</field>");//No I18N
 				}
 				else if(!field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES)) {
-					if((FieldType.isPhotoField(field.getType()) && field.getImageType()==ZCField.IMAGE_LINK) || (!FieldType.isPhotoField(field.getType())))
+					if((FieldType.isPhotoField(field.getType()) && field.getImageType()==ZCField.IMAGE_LINK) || ((!FieldType.isPhotoField(field.getType()))&&field.getType()!=FieldType.SIGNATURE))
 					{
 						buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
 						buff.append("<value>");//No I18N
@@ -339,7 +339,8 @@ public class ZCForm extends ZCComponent{
 						buff.append("</value>");//No I18N
 
 					}else if(!subFormField.getType().equals(FieldType.FORMULA) && !subFormField.getType().equals(FieldType.NOTES)){
-						if((FieldType.isPhotoField(subFormField.getType()) && subFormField.getImageType()==ZCField.IMAGE_LINK) || (!FieldType.isPhotoField(subFormField.getType()))) {
+						if((FieldType.isPhotoField(subFormField.getType()) && subFormField.getImageType()==ZCField.IMAGE_LINK) || ((!FieldType.isPhotoField(subFormField.getType()))&&subFormField.getType()!=FieldType.SIGNATURE))
+						{
 							buff.append("<value>");//No I18N
 							buff.append("<![CDATA[");//No I18N
 							buff.append(subFormRecordValue.getValue());

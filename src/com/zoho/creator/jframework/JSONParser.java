@@ -902,10 +902,12 @@ class JSONParser {
 				throw new ZCException(resourceString.getString("this_form_contains_zoho_crm_field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED, "");
 			}
 
-			if(isParentSubForm && FieldType.isPhotoField(fieldType))
+			if(isParentSubForm && (FieldType.isPhotoField(fieldType)||FieldType.SIGNATURE==fieldType))
 			{
 				throw new ZCException(resourceString.getString("this_form_contains_subform_field_which_contains")+fieldType+" "+resourceString.getString("field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
 			}
+			
+			
 
 			zcField = new ZCField(fieldName, fieldType, displayName);
 

@@ -104,7 +104,7 @@ public class ZCURL {
 	static URLPair pivotViewURL(String appLinkName, String viewLinkName, String appOwner) {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);
 		params.add(new BasicNameValuePair("applinkname", appLinkName));//No I18N
-		params.add(new BasicNameValuePair("reportlinkname", "piv"));//No I18N
+		params.add(new BasicNameValuePair("reportlinkname", viewLinkName));//No I18N
 		return new URLPair (serverURL() + "/getReportsUrl.do" , params);//No I18N
 	}
 

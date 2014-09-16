@@ -347,8 +347,12 @@ class XMLParser {
 														componentID = Long.valueOf(nodeValue);
 													}
 												}
+												System.out
+														.println("type..."+type);
 												if(ZCComponent.isCompTypeSupported(type))
 												{
+													System.out
+															.println("inside type..."+type);
 													comps.add(new ZCComponent (appOwner, appLinkName, type, componentName, componentLinkName, sequenceNumber));
 												}
 											}
