@@ -16,7 +16,8 @@ public class ZCRecordValue{
 	private String urlTitleValue = null;
 	private String urlLinkNameValue = null;
 	private boolean errorOccured = false;
-	private String errorMessage = null; 
+	private String errorMessage = null;
+
 
 
 	private boolean isLastReachedForChoices = false;
@@ -220,6 +221,8 @@ public class ZCRecordValue{
 	public Object getFileValue() {
 		return fileValue;
 	}
+	
+	
 
 	public void setValue(String value) {
 		if(FieldType.isChoiceField(field.getType())) {

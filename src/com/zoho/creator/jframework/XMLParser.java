@@ -36,7 +36,7 @@ import org.w3c.dom.NodeList;
 
 
 class XMLParser {
-	
+
 	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());
 
 	static String getStringValue(Node node, String defaultValue) {
@@ -68,23 +68,23 @@ class XMLParser {
 		for(int i=0; i<nl.getLength(); i++) {
 			Node responseNode = nl.item(i);
 			if(responseNode.getNodeName().equals("response")) {
-				
+
 				NodeList responseNodes = responseNode.getChildNodes();
 				for(int j=0;j<responseNodes.getLength();j++)
 				{
 					Node resultNode = responseNodes.item(j);
-					
+
 					if(resultNode.getNodeName().equals("result")) {
 
 						NodeList resultNodes = resultNode.getChildNodes();
-						
+
 						for(int k=0;k<resultNodes.getLength();k++)
 						{
 
 							Node reportsUrl = resultNodes.item(k);
-							
+
 							if(reportsUrl.getNodeName().equals("reportsUrl")) {
-								
+
 								pivotViewUrl = getStringValue(reportsUrl, pivotViewUrl);
 							}
 						}
@@ -347,12 +347,10 @@ class XMLParser {
 														componentID = Long.valueOf(nodeValue);
 													}
 												}
-												System.out
-														.println("type..."+type);
+
 												if(ZCComponent.isCompTypeSupported(type))
 												{
-													System.out
-															.println("inside type..."+type);
+
 													comps.add(new ZCComponent (appOwner, appLinkName, type, componentName, componentLinkName, sequenceNumber));
 												}
 											}
@@ -1400,15 +1398,54 @@ class XMLParser {
 		return record;
 	}
 
-	static ZCView parseForView(Document rootDocument, String appLinkName, String appOwner, String componentType, int month, int year){		
+	static ZCView parseForView(Document rootDocument, String appLinkName, String appOwner, String componentType, int month, int year) throws ZCException{		
+		
 		NodeList nl = rootDocument.getChildNodes();
+		
 		ZCView toReturn = null;
 		for(int i=0; i<nl.getLength(); i++) {
+		
 			Node responseNode = nl.item(i);
 			if(responseNode.getNodeName().equals("response")) {
 				NodeList responseNodes = responseNode.getChildNodes();
 				for(int j=0; j<responseNodes.getLength(); j++) {
 					Node responseChildNode = responseNodes.item(j);
+
+					if(responseChildNode.getNodeName().equals("errorlist"))
+					{
+						NodeList errorListNodes = responseChildNode.getChildNodes();
+						for(int o=0; o<errorListNodes.getLength(); o++) {
+							Node errorlistNode = errorListNodes.item(o);
+							if(errorlistNode.getNodeName().equals("error"))
+							{
+								NodeList errorlistchildNodes = errorlistNode.getChildNodes();
+								int code = 0;
+								boolean hasErrorOcured = false;
+								String errorMessage = "";
+								for(int p=0;p<errorlistchildNodes.getLength();p++)
+								{
+									Node errorlistchildNode = errorlistchildNodes.item(p);
+									if(errorlistchildNode.getNodeName().equals("code"))
+									{
+										code = getIntValue(errorlistchildNode, code);
+									}else if(errorlistchildNode.getNodeName().equals("message"))
+									{
+										hasErrorOcured = true;
+										errorMessage = getStringValue(errorlistchildNode,"");
+										
+									}
+								}
+								
+								if(hasErrorOcured)
+								{
+									ZCException exception = new ZCException(errorMessage, ZCException.ERROR_OCCURED,"" );
+									exception.setCode(code);
+									throw exception;
+								}
+							}
+						}
+					}
+
 					if(responseChildNode.getNodeName().equals("metadata")) {
 						NodeList viewNodes = responseChildNode.getChildNodes();
 						for(int k=0; k<viewNodes.getLength(); k++) {

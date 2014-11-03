@@ -284,6 +284,7 @@ public class ZCForm extends ZCComponent{
 						buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
 						buff.append("<value>");//No I18N
 						buff.append("<![CDATA[");//No I18N
+					
 						buff.append(recordValue.getValue());
 						buff.append("]]>");//No I18N
 						buff.append("</value>");//No I18N
@@ -402,6 +403,7 @@ public class ZCForm extends ZCComponent{
 						params.add(new BasicNameValuePair(field.getFieldName(),""));
 					}
 				} else if(!FieldType.isPhotoField(field.getType()) && !field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES)) {
+					
 					params.add(new BasicNameValuePair(field.getFieldName(),recordValue.getValue()));
 				}
 			}
