@@ -490,12 +490,12 @@ public class ZCField implements Comparable<ZCField>{
 		this.isDisabled = isDisabled;
 	}
 
-	public void onUserInput(ZCForm currentShownForm) throws ZCException{
-		ZOHOCreator.callFieldOnUser(baseForm, fieldName, false, currentShownForm);
+	public void onUserInput(ZCForm currentShownForm,boolean doesOnUserInputRetriggered) throws ZCException{
+		ZOHOCreator.callFieldOnUser(baseForm, fieldName, false, currentShownForm,doesOnUserInputRetriggered);
 	}
 
-	public void onUserInputForFormula(ZCForm currentShownForm) throws ZCException{
-		ZOHOCreator.callFieldOnUser(baseForm, fieldName, true, currentShownForm);
+	public void onUserInputForFormula(ZCForm currentShownForm,boolean doesOnUserInputRetriggered) throws ZCException{
+		ZOHOCreator.callFieldOnUser(baseForm, fieldName, true, currentShownForm,doesOnUserInputRetriggered);
 	}
 
 	public boolean isOnAddRowExists()

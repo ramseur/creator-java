@@ -26,6 +26,7 @@ public class ZCRecordValue{
 	private boolean lookupLoadingStarted = false;
 	private boolean isFileReUploaded = false;
 	private boolean isWriteToParcel = false;
+	private String fileName = null;
 
 
 
@@ -357,6 +358,16 @@ public class ZCRecordValue{
 		this.lookupLoadingStarted = lookupLoadingStarted;
 	}
 
+	
+	public void setFileName(String fileName)
+	{
+		this.fileName = fileName;
+	}
+	
+	public String getFileName()
+	{
+		return fileName;
+	}
 	String getUrlValueForSubmit()
 	{
 		String urlValueForSubmit = "";

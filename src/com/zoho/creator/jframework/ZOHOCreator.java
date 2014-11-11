@@ -1,6 +1,8 @@
 package com.zoho.creator.jframework;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -63,8 +65,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import sun.misc.IOUtils;
 
 
 public class ZOHOCreator {
@@ -628,7 +628,9 @@ public class ZOHOCreator {
 					ZCRecordValue recValue = field.getRecordValue();
 					Object bitmap = recValue.getFileValue();
 					int imageType = field.getImageType();
+				
 					if(recValue.isFileReUploaded() && imageType != ZCField.IMAGE_LINK ) {
+						
 						postImage(zcForm, field, recordId, bitmap, action,null,-1l);	
 					}
 				}
@@ -702,12 +704,25 @@ public class ZOHOCreator {
 		}
 
 		if(bitmap!=null) {
+			
 			String fileName = "image" + System.currentTimeMillis()+".jpg";
 			params.add(new BasicNameValuePair("filename", fileName));//No I18N
-			postFile(urlPair.getUrl(), bitmap, fileName, params);	
+			if(field.getType().equals(FieldType.FILE_UPLOAD))
+			{
+				postFile(urlPair.getUrl(), bitmap, fileName, params,true);	
+			}else
+			{
+				postFile(urlPair.getUrl(), bitmap, fileName, params,false);
+			}
 		} else {
 			params.add(new BasicNameValuePair("operation", "delete"));//No I18N
-			postFile(urlPair.getUrl(), null, "", params);
+			if(field.getType().equals(FieldType.FILE_UPLOAD))
+			{
+				postFile(urlPair.getUrl(), null, "", params,true);
+			}else
+			{
+				postFile(urlPair.getUrl(), null, "", params,false);
+			}
 		}
 	}
 
@@ -1047,7 +1062,7 @@ public class ZOHOCreator {
 
 		String response = ZOHOCreator.postURL(formOnAddOnLoadURL.getUrl(), formOnAddOnLoadURL.getNvPair());
 
-		JSONParser.parseAndCallFormEvents(response, zcForm);
+		JSONParser.parseAndCallFormEvents(response, zcForm,false);
 
 	}
 
@@ -1056,22 +1071,22 @@ public class ZOHOCreator {
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
 		URLPair formEditOnAddOnLoadURL = ZCURL.formEditOnLoad(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), zcForm.getAppOwner(), params,recordLinkId,formAccessType);
 		String response = ZOHOCreator.postURL(formEditOnAddOnLoadURL.getUrl(), formEditOnAddOnLoadURL.getNvPair());
-		JSONParser.parseAndCallFormEvents(response, zcForm);
+		JSONParser.parseAndCallFormEvents(response, zcForm,false);
 	}
 
-	private static void callDelugeEvents(ZCForm zcForm, URLPair urlPair) throws ZCException{
+	private static void callDelugeEvents(ZCForm zcForm, URLPair urlPair,boolean doesOnUserInputRetriggered) throws ZCException{
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
 
-		JSONParser.parseAndCallFormEvents(response,zcForm);
+		JSONParser.parseAndCallFormEvents(response,zcForm,doesOnUserInputRetriggered);
 	}
 
 	static ZCResponse parseResponseDocumentForJSONString(URLPair urlPair, ZCForm zcForm) throws ZCException {
 		String response = ZOHOCreator.postURL(urlPair.getUrl(), urlPair.getNvPair());
-		return JSONParser.parseAndCallFormEvents(response, zcForm);
+		return JSONParser.parseAndCallFormEvents(response, zcForm,false);
 	}
 
 
-	static void callFieldOnUser(ZCForm zcForm, String fieldLinkName, boolean isFormula, ZCForm currentShownForm) throws ZCException {
+	static void callFieldOnUser(ZCForm zcForm, String fieldLinkName, boolean isFormula, ZCForm currentShownForm,boolean doesOnUserInputRetriggered) throws ZCException {
 		List<NameValuePair> params = zcForm.getFieldParamValues();
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
 
@@ -1081,7 +1096,7 @@ public class ZOHOCreator {
 			zcForm = currentShownForm;
 		}
 
-		callDelugeEvents(zcForm, urlPair);
+		callDelugeEvents(zcForm, urlPair,doesOnUserInputRetriggered);
 	}
 
 	static void callSubFormFieldOnUser(String subFormFieldLinkName, ZCForm currentShownForm, boolean isFormula,int entryPosition,long id) throws ZCException{
@@ -1089,19 +1104,19 @@ public class ZOHOCreator {
 		ZCForm zcForm = currentShownForm.getBaseSubFormField().getBaseForm();
 		List<NameValuePair> params = zcForm.getFieldParamValues();
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
-		callDelugeEvents(currentShownForm, ZCURL.subFormOnUser(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, currentShownForm.getBaseSubFormField().getFieldName() , zcForm.getAppOwner(),params,isFormula,entryPosition,id));
+		callDelugeEvents(currentShownForm, ZCURL.subFormOnUser(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, currentShownForm.getBaseSubFormField().getFieldName() , zcForm.getAppOwner(),params,isFormula,entryPosition,id),false);
 	}
-	
+
 	public static void callSubFormAddRow(ZCForm zcForm, String subFormFieldLinkName,ZCForm currentShownForm, int rowPosition) throws ZCException{
 		List<NameValuePair> params = zcForm.getFieldParamValues();
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
-		callDelugeEvents(currentShownForm, ZCURL.subFormAddRow(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, zcForm.getAppOwner(), params,rowPosition));
+		callDelugeEvents(currentShownForm, ZCURL.subFormAddRow(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, zcForm.getAppOwner(), params,rowPosition),false);
 	}
 
 	public static void callSubFormDeleteRow(ZCForm zcForm, String subFormFieldLinkName,long id,int position) throws ZCException{
 		List<NameValuePair> params = zcForm.getFieldParamValues();
 		params.addAll(getAdditionalParamsForForm(zcForm, null));
-		callDelugeEvents(zcForm, ZCURL.subFormDeleteRow(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, zcForm.getAppOwner(), params,id,position));
+		callDelugeEvents(zcForm, ZCURL.subFormDeleteRow(zcForm.getAppLinkName(), zcForm.getComponentLinkName(), subFormFieldLinkName, zcForm.getAppOwner(), params,id,position),false);
 	}
 
 	public static ZCView getListReport(String appLinkName, String viewLinkName, String appOwner) throws ZCException{
@@ -1165,6 +1180,10 @@ public class ZOHOCreator {
 			URLPair htmlViewURLPair = ZCURL.htmlViewURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner(),params);
 			//params.addAll(viewURLPair.getNvPair());
 			String htmlString = ZOHOCreator.postURL(htmlViewURLPair.getUrl(), htmlViewURLPair.getNvPair());
+			if(htmlString.contains("There is no such view in"))
+			{
+				throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.LINK_NAME_ERROR, resourceString.getString("unable_to_get") + getURLStringForException((ZCURL.viewURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner())).getUrl(), params)); //No I18N
+			}
 			return new ZCHtmlView( comp.getAppOwner(), comp.getAppLinkName(), comp.getType(), comp.getComponentName(), comp.getComponentLinkName(), htmlString);
 			//return ZOHOCreator.postURLXML(viewURLPair.getUrl(), params);
 		}		
@@ -1371,6 +1390,10 @@ public class ZOHOCreator {
 		ZCComponent zccomp = getCurrentComponent();
 		URLPair viewURLPair = ZCURL.pivotViewURL(zccomp.getAppLinkName(), zccomp.getComponentLinkName(), zccomp.getAppOwner());
 		Document toReturn = ZOHOCreator.postURLXML(viewURLPair.getUrl(), viewURLPair.getNvPair());	
+		if(getString(toReturn).contains("here is no such view"))
+		{
+			throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.LINK_NAME_ERROR, resourceString.getString("unable_to_get") + getURLStringForException((ZCURL.viewURL(comp.getAppLinkName(), comp.getComponentLinkName(), comp.getAppOwner())).getUrl(), new ArrayList<NameValuePair>())); //No I18N
+		}
 		return XMLParser.parsePivotViewURL(toReturn);
 	}
 
@@ -1674,7 +1697,7 @@ public class ZOHOCreator {
 			try {
 				request.setURI(new URI(url));
 			} catch (URISyntaxException e) {
-				
+
 				throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
 
 			}
@@ -1688,19 +1711,21 @@ public class ZOHOCreator {
 				InputStream is = null;
 				try {
 					is = entity.getContent();
-					
-					
+
+
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
 					
+
+
 					return toReturn;
 				} catch (ParserConfigurationException e) {
-				
+
 					throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
 
 				} catch (SAXException e) {
-					
+
 					e.printStackTrace();
 					if(isGettingUserDetails)
 					{
@@ -1741,7 +1766,7 @@ public class ZOHOCreator {
 		return getURLStringForException(url, params) + "\n\n" + getTrace(ex); //No I18N
 	}
 
-	static void postFile(String urlParam, Object bitMap, String fileName, List<NameValuePair> paramsList) throws ZCException {
+	static void postFile(String urlParam, Object bitMap, String fileName, List<NameValuePair> paramsList,boolean isFileUploadField) throws ZCException {
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpParams httpParameters = httpclient.getParams();
 		httpParameters.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
@@ -1765,13 +1790,44 @@ public class ZOHOCreator {
 		String url = buff.toString();
 
 		HttpPost httppost = new HttpPost(url);
-		
+
 		if(bitMap!=null)
 		{
 			httppost.addHeader("enctype", "multipart/form-data"); //No I18N
+		
+			byte[] byteArray=null;
+			if(isFileUploadField)
+			{
 
-			byte[] byteArray = fileHelper.getBytes(bitMap);
+				int len;
+				int size = 1024;
+				byte[] buf;
+				try 
+				{
+					InputStream is = (InputStream)bitMap;
+					if (is instanceof ByteArrayInputStream) {
+
+						size = is.available();
+
+						buf = new byte[size];
+						len = is.read(buf, 0, size);
+					} else {
+						ByteArrayOutputStream bos = new ByteArrayOutputStream();
+						buf = new byte[size];
+						while ((len = is.read(buf, 0, size)) != -1)
+							bos.write(buf, 0, len);
+						byteArray = bos.toByteArray();
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}else
+			{
+				byteArray = fileHelper.getBytes(bitMap);
+			}
 			
+
 			ContentBody cbFile = new ByteArrayBody(byteArray, fileName);			
 			MultipartEntity mpEntity = new MultipartEntity();
 			try {

@@ -92,6 +92,7 @@ class XMLParser {
 				}
 			}
 		}
+
 		return pivotViewUrl;
 	}
 
@@ -1399,12 +1400,12 @@ class XMLParser {
 	}
 
 	static ZCView parseForView(Document rootDocument, String appLinkName, String appOwner, String componentType, int month, int year) throws ZCException{		
-		
+
 		NodeList nl = rootDocument.getChildNodes();
-		
+
 		ZCView toReturn = null;
 		for(int i=0; i<nl.getLength(); i++) {
-		
+
 			Node responseNode = nl.item(i);
 			if(responseNode.getNodeName().equals("response")) {
 				NodeList responseNodes = responseNode.getChildNodes();
@@ -1432,10 +1433,10 @@ class XMLParser {
 									{
 										hasErrorOcured = true;
 										errorMessage = getStringValue(errorlistchildNode,"");
-										
+
 									}
 								}
-								
+
 								if(hasErrorOcured)
 								{
 									ZCException exception = new ZCException(errorMessage, ZCException.ERROR_OCCURED,"" );

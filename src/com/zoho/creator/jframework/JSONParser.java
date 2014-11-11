@@ -20,26 +20,27 @@ class JSONParser {
 	public static final int SHARED_APPS = 2;
 	public static final int WORKSPACE_APPS = 3;
 	static List<JSONObject> onUserInputJsonObj = new ArrayList<JSONObject>();
-	static boolean isOnUserInputRunning = false;
-	static boolean doesNetworkCallTriggered = false;
-	static int parseFormEventsCalledTimes = 0;
+	
+
 
 	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());
 
-	static ZCResponse parseAndCallFormEvents(String response, ZCForm currentShownForm) throws ZCException
+	static ZCResponse parseAndCallFormEvents(String response, ZCForm currentShownForm,boolean doesOnUserInputRetriggered) throws ZCException
 	{
 		List<String> alertMessages = new ArrayList<String>();
 		List<String> infoValues = new ArrayList<String>();
 		String openUrlString = null;
-		parseFormEventsCalledTimes++;
-
+		if(!doesOnUserInputRetriggered)
+		{
+			onUserInputJsonObj = new ArrayList<JSONObject>();
+		}
 		ZCResponse toReturn = new ZCResponse();
 		try {
 			JSONArray jArray = new JSONArray(response);
 			for (int i=0; i < jArray.length(); i++) 
 			{
 				JSONObject jsonObj = jArray.getJSONObject(i); // Pulling items from the array 
-				if(!doesNetworkCallTriggered)
+				if(!doesOnUserInputRetriggered)
 				{
 					if(parseJsonObject(jsonObj,currentShownForm,alertMessages,infoValues,openUrlString))
 					{
@@ -49,12 +50,9 @@ class JSONParser {
 				{
 					onUserInputJsonObj.add(jsonObj);
 				}
-				if(i==jArray.length()-1)
-				{
-					doesNetworkCallTriggered = false;
-				}
+
 			}
-			if(parseFormEventsCalledTimes==1)
+			if(!doesOnUserInputRetriggered)
 			{
 				for(int i=0;i<onUserInputJsonObj.size();i++)
 				{
@@ -66,14 +64,14 @@ class JSONParser {
 					onUserInputJsonObj.remove(i);
 					i--;
 				}
-				isOnUserInputRunning = false;
+
 			}
-			
+
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		parseFormEventsCalledTimes--;
+
 		if(alertMessages.size() >0) {
 			currentShownForm.setAlertMessages(alertMessages);
 		}
@@ -270,7 +268,7 @@ class JSONParser {
 					recordValue.setChoiceValues(new ArrayList<ZCChoice>());
 				}
 			} else if(type==ZCForm.TASK_SETVALUE) {
-				
+
 				List<ZCRecordValue> zcRecordValues = new ArrayList<ZCRecordValue>();
 				List<ZCRecordValue> currentShownSubFormValues = null;
 				if(rowNo>0)
@@ -313,12 +311,12 @@ class JSONParser {
 			//					}
 			if(field != null && type==ZCForm.TASK_SETVALUE|| type==ZCForm.TASK_DESELECTALL ||type==ZCForm.TASK_DESELECT || type==ZCForm.TASK_SELECTALL || type==ZCForm.TASK_SELECT) {
 				if(field.isHasOnUserInputForFormula()||(field.isHasOnUserInput()) ) {
-					doesNetworkCallTriggered = true;
+
 					if(field.isHasOnUserInputForFormula()) {
-						field.onUserInputForFormula(currentShownForm);
+						field.onUserInputForFormula(currentShownForm,true);
 					}
 					if(field.isHasOnUserInput()) {
-						field.onUserInput(currentShownForm);
+						field.onUserInput(currentShownForm,true);
 					}
 				}
 			}
@@ -331,7 +329,7 @@ class JSONParser {
 
 	static void setValueInRecordValues(List<ZCRecordValue> zcRecordValues,ZCField field,List<ZCChoice> choiceValues,ZCChoice zcChoice,String value)
 	{
-		
+
 		for(int l=0;l<zcRecordValues.size();l++)
 		{
 			ZCRecordValue zcRecordValue = zcRecordValues.get(l);
@@ -411,7 +409,7 @@ class JSONParser {
 					}
 					if(!(FieldType.isChoiceField(zcRecordValue.getField().getType())))
 					{
-						
+
 						zcRecordValue.setValue(value);
 					}
 					break;
@@ -743,15 +741,15 @@ class JSONParser {
 					code = resultObject.getInt("code");
 
 				}
-				
+
 				if(code == ZCException.LINK_NAME_CODE)
 				{
-					
+
 					exception = new ZCException(resultObject.getString("message"), ZCException.LINK_NAME_ERROR,"" );
 				}
 				else if(code == ZCException.APP_LINK_NAME_CODE)
 				{
-					
+
 					exception = new ZCException(resultObject.getString("message"), ZCException.APP_LINK_NAME_ERROR,"" );
 				}
 				else
@@ -973,10 +971,10 @@ class JSONParser {
 			if(fieldObject.has("subformrecords")){
 
 				JSONArray subFormRecordsArray = new JSONArray(fieldObject.getString("subformrecords"));
-				
+
 				for(int i =0; i < subFormRecordsArray.length(); i++){
 					JSONObject subFormRecordObject = subFormRecordsArray.getJSONObject(i);
-					
+
 					ZCRecord record = parseAndSetRecord(null, subFormRecordObject, subFormFields);
 					subFormEntries.add(record);
 				}
@@ -1186,7 +1184,7 @@ class JSONParser {
 			Iterator<?> recordObjectkeys = recordObject.keys();
 
 			while(recordObjectkeys.hasNext()){
-				
+
 				String recordObjectKey = (String) recordObjectkeys.next();
 				String fieldName = "";
 				if(recordObjectKey.equals("ID")){
@@ -1201,21 +1199,21 @@ class JSONParser {
 					if(zcView != null) {
 						zcField = zcView.getColumn(fieldName);
 					} else {
-						
+
 						for(int i=0; i<subFormFields.size(); i++) {
 							ZCField fieldToCheck = subFormFields.get(i);
-							
+
 							if(fieldToCheck.getFieldName().equals(fieldName)) {
 								zcField = fieldToCheck;
-								
+
 								break;
 							}
-							
+
 						}
 					}
 
 					if(zcField == null) {
-					
+
 						break;
 					}
 					List<ZCChoice> choices = null;
@@ -1225,10 +1223,10 @@ class JSONParser {
 
 					if(zcView == null){
 						choices = zcField.getRecordValue().getChoices();
-						System.out.println("outside instance of jason array"+fieldName);
+
 						if(recordObject.get(fieldName) instanceof JSONArray){
 							JSONArray recordValuesArray = new JSONArray(recordObject.getString(fieldName));
-							System.out.println("inside instance of jason array"+fieldName);
+
 							if(FieldType.isChoiceField(zcField.getType())) {
 								for(int i = 0; i < recordValuesArray.length(); i++){
 									JSONObject recordValueObject = recordValuesArray.getJSONObject(i);
@@ -1254,7 +1252,7 @@ class JSONParser {
 								}
 							}
 						}else if(recordObject.get(fieldName) instanceof JSONObject){
-							System.out.println("inside instance of jasonobj"+fieldName);
+
 							JSONObject recordValueObject = new JSONObject(recordObject.getString(fieldName));
 							if(zcField.getType() == FieldType.URL){
 								if(recordValueObject.has("title")){
@@ -1294,7 +1292,7 @@ class JSONParser {
 						else{
 
 							value = recordObject.getString(fieldName);
-							System.out.println("inside value....."+value);
+
 						}
 
 						if(selectedChoices.size() >0) {
@@ -1314,7 +1312,7 @@ class JSONParser {
 						if(zcField.getType() == FieldType.URL){
 							zcValue = new ZCRecordValue(zcField, value,urlTitleValue,urlLinkNameValue);
 						}else{
-							System.out.println("inside setting recordvalue..."+value);
+
 							zcValue = new ZCRecordValue(zcField, value);
 						}
 					}

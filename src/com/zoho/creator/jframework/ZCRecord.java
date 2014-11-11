@@ -29,7 +29,7 @@ public class ZCRecord implements Comparable<ZCRecord>{
 	
 	public String zcRecordAllPropertyValues()
 	{
-		return "eventdate.."+eventDate+"eventtime"+eventTitle+"starttime"+startTime+"endtime"+endTime;
+		return "eventdate.."+eventDate+"..eventtime.."+eventTitle+"..starttime.."+startTime+"..endtime.."+endTime;
 	}
 
 	public List<ZCRecordValue> getValues() {
