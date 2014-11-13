@@ -12,13 +12,11 @@ public class ZCRecordValue{
 	private ZCChoice choiceValue = null;
 	private List<ZCChoice> choiceValues = new ArrayList<ZCChoice>();
 	private Object fileValue = null;
-	private String url = null;
-	private String urlTitleValue = null;
-	private String urlLinkNameValue = null;
+	private String url = "";
+	private String urlTitleValue = "";
+	private String urlLinkNameValue = "";
 	private boolean errorOccured = false;
 	private String errorMessage = null;
-
-
 
 	private boolean isLastReachedForChoices = false;
 	private List<ZCChoice> choices  = new ArrayList<ZCChoice>(); 

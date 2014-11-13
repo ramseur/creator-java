@@ -628,10 +628,10 @@ public class ZOHOCreator {
 					ZCRecordValue recValue = field.getRecordValue();
 					Object bitmap = recValue.getFileValue();
 					int imageType = field.getImageType();
-				
+
 					if(recValue.isFileReUploaded() && imageType != ZCField.IMAGE_LINK ) {
-						
-						postImage(zcForm, field, recordId, bitmap, action,null,-1l);	
+
+						postImage(zcForm, field, recordId, bitmap, action,null,-1l,recValue.getFileName());	
 					}
 				}
 				if(FieldType.SUB_FORM == field.getType())
@@ -659,7 +659,7 @@ public class ZOHOCreator {
 									if(subFormFieldName.equals(subformRecordValue.getField().getFieldName()))
 									{
 
-										postImage(zcForm, field, recordId, subformRecordValue.getFileValue(), action,subFormFieldName,subFormRecordIds.get(k));	
+										postImage(zcForm, field, recordId, subformRecordValue.getFileValue(), action,subFormFieldName,subFormRecordIds.get(k),subformRecordValue.getFileName());	
 									}
 								}
 
@@ -674,7 +674,7 @@ public class ZOHOCreator {
 		return response;		
 	}
 
-	private static void postImage(ZCForm zcForm, ZCField field, long recordId, Object bitmap, String action,String subFormFieldName,long subFormRecId) throws ZCException	{
+	private static void postImage(ZCForm zcForm, ZCField field, long recordId, Object bitmap, String action,String subFormFieldName,long subFormRecId,String fileName) throws ZCException	{
 		URLPair urlPair = ZCURL.fileUploadURL(zcForm.getAppOwner());
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.addAll(urlPair.getNvPair());
@@ -704,8 +704,10 @@ public class ZOHOCreator {
 		}
 
 		if(bitmap!=null) {
-			
-			String fileName = "image" + System.currentTimeMillis()+".jpg";
+			if(fileName==null)
+			{
+				fileName = "image" + System.currentTimeMillis()+".jpg";
+			}
 			params.add(new BasicNameValuePair("filename", fileName));//No I18N
 			if(field.getType().equals(FieldType.FILE_UPLOAD))
 			{
@@ -1580,7 +1582,7 @@ public class ZOHOCreator {
 		if(readResponseFromFileForAPI) {
 			return (getResponseString(getURLString(url, params)));
 		}
-		
+
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1601,7 +1603,7 @@ public class ZOHOCreator {
 				}
 			};
 			byte[] response = client.execute(request, handler);
-			
+
 			return new String(response);
 		} catch(UnknownHostException uhe) {
 			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
@@ -1686,7 +1688,7 @@ public class ZOHOCreator {
 		{
 			return getResponseDocument(getURLString(url, params));
 		}
-		
+
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1716,7 +1718,7 @@ public class ZOHOCreator {
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
-					
+
 
 
 					return toReturn;
@@ -1794,7 +1796,7 @@ public class ZOHOCreator {
 		if(bitMap!=null)
 		{
 			httppost.addHeader("enctype", "multipart/form-data"); //No I18N
-		
+
 			byte[] byteArray=null;
 			if(isFileUploadField)
 			{
@@ -1826,7 +1828,7 @@ public class ZOHOCreator {
 			{
 				byteArray = fileHelper.getBytes(bitMap);
 			}
-			
+
 
 			ContentBody cbFile = new ByteArrayBody(byteArray, fileName);			
 			MultipartEntity mpEntity = new MultipartEntity();

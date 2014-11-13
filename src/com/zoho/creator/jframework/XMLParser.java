@@ -1,10 +1,6 @@
 // $Id$
 package com.zoho.creator.jframework;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +29,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import android.text.format.DateUtils;
 
 
 class XMLParser {
@@ -1153,10 +1151,15 @@ class XMLParser {
 
 		zcView.setGrouped(true);
 		NodeList eventsList = calendarNode.getChildNodes();
+		int year = zcView.getRecordsMonthYear().getTwo()-1900;
+		int month = zcView.getRecordsMonthYear().getOne();
+		
+		GregorianCalendar cureentmnthcalendar = new GregorianCalendar();
+		Date currentDate = new Date();
 
 
-		for(int i=0; i<eventsList.getLength(); i++) {
-
+		for(int i=0; i<eventsList.getLength(); i++) 
+		{
 			Node eventNode = eventsList.item(i);
 			NamedNodeMap eventAttrMap = eventNode.getAttributes();
 			long recordid = Long.parseLong(eventAttrMap.getNamedItem("id").getNodeValue()); //No I18N
@@ -1175,7 +1178,51 @@ class XMLParser {
 			record.setEventTitle(title);
 			if(isAllDay) {
 				zcView.setIsAllDay(isAllDay);
-				zcView.setEvent(record, startTime);
+				Date endTime = getDateValue(eventAttrMap.getNamedItem("end").getNodeValue(), dateFormat); //No I18N
+				
+
+				int startDay = -1;
+				if(startTime!=null)
+				{
+					startDay=startTime.getDate();
+				}
+			
+				int endDay = -1;
+				if(endTime!=null)
+				{
+					endDay=endTime.getDate();
+				}
+			
+				if(endDay!=-1)
+				{
+
+					currentDate.setDate(1);
+					currentDate.setMonth(month);
+					currentDate.setYear(year);
+					currentDate.setMinutes(0);
+					currentDate.setHours(0);
+					currentDate.setSeconds(0);
+
+					
+					cureentmnthcalendar.setTime(currentDate);
+
+					cureentmnthcalendar.add(cureentmnthcalendar.DAY_OF_MONTH, -6);
+					currentDate = cureentmnthcalendar.getTime();
+					
+					for(int j=0;j<42;j++)
+					{
+						
+						if((currentDate.getDate()==startTime.getDate()&&currentDate.getMonth()==startTime.getMonth()&&currentDate.getYear()==startTime.getYear())||(currentDate.after(startTime)&&currentDate.before(endTime))||(currentDate.getDate()==endTime.getDate()&&currentDate.getMonth()==endTime.getMonth()&&currentDate.getYear()==endTime.getYear()))
+						{
+							
+							zcView.setEvent(record, currentDate);
+						}
+						cureentmnthcalendar.add(cureentmnthcalendar.DAY_OF_MONTH,1);
+						currentDate = cureentmnthcalendar.getTime();
+					}
+					//Collections.sort(eventRecords);
+				}
+
 
 				record.setEventDate(startTime);
 			} else {
@@ -1183,7 +1230,7 @@ class XMLParser {
 				Date endTime = getDateValue(eventAttrMap.getNamedItem("end").getNodeValue(), dateFormat); //No I18N
 				record.setStartTime(startTime);
 				record.setEndTime(endTime);
-
+				
 				Calendar startCalendar = new GregorianCalendar();
 				startCalendar.setTime(startTime);
 				startCalendar.set(Calendar.HOUR_OF_DAY, 0);
