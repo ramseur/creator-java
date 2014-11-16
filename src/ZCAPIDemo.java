@@ -492,7 +492,13 @@ public class ZCAPIDemo {
 	}
 
 	private static void start() {
-		ZOHOUser user = ZOHOCreator.getZohoUser();
+		ZOHOUser user = null;
+		try {
+			user = ZOHOCreator.getZohoUser();
+		} catch (ZCException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		if(user == null) {
 			String username = getInput("Enter Username");//No I18N

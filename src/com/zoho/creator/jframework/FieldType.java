@@ -11,24 +11,26 @@ import java.util.Map;
 
 public enum FieldType{
 
-	SINGLE_LINE (1), MULTI_LINE (2), EMAIL (3), NUMBER(5), CURRENCY(8), PERCENTAGE(7), DECISION_CHECK_BOX(16), DATE(10), NOTES(24), FORMULA(20), FILE_UPLOAD(19), DECIMAL(6), IMAGE(18), URL(17), DATE_TIME(11), SUB_FORM(21), RICH_TEXT(4), AUTO_NUMBER(9), DROPDOWN(12), RADIO(13) , MULTISELECT(14), CHECKBOXES(15), NEW_PICKLIST(1100), NEW_RADIO(1101),EXTERNAL_FIELD(22),EXTERNAL_LINK(23),UNKNOWN(-1);
+	SIGNATURE(0),SINGLE_LINE (1), MULTI_LINE (2), EMAIL (3), NUMBER(5), CURRENCY(8), PERCENTAGE(7), DECISION_CHECK_BOX(16), DATE(10), NOTES(24), FORMULA(20), FILE_UPLOAD(19), DECIMAL(6), IMAGE(18), URL(17), DATE_TIME(11), SUB_FORM(21), RICH_TEXT(4), AUTO_NUMBER(9), DROPDOWN(12), RADIO(13) , MULTISELECT(14), CHECKBOXES(15), NEW_PICKLIST(1100), NEW_RADIO(1101),EXTERNAL_FIELD(22),EXTERNAL_LINK(23),UNKNOWN(-1);
 
 	private static Map<Integer, FieldType> typeMap;
 
 	static {
-    	typeMap = new HashMap<Integer, FieldType>();
-    	for (FieldType type : values()) {
-    		typeMap.put(type.fieldType, type);
-    	}
-    }
+		typeMap = new HashMap<Integer, FieldType>();
+		for (FieldType type : values()) {
+			typeMap.put(type.fieldType, type);
+		}
+	}
 
-    private int fieldType;
-    private FieldType(int fieldType) {
-        this.fieldType = fieldType;
-    }
-    
-    public String toString() {
+	private int fieldType;
+	private FieldType(int fieldType) {
+		this.fieldType = fieldType;
+	}
+
+	public String toString() {
 		switch (fieldType) {
+		case 0:
+			return "SIGNATURE";//No I18N
 		case 1:
 			return "SINGLE LINE";//No I18N
 		case 2:
@@ -84,102 +86,103 @@ public enum FieldType{
 		default	:
 			return "";//No I18N
 		}
-    }
-     
-    static FieldType getFieldType(int type) {
-    	FieldType toReturn = typeMap.get(type);
-    	if(toReturn == null) {
-    		toReturn = FieldType.UNKNOWN;
-    	}
-    	return toReturn;
-    }
-    
-    
-    public static boolean isChoiceField(FieldType ftype) {
-    	return 	ftype.equals(FieldType.MULTISELECT) || 
-    			ftype.equals(FieldType.RADIO) || 
-    			ftype.equals(FieldType.DROPDOWN) || 
-    			ftype.equals(FieldType.CHECKBOXES) ||
-    			ftype.equals(FieldType.EXTERNAL_FIELD) ||
-    			ftype.equals(FieldType.NEW_PICKLIST) ||
-    			ftype.equals(FieldType.NEW_RADIO);
-    }
+	}
 
-    public static boolean isSingleChoiceField(FieldType ftype) {
-    	return 	ftype.equals(FieldType.RADIO) || 
-    			ftype.equals(FieldType.DROPDOWN) || 
-    			ftype.equals(FieldType.NEW_PICKLIST) ||
-    			ftype.equals(FieldType.EXTERNAL_FIELD) ||
-    			ftype.equals(FieldType.NEW_RADIO);
-    }
+	static FieldType getFieldType(int type) {
+		FieldType toReturn = typeMap.get(type);
+		if(toReturn == null) {
+			toReturn = FieldType.UNKNOWN;
+		}
+		return toReturn;
+	}
 
-    public static boolean isMultiChoiceField(FieldType ftype) {
-    	return 	ftype.equals(FieldType.MULTISELECT) || 
-    			ftype.equals(FieldType.CHECKBOXES);
-    }
-    
-    public static boolean isPhotoField(FieldType ftype) {
-    	return 	ftype.equals(FieldType.FILE_UPLOAD) || 
-    			ftype.equals(FieldType.IMAGE);
-    }
-    
-    public static boolean isNumberField(FieldType ftype) {
-    	return 	ftype.equals(FieldType.NUMBER) || 
-    			ftype.equals(FieldType.PERCENTAGE) ||
-    			ftype.equals(FieldType.CURRENCY) ||
-    			ftype.equals(FieldType.DECIMAL);
-    }
-    
-    public static boolean isPrimaryFieldType(FieldType ftype) {
-    	return !(ftype.equals(FieldType.FILE_UPLOAD) || 
-    			ftype.equals(FieldType.IMAGE) || 
-    			ftype.equals(FieldType.URL) || 
-    			ftype.equals(FieldType.AUTO_NUMBER) || 
-    			ftype.equals(FieldType.UNKNOWN) || 
-    			ftype.equals(FieldType.RICH_TEXT)|| 
-    			ftype.equals(FieldType.SUB_FORM));
-    }
 
-    public static boolean isSecondaryFieldType(FieldType ftype) {
-    	return !(ftype.equals(FieldType.FILE_UPLOAD) || 
-    			ftype.equals(FieldType.IMAGE) || 
-    			ftype.equals(FieldType.URL) || 
-    			ftype.equals(FieldType.UNKNOWN) || 
-    			ftype.equals(FieldType.AUTO_NUMBER) || 
-    			ftype.equals(FieldType.RICH_TEXT)|| 
-    			ftype.equals(FieldType.SUB_FORM));
-    }
-    public static boolean isBulkEditUNSupportedField(FieldType ftype)
-    {
-    	return (ftype.equals(FieldType.SUB_FORM) || 
-    			ftype.equals(FieldType.NOTES) || 
-    			ftype.equals(FieldType.AUTO_NUMBER) || 
-    			isUnSupportedField(ftype) || 
-    			ftype.equals(FieldType.FORMULA) ||
-    			FieldType.isPhotoField(ftype));
-    }
-    public static boolean isUnSupportedField(FieldType ftype)
-    {
-    	return (ftype.equals(FieldType.EXTERNAL_FIELD) || 
-    			ftype.equals(FieldType.EXTERNAL_LINK));
-    }
-    
-    public static boolean isSubFormUnSupportedField(FieldType ftype)
-    {
-    	return (isUnSupportedField(ftype) || FieldType.isPhotoField(ftype));
-    }
-    
-    
-    public static boolean isDisplayAsLinksField(FieldType ftype) {
-    	return 	ftype.equals(FieldType.RICH_TEXT) || 
-    			ftype.equals(FieldType.URL) || 
-    			ftype.equals(FieldType.EXTERNAL_FIELD) || 
-    			ftype.equals(FieldType.SUB_FORM);
-    }
-    
-    static FieldType getFieldType(String type) {
-    	FieldType fieldType = FieldType.SINGLE_LINE;
-    	if(type.equals("MULTI_SELECT")) {
+	public static boolean isChoiceField(FieldType ftype) {
+		return 	ftype.equals(FieldType.MULTISELECT) || 
+				ftype.equals(FieldType.RADIO) || 
+				ftype.equals(FieldType.DROPDOWN) || 
+				ftype.equals(FieldType.CHECKBOXES) ||
+				ftype.equals(FieldType.EXTERNAL_FIELD) ||
+				ftype.equals(FieldType.NEW_PICKLIST) ||
+				ftype.equals(FieldType.NEW_RADIO);
+	}
+
+	public static boolean isSingleChoiceField(FieldType ftype) {
+		return 	ftype.equals(FieldType.RADIO) || 
+				ftype.equals(FieldType.DROPDOWN) || 
+				ftype.equals(FieldType.NEW_PICKLIST) ||
+				ftype.equals(FieldType.EXTERNAL_FIELD) ||
+				ftype.equals(FieldType.NEW_RADIO);
+	}
+
+	public static boolean isMultiChoiceField(FieldType ftype) {
+		return 	ftype.equals(FieldType.MULTISELECT) || 
+				ftype.equals(FieldType.CHECKBOXES);
+	}
+
+	public static boolean isPhotoField(FieldType ftype) {
+		return 	ftype.equals(FieldType.FILE_UPLOAD) || 
+				ftype.equals(FieldType.IMAGE);
+	}
+
+	public static boolean isNumberField(FieldType ftype) {
+		return 	ftype.equals(FieldType.NUMBER) || 
+				ftype.equals(FieldType.PERCENTAGE) ||
+				ftype.equals(FieldType.CURRENCY) ||
+				ftype.equals(FieldType.DECIMAL);
+	}
+
+	public static boolean isPrimaryFieldType(FieldType ftype) {
+		return !(ftype.equals(FieldType.FILE_UPLOAD) || 
+				ftype.equals(FieldType.IMAGE) || 
+				ftype.equals(FieldType.URL) || 
+				ftype.equals(FieldType.AUTO_NUMBER) || 
+				ftype.equals(FieldType.UNKNOWN) || 
+				ftype.equals(FieldType.RICH_TEXT)|| 
+				ftype.equals(FieldType.SUB_FORM)||ftype.equals(FieldType.SIGNATURE));
+	}
+
+	public static boolean isSecondaryFieldType(FieldType ftype) {
+		return !(ftype.equals(FieldType.FILE_UPLOAD) || 
+				ftype.equals(FieldType.IMAGE) || 
+				ftype.equals(FieldType.URL) || 
+				ftype.equals(FieldType.UNKNOWN) || 
+				ftype.equals(FieldType.AUTO_NUMBER) || 
+				ftype.equals(FieldType.RICH_TEXT)|| 
+				ftype.equals(FieldType.SUB_FORM)||ftype.equals(FieldType.SIGNATURE));
+	}
+	public static boolean isBulkEditUNSupportedField(FieldType ftype)
+	{
+		return (ftype.equals(FieldType.SUB_FORM) || 
+				ftype.equals(FieldType.NOTES) || 
+				ftype.equals(FieldType.AUTO_NUMBER) || 
+				isUnSupportedField(ftype) || 
+				ftype.equals(FieldType.FORMULA) ||
+				FieldType.isPhotoField(ftype)||
+				ftype.equals(FieldType.SIGNATURE));
+	}
+	public static boolean isUnSupportedField(FieldType ftype)
+	{
+		return (ftype.equals(FieldType.EXTERNAL_FIELD) || 
+				ftype.equals(FieldType.EXTERNAL_LINK));
+	}
+
+	public static boolean isSubFormUnSupportedField(FieldType ftype)
+	{
+		return (isUnSupportedField(ftype) || FieldType.isPhotoField(ftype));
+	}
+
+
+	public static boolean isDisplayAsLinksField(FieldType ftype) {
+		return 	ftype.equals(FieldType.RICH_TEXT) || 
+				ftype.equals(FieldType.URL) || 
+				ftype.equals(FieldType.EXTERNAL_FIELD) || 
+				ftype.equals(FieldType.SUB_FORM);
+	}
+
+	static FieldType getFieldType(String type) {
+		FieldType fieldType = FieldType.SINGLE_LINE;
+		if(type.equals("MULTI_SELECT")) {
 			fieldType = FieldType.MULTISELECT;
 		} else if(type.equals("FILE_UPLOAD")) {
 			fieldType = FieldType.FILE_UPLOAD;
@@ -217,11 +220,14 @@ public enum FieldType{
 			fieldType = EXTERNAL_FIELD;
 		} else if(type.equals("AUTO_NUMBER")){
 			fieldType = AUTO_NUMBER;
+		}else if(type.equals("SIGNATURE"))
+		{
+			fieldType = SIGNATURE;
 		}
-    		
+
 		return fieldType;
-    }
-    	
+	}
+
 
 	static List<ZCRecordValue> getDisplayValues(boolean isPrimary, List<ZCRecordValue> values) {
 		List<ZCRecordValue> tempList = new ArrayList<ZCRecordValue>();

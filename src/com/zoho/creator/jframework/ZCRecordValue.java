@@ -12,12 +12,11 @@ public class ZCRecordValue{
 	private ZCChoice choiceValue = null;
 	private List<ZCChoice> choiceValues = new ArrayList<ZCChoice>();
 	private Object fileValue = null;
-	private String url = null;
-	private String urlTitleValue = null;
-	private String urlLinkNameValue = null;
+	private String url = "";
+	private String urlTitleValue = "";
+	private String urlLinkNameValue = "";
 	private boolean errorOccured = false;
-	private String errorMessage = null; 
-
+	private String errorMessage = null;
 
 	private boolean isLastReachedForChoices = false;
 	private List<ZCChoice> choices  = new ArrayList<ZCChoice>(); 
@@ -25,6 +24,7 @@ public class ZCRecordValue{
 	private boolean lookupLoadingStarted = false;
 	private boolean isFileReUploaded = false;
 	private boolean isWriteToParcel = false;
+	private String fileName = null;
 
 
 
@@ -145,6 +145,8 @@ public class ZCRecordValue{
 		}
 		return value;
 	}
+	
+	
 
 	public ZCChoice getChoiceValue() {
 		if(!FieldType.isSingleChoiceField(field.getType())) {
@@ -169,7 +171,13 @@ public class ZCRecordValue{
 			toReturn.setLastReachedForChoices(isLastReachedForChoices());
 			toReturn.addChoices(getChoices());
 		} else if(FieldType.isPhotoField(field.getType())) {
-			toReturn = new ZCRecordValue(field, getFileValue());
+			if(field.getImageType()!=ZCField.IMAGE_LINK)
+			{
+				toReturn = new ZCRecordValue(field, getFileValue());
+			}else
+			{
+				toReturn = new ZCRecordValue(field,getValue());
+			}
 		} else {
 			toReturn = new ZCRecordValue(field, getValue());
 		}
@@ -212,6 +220,8 @@ public class ZCRecordValue{
 	public Object getFileValue() {
 		return fileValue;
 	}
+	
+	
 
 	public void setValue(String value) {
 		if(FieldType.isChoiceField(field.getType())) {
@@ -244,7 +254,7 @@ public class ZCRecordValue{
 	}
 
 	public void setFileValue(Object fileValue) {
-		if(!FieldType.isPhotoField(field.getType())) {
+		if((!FieldType.isPhotoField(field.getType()))&&(!(field.getType()==FieldType.SIGNATURE)) ){
 			throw new RuntimeException("Use the other one");//No I18N
 		}
 		this.fileValue = fileValue;
@@ -346,6 +356,16 @@ public class ZCRecordValue{
 		this.lookupLoadingStarted = lookupLoadingStarted;
 	}
 
+	
+	public void setFileName(String fileName)
+	{
+		this.fileName = fileName;
+	}
+	
+	public String getFileName()
+	{
+		return fileName;
+	}
 	String getUrlValueForSubmit()
 	{
 		String urlValueForSubmit = "";

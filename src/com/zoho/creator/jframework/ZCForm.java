@@ -279,21 +279,12 @@ public class ZCForm extends ZCComponent{
 					buff.append("</field>");//No I18N
 				}
 				else if(!field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES)) {
-					if(FieldType.isPhotoField(field.getType()) && field.getImageType()==ZCField.IMAGE_LINK)
+					if((FieldType.isPhotoField(field.getType()) && field.getImageType()==ZCField.IMAGE_LINK) || ((!FieldType.isPhotoField(field.getType()))&&field.getType()!=FieldType.SIGNATURE))
 					{
 						buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
 						buff.append("<value>");//No I18N
 						buff.append("<![CDATA[");//No I18N
-						buff.append(recordValue.getValue());
-						buff.append("]]>");//No I18N
-						buff.append("</value>");//No I18N
-						buff.append("</field>");//No I18N
-					}
-					else if(!FieldType.isPhotoField(field.getType()))
-					{
-						buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
-						buff.append("<value>");//No I18N
-						buff.append("<![CDATA[");//No I18N
+					
 						buff.append(recordValue.getValue());
 						buff.append("]]>");//No I18N
 						buff.append("</value>");//No I18N
@@ -348,12 +339,15 @@ public class ZCForm extends ZCComponent{
 						buff.append("]]>");//No I18N	
 						buff.append("</value>");//No I18N
 
-					}else if(!FieldType.isPhotoField(subFormField.getType())) {
-						buff.append("<value>");//No I18N
-						buff.append("<![CDATA[");//No I18N
-						buff.append(subFormRecordValue.getValue());
-						buff.append("]]>");//No I18N	
-						buff.append("</value>");//No I18N
+					}else if(!subFormField.getType().equals(FieldType.FORMULA) && !subFormField.getType().equals(FieldType.NOTES)){
+						if((FieldType.isPhotoField(subFormField.getType()) && subFormField.getImageType()==ZCField.IMAGE_LINK) || ((!FieldType.isPhotoField(subFormField.getType()))&&subFormField.getType()!=FieldType.SIGNATURE))
+						{
+							buff.append("<value>");//No I18N
+							buff.append("<![CDATA[");//No I18N
+							buff.append(subFormRecordValue.getValue());
+							buff.append("]]>");//No I18N	
+							buff.append("</value>");//No I18N
+						}
 					}
 					buff.append("</field>");//No I18N
 				}
@@ -409,6 +403,7 @@ public class ZCForm extends ZCComponent{
 						params.add(new BasicNameValuePair(field.getFieldName(),""));
 					}
 				} else if(!FieldType.isPhotoField(field.getType()) && !field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES)) {
+					
 					params.add(new BasicNameValuePair(field.getFieldName(),recordValue.getValue()));
 				}
 			}
@@ -619,5 +614,5 @@ public class ZCForm extends ZCComponent{
 	}
 
 
-	
+
 }

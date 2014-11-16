@@ -336,6 +336,17 @@ public class ZCField implements Comparable<ZCField>{
 						toRecordValue.setUrlValue(fromRecordValue.getUrlValue());
 						toRecordValue.setUrlTitleValue(fromRecordValue.getUrlTitleValue());
 						toRecordValue.setUrlLinkNameValue(fromRecordValue.getUrlLinkNameValue());
+					}else if(FieldType.isPhotoField(fromRecordValueField.getType()))
+					{
+						if(fromRecordValueField.getImageType()!=ZCField.IMAGE_LINK)
+						{
+							toRecordValue.setFileValue(fromRecordValue.getFileValue());
+						}
+						else
+						{
+							toRecordValue.setValue(fromRecordValue.getValue());
+						}
+
 					}
 					else {
 						toRecordValue.setValue(fromRecordValue.getValue());
@@ -361,8 +372,6 @@ public class ZCField implements Comparable<ZCField>{
 	public ZCRecord getDefaultSubFormEntry() {
 		return defaultSubFormEntry;
 	}
-
-
 
 	ZCForm getSubForm() {
 		return subForm;
@@ -481,12 +490,12 @@ public class ZCField implements Comparable<ZCField>{
 		this.isDisabled = isDisabled;
 	}
 
-	public void onUserInput(ZCForm currentShownForm) throws ZCException{
-		ZOHOCreator.callFieldOnUser(baseForm, fieldName, false, currentShownForm);
+	public void onUserInput(ZCForm currentShownForm,boolean doesOnUserInputRetriggered) throws ZCException{
+		ZOHOCreator.callFieldOnUser(baseForm, fieldName, false, currentShownForm,doesOnUserInputRetriggered);
 	}
 
-	public void onUserInputForFormula(ZCForm currentShownForm) throws ZCException{
-		ZOHOCreator.callFieldOnUser(baseForm, fieldName, true, currentShownForm);
+	public void onUserInputForFormula(ZCForm currentShownForm,boolean doesOnUserInputRetriggered) throws ZCException{
+		ZOHOCreator.callFieldOnUser(baseForm, fieldName, true, currentShownForm,doesOnUserInputRetriggered);
 	}
 
 	public boolean isOnAddRowExists()

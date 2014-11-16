@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ZCView extends ZCComponent{
-	
+
 	private String dateFormat = null;
 	private String baseFormLinkName = null;
 	private boolean isAddAllowed = false;
@@ -18,7 +18,7 @@ public class ZCView extends ZCComponent{
 	private boolean isDuplicateAllowed = false;
 	private boolean isBulkEditAllowed = false;
 	private boolean isAllDay = false;
-	
+
 
 	private List<ZCColumn> columns = new ArrayList<ZCColumn>();
 	private boolean columnsAdded = false;
@@ -29,15 +29,15 @@ public class ZCView extends ZCComponent{
 	List<ZCCustomFilter> customFilters = new ArrayList<ZCCustomFilter>();
 	private boolean customFiltersAdded = false;
 	private ZCCustomFilter selectedCustomFilter = null;
-	
+
 	private List<ZCGroup> groups = new ArrayList<ZCGroup>();
 
 	private List<ZCColumn> groupByColumns = new ArrayList<ZCColumn>();
 	private List<ZCColumn> sortByColumns = new ArrayList<ZCColumn>();
-	
+
 	private List<ZCCustomAction> headerCustomActions = new ArrayList<ZCCustomAction>();
 	private boolean headerCustomActionAdded = false;
-	
+
 	private List<ZCCustomAction> recordCustomActions = new ArrayList<ZCCustomAction>();
 	private boolean recordCustomActionAdded = false;
 	private List<ZCRecord> records = new ArrayList<ZCRecord>();
@@ -46,16 +46,16 @@ public class ZCView extends ZCComponent{
 	private boolean isGrouped = false;
 	private boolean lastReached = false;
 	public static final int PAGE_SIZE = 50;
-	
-	
+
+
 	private ZCField titleField = null;
 	private ZCField startField = null;
 	private ZCField endField = null;
-	
+
 
 	private ZCPair<Integer, Integer> recordsMonthYear = null;
 	private int recordsCount = -1;
-	
+
 	ZCView(String appOwner, String appLinkName, String componentType, String componentName, String componentLinkName) {
 		super(appOwner, appLinkName, componentType, componentName, componentLinkName, -1);
 		// TODO Auto-generated constructor stub
@@ -134,7 +134,7 @@ public class ZCView extends ZCComponent{
 		}
 		return null;
 	}
-	
+
 	public List<ZCColumn> getColumns() {
 		final List<ZCColumn> toReturn = new ArrayList<ZCColumn>(columns);
 		return toReturn ;
@@ -148,7 +148,7 @@ public class ZCView extends ZCComponent{
 			throw new RuntimeException ("You cannot add more than once"); //No I18N
 		}
 	}
-	
+
 	public void setGroupByColumns(List<ZCColumn> groupByColumns) {
 		if(groupByColumns == null || groupByColumns.size() == 0) {
 			this.groupByColumns = new ArrayList<ZCColumn>();
@@ -159,7 +159,7 @@ public class ZCView extends ZCComponent{
 		}
 		this.groupByColumns = groupByColumns;
 	}
-	
+
 	public List<ZCColumn> getGroupByColumns() {
 		return groupByColumns;
 	}
@@ -174,7 +174,7 @@ public class ZCView extends ZCComponent{
 		}
 		this.sortByColumns = sortByColumns;
 	}
-	
+
 	List<ZCColumn> getSortByColumns() {
 		return sortByColumns;
 	}
@@ -183,7 +183,7 @@ public class ZCView extends ZCComponent{
 		final List<ZCCustomFilter> toReturn = new ArrayList<ZCCustomFilter>(customFilters);
 		return toReturn ;
 	}
-	
+
 	void addCustomFilters(List<ZCCustomFilter> customFilters) {
 		if(!customFiltersAdded) {
 			this.customFilters.addAll(customFilters);
@@ -191,9 +191,9 @@ public class ZCView extends ZCComponent{
 		} else {
 			throw new RuntimeException ("You cannot add more than once"); //No I18N
 		}
-		
+
 	}
-	
+
 	public List<ZCFilter> getFilters() {
 		final List<ZCFilter> toReturn = new ArrayList<ZCFilter>(filters);
 		return toReturn ;
@@ -249,7 +249,7 @@ public class ZCView extends ZCComponent{
 	public List<ZCRecord> getRecords() {
 		return records;
 	}
-	
+
 	public void reloadRecords()throws ZCException {
 		records.clear();
 		groups.clear();
@@ -265,7 +265,7 @@ public class ZCView extends ZCComponent{
 		//recordsCount = this.records.size();
 		return getEventRecordsMap();
 	}
-    
+
 	void addRecords(List<ZCRecord> records) {
 		if(records.size() < ZCView.PAGE_SIZE) {
 			lastReached = true;
@@ -275,13 +275,13 @@ public class ZCView extends ZCComponent{
 			recordsCount = this.records.size();
 		}
 	}
-	
+
 	void sortRecordsForCalendar() {
 		if(getType().equals(ZCComponent.CALENDAR)) {
-			
-			
+
+
 			Collections.sort(this.records);
-			
+
 
 			Iterator<Date> iterator = eventsMap.keySet().iterator();
 			while(iterator.hasNext()) {
@@ -289,15 +289,15 @@ public class ZCView extends ZCComponent{
 				List<ZCRecord> eventRecords = eventsMap.get(date);
 				Collections.sort(eventRecords);
 			}
-			
-			
+
+
 		}
 	}
 
 	public List<ZCGroup> getGroups() {
 		return groups;
 	}
-	
+
 
 	public int getRecordPositionForGroup(int overallPosition) {
 		if(isGrouped) {
@@ -316,34 +316,34 @@ public class ZCView extends ZCComponent{
 		}
 		return -1;
 	}
-	
+
 
 	public boolean isLastReached() {
 		return lastReached;
 	}
-	
+
 
 	public boolean isGrouped() {
 		return isGrouped;
 	}
-	
-	
+
+
 
 	void setGrouped(boolean isGrouped) {
 		this.isGrouped = isGrouped;
 	}
-	
+
 	public List<ZCRecord> loadMore() throws ZCException{
 		if(!lastReached) {
 			int lastIndex = records.size();
 			ZOHOCreator.loadRecords(this);
-			
+
 			List<ZCRecord> toReturn = records.subList(lastIndex, records.size());			
 			return toReturn;
 		}
 		return new ArrayList<ZCRecord>();
 	}
-	
+
 	public ZCResponse  deleteRecords(List<Long> recordIDs) throws ZCException{
 		if(!isDeleteAllowed) {
 			throw new RuntimeException("Delete not allowed");//No I18N
@@ -351,7 +351,7 @@ public class ZCView extends ZCComponent{
 
 		return ZOHOCreator.deleteRecords(this, recordIDs);
 	}
-	
+
 	public ZCResponse duplicateRecords(List<Long> recordIDs) throws ZCException{
 		if(!isDuplicateAllowed) {
 			throw new RuntimeException("Duplicate not allowed");//No I18N
@@ -361,58 +361,75 @@ public class ZCView extends ZCComponent{
 
 	String getRecordIDXMLString(List<Long> recordIDs, String tagName) {
 		StringBuffer buff = new StringBuffer();
-	    buff.append("<ZohoCreator>");//No I18N
-	    	buff.append("<applicationlist>");//No I18N
-	    		buff.append("<application name='" + getAppLinkName() + "'>");//No I18N
-	    			buff.append("<viewlist>");//No I18N
-	    				buff.append("<view name='" + getComponentLinkName() + "'>");//No I18N
-	    					buff.append("<" + tagName + ">");//No I18N
-	    						buff.append("<criteria>");//No I18N
-	    							
-	    							// <![CDATA[(Name == "Jean" && DOB == "20-Jul-1981")]]>
-							    buff.append("<![CDATA[(");//No I18N
-								    for (int i=0; i<recordIDs.size(); i++) {
-								    	Long recordID = recordIDs.get(i);
-								    	buff.append("ID");//No I18N
-								    	buff.append(" == ");//No I18N
-								    	buff.append(recordID);
-								    	if(i != recordIDs.size()-1) {
-								    		buff.append(" || ");//No I18N
-								    	}
-								    }
-								buff.append(")]]>");//No I18N
+		buff.append("<ZohoCreator>");//No I18N
+		buff.append("<applicationlist>");//No I18N
+		buff.append("<application name='" + getAppLinkName() + "'>");//No I18N
+		buff.append("<viewlist>");//No I18N
+		buff.append("<view name='" + getComponentLinkName() + "'>");//No I18N
+		buff.append("<" + tagName + ">");//No I18N
+		buff.append("<criteria>");//No I18N
 
-								buff.append("</criteria>");//No I18N
-							buff.append("</" + tagName + ">");//No I18N
-						buff.append("</view>");//No I18N
-					buff.append("</viewlist>");//No I18N
-				buff.append("</application>");//No I18N
-			buff.append("</applicationlist>");//No I18N
+		// <![CDATA[(Name == "Jean" && DOB == "20-Jul-1981")]]>
+		buff.append("<![CDATA[(");//No I18N
+		for (int i=0; i<recordIDs.size(); i++) {
+			Long recordID = recordIDs.get(i);
+			buff.append("ID");//No I18N
+			buff.append(" == ");//No I18N
+			buff.append(recordID);
+			if(i != recordIDs.size()-1) {
+				buff.append(" || ");//No I18N
+			}
+		}
+		buff.append(")]]>");//No I18N
+
+		buff.append("</criteria>");//No I18N
+		buff.append("</" + tagName + ">");//No I18N
+		buff.append("</view>");//No I18N
+		buff.append("</viewlist>");//No I18N
+		buff.append("</application>");//No I18N
+		buff.append("</applicationlist>");//No I18N
 		buff.append("</ZohoCreator>");	//No I18N
 		return buff.toString();
 	}
-	
+
+//	void setEvent(ZCRecord eventRecord, Date startDate,Date endDate) {
+//		List<ZCRecord> eventRecords = eventsMap.get(startDate);
+//
+//		else
+//		{
+//			if(eventRecords == null) {
+//				eventRecords = new ArrayList<ZCRecord>();
+//				eventsMap.put(startDate, eventRecords);
+//			}
+//			eventRecords.add(eventRecord);
+//		}
+//	}
+
+
 	void setEvent(ZCRecord eventRecord, Date date) {
+		
 		List<ZCRecord> eventRecords = eventsMap.get(date);
 		if(eventRecords == null) {
 			eventRecords = new ArrayList<ZCRecord>();
+			
 			eventsMap.put(date, eventRecords);
 		}
+		
 		eventRecords.add(eventRecord);
 		//Collections.sort(eventRecords);
 	}
-	
+
 	public HashMap<Date, List<ZCRecord>> getEventRecordsMap() {
 		return eventsMap;
 	}
-	
 
-	
+
+
 	public List<ZCRecord> getEventRecords(Date date) {
 		return eventsMap.get(date);
 	}
-	
-	
+
+
 	public ZCResponse customAction(long customActionID, List<Long> recordIDs) throws ZCException{
 		return ZOHOCreator.postCustomAction(this, customActionID, recordIDs);
 	}
@@ -448,12 +465,12 @@ public class ZCView extends ZCComponent{
 	void setRecordsMonthYear(ZCPair<Integer, Integer> recordsMonthYear) {
 		this.recordsMonthYear = recordsMonthYear;
 	}
-	
+
 	void setIsAllDay(boolean isAllDay)
 	{
 		this.isAllDay = isAllDay;		
 	}
-	
+
 	public boolean getIsAllDay(){
 		return this.isAllDay;
 	}
@@ -465,14 +482,14 @@ public class ZCView extends ZCComponent{
 	public void setSelectedCustomFilter(ZCCustomFilter selectedCustomFilter) {
 		this.selectedCustomFilter = selectedCustomFilter;
 	}
-	
+
 	public void setRecordsCount(int recordsCount){
 		this.recordsCount = recordsCount;
 	}
 	public int getRecordsCount(){
 		return recordsCount;
 	}
-	
+
 	public List<ZCColumn> getCopiedColumnsList(){
 		final List<ZCColumn> zcColumns = new ArrayList<ZCColumn>(columns);
 		List<ZCColumn> newZCColumnList = new ArrayList<ZCColumn>();

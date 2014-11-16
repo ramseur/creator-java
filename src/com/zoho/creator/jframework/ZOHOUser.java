@@ -93,16 +93,16 @@ public class ZOHOUser implements Parcelable{
 	}
 
 
-	static ZOHOUser getUserObject(){
+	static ZOHOUser getUserObject() throws ZCException{
 		
-		if(userCredential == null && userStorage != null) {
+		if((userCredential == null && userStorage != null)) {
 			String loadedAuthToken = userStorage.loadAuthToken();
 			if(loadedAuthToken != null) {
 				try {
 					userCredential = new ZOHOUser(loadedAuthToken);
 				} catch (ZCException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					throw e;
 				}
 			}
 		}

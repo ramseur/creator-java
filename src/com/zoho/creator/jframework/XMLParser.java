@@ -1,10 +1,6 @@
 // $Id$
 package com.zoho.creator.jframework;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,6 +11,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -32,8 +30,12 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import android.text.format.DateUtils;
+
 
 class XMLParser {
+
+	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());
 
 	static String getStringValue(Node node, String defaultValue) {
 		if(node != null && node.getFirstChild() != null) {
@@ -55,6 +57,41 @@ class XMLParser {
 			return Long.parseLong(node.getFirstChild().getNodeValue());
 		}
 		return defaultValue;
+	}
+
+	static String parsePivotViewURL(Document document)
+	{
+		String pivotViewUrl = "";
+		NodeList nl = document.getChildNodes();
+		for(int i=0; i<nl.getLength(); i++) {
+			Node responseNode = nl.item(i);
+			if(responseNode.getNodeName().equals("response")) {
+
+				NodeList responseNodes = responseNode.getChildNodes();
+				for(int j=0;j<responseNodes.getLength();j++)
+				{
+					Node resultNode = responseNodes.item(j);
+
+					if(resultNode.getNodeName().equals("result")) {
+
+						NodeList resultNodes = resultNode.getChildNodes();
+
+						for(int k=0;k<resultNodes.getLength();k++)
+						{
+
+							Node reportsUrl = resultNodes.item(k);
+
+							if(reportsUrl.getNodeName().equals("reportsUrl")) {
+
+								pivotViewUrl = getStringValue(reportsUrl, pivotViewUrl);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return pivotViewUrl;
 	}
 
 	private static boolean getBooleanValue(Node node, boolean defaultValue) {
@@ -236,7 +273,7 @@ class XMLParser {
 		}
 
 		if(!licenceEnabled) {
-			throw new ZCException("Please subscribe to Professional Edition and get access", ZCException.LICENCE_ERROR); //No I18N
+			throw new ZCException(resourceString.getString("please_subscribe_to_professional_edition_and_get_access"), ZCException.LICENCE_ERROR); //No I18N
 		}
 		return toReturn;
 	}
@@ -309,7 +346,12 @@ class XMLParser {
 														componentID = Long.valueOf(nodeValue);
 													}
 												}
-												comps.add(new ZCComponent (appOwner, appLinkName, type, componentName, componentLinkName, sequenceNumber));
+
+												if(ZCComponent.isCompTypeSupported(type))
+												{
+
+													comps.add(new ZCComponent (appOwner, appLinkName, type, componentName, componentLinkName, sequenceNumber));
+												}
 											}
 										}
 									}
@@ -324,7 +366,7 @@ class XMLParser {
 			} 
 			else if(responseNode.getNodeName().equals("license_enabled")) { //No I18N
 				if(!getBooleanValue(responseNode, false)) {
-					throw new ZCException("Please subscribe to Professional Edition and get access", ZCException.LICENCE_ERROR); //No I18N
+					throw new ZCException(resourceString.getString("please_subscribe_to_professional_edition_and_get_access"), ZCException.LICENCE_ERROR); //No I18N
 				}
 			} else if(responseNode.getNodeName().equals("evaluationDays")) { //No I18N
 				ZOHOCreator.setUserProperty("evaluationDays", getStringValue(responseNode, ""));
@@ -403,7 +445,7 @@ class XMLParser {
 								hasEditOnLoad = Boolean.valueOf(nodeValue);
 							} 
 							else if(resultNodeChild.getNodeName().equalsIgnoreCase("captcha")) { 
-								throw new ZCException("Captcha enabled forms are currently not supported", ZCException.ERROR_OCCURED, "");
+								throw new ZCException(resourceString.getString("captcha_enabled_forms_are_currently_not_supported"), ZCException.ERROR_OCCURED, "");
 							}
 							else if(resultNodeChild.getNodeName().equalsIgnoreCase("successMessage")) { 
 								successMessage = getStringValue(resultNodeChild, "");
@@ -625,7 +667,7 @@ class XMLParser {
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("imgTitleReq")) {
 				imgTitleReq = getBooleanValue(fieldPropetyNode, imgTitleReq);
 			} else if(fieldPropetyNode.getNodeName().equalsIgnoreCase("Initial") || fieldPropetyNode.getNodeName().equals("value")) {
-				
+
 				NodeList urlTagsList = fieldPropetyNode.getChildNodes();
 				boolean isImage = false;
 				for(int q=0;q<urlTagsList.getLength();q++)
@@ -794,11 +836,11 @@ class XMLParser {
 			}
 		}	
 		if(fieldType.equals(FieldType.EXTERNAL_FIELD) || fieldType.equals(FieldType.EXTERNAL_LINK)) {
-			throw new ZCException("This Form contains ZOHO CRM field which is currently not supported", ZCException.ERROR_OCCURED, "");
+			throw new ZCException(resourceString.getString("this_form_contains_zoho_crm_field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED, "");
 		}
 		if(isParentSubForm && FieldType.isPhotoField(fieldType))
 		{
-			throw new ZCException("This Form contains Subform field which contains "+fieldType+" field which is currently not supported", ZCException.ERROR_OCCURED,"" );
+			throw new ZCException(resourceString.getString("this_form_contains_subform_field_which_contains")+fieldType+" " + resourceString.getString("field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
 		}
 
 		ZCField zcField = new ZCField(fieldName, fieldType, displayName);
@@ -1109,10 +1151,15 @@ class XMLParser {
 
 		zcView.setGrouped(true);
 		NodeList eventsList = calendarNode.getChildNodes();
+		int year = zcView.getRecordsMonthYear().getTwo()-1900;
+		int month = zcView.getRecordsMonthYear().getOne();
+
+		GregorianCalendar cureentmnthcalendar = new GregorianCalendar();
+		Date currentDate = new Date();
 
 
-		for(int i=0; i<eventsList.getLength(); i++) {
-
+		for(int i=0; i<eventsList.getLength(); i++) 
+		{
 			Node eventNode = eventsList.item(i);
 			NamedNodeMap eventAttrMap = eventNode.getAttributes();
 			long recordid = Long.parseLong(eventAttrMap.getNamedItem("id").getNodeValue()); //No I18N
@@ -1131,7 +1178,57 @@ class XMLParser {
 			record.setEventTitle(title);
 			if(isAllDay) {
 				zcView.setIsAllDay(isAllDay);
-				zcView.setEvent(record, startTime);
+
+				Node endNode = eventAttrMap.getNamedItem("end");
+				Date endTime = null;
+				if(endNode!=null)
+				{
+					endTime = getDateValue(endNode.getNodeValue(), dateFormat); //No I18N
+				}
+
+
+				int startDay = -1;
+				if(startTime!=null)
+				{
+					startDay=startTime.getDate();
+				}
+
+				int endDay = -1;
+				if(endTime!=null)
+				{
+					endDay=endTime.getDate();
+				}
+
+				if(endDay!=-1)
+				{
+
+					currentDate.setDate(1);
+					currentDate.setMonth(month);
+					currentDate.setYear(year);
+					currentDate.setMinutes(0);
+					currentDate.setHours(0);
+					currentDate.setSeconds(0);
+
+
+					cureentmnthcalendar.setTime(currentDate);
+
+					cureentmnthcalendar.add(cureentmnthcalendar.DAY_OF_MONTH, -6);
+					currentDate = cureentmnthcalendar.getTime();
+
+					for(int j=0;j<42;j++)
+					{
+
+						if((currentDate.getDate()==startTime.getDate()&&currentDate.getMonth()==startTime.getMonth()&&currentDate.getYear()==startTime.getYear())||(currentDate.after(startTime)&&currentDate.before(endTime))||(currentDate.getDate()==endTime.getDate()&&currentDate.getMonth()==endTime.getMonth()&&currentDate.getYear()==endTime.getYear()))
+						{
+
+							zcView.setEvent(record, currentDate);
+						}
+						cureentmnthcalendar.add(cureentmnthcalendar.DAY_OF_MONTH,1);
+						currentDate = cureentmnthcalendar.getTime();
+					}
+					//Collections.sort(eventRecords);
+				}
+
 
 				record.setEventDate(startTime);
 			} else {
@@ -1227,7 +1324,7 @@ class XMLParser {
 				}
 			}
 		}
-		
+
 		zcView.addRecords(records);
 		zcView.setGrouped(isViewGrouped);
 	}
@@ -1317,7 +1414,7 @@ class XMLParser {
 				}		
 				selectedChoice = new ZCChoice(value, value);
 			}
-			
+
 			ZCRecordValue zcValue = null;
 			if(FieldType.isMultiChoiceField(zcField.getType())) {
 
@@ -1355,15 +1452,54 @@ class XMLParser {
 		return record;
 	}
 
-	static ZCView parseForView(Document rootDocument, String appLinkName, String appOwner, String componentType, int month, int year){		
+	static ZCView parseForView(Document rootDocument, String appLinkName, String appOwner, String componentType, int month, int year) throws ZCException{		
+
 		NodeList nl = rootDocument.getChildNodes();
+
 		ZCView toReturn = null;
 		for(int i=0; i<nl.getLength(); i++) {
+
 			Node responseNode = nl.item(i);
 			if(responseNode.getNodeName().equals("response")) {
 				NodeList responseNodes = responseNode.getChildNodes();
 				for(int j=0; j<responseNodes.getLength(); j++) {
 					Node responseChildNode = responseNodes.item(j);
+
+					if(responseChildNode.getNodeName().equals("errorlist"))
+					{
+						NodeList errorListNodes = responseChildNode.getChildNodes();
+						for(int o=0; o<errorListNodes.getLength(); o++) {
+							Node errorlistNode = errorListNodes.item(o);
+							if(errorlistNode.getNodeName().equals("error"))
+							{
+								NodeList errorlistchildNodes = errorlistNode.getChildNodes();
+								int code = 0;
+								boolean hasErrorOcured = false;
+								String errorMessage = "";
+								for(int p=0;p<errorlistchildNodes.getLength();p++)
+								{
+									Node errorlistchildNode = errorlistchildNodes.item(p);
+									if(errorlistchildNode.getNodeName().equals("code"))
+									{
+										code = getIntValue(errorlistchildNode, code);
+									}else if(errorlistchildNode.getNodeName().equals("message"))
+									{
+										hasErrorOcured = true;
+										errorMessage = getStringValue(errorlistchildNode,"");
+
+									}
+								}
+
+								if(hasErrorOcured)
+								{
+									ZCException exception = new ZCException(errorMessage, ZCException.ERROR_OCCURED,"" );
+									exception.setCode(code);
+									throw exception;
+								}
+							}
+						}
+					}
+
 					if(responseChildNode.getNodeName().equals("metadata")) {
 						NodeList viewNodes = responseChildNode.getChildNodes();
 						for(int k=0; k<viewNodes.getLength(); k++) {

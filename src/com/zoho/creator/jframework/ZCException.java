@@ -8,8 +8,18 @@ public class ZCException extends Exception {
 	public static final int ACCESS_ERROR = 4;
 	public static final int ERROR_OCCURED = 5;
 	public static final int ACCESSED_COMPONENTS_ERROR = 6;
+	public static final int LINK_NAME_ERROR = 7;
+	public static final int APP_LINK_NAME_ERROR = 8;
+	
+	
+	public static final int LINK_NAME_CODE = 2893;
+	public static final int APP_LINK_NAME_CODE = 2892;
+	
+	
+	
 	private int type = ZCException.GENERAL_ERROR;
 	private String logMessage = null;
+	private int code = 0;
 
 	public ZCException(String message,int type) {
 		this(message, type, null);
@@ -17,7 +27,7 @@ public class ZCException extends Exception {
 
 	public ZCException(String message,int type, String logMessage) {
 		super(message);
-		if(ZOHOCreator.getAccessedComponents() && (type == GENERAL_ERROR || type == ERROR_OCCURED)){
+		if(ZOHOCreator.getAccessedComponents() && (type == GENERAL_ERROR || type == ERROR_OCCURED || type == LINK_NAME_ERROR || type == APP_LINK_NAME_ERROR)){
 			this.type = ACCESSED_COMPONENTS_ERROR;
 		}
 		else{
@@ -33,6 +43,16 @@ public class ZCException extends Exception {
 
 	public String getLogMessage() {
 		return logMessage;
+	}
+
+	void setCode(int code)
+	{
+		this.code = code;
+	}
+
+	int getCode()
+	{
+		return code;
 	}
 
 }
