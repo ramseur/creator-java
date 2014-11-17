@@ -704,7 +704,9 @@ public class ZOHOCreator {
 		}
 
 		if(bitmap!=null) {
+
 			if(fileName==null||(fileName!=null&&fileName.equals("")))
+
 			{
 				fileName = "image" + System.currentTimeMillis()+".jpg";
 			}
@@ -1828,7 +1830,6 @@ public class ZOHOCreator {
 			{
 				byteArray = fileHelper.getBytes(bitMap);
 			}
-
 			ContentBody cbFile = new ByteArrayBody(byteArray, fileName);			
 			MultipartEntity mpEntity = new MultipartEntity();
 			try {

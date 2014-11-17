@@ -1157,7 +1157,6 @@ class XMLParser {
 		GregorianCalendar cureentmnthcalendar = new GregorianCalendar();
 		Date currentDate = new Date();
 
-
 		for(int i=0; i<eventsList.getLength(); i++) 
 		{
 			Node eventNode = eventsList.item(i);
@@ -1179,13 +1178,13 @@ class XMLParser {
 			if(isAllDay) {
 				zcView.setIsAllDay(isAllDay);
 
+
 				Node endNode = eventAttrMap.getNamedItem("end");
 				Date endTime = null;
 				if(endNode!=null)
 				{
 					endTime = getDateValue(endNode.getNodeValue(), dateFormat); //No I18N
 				}
-
 
 				int startDay = -1;
 				if(startTime!=null)
@@ -1215,9 +1214,10 @@ class XMLParser {
 					cureentmnthcalendar.add(cureentmnthcalendar.DAY_OF_MONTH, -6);
 					currentDate = cureentmnthcalendar.getTime();
 
+					
 					for(int j=0;j<42;j++)
 					{
-
+						
 						if((currentDate.getDate()==startTime.getDate()&&currentDate.getMonth()==startTime.getMonth()&&currentDate.getYear()==startTime.getYear())||(currentDate.after(startTime)&&currentDate.before(endTime))||(currentDate.getDate()==endTime.getDate()&&currentDate.getMonth()==endTime.getMonth()&&currentDate.getYear()==endTime.getYear()))
 						{
 
@@ -1236,7 +1236,7 @@ class XMLParser {
 				Date endTime = getDateValue(eventAttrMap.getNamedItem("end").getNodeValue(), dateFormat); //No I18N
 				record.setStartTime(startTime);
 				record.setEndTime(endTime);
-
+				
 				Calendar startCalendar = new GregorianCalendar();
 				startCalendar.setTime(startTime);
 				startCalendar.set(Calendar.HOUR_OF_DAY, 0);
