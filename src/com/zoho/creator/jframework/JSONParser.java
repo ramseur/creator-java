@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -14,13 +15,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 class JSONParser {
 
 	public static final int PERSONAL_APPS = 1;
 	public static final int SHARED_APPS = 2;
 	public static final int WORKSPACE_APPS = 3;
 	static List<JSONObject> onUserInputJsonObj = new ArrayList<JSONObject>();
-	
+
 
 
 	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());
@@ -86,6 +88,22 @@ class JSONParser {
 
 		return toReturn;
 	}
+
+//	public static void test()
+//	{
+//		boolean isConditionTrue = false;
+//		ZCField zcField = new ZCField("test", FieldType.SINGLE_LINE, "tets");
+//		CriteriaExecutor cExec = new CriteriaExecutor();
+//		HashMap<String,Object> valuesHashMap = new HashMap<String,Object>();
+//	
+//			try {
+//				isConditionTrue = cExec.evaluateCriteria("test == \"hello\"", valuesHashMap);
+//			} catch (org.antlr.runtime.RecognitionException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		
+//	}
 
 	static boolean parseJsonObject(JSONObject jsonObj,ZCForm currentShownForm,List<String> alertMessages, List<String> infoValues,String openUrlString) throws JSONException, ZCException
 	{
@@ -1006,7 +1024,8 @@ class JSONParser {
 						if(keyValue.contains(",")) 
 						{ 
 							initialChoiceValues = new ArrayList<String>();
-							String[] choiceValues =keyValue.split(","); for(int i=0;i<choiceValues.length;i++) 
+							String[] choiceValues =keyValue.split(","); 
+							for(int i=0;i<choiceValues.length;i++) 
 							{ 
 								initialChoiceValues.add(choiceValues[i]); 
 							}
@@ -1071,6 +1090,13 @@ class JSONParser {
 						}
 					}
 					zcField.setRecordValue(new ZCRecordValue(zcField, toAdd));
+					
+					if(allowOtherChoice && toAdd == null){
+						if(initValue!=null && initValue.length() > 0){
+							zcField.getRecordValue().setOtherChoiceValue(initValue);
+						}
+					}
+					
 				}
 				else{
 					if(keys.size() > 0 && initialChoiceValues.size() > 0){
@@ -1097,6 +1123,21 @@ class JSONParser {
 				}
 				zcField.setRecordValue(recordValue);
 			}
+			
+			if(allowOtherChoice){
+				
+				choices.add(new ZCChoice(ZCRecordValue.allowOtherChoiceKey, "Other"));
+				
+//				String otherChoiceValue = null;
+//				if(initialChoiceValues.size() > 0){
+//					otherChoiceValue = initialChoiceValues.get(0);
+//				}
+//				
+//				if(otherChoiceValue!=null && otherChoiceValue.length() > 0){
+//					zcField.getRecordValue().setOtherChoiceValue(otherChoiceValue);
+//				}
+			}
+			
 			//			zcField.setExternalFieldType(externalFieldType);
 			zcField.setHidden(isHidden);
 			zcField.setDefaultRows(defaultRows);
@@ -1108,6 +1149,7 @@ class JSONParser {
 				zcField.getRecordValue().addChoices(choices);
 				zcField.getRecordValue().setLastReachedForChoices(true);
 			}
+			
 			zcField.setOnAddRowExists(onAddRowExists);
 			zcField.setOnDeleteRowExists(onDeleteRowExists);
 			zcField.setLookup(isLookup);
@@ -1121,6 +1163,9 @@ class JSONParser {
 			zcField.setUrlTitleReq(urlTitleReq);
 			zcField.setImageType(imageType);
 			zcField.setNewEntriesAllowed(isNewEntriesAllowed);
+			zcField.getRecordValue().setAllowotherchoice(allowOtherChoice);
+			
+
 
 			if(refFormLinkName != null && refAppLinkName != null ) {
 				zcField.setRefFormComponent(new ZCComponent(appOwner, refAppLinkName, ZCComponent.FORM, "", refFormLinkName, -1));

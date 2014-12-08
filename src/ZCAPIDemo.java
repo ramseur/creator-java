@@ -41,7 +41,7 @@ public class ZCAPIDemo {
 	}
 
 	public static String getInput(String question, boolean mask) {
-	  System.out.println(question + "  ");
+//	  System.out.println(question + "  ");
 	  if(mask) {
 		  char[] passwordChars = System.console().readPassword();
 		  return  new String(passwordChars);
@@ -53,7 +53,7 @@ public class ZCAPIDemo {
 	public static void printAppList() {
 		List<ZCApplication> zcapps = ZOHOCreator.getCurrentAppList().getApps();
 		for(int i=0; i<zcapps.size(); i++) {
-			System.out.println((i+1) + ". " + zcapps.get(i).getAppName());
+//			System.out.println((i+1) + ". " + zcapps.get(i).getAppName());
 		}
 		String inp = getInput("Type the serial no of the app..... Type -1 to quit..... Type 0 to go to Home Page Listing");
 		int selectedApp = 0;
@@ -87,7 +87,7 @@ public class ZCAPIDemo {
 			try {
 				ZOHOCreator.setCurrentAppList(ZOHOCreator.getPersonalApplicationList(null));
 			} catch (ZCException e) {
-				System.out.println(e.getMessage());
+//				System.out.println(e.getMessage());
 				printNavList();
 			}
 			printAppList();
@@ -95,7 +95,7 @@ public class ZCAPIDemo {
 			try {
 				ZOHOCreator.setCurrentAppList(ZOHOCreator.getSharedApplicationList(null));
 			} catch (ZCException e) {
-				System.out.println(e.getMessage());
+//				System.out.println(e.getMessage());
 				printNavList();
 			}
 			printAppList();
@@ -103,7 +103,7 @@ public class ZCAPIDemo {
 			List<ZCSharedGroup> sharedWithGroupList = navList.getSharedWithGroupList();
 			for(int i=0; i<sharedWithGroupList.size(); i++) {
 				ZCSharedGroup sharedWithGroup = sharedWithGroupList.get(i);
-				System.out.println((i+1) + ") " + sharedWithGroup.getGroupName());
+//				System.out.println((i+1) + ") " + sharedWithGroup.getGroupName());
 			}
 			inp = getInput("Type the serial no of group.....  Type -1 to quit...... Type 0 to go back... \n");
 			try {
@@ -117,7 +117,7 @@ public class ZCAPIDemo {
 				try {
 					ZOHOCreator.setCurrentAppList(ZOHOCreator.getSharedApplicationList(sharedWithGroupList.get(inpValue-1)));
 				} catch (ZCException e) {
-					System.out.println(e.getMessage());
+//					System.out.println(e.getMessage());
 					printNavList();
 				}
 				printAppList();
@@ -126,7 +126,7 @@ public class ZCAPIDemo {
 			List<String> sharedWithWorkSpaceList = navList.getSharedWithWorkSpaceList();
 			for(int i=0; i<sharedWithWorkSpaceList.size(); i++) {
 				String workSpaceName = sharedWithWorkSpaceList.get(i);
-				System.out.println((i+1) + ") " + workSpaceName);
+//				System.out.println((i+1) + ") " + workSpaceName);
 			}
 			inp = getInput("Type the serial no of the workspace.....  Type -1 to quit...... Type 0 to go back... \n");
 			try {
@@ -140,7 +140,7 @@ public class ZCAPIDemo {
 				try {
 					ZOHOCreator.setCurrentAppList(ZOHOCreator.getWorkspaceApplicationList(sharedWithWorkSpaceList.get(inpValue-1), null));
 				} catch (ZCException e) {
-					System.out.println(e.getMessage());
+//					System.out.println(e.getMessage());
 					printNavList();
 				}
 				printAppList();
@@ -161,12 +161,12 @@ public class ZCAPIDemo {
 		List<ZCComponent> comps = new ArrayList<ZCComponent>();
 		for(int i=0; i<zcSections.size(); i++) {
 			ZCSection zcSection = zcSections.get(i);
-			System.out.println(zcSection.getSectionName());
+//			System.out.println(zcSection.getSectionName());
 			List<ZCComponent> zcComps = zcSection.getComponents();
 			for(int j=0; j<zcComps.size(); j++) {
 				ZCComponent comp = zcComps.get(j);
 				comps.add(comp);
-				System.out.println("\t" + (compsCounter++) + ". " + comp.getComponentName() + "(" + comp.getType() + ")");
+//				System.out.println("\t" + (compsCounter++) + ". " + comp.getComponentName() + "(" + comp.getType() + ")");
 			}
 		}
 
@@ -203,11 +203,11 @@ public class ZCAPIDemo {
 		try {
 			ZOHOCreator.loadSelectedHtmlView();
 		} catch (ZCException e) {
-			System.out.println(e.getMessage());
+//			System.out.println(e.getMessage());
 			return;
 		}
 		ZCHtmlView htmlView = ZOHOCreator.getCurrentHtmlView();
-		System.out.println(htmlView.getHtmlContent());
+//		System.out.println(htmlView.getHtmlContent());
 	}
 
 	public static void printForm() {
@@ -264,7 +264,7 @@ public class ZCAPIDemo {
 //						System.out.println("\n************** " + zcForm.getSuccessMessage() + " **************");
 //					}
 				} catch (ZCException e) {
-					System.out.println(e.getMessage());
+//					System.out.println(e.getMessage());
 					printForm();
 				}
 			}
@@ -288,7 +288,7 @@ public class ZCAPIDemo {
 		try {
 			ZOHOCreator.loadSelectedView();
 		} catch (ZCException e) {
-			System.out.println(e.getMessage());
+//			System.out.println(e.getMessage());
 			return;
 		}
 		ZCView zcView = ZOHOCreator.getCurrentView();
@@ -299,7 +299,7 @@ public class ZCAPIDemo {
 		try {
 			ZOHOCreator.loadSelectedView();
 		} catch (ZCException e) {
-			System.out.println(e.getMessage());
+//			System.out.println(e.getMessage());
 			return;
 		}
 		ZCView zcView = ZOHOCreator.getCurrentView();
@@ -315,8 +315,8 @@ public class ZCAPIDemo {
 				System.out.println("************ " + record.getGroupList() + " ************" );
 			}
 			*/
-			System.out.println(record.getRecordId() + ": " + record.getPrimaryDisplay());
-			System.out.println(record.getSecondaryDisplay() + "\n");
+//			System.out.println(record.getRecordId() + ": " + record.getPrimaryDisplay());
+//			System.out.println(record.getSecondaryDisplay() + "\n");
 		}
 		
 	}
@@ -329,7 +329,7 @@ public class ZCAPIDemo {
 			List<ZCGroup> groups = zcView.getGroups();
 			for(int i=0; i<groups.size(); i++) {
 				ZCGroup group = groups.get(i);
-				System.out.println("************** " + group.getGroupHeaderValues() + " **************");
+//				System.out.println("************** " + group.getGroupHeaderValues() + " **************");
 				List<ZCRecord> records = group.getGroupRecords();
 				printRecords(records);
 			}
@@ -357,7 +357,7 @@ public class ZCAPIDemo {
 			try {
 				zcView.loadCalendarRecords(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
 			} catch (ZCException e) {
-				System.out.println(e.getMessage());
+//				System.out.println(e.getMessage());
 				printRecords(zcView);
 			}				
 			printRecords(zcView);
@@ -373,7 +373,7 @@ public class ZCAPIDemo {
 					try {
 						zcView.loadMore();
 					} catch (ZCException e) {
-						System.out.println(e.getMessage());
+//						System.out.println(e.getMessage());
 						printRecords(zcView);
 					}				
 					printRecords(zcView);
@@ -393,23 +393,23 @@ public class ZCAPIDemo {
 	
 	
 	private static void printActions(ZCView zcView) {
-		System.out.println("\n\nType one of these view actions");
-		if(zcView.isAddAllowed()) {
-			System.out.println("Add");
-		}
-		if(zcView.isBulkEditAllowed()) {
-			System.out.println("Edit");
-		}
-		if(zcView.isDeleteAllowed()) {
-			System.out.println("Delete");
-		}
-		if(zcView.isDuplicateAllowed()) {
-			System.out.println("Duplicate");
-		}
+//		System.out.println("\n\nType one of these view actions");
+//		if(zcView.isAddAllowed()) {
+//			System.out.println("Add");
+//		}
+//		if(zcView.isBulkEditAllowed()) {
+//			System.out.println("Edit");
+//		}
+//		if(zcView.isDeleteAllowed()) {
+//			System.out.println("Delete");
+//		}
+//		if(zcView.isDuplicateAllowed()) {
+//			System.out.println("Duplicate");
+//		}
 		List<ZCCustomAction> customActions = zcView.getHeaderCustomActions();
 		for(int i=0; i<customActions.size(); i++) {
 			ZCCustomAction zcCustomAction = customActions.get(i);
-			System.out.println(zcCustomAction.getName());
+//			System.out.println(zcCustomAction.getName());
 		}
 		String inp = getInput("");
 		if(inp.equals("Add")) {
@@ -420,7 +420,7 @@ public class ZCAPIDemo {
 			try {
 				zcView.deleteRecords(getRecordIdsInput());
 			} catch (ZCException e) {
-				System.out.println(e.getMessage());
+//				System.out.println(e.getMessage());
 				printActions(zcView);
 			}
 			printView();
@@ -428,7 +428,7 @@ public class ZCAPIDemo {
 			try {
 				zcView.duplicateRecords(getRecordIdsInput());
 			} catch (ZCException e) {
-				System.out.println(e.getMessage());
+//				System.out.println(e.getMessage());
 				printActions(zcView);
 			}
 		} else {
@@ -439,7 +439,7 @@ public class ZCAPIDemo {
 					try {
 						zcView.customAction(custId, getRecordIdsInput());
 					} catch (ZCException e) {
-						System.out.println(e.getMessage());
+//						System.out.println(e.getMessage());
 						printActions(zcView);
 					}
 				}
@@ -506,7 +506,7 @@ public class ZCAPIDemo {
 			try {
 				user = ZOHOCreator.login(username, password);
 			} catch (ZCException e) {
-				System.out.println(e.getMessage());
+				//System.out.println(e.getMessage());
 				start();
 			}
 		} 
@@ -519,7 +519,7 @@ public class ZCAPIDemo {
 		try {
 			ZOHOCreator.setCurrentNavigationListForApps(ZOHOCreator.getNavigationListForApps());
 		} catch (ZCException e) {
-			System.out.println(e.getMessage());
+//			System.out.println(e.getMessage());
 			return;
 		}
 		
@@ -529,7 +529,7 @@ public class ZCAPIDemo {
 			//System.out.println("Personal Apps" + personalAppList.getApps());
 			ZOHOCreator.setCurrentAppList(personalAppList);
 		} catch (ZCException e) {
-			System.out.println(e.getMessage());
+//			System.out.println(e.getMessage());
 			return;
 		}
 		printAppList();
@@ -547,7 +547,7 @@ public class ZCAPIDemo {
 
 		if(inpValue == 2) {
 			ZOHOCreator.logout();
-			System.out.println("************** Successfully logged out... **************");
+//			System.out.println("************** Successfully logged out... **************");
 
 		}
 

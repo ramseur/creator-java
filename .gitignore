@@ -7,3 +7,8 @@
 .classpath
 .project
 bin/
+.DS_Store
+.settings/
+src/.DS_Store
+src/com/.DS_Store
+src/com/zoho/.DS_Store

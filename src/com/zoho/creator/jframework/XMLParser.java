@@ -1148,7 +1148,7 @@ class XMLParser {
 	}
 
 	private static void parseAndSetCalendarRecords(ZCView zcView, Node calendarNode) {
-
+		
 		zcView.setGrouped(true);
 		NodeList eventsList = calendarNode.getChildNodes();
 		int year = zcView.getRecordsMonthYear().getTwo()-1900;
@@ -1217,7 +1217,6 @@ class XMLParser {
 					
 					for(int j=0;j<42;j++)
 					{
-						
 						if((currentDate.getDate()==startTime.getDate()&&currentDate.getMonth()==startTime.getMonth()&&currentDate.getYear()==startTime.getYear())||(currentDate.after(startTime)&&currentDate.before(endTime))||(currentDate.getDate()==endTime.getDate()&&currentDate.getMonth()==endTime.getMonth()&&currentDate.getYear()==endTime.getYear()))
 						{
 
@@ -1262,10 +1261,9 @@ class XMLParser {
 		}
 
 		List<ZCGroup> zcGroups = zcView.getGroups();
-
 		HashMap<Date, List<ZCRecord>> eventsMap = zcView.getEventRecordsMap();
-
 		SortedSet<Date> keys = new TreeSet<Date>(eventsMap.keySet());
+		
 		for (Date eventDate : keys) { 
 			List<ZCRecord> eventRecords = eventsMap.get(eventDate);
 			List<String> groupHeaderValues  = new ArrayList<String>();

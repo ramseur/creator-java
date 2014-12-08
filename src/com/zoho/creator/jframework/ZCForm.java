@@ -257,8 +257,11 @@ public class ZCForm extends ZCComponent{
 					buff.append("<![CDATA[");//No I18N
 
 					if(recordValue.getChoiceValue() != null) {
-
-						buff.append(recordValue.getChoiceValue().getKey());
+						if(recordValue.getChoiceValue().getKey().equals(ZCRecordValue.allowOtherChoiceKey)){
+							buff.append(recordValue.getOtherChoiceValue());
+						}else{
+							buff.append(recordValue.getChoiceValue().getKey());
+						}
 					}else
 					{
 

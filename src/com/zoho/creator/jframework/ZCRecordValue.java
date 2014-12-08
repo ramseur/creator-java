@@ -25,6 +25,10 @@ public class ZCRecordValue{
 	private boolean isFileReUploaded = false;
 	private boolean isWriteToParcel = false;
 	private String fileName = null;
+	private boolean isAllowotherchoice = false;
+	private String otherChoiceValue = null;
+	
+	public static String allowOtherChoiceKey = "ALLOW_OTHER_CHOICES";
 
 
 
@@ -325,7 +329,7 @@ public class ZCRecordValue{
 		if(!isLastReachedForChoices) {
 			List<ZCChoice> moreChoices = ZOHOCreator.loadMoreChoices(field);
 			choices.addAll(moreChoices);
-			if(moreChoices.size()<50) {
+			if(moreChoices.size()<50 && searchForChoices == null) {
 				isLastReachedForChoices = true;
 			}
 			return moreChoices;
@@ -380,4 +384,21 @@ public class ZCRecordValue{
 		}
 		return urlValueForSubmit;
 	}
+	
+	public void setAllowotherchoice(boolean allowotherchoice){
+		this.isAllowotherchoice = allowotherchoice;
+	}
+	
+	public boolean isAllowotherchoice(){
+		return isAllowotherchoice;
+	}
+	
+	public void setOtherChoiceValue(String otherChoiceValue){
+		this.otherChoiceValue = otherChoiceValue;
+	}
+	
+	public String getOtherChoiceValue() {
+		return otherChoiceValue;
+	}
+	
 }

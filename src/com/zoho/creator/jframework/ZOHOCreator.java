@@ -751,7 +751,7 @@ public class ZOHOCreator {
 		setCurrentBulkEditRecords(null);
 	}
 
-	private static void setCurrentHtmlView(ZCHtmlView htmlView) {
+	public static void setCurrentHtmlView(ZCHtmlView htmlView) {
 		ZOHOCreator.htmlView = htmlView;
 	}
 
@@ -1585,6 +1585,7 @@ public class ZOHOCreator {
 			return (getResponseString(getURLString(url, params)));
 		}
 
+
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1605,6 +1606,7 @@ public class ZOHOCreator {
 				}
 			};
 			byte[] response = client.execute(request, handler);
+
 
 			return new String(response);
 		} catch(UnknownHostException uhe) {
@@ -1691,6 +1693,7 @@ public class ZOHOCreator {
 			return getResponseDocument(getURLString(url, params));
 		}
 
+
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1720,7 +1723,6 @@ public class ZOHOCreator {
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
-
 
 
 					return toReturn;

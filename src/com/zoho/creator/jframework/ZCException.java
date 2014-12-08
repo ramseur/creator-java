@@ -27,7 +27,7 @@ public class ZCException extends Exception {
 
 	public ZCException(String message,int type, String logMessage) {
 		super(message);
-		if(ZOHOCreator.getAccessedComponents() && (type == GENERAL_ERROR || type == ERROR_OCCURED || type == LINK_NAME_ERROR || type == APP_LINK_NAME_ERROR)){
+		if(ZOHOCreator.getAccessedComponents() && (type == GENERAL_ERROR || type == ERROR_OCCURED) || type == LINK_NAME_ERROR || type == APP_LINK_NAME_ERROR){
 			this.type = ACCESSED_COMPONENTS_ERROR;
 		}
 		else{
