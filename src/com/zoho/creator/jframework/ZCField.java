@@ -43,6 +43,7 @@ public class ZCField implements Comparable<ZCField>{
 	private List<Long> subFormRecordIds = new ArrayList<Long>();
 
 	private ZCRecordValue recordValue = null;
+	private ZCRecordValue previousRecordValue = null;
 	private boolean isLookup = false; // This is purely for display checks....
 	private boolean newEntriesAllowed = false; // This is purely for display checks....
 	private boolean isOnAddRowExists = false;
@@ -61,7 +62,11 @@ public class ZCField implements Comparable<ZCField>{
 	private int subFormEntryPosition = -1;
 	private int imageType = IMAGE_BOTH;
 	private ExternalField externalFieldType = ExternalField.UNKNOWN;
-
+	private String moduleType = "Leads";
+	private boolean isSubFormAddEntryHidden = false;
+	private boolean isSubFormDeleteEntryHidden = false;
+	private String ruleCondition = null;
+	private List<ZCTask> zcTasks = new ArrayList<ZCTask>();
 	public static int IMAGE_LINK = 1;
 	public static int IMAGE_LOCAL = 2;
 	public static int IMAGE_BOTH = 3;
@@ -89,6 +94,57 @@ public class ZCField implements Comparable<ZCField>{
 		return toReturn;
 	}
 
+	public boolean isSubFormAddEntryHidden()
+	{
+		return isSubFormAddEntryHidden;
+	}
+
+	public boolean isSubFormDeleteEntryHidden()
+	{
+		return isSubFormDeleteEntryHidden;
+	}
+
+	public void setSubFormAddEntryHidden(boolean isSubFormAddEntryHidden)
+	{
+		this.isSubFormAddEntryHidden = isSubFormAddEntryHidden;
+	}
+
+	public void setSubFormDeleteEntryHidden(boolean isSubFormDeleteEntryHidden)
+	{
+		this.isSubFormDeleteEntryHidden = isSubFormDeleteEntryHidden;
+	}
+
+
+	public String getRuleCondition()
+	{
+		return ruleCondition;
+	}
+
+	void setRuleCondition(String ruleCondition)
+	{
+		this.ruleCondition = ruleCondition;
+	}
+
+
+	public List<ZCTask> getZCTasks()
+	{
+		return zcTasks;
+	}
+	
+	public ZCRecordValue getPreviousRecordValue()
+	{
+		return previousRecordValue;
+	}
+
+	void setModuleType(String moduleType)
+	{
+		this.moduleType = moduleType;
+	}
+	
+	public String getModuleType()
+	{
+		return moduleType;
+	}
 
 	void setExternalFieldType(ExternalField externalFieldType)
 	{

@@ -1195,13 +1195,12 @@ public class ZOHOCreator {
 	}
 
 
-	static List<ZCChoice> loadMoreChoices(ZCField field) throws ZCException {
+	static List<ZCChoice> loadMoreChoices(ZCRecordValue zcRecordValue) throws ZCException {
+
+		ZCField field = zcRecordValue.getField();
 		ZCField subFormField = field.getBaseForm().getBaseSubFormField();
 		ZCForm baseForm = field.getBaseForm();
 		String fieldName = field.getFieldName();
-		//		if(baseForm==ZOHOCreator.getCurrentSubForm()) {
-		//			baseForm = ZOHOCreator.getCurrentForm();
-		//		}
 		String subformComponent = null;
 		int formAccessType = 0;
 		int size = field.getRecordValue().getChoices().size();
@@ -1212,28 +1211,38 @@ public class ZOHOCreator {
 			subformComponent = field.getFieldName();
 			fieldName = subFormField.getFieldName();
 		}
-
-		if(field.getBaseForm().getFormType()==ZCForm.FORM_LOOKUP_ADD_FORM) {
-			formAccessType = ZCForm.FORM_LOOKUP_ADD_FORM;
-		} else if(getCurrentForm().getViewForAdd()!=null) {
-			formAccessType = ZCForm.VIEW_ADD_FORM;
-		} else if(getCurrentForm().getViewForEdit()!=null) {
-			formAccessType = ZCForm.VIEW_EDIT_FORM;
-		} else if(getCurrentForm().getViewForBulkEdit()!=null) {
-			formAccessType = ZCForm.VIEW_BULK_EDIT_FORM;
-		} else {
-			formAccessType = ZCForm.FORM_ALONE;
-		}
-		if(baseForm.getBaseLookupField()!=null)
+		
+		if(field.getType()==FieldType.EXTERNAL_FIELD)
 		{
-			field=baseForm.getBaseLookupField();
+
+			String moduleType = field.getModuleType();
+			
+			URLPair crmLookupChoicesUrl = ZCURL.crmLookupChoices(size,moduleType);
+			String response = ZOHOCreator.postURL(crmLookupChoicesUrl.getUrl(),crmLookupChoicesUrl.getNvPair());
+			return JSONParser.parseCrmLookupChoices(response,zcRecordValue);
+		}else
+		{
+			if(field.getBaseForm().getFormType()==ZCForm.FORM_LOOKUP_ADD_FORM) {
+				formAccessType = ZCForm.FORM_LOOKUP_ADD_FORM;
+			} else if(getCurrentForm().getViewForAdd()!=null) {
+				formAccessType = ZCForm.VIEW_ADD_FORM;
+			} else if(getCurrentForm().getViewForEdit()!=null) {
+				formAccessType = ZCForm.VIEW_EDIT_FORM;
+			} else if(getCurrentForm().getViewForBulkEdit()!=null) {
+				formAccessType = ZCForm.VIEW_BULK_EDIT_FORM;
+			} else {
+				formAccessType = ZCForm.FORM_ALONE;
+			}
+			if(baseForm.getBaseLookupField()!=null)
+			{
+				field=baseForm.getBaseLookupField();
+			}
+			URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), fieldName, size, searchForChoices, subformComponent,formAccessType,getAdditionalParamsForForm(baseForm,field));
+
+			Document rootDocument = ZOHOCreator.postURLXML(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair());
+			return XMLParser.parseLookUpChoices(rootDocument);
 		}
-		URLPair lookupChoicesUrl = ZCURL.lookupChoices(baseForm.getAppLinkName(), baseForm.getComponentLinkName(), baseForm.getAppOwner(), fieldName, size, searchForChoices, subformComponent,formAccessType,getAdditionalParamsForForm(baseForm,field));
-
-		Document rootDocument = ZOHOCreator.postURLXML(lookupChoicesUrl.getUrl(), lookupChoicesUrl.getNvPair());
-		return XMLParser.parseLookUpChoices(rootDocument);
 	}
-
 
 	static void loadRecords(ZCView zcView) throws ZCException 
 	{  // Search, Filter & Group By
@@ -1586,6 +1595,7 @@ public class ZOHOCreator {
 			return (getResponseString(getURLString(url, params)));
 		}
 
+		System.out.println("PostUrl.."+getURLString(url, params));
 
 		try
 		{
@@ -1607,6 +1617,7 @@ public class ZOHOCreator {
 				}
 			};
 			byte[] response = client.execute(request, handler);
+
 
 			return new String(response);
 		} catch(UnknownHostException uhe) {
@@ -1694,6 +1705,7 @@ public class ZOHOCreator {
 			return getResponseDocument(getURLString(url, params));
 		}
 
+		
 
 		try
 		{
@@ -1724,8 +1736,7 @@ public class ZOHOCreator {
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
-
-
+					
 					return toReturn;
 				} catch (ParserConfigurationException e) {
 
@@ -1740,7 +1751,6 @@ public class ZOHOCreator {
 						return null;
 					}else
 					{
-
 						throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
 
 					}
@@ -1824,6 +1834,7 @@ public class ZOHOCreator {
 						while ((len = is.read(buf, 0, size)) != -1)
 							bos.write(buf, 0, len);
 						byteArray = bos.toByteArray();
+						
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -1846,6 +1857,7 @@ public class ZOHOCreator {
 		try {
 			ResponseHandler<String> responseHandler=new BasicResponseHandler();
 			String responseBody = httpclient.execute(httppost, responseHandler);
+			
 			//HttpResponse httpResponse = httpclient.execute(httppost);
 
 		} catch(UnknownHostException uhe) {

@@ -19,14 +19,19 @@ public class ZCURL {
 		return params;
 	}
 
-	private static List<NameValuePair> getDefaultParams() {
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
+	private static List<NameValuePair> getAuthtokenAsParam(List<NameValuePair> params)
+	{
 		try {
 			params.add(new BasicNameValuePair("authtoken", ZOHOCreator.getZohoUser().getAuthToken()));
 		} catch (ZCException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}//No I18N
+		return params;
+	}
+	private static List<NameValuePair> getDefaultParams() {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		getAuthtokenAsParam(params);
 		params.add(new BasicNameValuePair("scope", "creatorapi"));//No I18N
 		return params;
 	}
@@ -169,6 +174,23 @@ public class ZCURL {
 		params.addAll(additionalParams);
 		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName +"/"+urlValToAdd+"/"+lookupFieldName+ "/options/", params);//No I18N
 	}
+	
+	static URLPair crmLookupChoices(int startIndex,String crmModuleType)
+	{
+		List<NameValuePair> params = getAuthtokenAsParam(new ArrayList<NameValuePair>());
+		params.add(new BasicNameValuePair("scope", "crmapi"));
+		params.add(new BasicNameValuePair("limit", 50 + ""));
+		params.add(new BasicNameValuePair("appendRows", "true"));
+		params.add(new BasicNameValuePair("fromIndex", startIndex + ""));
+		params.add(new BasicNameValuePair("toIndex", (startIndex+50)+""));
+		if(ZOHOCreator.getCreatorURL().contains("localzoho"))
+		{
+			return new URLPair(ZOHOCreator.getPrefix() + "://" +"crm.localzoho.com"+"/crm/private/json/"+crmModuleType+"/getRecords",params);
+		}else
+		{
+			return new URLPair(ZOHOCreator.getPrefix() + "://" +"crm.zoho.com"+"/crm/private/json/"+crmModuleType+"/getRecords",params);
+		}
+	}
 
 	static URLPair formOnLoad(String appLinkName, String formLinkName, String appOwner, List<NameValuePair> additionalParams,int formAccessType) {
 		List<NameValuePair> params = getDefaultParams();
@@ -293,7 +315,7 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("scope", "creatorapi"));//No I18N		
 		params.add(new BasicNameValuePair("hide_signup", "true"));
 		params.add(new BasicNameValuePair("hide_remember", "true"));
-		params.add(new BasicNameValuePair("scopes", ZOHOCreator.getServiceName() + "/creatorapi,ZohoContacts/photoapi"));
+		params.add(new BasicNameValuePair("scopes", ZOHOCreator.getServiceName() + "/creatorapi,ZohoContacts/photoapi,ZohoCRM/crmapi"));
 		params.add(new BasicNameValuePair("appname", ZOHOCreator.getAuthDescription()));
 		params.add(new BasicNameValuePair("serviceurl", serverURL()));
 		return new URLPair("https://" + ZOHOCreator.getAccountsURL() + "/login", params);  //No I18N

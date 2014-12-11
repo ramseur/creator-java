@@ -332,7 +332,7 @@ public class ZCRecordValue{
 
 	public List<ZCChoice> loadMoreChoices() throws ZCException {
 		if(!isLastReachedForChoices) {
-			List<ZCChoice> moreChoices = ZOHOCreator.loadMoreChoices(field);
+			List<ZCChoice> moreChoices = ZOHOCreator.loadMoreChoices(this);
 			choices.addAll(moreChoices);
 			if(moreChoices.size()<50 && searchForChoices == null) {
 				isLastReachedForChoices = true;

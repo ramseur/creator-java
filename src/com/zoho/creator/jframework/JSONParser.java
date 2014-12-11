@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -89,21 +90,919 @@ class JSONParser {
 		return toReturn;
 	}
 
-//	public static void test()
-//	{
-//		boolean isConditionTrue = false;
-//		ZCField zcField = new ZCField("test", FieldType.SINGLE_LINE, "tets");
-//		CriteriaExecutor cExec = new CriteriaExecutor();
-//		HashMap<String,Object> valuesHashMap = new HashMap<String,Object>();
-//	
-//			try {
-//				isConditionTrue = cExec.evaluateCriteria("test == \"hello\"", valuesHashMap);
-//			} catch (org.antlr.runtime.RecognitionException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		
-//	}
+	
+	public static void executeRuleActions(ZCField zcField,HashMap<String,Object> valuesHashMap)
+	{
+
+
+		{
+
+			CriteriaExecutor cExec = new CriteriaExecutor();
+			
+			boolean isConditionTrue = false;
+			try {
+				isConditionTrue = cExec.evaluateCriteria(zcField.getRuleCondition(), valuesHashMap);
+			} catch (org.antlr.runtime.RecognitionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			
+
+			//formActivity.executeRuleActions(zcField,isConditionTrue);
+			List<ZCTask> tasks = zcField.getZCTasks();
+			for(int i=0;i<tasks.size();i++)
+			{
+				ZCTask task = tasks.get(i);
+				int taskType = task.getZCTaskType();
+				List<String> fieldNames = task.getFieldNames();
+				HashMap<String,String> setValuesHashMap = task.getSetValuesHashMap();
+				Set set = setValuesHashMap.keySet();
+				Iterator itrtr = set.iterator();
+				while(itrtr.hasNext())
+				{
+					String key = (String) itrtr.next();
+					
+				}
+
+				for(int j=0;j<fieldNames.size();j++)
+				{
+					String fieldName = fieldNames.get(j);
+					ZCForm loadedForm = zcField.getBaseForm();
+					ZCField zcfield = loadedForm.getField(fieldName);
+					zcfield.setRebuildRequired(true);
+					
+					if(taskType==ZCTask.SET_FIELD_VALUE)
+					{
+						
+						FieldType fType = zcfield.getType();
+						ZCRecordValue recValue = zcfield.getRecordValue();
+						ZCRecordValue previousValue = zcfield.getPreviousRecordValue();
+						if(FieldType.isChoiceField(fType))
+						{
+							
+							List<ZCChoice> zcChoices = recValue.getChoices();
+							for(int k=0;k<zcChoices.size();k++)
+							{
+								ZCChoice zcChoice = zcChoices.get(j);
+								if(setValuesHashMap.get(fieldName).equals(zcChoice.getKey()))
+								{
+									if(FieldType.isSingleChoiceField(fType))
+									{
+										if(isConditionTrue)
+										{
+											recValue.setChoiceValue(zcChoice);
+										}
+										else
+										{
+											recValue.setChoiceValue(previousValue.getChoiceValue());
+										}
+									}
+									else if(FieldType.isMultiChoiceField(fType))
+									{
+										List<ZCChoice> setValueZCChoices = new ArrayList<ZCChoice>();
+										setValueZCChoices.add(zcChoice);
+										if(isConditionTrue)
+										{
+											recValue.setChoiceValues(setValueZCChoices);
+										}
+										else
+										{
+											recValue.setChoiceValues(previousValue.getChoiceValues());
+										}
+									}
+									break;
+								}
+							}
+						}
+						else
+						{
+							
+							if(isConditionTrue)
+							{
+								
+								recValue.setValue(setValuesHashMap.get(fieldName));
+							}
+							else
+							{
+							
+								recValue.setValue(previousValue.getValue());
+							}
+						}
+					}
+					else if(taskType==ZCTask.HIDE_FIELDS)
+					{
+						if(isConditionTrue)
+						{
+							zcfield.setHidden(true);
+						}else
+						{
+							zcfield.setHidden(false);
+						}
+					}else if(taskType==ZCTask.DISABLE_FIELDS)
+					{
+						if(isConditionTrue)
+						{
+							zcfield.setDisabled(true);
+						}else
+						{
+							zcfield.setDisabled(false);
+						}
+					}
+					else if(taskType==ZCTask.ENABLE_FIELDS)
+					{
+						if(isConditionTrue)
+						{
+							zcfield.setDisabled(false);
+						}else
+						{
+							zcfield.setDisabled(true);
+						}
+					}
+					else if(taskType==ZCTask.SHOW_FIELDS)
+					{
+						if(isConditionTrue)
+						{
+							zcfield.setHidden(false);
+						}else
+						{
+							zcfield.setHidden(true); 
+						}
+					}
+					else if(taskType==ZCTask.HIDE_SUBFROM_ADD_ENTRY)
+					{
+						if(isConditionTrue)
+						{
+							zcfield.setSubFormAddEntryHidden(true);
+						}else
+						{
+							zcfield.setSubFormAddEntryHidden(false);
+						}
+					}
+					else if(taskType==ZCTask.SHOW_SUBFORM_ADD_ENTRY)
+					{
+						if(isConditionTrue)
+						{
+							zcfield.setSubFormAddEntryHidden(false);
+						}else
+						{
+							zcfield.setSubFormAddEntryHidden(true);
+						}
+					}
+					else if(taskType==ZCTask.HIDE_SUBFORM_DELETE_ENTRY)
+					{
+						if(isConditionTrue)
+						{
+							zcfield.setSubFormDeleteEntryHidden(true);
+						}else
+						{
+							zcfield.setSubFormDeleteEntryHidden(false);
+						}
+					}
+					else if(taskType==ZCTask.SHOW_SUBFORM_DELETE_ENTRY)
+					{
+						if(isConditionTrue)
+						{
+							zcfield.setSubFormDeleteEntryHidden(false);
+						}else
+						{
+							zcfield.setSubFormDeleteEntryHidden(true);
+						}
+					}
+				}
+			}
+
+
+		} 
+	}
+
+	static List<ZCRule> parseForRules(JSONArray rulesArray,List<ZCField> zcFields)
+	{
+		List<ZCRule> zcRules = new ArrayList<ZCRule>();
+
+		try 
+		{
+			for(int count=0;count<rulesArray.length();count++)
+			{
+				JSONObject rulesObj = rulesArray.getJSONObject(count);
+				String condition = "";
+				List<String> fieldNamesWithCriteria = new ArrayList<String>();
+				List<ZCTask> zcTasks = new ArrayList<ZCTask>();
+				List<ZCField> zcFieldswithRules = new ArrayList<ZCField>();
+				if(rulesObj.has("CONDITION"))
+				{
+					condition = rulesObj.getString("CONDITION");
+				}
+				if(rulesObj.has("CONDITION_FIELDS"))
+				{
+					JSONArray fieldNamesArray = (JSONArray)rulesObj.get("CONDITION_FIELDS");
+					for(int i=0;i<fieldNamesArray.length();i++)
+					{
+
+						for(int fieldSize = 0;fieldSize<zcFields.size();fieldSize++)
+						{
+							ZCField zcField = zcFields.get(fieldSize);
+							if(zcField.getFieldName().equals((String)fieldNamesArray.get(i)))
+							{
+								zcField.setRuleCondition(condition);
+								zcFieldswithRules.add(zcField);
+							}
+						}
+						fieldNamesWithCriteria.add((String)fieldNamesArray.get(i));
+					}
+				}
+				if(rulesObj.has("TASKS"))
+				{
+					JSONArray tasksArray = (JSONArray)rulesObj.get("TASKS");
+
+					for(int i=0;i<tasksArray.length();i++)
+					{
+						int taskType = 0;
+						List<String> fieldNames = new ArrayList<String>();
+						HashMap<String,String> setValuesHashMap = new HashMap<String,String>();
+						JSONObject taskObj = (JSONObject) tasksArray.get(i);
+						if(taskObj.has("TASK_TYPE"))
+						{
+							taskType = taskObj.getInt("TASK_TYPE");
+						}
+						if(taskObj.has("TASK_CONFIG"))
+						{
+							JSONObject taskConfigObj = taskObj.getJSONObject("TASK_CONFIG");
+							if(taskConfigObj.has("FIELDS"))
+							{
+								JSONArray fieldsArrayObj = taskConfigObj.getJSONArray("FIELDS"); 
+
+								for(int j=0;j<fieldsArrayObj.length();j++)
+								{
+									fieldNames.add(fieldsArrayObj.getString(j));
+								}
+
+							}if(taskConfigObj.has("VALUES"))
+							{
+								JSONObject valuesJsonObj = taskConfigObj.getJSONObject("VALUES");
+								
+								for(int j=0;j<fieldNames.size();j++)
+								{
+									String fieldName = fieldNames.get(j);
+									if(valuesJsonObj.has(fieldName));
+									{
+										setValuesHashMap.put(fieldName,valuesJsonObj.getString(fieldName));
+									}
+								}
+							}
+
+						}
+						ZCTask zcTask = null;
+						if(taskType!=ZCTask.SET_FIELD_VALUE)
+						{
+							zcTask = new ZCTask(taskType, fieldNames);
+						}else
+						{
+							
+							zcTask = new ZCTask(taskType,setValuesHashMap,fieldNames);
+						}
+						zcTasks.add(zcTask);
+						for(int j=0;j<zcFieldswithRules.size();j++){
+							zcFieldswithRules.get(j).getZCTasks().add(zcTask);
+						}
+					}
+				}
+				zcRules.add(new ZCRule(zcTasks, fieldNamesWithCriteria));
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return zcRules;
+	}
+
+	static List<ZCChoice> parseCrmLookupChoices(String response,ZCRecordValue zcRecordValue)
+	{
+
+		String moduleType = zcRecordValue.getField().getModuleType();
+		List<ZCChoice> choices = new ArrayList<ZCChoice>();
+		try {
+			JSONObject resObj = new JSONObject(response);
+			if(resObj.has("response"))
+			{
+				JSONObject resultObj =(JSONObject)resObj.get("response");
+				if(resultObj.has("result")){
+					JSONObject modObj =(JSONObject)resultObj.get("result");
+					if(modObj.has(moduleType))
+					{
+						JSONObject rowObj =(JSONObject)modObj.get(moduleType);
+						if(rowObj.has("row"))
+						{
+							JSONArray rowArray = (JSONArray)rowObj.get("row");
+							if(moduleType.equals("Leads"))
+							{
+							JSONParser.parseCrmLeadModule(choices,rowArray);
+							}else if(moduleType.equals("Accounts"))
+							{
+							JSONParser.parseCrmAccountsModule(choices,rowArray);
+							}
+							else if(moduleType.equals("Potentials"))
+							{
+							JSONParser.parseCrmPotentialsModule(choices,rowArray);
+							}else if(moduleType.equals("Contacts"))
+							{
+							JSONParser.parseCrmPotentialsModule(choices,rowArray);
+							}
+						}
+					}
+				}
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	
+		return choices;
+	}
+
+	static List<ZCChoice> parseCrmLeadModule(List<ZCChoice> choices,JSONArray rowArray)
+	{
+		for(int i=0;i<rowArray.length();i++)
+		{
+			JSONObject rowArrayObj;
+			try {
+				rowArrayObj = (JSONObject)rowArray.get(i);
+
+				String leadID = "";
+				String smOwnerId = "";
+				String frstName  = "";
+				String lastName = "";
+				String smCreatorId = "";
+				String modifiedById = "";
+				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+				if(rowArrayObj.has("no"))
+				{
+					rowArrayObj.getInt("no");
+				}
+				if(rowArrayObj.has("FL"))
+				{
+					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+					for(int j=0;j<flArray.length();j++)
+					{
+						JSONObject flArrayObj = (JSONObject)flArray.get(j);
+						ZCRecordValue recordValue = null;
+						if(flArrayObj.has("content"))
+						{
+							if(flArrayObj.has("val"))
+							{
+								if(flArrayObj.getString("val").equals("LEADID"))
+								{
+									leadID = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("SMOWNERID"))
+								{
+									smOwnerId = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("Lead Owner"))
+								{
+
+									recordValue = new ZCRecordValue(new ZCField("Lead Owner",FieldType.SINGLE_LINE,"Lead Owner"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Company"))
+								{
+
+									recordValue = new ZCRecordValue(new ZCField("Company",FieldType.SINGLE_LINE,"Company"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("First Name"))
+								{
+									frstName = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("Last Name"))
+								{
+									lastName = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("Designation"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Designation",FieldType.SINGLE_LINE,"Designation"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Email"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Email",FieldType.SINGLE_LINE,"Email"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Mobile"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Mobile",FieldType.SINGLE_LINE,"Mobile"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Lead Source"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Lead Source",FieldType.SINGLE_LINE,"Lead Source"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Lead Status"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Lead Status",FieldType.SINGLE_LINE,"Lead Status"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Industry"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Industry",FieldType.SINGLE_LINE,"Industry"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("No of Employees"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("No of Employees",FieldType.SINGLE_LINE,"No of Employees"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Annual Revenue"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Annual Revenue",FieldType.SINGLE_LINE,"Annual Revenue"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Rating"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Rating",FieldType.SINGLE_LINE,"Rating"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("SMCREATORID"))
+								{
+									smCreatorId = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("Created By"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Created By",FieldType.SINGLE_LINE,"Created By"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("MODIFEDBY"))
+								{
+									modifiedById = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("Modified By"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Modified By",FieldType.SINGLE_LINE,"Modified By"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Created Time"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Created Time",FieldType.SINGLE_LINE,"Created Time"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Modified Time"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Modified Time",FieldType.SINGLE_LINE,"Modified Time"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("State"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("State",FieldType.SINGLE_LINE,"State"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Country"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Country",FieldType.SINGLE_LINE,"Country"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Email Opt Out"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Email Opt Out",FieldType.SINGLE_LINE,"Email Opt Out"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Last Activity Time"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Last Activity Time",FieldType.SINGLE_LINE,"Last Activity Time"), flArrayObj.getString("content"));
+								}
+
+							}
+						}
+						if(recordValue!=null)
+						{
+							recordValues.add(recordValue);
+						}
+					}
+				}
+
+
+				if(frstName!=null)
+				{
+
+					choices.add(new ZCChoice(recordValues,Long.valueOf(leadID),leadID, frstName+" "+ lastName));
+				}else 
+				{
+
+					choices.add(new ZCChoice(recordValues,Long.valueOf(leadID),leadID,lastName));
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return choices;
+	}
+
+	static List<ZCChoice> parseCrmAccountsModule(List<ZCChoice> choices,JSONArray rowArray)
+	{
+		for(int i=0;i<rowArray.length();i++)
+		{
+			JSONObject rowArrayObj;
+			try {
+				rowArrayObj = (JSONObject)rowArray.get(i);
+
+				String accountId = "";
+				String smOwnerId = "";
+				String parentAccountId = "";
+				String smCreatorId = "";
+				String modifiedById = "";
+				String accountName = "";
+				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+				if(rowArrayObj.has("no"))
+				{
+					rowArrayObj.getInt("no");
+				}
+				if(rowArrayObj.has("FL"))
+				{
+					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+					for(int j=0;j<flArray.length();j++)
+					{
+						JSONObject flArrayObj = (JSONObject)flArray.get(j);
+						ZCRecordValue recordValue = null;
+						if(flArrayObj.has("content"))
+						{
+							if(flArrayObj.has("val"))
+							{
+								if(flArrayObj.getString("val").equals("ACCOUNTID"))
+								{
+									accountId = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("SMOWNERID"))
+								{
+									smOwnerId = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("Account Owner"))
+								{
+
+									recordValue = new ZCRecordValue(new ZCField("Account Owner",FieldType.SINGLE_LINE,"Account Owner"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Account Name"))
+								{
+									accountName = flArrayObj.getString("content");
+									recordValue = new ZCRecordValue(new ZCField("Account Name",FieldType.SINGLE_LINE,"Account Name"),accountName );
+								}
+								else if(flArrayObj.getString("val").equals("phone"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("phone",FieldType.SINGLE_LINE,"phone"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("PARENTACCOUNTID"))
+								{
+									parentAccountId = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("Parent Account"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Parent Account",FieldType.SINGLE_LINE,"Parent Account"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Website"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Website",FieldType.SINGLE_LINE,"Website"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Ticker Symbol"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Ticker Symbol",FieldType.SINGLE_LINE,"Ticker Symbol"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Account Type"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Account Type",FieldType.SINGLE_LINE,"Account Type"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Ownership"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Ownership",FieldType.SINGLE_LINE,"Ownership"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Industry"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Industry",FieldType.SINGLE_LINE,"Industry"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Employees"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Employees",FieldType.SINGLE_LINE,"Employees"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("SIC Code"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("SIC Code",FieldType.SINGLE_LINE,"SIC Code"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("SMCREATORID"))
+								{
+									smCreatorId = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("Created By"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Created By",FieldType.SINGLE_LINE,"Created By"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("MODIFEDBY"))
+								{
+									modifiedById = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("Modified By"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Modified By",FieldType.SINGLE_LINE,"Modified By"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Created Time"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Created Time",FieldType.SINGLE_LINE,"Created Time"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Modified Time"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Modified Time",FieldType.SINGLE_LINE,"Modified Time"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Billing Street"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Billing Street",FieldType.SINGLE_LINE,"Billing Street"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Shipping Street"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Shipping Street",FieldType.SINGLE_LINE,"Shipping Street"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Billing City"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Billing City",FieldType.SINGLE_LINE,"Billing City"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Shipping City"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Shipping City",FieldType.SINGLE_LINE,"Shipping City"), flArrayObj.getString("content"));
+								}
+
+								else if(flArrayObj.getString("val").equals("Billing State"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Billing State",FieldType.SINGLE_LINE,"Billing State"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Shipping State"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Shipping State",FieldType.SINGLE_LINE,"Shipping State"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Billing Code"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Billing Code",FieldType.SINGLE_LINE,"Billing Code"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Shipping Code"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Shipping Code",FieldType.SINGLE_LINE,"Shipping Code"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Billing Country"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Billing Country",FieldType.SINGLE_LINE,"Billing Country"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Shipping Country"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Shipping Country",FieldType.SINGLE_LINE,"Shipping Country"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Description"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Description",FieldType.SINGLE_LINE,"Description"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Last Activity Time"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Last Activity Time",FieldType.SINGLE_LINE,"Last Activity Time"), flArrayObj.getString("content"));
+								}
+
+							}
+						}
+						if(recordValue!=null)
+						{
+							recordValues.add(recordValue);
+						}
+					}
+				}
+
+
+				if(accountName!=null)
+				{
+					choices.add(new ZCChoice(recordValues,Long.valueOf(accountId),accountId, accountName));
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return choices;
+	}
+
+	
+	static List<ZCChoice> parseCrmPotentialsModule(List<ZCChoice> choices,JSONArray rowArray)
+	{
+		for(int i=0;i<rowArray.length();i++)
+		{
+			JSONObject rowArrayObj;
+			try {
+				rowArrayObj = (JSONObject)rowArray.get(i);
+
+				String potentialId = "";
+				String smOwnerId = "";
+				String parentAccountId = "";
+				String smCreatorId = "";
+				String modifiedById = "";
+				String accountName = "";
+				String potentialName = "";
+				String campaignId = "";
+				String contactId = "";
+				String accountId = "";
+				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+				if(rowArrayObj.has("no"))
+				{
+					rowArrayObj.getInt("no");
+				}
+				if(rowArrayObj.has("FL"))
+				{
+					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+					for(int j=0;j<flArray.length();j++)
+					{
+						JSONObject flArrayObj = (JSONObject)flArray.get(j);
+						ZCRecordValue recordValue = null;
+						if(flArrayObj.has("content"))
+						{
+							if(flArrayObj.has("val"))
+							{
+								if(flArrayObj.getString("val").equals("POTENTIALID"))
+								{
+									potentialId = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("CONTACTID"))
+								{
+									contactId = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("ACCOUNTID"))
+								{
+									accountId = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("SMOWNERID"))
+								{
+									smOwnerId = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("Potential Owner"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Potential Owner",FieldType.SINGLE_LINE,"Potential Owner"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Potential Name"))
+								{
+									potentialName = flArrayObj.getString("content");
+									recordValue = new ZCRecordValue(new ZCField("Potential Name",FieldType.SINGLE_LINE,"Potential Name"),potentialName );
+								}
+								else if(flArrayObj.getString("val").equals("Account Name"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Account Name",FieldType.SINGLE_LINE,"Account Name"),accountName );
+								}
+								else if(flArrayObj.getString("val").equals("Contact Name"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Contact Name",FieldType.SINGLE_LINE,"Contact Name"),accountName );
+								}else if(flArrayObj.getString("val").equals("Overall Sales Duration"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Overall Sales Duration",FieldType.SINGLE_LINE,"Overall Sales Duration"),accountName );
+								}
+								else if(flArrayObj.getString("val").equals("Amount"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Amount",FieldType.SINGLE_LINE,"Amount"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Stage"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Stage",FieldType.SINGLE_LINE,"Stage"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Probability"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Probability",FieldType.SINGLE_LINE,"Probability"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Expected Revenue"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Expected Revenue",FieldType.SINGLE_LINE,"Expected Revenue"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Sales Cycle Duration"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Sales Cycle Duration",FieldType.SINGLE_LINE,"Sales Cycle Duration"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Type"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Type",FieldType.SINGLE_LINE,"Type"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Next Step"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Next Step",FieldType.SINGLE_LINE,"Next Step"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Lead Source"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Lead Source",FieldType.SINGLE_LINE,"Lead Source"), flArrayObj.getString("content"));
+								}
+								
+								else if(flArrayObj.getString("val").equals("SMCREATORID"))
+								{
+									smCreatorId = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("Created By"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Created By",FieldType.SINGLE_LINE,"Created By"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("MODIFEDBY"))
+								{
+									modifiedById = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("Modified By"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Modified By",FieldType.SINGLE_LINE,"Modified By"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Created Time"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Created Time",FieldType.SINGLE_LINE,"Created Time"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Modified Time"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Modified Time",FieldType.SINGLE_LINE,"Modified Time"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Closing Date"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Closing Date",FieldType.SINGLE_LINE,"Closing Date"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Description"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Description",FieldType.SINGLE_LINE,"Description"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("Last Activity Time"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Last Activity Time",FieldType.SINGLE_LINE,"Last Activity Time"), flArrayObj.getString("content"));
+								}
+								else if(flArrayObj.getString("val").equals("CAMPAIGNID"))
+								{
+									campaignId = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("Campaign Source"))
+								{
+									recordValue = new ZCRecordValue(new ZCField("Campaign Sourcee",FieldType.SINGLE_LINE,"Campaign Source"), flArrayObj.getString("content"));
+								}
+
+							}
+						}
+						if(recordValue!=null)
+						{
+							recordValues.add(recordValue);
+						}
+					}
+				}
+
+
+				if(potentialName!=null)
+				{
+					choices.add(new ZCChoice(recordValues,Long.valueOf(potentialId),potentialId, potentialName));
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return choices;
+	}
+	
+	
+	
+	static List<ZCChoice> parseCrmContactsModule(List<ZCChoice> choices,JSONArray rowArray)
+	{
+		for(int i=0;i<rowArray.length();i++)
+		{
+			JSONObject rowArrayObj;
+			try {
+				rowArrayObj = (JSONObject)rowArray.get(i);
+
+				String contactId = "";
+				String smOwnerId = "";
+				String frstName  = "";
+				String lastName = "";
+				String smCreatorId = "";
+				String modifiedById = "";
+				String contatcOwner = "";
+				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+				if(rowArrayObj.has("no"))
+				{
+					rowArrayObj.getInt("no");
+				}
+				if(rowArrayObj.has("FL"))
+				{
+					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+					for(int j=0;j<flArray.length();j++)
+					{
+						JSONObject flArrayObj = (JSONObject)flArray.get(j);
+						ZCRecordValue recordValue = null;
+						if(flArrayObj.has("content"))
+						{
+							if(flArrayObj.has("val"))
+							{
+								if(flArrayObj.getString("val").equals("CONTACTID"))
+								{
+									contactId = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("SMOWNERID"))
+								{
+									smOwnerId = flArrayObj.getString("content");
+								}
+								else if(flArrayObj.getString("val").equals("Lead Owner"))
+								{
+
+									recordValue = new ZCRecordValue(new ZCField("Lead Owner",FieldType.SINGLE_LINE,"Lead Owner"), flArrayObj.getString("content"));
+								}
+							}
+						}
+						if(recordValue!=null)
+						{
+							recordValues.add(recordValue);
+						}
+					}
+				}
+
+
+				
+//					choices.add(new ZCChoice(recordValues,Long.valueOf(contactId),contactId, conta));
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return choices;
+	}
+
 
 	static boolean parseJsonObject(JSONObject jsonObj,ZCForm currentShownForm,List<String> alertMessages, List<String> infoValues,String openUrlString) throws JSONException, ZCException
 	{
@@ -327,9 +1226,8 @@ class JSONParser {
 			//							field.onUserInput(currentShownForm);
 			//						}
 			//					}
-			if(field != null && type==ZCForm.TASK_SETVALUE|| type==ZCForm.TASK_DESELECTALL ||type==ZCForm.TASK_DESELECT || type==ZCForm.TASK_SELECTALL || type==ZCForm.TASK_SELECT) {
+			if(field != null && type==ZCForm.TASK_SETVALUE|| type==ZCForm.TASK_DESELECTALL ||type==ZCForm.TASK_DESELECT || type==ZCForm.TASK_SELECTALL || type==ZCForm.TASK_SELECT||type==ZCForm.TASK_CLEAR) {
 				if(field.isHasOnUserInputForFormula()||(field.isHasOnUserInput()) ) {
-
 					if(field.isHasOnUserInputForFormula()) {
 						field.onUserInputForFormula(currentShownForm,true);
 					}
@@ -338,16 +1236,13 @@ class JSONParser {
 					}
 				}
 			}
-
 		}
 		return false;
 	}
 
 
-
 	static void setValueInRecordValues(List<ZCRecordValue> zcRecordValues,ZCField field,List<ZCChoice> choiceValues,ZCChoice zcChoice,String value)
 	{
-
 		for(int l=0;l<zcRecordValues.size();l++)
 		{
 			ZCRecordValue zcRecordValue = zcRecordValues.get(l);
@@ -701,6 +1596,11 @@ class JSONParser {
 						}
 					}
 				}
+				if(responseObject.has("rules"))
+				{
+					JSONArray rulesArray = new JSONArray(responseObject.getString("rules"));
+					parseForRules(rulesArray,fields);
+				}
 
 				if(responseObject.has("buttons")){
 					JSONArray buttonsArray = new JSONArray(responseObject.getString("buttons"));
@@ -824,6 +1724,8 @@ class JSONParser {
 		boolean onDeleteRowExists = false;
 		boolean isFilterApplied = false;
 		boolean urlTitleReq = false;
+		String moduleType = "Leads";
+		ExternalField externalFieldType = ExternalField.UNKNOWN;
 
 		FieldType fieldType = FieldType.SINGLE_LINE;
 		ZCRecord defaultSubFormEntry = null;
@@ -847,6 +1749,15 @@ class JSONParser {
 			}
 			if(fieldObject.has("displayname")){
 				displayName = fieldObject.getString("displayname");
+			}
+			if(fieldObject.has("moduletype")){
+				moduleType = fieldObject.getString("moduletype");
+			}
+			if(fieldObject.has("servicetype")){
+				String serviceType = fieldObject.getString("servicetype");
+				externalFieldType = ExternalField.getExternalFieldType(serviceType);
+
+
 			}
 			if(fieldObject.has("maxchar")){
 				maxChar = fieldObject.getInt("maxchar");
@@ -1002,9 +1913,9 @@ class JSONParser {
 					return null;
 				}
 			}
-			if(fieldType.equals(FieldType.EXTERNAL_FIELD) || fieldType.equals(FieldType.EXTERNAL_LINK)) {
-				throw new ZCException(resourceString.getString("this_form_contains_zoho_crm_field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED, "");
-			}
+//			if(fieldType.equals(FieldType.EXTERNAL_FIELD) || fieldType.equals(FieldType.EXTERNAL_LINK)) {
+//				throw new ZCException(resourceString.getString("this_form_contains_zoho_crm_field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED, "");
+//			}
 
 			if(isParentSubForm && (FieldType.isPhotoField(fieldType)||FieldType.SIGNATURE==fieldType))
 			{
@@ -1140,12 +2051,13 @@ class JSONParser {
 			zcField.setMaximumRows(maximumRows);
 			zcField.setFilterApplied(isFilterApplied);
 			zcField.setDecimalLength(decimalLength);
-			if(isFilterApplied || (!isLookup))
+			if((isFilterApplied || (!isLookup)) &&(externalFieldType==ExternalField.UNKNOWN))
 			{
 				zcField.getRecordValue().addChoices(choices);
 				zcField.getRecordValue().setLastReachedForChoices(true);
 			}
-			
+			zcField.setModuleType(moduleType);
+			zcField.setExternalFieldType(externalFieldType);
 			zcField.setOnAddRowExists(onAddRowExists);
 			zcField.setOnDeleteRowExists(onDeleteRowExists);
 			zcField.setLookup(isLookup);

@@ -13,6 +13,8 @@ public class ZCRecord implements Comparable<ZCRecord>{
 	private Date endTime = null;
 	private String eventTitle = null;
 	private boolean isRecordError = false;
+	private String crmDisplayName = "";
+	private String key = "";
 
 	public ZCRecord(List<ZCRecordValue> values) {
 		this.values = values;
@@ -21,6 +23,26 @@ public class ZCRecord implements Comparable<ZCRecord>{
 	ZCRecord(long recordId, List<ZCRecordValue> values) {
 		this.recordId = recordId;
 		this.values = values;
+	}
+
+	ZCRecord(long recordId, List<ZCRecordValue> values,String crmDisplayName) {
+		this.recordId = recordId;
+		this.values = values;
+		this.crmDisplayName = crmDisplayName;
+	}
+
+	public String getCrmDisplayName()
+	{
+		return crmDisplayName;
+	}
+
+	void setCrmDisplayName(String crmDisplayName){
+		this.crmDisplayName = crmDisplayName;
+	}
+	
+	ZCRecord(String key)
+	{
+		this.key = key;
 	}
 
 	public String toString() {

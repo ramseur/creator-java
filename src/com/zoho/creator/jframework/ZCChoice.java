@@ -1,18 +1,30 @@
 // $Id$
 package com.zoho.creator.jframework;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class ZCChoice{
+
+public class ZCChoice extends ZCRecord{
 
 	private String key = null;
 	private String value = null;
 	
-	ZCChoice(String key, String value) {
+	
+	ZCChoice(List<ZCRecordValue> recValues,long recordid,String key,String value) {
+		super(recordid,recValues,value);
 		this.key = key;
 		this.value = value;
 	}
-
+	
+	
+	ZCChoice(String key, String value) {
+		super(key);
+		this.key = key;
+		this.value = value;
+	}
+	
 	public String toString() {
 		return  value; //No I18N
 	}
@@ -20,6 +32,8 @@ public class ZCChoice{
 	public String getKey() {
 		return key;
 	}
+	
+	
 
 
 	public String getValue() {
@@ -36,6 +50,4 @@ public class ZCChoice{
         }
         return key.equals(((ZCChoice)toCheck).getKey());
 	}
-	
-
 }
