@@ -1595,7 +1595,7 @@ public class ZOHOCreator {
 			return (getResponseString(getURLString(url, params)));
 		}
 
-		System.out.println("PostUrl.."+getURLString(url, params));
+		
 
 		try
 		{
