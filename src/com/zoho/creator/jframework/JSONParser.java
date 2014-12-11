@@ -1089,11 +1089,13 @@ class JSONParser {
 							break;
 						}
 					}
+
 					zcField.setRecordValue(new ZCRecordValue(zcField, toAdd));
 					
 					if(allowOtherChoice && toAdd == null){
 						if(initValue!=null && initValue.length() > 0){
 							zcField.getRecordValue().setOtherChoiceValue(initValue);
+							zcField.getRecordValue().setChoiceValue(new ZCChoice(ZCRecordValue.allowOtherChoiceKey, "Other")); 
 						}
 					}
 					
@@ -1125,17 +1127,11 @@ class JSONParser {
 			}
 			
 			if(allowOtherChoice){
+				ZCChoice zcOtherChoice = new ZCChoice(ZCRecordValue.allowOtherChoiceKey, "Other"); 
 				
-				choices.add(new ZCChoice(ZCRecordValue.allowOtherChoiceKey, "Other"));
 				
-//				String otherChoiceValue = null;
-//				if(initialChoiceValues.size() > 0){
-//					otherChoiceValue = initialChoiceValues.get(0);
-//				}
-//				
-//				if(otherChoiceValue!=null && otherChoiceValue.length() > 0){
-//					zcField.getRecordValue().setOtherChoiceValue(otherChoiceValue);
-//				}
+				
+				choices.add(zcOtherChoice);
 			}
 			
 			//			zcField.setExternalFieldType(externalFieldType);
@@ -1244,16 +1240,13 @@ class JSONParser {
 					if(zcView != null) {
 						zcField = zcView.getColumn(fieldName);
 					} else {
-
 						for(int i=0; i<subFormFields.size(); i++) {
 							ZCField fieldToCheck = subFormFields.get(i);
 
 							if(fieldToCheck.getFieldName().equals(fieldName)) {
 								zcField = fieldToCheck;
-
 								break;
 							}
-
 						}
 					}
 
@@ -1277,6 +1270,7 @@ class JSONParser {
 									JSONObject recordValueObject = recordValuesArray.getJSONObject(i);
 									String key = null;
 									String recordValue  = null;
+									boolean isOtherChocie = true;
 									if(recordValueObject.has("key")){
 										key = recordValueObject.getString("key");
 									}
@@ -1287,8 +1281,13 @@ class JSONParser {
 									for(int j=0; j<choices.size(); j++) {
 										if(key.equals(choices.get(j).getKey())) {
 											selectedChoices.add(new ZCChoice(key,recordValue));
+											isOtherChocie = false;
 											break;
 										}
+									}
+									if(isOtherChocie && zcField.getRecordValue().isAllowotherchoice()){
+										selectedChoices.add(new ZCChoice(ZCRecordValue.allowOtherChoiceKey,"Other"));
+										zcField.getRecordValue().setOtherChoiceValue(recordValue);
 									}
 
 									if(zcField.isLookup()){
@@ -1314,20 +1313,29 @@ class JSONParser {
 							if(FieldType.isChoiceField(zcField.getType())) {
 								String key = null;
 								String recordValue  = null;
-
+								boolean isOtherChoice = true;
+								
 								if(recordValueObject.has("key")){
 									key = recordValueObject.getString("key");
 								}
 								if(recordValueObject.has("value")){
 									recordValue = recordValueObject.getString("value");
 								}
+								
+								
 
 								for(int j=0; j<choices.size(); j++) {
 									if(key.equals(choices.get(j).getKey())) {
 										selectedChoices.add(new ZCChoice(key,recordValue));
+										isOtherChoice = false;
 										break;
 									}
 								}
+								if(isOtherChoice && zcField.getRecordValue().isAllowotherchoice()){
+									selectedChoices.add(new ZCChoice(ZCRecordValue.allowOtherChoiceKey,"Other"));
+									zcField.getRecordValue().setOtherChoiceValue(recordValue);
+								}
+								
 								if(zcField.isLookup()){
 									selectedChoices.add(new ZCChoice(key,recordValue));
 								}
@@ -1353,6 +1361,10 @@ class JSONParser {
 					} else if(FieldType.isSingleChoiceField(zcField.getType())) {
 						zcValue = new ZCRecordValue(zcField, selectedChoice);
 						zcValue.addChoices(choices);
+
+						if(selectedChoice != null && selectedChoice.getKey().equals(ZCRecordValue.allowOtherChoiceKey)){
+							zcValue.setOtherChoiceValue(zcField.getRecordValue().getOtherChoiceValue());
+						}
 					}else {
 						if(zcField.getType() == FieldType.URL){
 							zcValue = new ZCRecordValue(zcField, value,urlTitleValue,urlLinkNameValue);

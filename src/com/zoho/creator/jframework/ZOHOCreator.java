@@ -86,7 +86,7 @@ public class ZOHOCreator {
 	private static ZCNavList navigationListForApps = null;
 	private static ZCForm subform = null;
 	private static String accountsURL = "accounts.zoho.com";//No I18N
-	private static String serviceName = "ZohoCreator";//No I18N
+	private static String serviceName = "ZohoCreator";//No I18N1
 	private static String authDescription = "ZohoCreator Android";//No I18N
 	private static String creatorURL = "creator.zoho.com";//No I18N
 	private static String prefix = "https";//No I18N
@@ -1581,6 +1581,7 @@ public class ZOHOCreator {
 
 	public static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
 
+		
 		if(readResponseFromFileForAPI) {
 			return (getResponseString(getURLString(url, params)));
 		}
@@ -1606,7 +1607,6 @@ public class ZOHOCreator {
 				}
 			};
 			byte[] response = client.execute(request, handler);
-
 
 			return new String(response);
 		} catch(UnknownHostException uhe) {
@@ -1687,6 +1687,7 @@ public class ZOHOCreator {
 	}
 
 	private static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
+		
 
 		if(readResponseFromFileForAPI)
 		{

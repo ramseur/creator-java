@@ -141,6 +141,11 @@ public class ZCRecordValue{
 				return "";
 			}
 			else{
+				
+				if(choiceValue.getKey().equals(ZCRecordValue.allowOtherChoiceKey)){
+					return otherChoiceValue;
+				}
+				
 				return choiceValue.getValue();
 			}
 		}else if(FieldType.URL==field.getType())

@@ -328,7 +328,12 @@ public class ZCField implements Comparable<ZCField>{
 						if(FieldType.isMultiChoiceField(fromRecordValueField.getType())) {
 							toRecordValue.setChoiceValues(fromRecordValue.getChoiceValues());
 						} else if(FieldType.isSingleChoiceField(fromRecordValueField.getType())) {
-							toRecordValue.setChoiceValue(fromRecordValue.getChoiceValue());
+							ZCChoice selectedChoice = fromRecordValue.getChoiceValue();
+						
+							if(selectedChoice != null && selectedChoice.getKey().equals(ZCRecordValue.allowOtherChoiceKey)){
+								toRecordValue.setOtherChoiceValue(fromRecordValue.getOtherChoiceValue());
+							}
+							toRecordValue.setChoiceValue(selectedChoice);
 						}
 					} 
 					else if(fromRecordValueField.getType()==FieldType.URL)

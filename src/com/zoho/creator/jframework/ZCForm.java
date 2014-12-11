@@ -330,7 +330,13 @@ public class ZCForm extends ZCComponent{
 						if(subFormRecordValue.getChoiceValue() != null) {
 							buff.append("<value>");//No I18N
 							buff.append("<![CDATA[");//No I18N
-							buff.append(subFormRecordValue.getChoiceValue().getKey());
+							
+							if(subFormRecordValue.getChoiceValue().getKey().equals(ZCRecordValue.allowOtherChoiceKey)){
+								buff.append(subFormRecordValue.getOtherChoiceValue());
+							}else{
+								buff.append(subFormRecordValue.getChoiceValue().getKey());
+							}
+							
 							buff.append("]]>");//No I18N	
 							buff.append("</value>");//No I18N
 						}
@@ -373,6 +379,7 @@ public class ZCForm extends ZCComponent{
 		return recordValues;
 	}
 
+//	** check
 
 	List<NameValuePair> getFieldParamValues() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -397,7 +404,13 @@ public class ZCForm extends ZCComponent{
 				else if(field.getType().equals(FieldType.SUB_FORM)) {
 					//params.addAll(getParamsForEditSubFormEntries(field,field.getFieldName()))
 					params.addAll(getParamsForSubFormEntries(field,field.getFieldName()));
-				} else if(FieldType.isSingleChoiceField(field.getType())) {
+					
+					
+				} 
+				
+//				** check
+				
+				else if(FieldType.isSingleChoiceField(field.getType())) {
 					if(recordValue.getChoiceValue() != null) {
 						params.add(new BasicNameValuePair(field.getFieldName(),recordValue.getChoiceValue().getKey()));
 					}
@@ -460,7 +473,11 @@ public class ZCForm extends ZCComponent{
 						ZCChoice selectedChoice =  subFormRecordValue.getChoiceValue();
 						if( selectedChoice !=null)
 						{
-							value = selectedChoice.getKey();
+							if(selectedChoice.getKey().equals(ZCRecordValue.allowOtherChoiceKey)){
+								value = subFormRecordValue.getOtherChoiceValue();
+							}else{
+								value = selectedChoice.getKey();
+							}
 						}
 					} else if(!FieldType.isPhotoField(subFormField.getType())) {
 						value = subFormRecordValue.getValue();
