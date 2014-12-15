@@ -1043,6 +1043,7 @@ class JSONParser {
 				}
 			}
 			catch(ClassCastException e) {
+				
 				value = (String)jsonObj.get("fieldValue");
 			}
 		}
@@ -1150,6 +1151,10 @@ class JSONParser {
 			} else if(type==ZCForm.TASK_CLEAR) {
 				recordValue.clearChoices();
 				recordValue.setLastReachedForChoices(true);
+				
+				if(recordValue.isAllowotherchoice()){
+					recordValue.setAllowotherchoice(false);
+				}
 			} else if(type==ZCForm.TASK_ADDVALUE) {
 				recordValue.appendChoices(choiceValues);
 				recordValue.setLastReachedForChoices(true);
@@ -1161,7 +1166,29 @@ class JSONParser {
 				} else if(FieldType.isSingleChoiceField(field.getType())) {
 					if(choiceValues.size()>0)
 					{
-						recordValue.setChoiceValue(choiceValues.get(0));
+						ZCChoice selectedChoice = choiceValues.get(0);
+						
+						boolean isOtherChoice = true;
+						
+						List<ZCChoice> choices = recordValue.getChoices();
+						
+						if(choices != null && choices.size() > 0){
+							for(int i = 0; i < choices.size(); i++){
+								if(selectedChoice.getKey().equals(choices.get(i).getKey())){
+									recordValue.setChoiceValue(selectedChoice);
+									isOtherChoice = false;
+									break;
+								}
+							}
+							
+							if(isOtherChoice && recordValue.isAllowotherchoice()){
+								recordValue.setChoiceValue(new ZCChoice(ZCRecordValue.allowOtherChoiceKey, "Other"));
+								recordValue.setOtherChoiceValue(selectedChoice.getValue());
+							}
+							
+						}
+						
+						
 					}
 				}
 			} 
@@ -1339,6 +1366,13 @@ class JSONParser {
 				return choice;
 			}
 		}
+		
+		if(recValue.isAllowotherchoice()){
+			ZCChoice choice = new ZCChoice(ZCRecordValue.allowOtherChoiceKey, "Other");
+			recValue.setOtherChoiceValue(zcChoice.getValue());
+			return choice;
+		}
+		
 		return null;
 	}
 

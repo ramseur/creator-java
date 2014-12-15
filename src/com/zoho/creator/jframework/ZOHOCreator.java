@@ -1590,7 +1590,6 @@ public class ZOHOCreator {
 
 	public static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
 
-		
 		if(readResponseFromFileForAPI) {
 			return (getResponseString(getURLString(url, params)));
 		}
@@ -1699,7 +1698,6 @@ public class ZOHOCreator {
 
 	private static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
 		
-
 		if(readResponseFromFileForAPI)
 		{
 			return getResponseDocument(getURLString(url, params));
@@ -1736,7 +1734,7 @@ public class ZOHOCreator {
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
-					
+
 					return toReturn;
 				} catch (ParserConfigurationException e) {
 
