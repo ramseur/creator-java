@@ -1617,7 +1617,6 @@ public class ZOHOCreator {
 			};
 			byte[] response = client.execute(request, handler);
 
-
 			return new String(response);
 		} catch(UnknownHostException uhe) {
 			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
@@ -1697,7 +1696,7 @@ public class ZOHOCreator {
 	}
 
 	private static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-		
+
 		if(readResponseFromFileForAPI)
 		{
 			return getResponseDocument(getURLString(url, params));
