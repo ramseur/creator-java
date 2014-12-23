@@ -98,14 +98,17 @@ public class ZCURL {
 	}
 
 	static URLPair sectionMetaURL(String appLinkName, String appOwner) {
-		return new URLPair(serverURL() + "/api/mobile/xml/" + appLinkName + "/sections/", getParamsWithOwner(appOwner)); //No I18N
+		List<NameValuePair> params = getParamsWithOwner(appOwner);
+		params.add(new BasicNameValuePair("isCrm", "true"));
+		params.add(new BasicNameValuePair("isRules", "true"));
+		return new URLPair(serverURL() + "/api/mobile/xml/" + appLinkName + "/sections/",params); //No I18N
 	}
 
 	static URLPair viewURL(String appLinkName, String viewLinkName, String appOwner) {
 		return new URLPair (serverURL() + "/api/mobile/xml/" + appLinkName + "/view/" + viewLinkName + "/", //No I18N
 				getParamsWithOwner(appOwner)); //No I18N
 	}
-	
+
 	static URLPair pivotViewURL(String appLinkName, String viewLinkName, String appOwner) {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);
 		params.add(new BasicNameValuePair("applinkname", appLinkName));//No I18N
@@ -134,17 +137,17 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("formAccessType", String.valueOf(ZCForm.VIEW_BULK_EDIT_FORM)));//No I18N
 		return new URLPair(serverURL() + "/api/"+appOwner+"/json/" + appLinkName + "/" +"view/"+ viewLinkName + "/bulkeditfields/", params);//No I18N
 	}
-	
+
 	static URLPair editFormMetaURL(String appLinkName, String appOwner, String viewLinkName, Long recordLinkId) {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);
 		params.add(new BasicNameValuePair("metaData","complete"));//No I18N
 		params.add(new BasicNameValuePair("zcRefValue","true"));//No I18N
 		return new URLPair(serverURL() + "/api/"+appOwner+"/json/" + appLinkName + "/view/"+ viewLinkName + "/record/" + recordLinkId + "/edit/", params);//No I18N
 	}
-	
-	
-	
-	
+
+
+
+
 	static URLPair formMetaURL(String appLinkName, String formLinkName, String appOwner, int formAccessType, List<NameValuePair> additionalParams) {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);
 		params.add(new BasicNameValuePair("metaData","complete"));//No I18N
@@ -174,15 +177,28 @@ public class ZCURL {
 		params.addAll(additionalParams);
 		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName +"/"+urlValToAdd+"/"+lookupFieldName+ "/options/", params);//No I18N
 	}
-	
+
 	static URLPair crmLookupChoices(int startIndex,String crmModuleType)
 	{
 		List<NameValuePair> params = getAuthtokenAsParam(new ArrayList<NameValuePair>());
 		params.add(new BasicNameValuePair("scope", "crmapi"));
-		params.add(new BasicNameValuePair("limit", 50 + ""));
-		params.add(new BasicNameValuePair("appendRows", "true"));
-		params.add(new BasicNameValuePair("fromIndex", startIndex + ""));
-		params.add(new BasicNameValuePair("toIndex", (startIndex+50)+""));
+		if(crmModuleType.equalsIgnoreCase("Users"))
+		{
+			params.add(new BasicNameValuePair("type","ActiveUsers"));
+			if(ZOHOCreator.getCreatorURL().contains("localzoho"))
+			{
+				return new URLPair(ZOHOCreator.getPrefix() + "://" +"crm.localzoho.com/crm/private/json/Users/getUsers",params);
+			}else
+			{
+				return new URLPair(ZOHOCreator.getPrefix() + "://" +"crm.zoho.com/crm/private/json/Users/getUsers",params);
+			}
+		}else
+		{
+			params.add(new BasicNameValuePair("limit", 50 + ""));
+			params.add(new BasicNameValuePair("appendRows", "true"));
+			params.add(new BasicNameValuePair("fromIndex", startIndex + ""));
+			params.add(new BasicNameValuePair("toIndex", (startIndex+50)+""));
+		}
 		if(ZOHOCreator.getCreatorURL().contains("localzoho"))
 		{
 			return new URLPair(ZOHOCreator.getPrefix() + "://" +"crm.localzoho.com"+"/crm/private/json/"+crmModuleType+"/getRecords",params);
@@ -202,7 +218,7 @@ public class ZCURL {
 		params.addAll(additionalParams);
 		return new URLPair(serverURL() + "/generateJSAPI.do" , params); //No I18N
 	}
-	
+
 	static URLPair formEditOnLoad(String appLinkName, String formLinkName, String appOwner,List<NameValuePair> additionalparams,Long recordLinkId,int formAccessType) {
 		List<NameValuePair> params=getDefaultParams();
 		params.add(new BasicNameValuePair("sharedBy", appOwner));
@@ -335,8 +351,8 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("hide_signup", "true"));
 		return new URLPair("https://" + ZOHOCreator.getAccountsURL() + "/accounts/signin", params);  //No I18N
 	}
-	
-	
+
+
 	static URLPair getCreatorUpgradeUrl() {
 		//https://accounts.zoho.com/login?servicename=ZohoCreator&serviceurl=https://creator.zoho.com/dashboard?showpage=upgradeplan&hide_signup=true&LOGIN_ID="+ZOHOCreator.getZohoUser().getEmailAddresses().get(0)
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -354,7 +370,7 @@ public class ZCURL {
 		params.add(new BasicNameValuePair("AUTHTOKEN", authToken));
 		return new URLPair("https://" + ZOHOCreator.getAccountsURL() + "/apiauthtoken/delete", params);
 	}
-	
+
 	static URLPair editAccessURL(String appOwner,String appLinkName)
 	{
 		List<NameValuePair> params = getDefaultParams();

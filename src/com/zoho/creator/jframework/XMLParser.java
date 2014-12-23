@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
 import android.text.format.DateUtils;
 
 
-class XMLParser {
+public class XMLParser {
 
 	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());
 
@@ -1450,7 +1450,7 @@ class XMLParser {
 		return record;
 	}
 
-	static ZCView parseForView(Document rootDocument, String appLinkName, String appOwner, String componentType, int month, int year) throws ZCException{		
+	public static ZCView parseForView(Document rootDocument, String appLinkName, String appOwner, String componentType, int month, int year) throws ZCException{		
 
 		NodeList nl = rootDocument.getChildNodes();
 

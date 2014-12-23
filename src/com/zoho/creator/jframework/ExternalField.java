@@ -78,6 +78,8 @@ public enum ExternalField{
 			return "Sales Orders";
 		case 16:
 			return "Invoices";
+		case 17:
+			return "Users";
 
 		}
 		return null;

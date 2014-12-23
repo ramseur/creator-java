@@ -255,16 +255,26 @@ public class ZCForm extends ZCComponent{
 					buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
 					buff.append("<value>");//No I18N
 					buff.append("<![CDATA[");//No I18N
-
 					if(recordValue.getChoiceValue() != null) {
 						if(recordValue.getChoiceValue().getKey().equals(ZCRecordValue.allowOtherChoiceKey)){
 							buff.append(recordValue.getOtherChoiceValue());
-						}else{
+						}
+						else if(field.getExternalFieldType()==ExternalField.UNKNOWN)
+						{
 							buff.append(recordValue.getChoiceValue().getKey());
+						}	
+						else
+						{
+							if(field.getModuleType().equalsIgnoreCase("Users"))
+							{
+								buff.append(recordValue.getChoiceValue().getKey());
+							}else
+							{
+								buff.append(recordValue.getChoiceValue().getValue());
+							}
 						}
 					}else
 					{
-
 						buff.append("");	
 					}
 					buff.append("]]>");//No I18N
@@ -287,7 +297,7 @@ public class ZCForm extends ZCComponent{
 						buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
 						buff.append("<value>");//No I18N
 						buff.append("<![CDATA[");//No I18N
-					
+
 						buff.append(recordValue.getValue());
 						buff.append("]]>");//No I18N
 						buff.append("</value>");//No I18N
@@ -330,13 +340,13 @@ public class ZCForm extends ZCComponent{
 						if(subFormRecordValue.getChoiceValue() != null) {
 							buff.append("<value>");//No I18N
 							buff.append("<![CDATA[");//No I18N
-							
+
 							if(subFormRecordValue.getChoiceValue().getKey().equals(ZCRecordValue.allowOtherChoiceKey)){
 								buff.append(subFormRecordValue.getOtherChoiceValue());
 							}else{
 								buff.append(subFormRecordValue.getChoiceValue().getKey());
 							}
-							
+
 							buff.append("]]>");//No I18N	
 							buff.append("</value>");//No I18N
 						}
@@ -379,7 +389,7 @@ public class ZCForm extends ZCComponent{
 		return recordValues;
 	}
 
-//	** check
+	//	** check
 
 	List<NameValuePair> getFieldParamValues() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -404,12 +414,12 @@ public class ZCForm extends ZCComponent{
 				else if(field.getType().equals(FieldType.SUB_FORM)) {
 					//params.addAll(getParamsForEditSubFormEntries(field,field.getFieldName()))
 					params.addAll(getParamsForSubFormEntries(field,field.getFieldName()));
-					
-					
+
+
 				} 
-				
-//				** check
-				
+
+				//				** check
+
 				else if(FieldType.isSingleChoiceField(field.getType())) {
 					if(recordValue.getChoiceValue() != null) {
 						params.add(new BasicNameValuePair(field.getFieldName(),recordValue.getChoiceValue().getKey()));
@@ -419,7 +429,7 @@ public class ZCForm extends ZCComponent{
 						params.add(new BasicNameValuePair(field.getFieldName(),""));
 					}
 				} else if(!FieldType.isPhotoField(field.getType()) && !field.getType().equals(FieldType.FORMULA) && !field.getType().equals(FieldType.NOTES)) {
-					
+
 					params.add(new BasicNameValuePair(field.getFieldName(),recordValue.getValue()));
 				}
 			}

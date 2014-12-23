@@ -455,7 +455,6 @@ public class ZOHOCreator {
 		if(toReturn == null) {
 
 			throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, resourceString.getString("unable_to_get") + getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
-
 		}
 		toReturn.setFormType(formType);
 		return toReturn;
@@ -1211,12 +1210,12 @@ public class ZOHOCreator {
 			subformComponent = field.getFieldName();
 			fieldName = subFormField.getFieldName();
 		}
-		
+
 		if(field.getType()==FieldType.EXTERNAL_FIELD)
 		{
 
 			String moduleType = field.getModuleType();
-			
+
 			URLPair crmLookupChoicesUrl = ZCURL.crmLookupChoices(size,moduleType);
 			String response = ZOHOCreator.postURL(crmLookupChoicesUrl.getUrl(),crmLookupChoicesUrl.getNvPair());
 			return JSONParser.parseCrmLookupChoices(response,zcRecordValue);
@@ -1590,12 +1589,13 @@ public class ZOHOCreator {
 
 	public static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
 
+
 		if(readResponseFromFileForAPI) {
 			return (getResponseString(getURLString(url, params)));
 		}
 
-		
 
+		
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1616,8 +1616,7 @@ public class ZOHOCreator {
 				}
 			};
 			byte[] response = client.execute(request, handler);
-
-
+			
 			return new String(response);
 		} catch(UnknownHostException uhe) {
 			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
@@ -1696,8 +1695,10 @@ public class ZOHOCreator {
 		return buff.toString();
 	}
 
-	private static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-		
+
+	public static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
+
+
 		if(readResponseFromFileForAPI)
 		{
 			return getResponseDocument(getURLString(url, params));
@@ -1729,12 +1730,10 @@ public class ZOHOCreator {
 				InputStream is = null;
 				try {
 					is = entity.getContent();
-
-
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
-
+					
 					return toReturn;
 				} catch (ParserConfigurationException e) {
 
@@ -1809,6 +1808,7 @@ public class ZOHOCreator {
 		if(bitMap!=null)
 		{
 			httppost.addHeader("enctype", "multipart/form-data"); //No I18N
+			
 
 			byte[] byteArray=null;
 			if(isFileUploadField)
@@ -1832,7 +1832,7 @@ public class ZOHOCreator {
 						while ((len = is.read(buf, 0, size)) != -1)
 							bos.write(buf, 0, len);
 						byteArray = bos.toByteArray();
-						
+
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -1855,7 +1855,7 @@ public class ZOHOCreator {
 		try {
 			ResponseHandler<String> responseHandler=new BasicResponseHandler();
 			String responseBody = httpclient.execute(httppost, responseHandler);
-			
+
 			//HttpResponse httpResponse = httpclient.execute(httppost);
 
 		} catch(UnknownHostException uhe) {
