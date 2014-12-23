@@ -79,8 +79,7 @@ public class ZCCondition {
 	private String startValueOfBetween = null;
 	private String endValueOfBetween = null;
 	private int operator = 0;
-	
-	 public static HashMap<String, Integer> conditionMap;
+	public static HashMap<String, Integer> conditionMap;
 	    
 	    static{
 	    	conditionMap = new HashMap<String, Integer>();

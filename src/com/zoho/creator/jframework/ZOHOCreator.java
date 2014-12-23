@@ -1616,7 +1616,7 @@ public class ZOHOCreator {
 				}
 			};
 			byte[] response = client.execute(request, handler);
-			
+
 			return new String(response);
 		} catch(UnknownHostException uhe) {
 			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
