@@ -17,7 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-class JSONParser {
+public class JSONParser {
 
 	public static final int PERSONAL_APPS = 1;
 	public static final int SHARED_APPS = 2;

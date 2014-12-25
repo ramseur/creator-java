@@ -379,7 +379,7 @@ public class ZCURL {
 	}
 
 	private static String serverURL() {
-		return ZOHOCreator.getPrefix() + "://" + ZOHOCreator.getCreatorURL(); //"https://icreator.localzoho.com"; //No I18N
+		return ZOHOCreator.getPrefix() + "://" + ZOHOCreator.getCreatorURL();//No I18N
 	}
 
 

@@ -1593,9 +1593,9 @@ public class ZOHOCreator {
 		if(readResponseFromFileForAPI) {
 			return (getResponseString(getURLString(url, params)));
 		}
-
-
 		
+
+
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1616,7 +1616,7 @@ public class ZOHOCreator {
 				}
 			};
 			byte[] response = client.execute(request, handler);
-
+		
 			return new String(response);
 		} catch(UnknownHostException uhe) {
 			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
@@ -1731,7 +1731,7 @@ public class ZOHOCreator {
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
-					
+				
 					return toReturn;
 				} catch (ParserConfigurationException e) {
 
@@ -1806,7 +1806,7 @@ public class ZOHOCreator {
 		if(bitMap!=null)
 		{
 			httppost.addHeader("enctype", "multipart/form-data"); //No I18N
-			
+
 
 			byte[] byteArray=null;
 			if(isFileUploadField)
