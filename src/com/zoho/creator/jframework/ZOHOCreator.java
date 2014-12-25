@@ -1695,9 +1695,7 @@ public class ZOHOCreator {
 		return buff.toString();
 	}
 
-
 	public static Document postURLXML(String url, List<NameValuePair> params) throws ZCException {
-
 
 		if(readResponseFromFileForAPI)
 		{

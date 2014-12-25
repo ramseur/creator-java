@@ -30,6 +30,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import android.text.Html;
 import android.text.format.DateUtils;
 
 
@@ -1306,7 +1307,7 @@ public class XMLParser {
 				for(int l=0; l<columnList.getLength(); l++) {
 					Node columnNode = columnList.item(l);
 					Node valueNode = columnNode.getFirstChild();
-					groupHeaderValues.add(getStringValue(valueNode, ""));
+					groupHeaderValues.add(getDecodedString(getStringValue(valueNode, "")));
 				}
 			} else if(recordNode.getNodeName().equals("record")) {
 				ZCRecord record = parseAndSetRecord(zcView, recordNode, null);
@@ -1343,7 +1344,7 @@ public class XMLParser {
 		for(int l=0; l<columnList.getLength(); l++) {
 			Node columnNode = columnList.item(l);
 			NamedNodeMap columAttrMap = columnNode.getAttributes();
-			String fieldName = columAttrMap.getNamedItem("name").getNodeValue(); //No I18N
+			String fieldName = getDecodedString(columAttrMap.getNamedItem("name").getNodeValue()); //No I18N
 
 			ZCField zcField = null;
 			if(zcView != null) {
@@ -1362,7 +1363,7 @@ public class XMLParser {
 			}
 
 			Node valueNode = columnNode.getFirstChild();
-			String value = getStringValue(valueNode, "");
+			String value = getDecodedString(getStringValue(valueNode, ""));
 			NodeList columnvalueList = columnNode.getChildNodes();
 			List<ZCChoice> selectedChoices = new ArrayList<ZCChoice>();
 			ZCChoice selectedChoice = null;
@@ -1378,7 +1379,7 @@ public class XMLParser {
 						Node columnvaluelistvaluenode = columnvaluelistChildnode.getAttributes().getNamedItem("value");
 						if(columnvaluelistvaluenode!=null)
 						{
-							String key = columnvaluelistvaluenode.getNodeValue();
+							String key = getDecodedString(columnvaluelistvaluenode.getNodeValue());
 							for(int j=0; j<choices.size(); j++) {
 								if(key.equals(choices.get(j).getKey())) {
 									selectedChoices.add(new ZCChoice(key,getStringValue(columnvaluelistChildnode, "")));
@@ -1428,11 +1429,11 @@ public class XMLParser {
 				for(int m=0;m<urlTagNodes.getLength();m++) {
 					Node urlNode = urlTagNodes.item(m);
 					if(urlNode.getNodeName().equals("linkname")) {
-						urlLinkNameValue = getStringValue(urlNode, urlLinkNameValue);
+						urlLinkNameValue = getDecodedString(getStringValue(urlNode, urlLinkNameValue));
 					} else if(urlNode.getNodeName().equals("url")) {
-						value = getStringValue(urlNode, "");
+						value = getDecodedString(getStringValue(urlNode, ""));
 					} else if(urlNode.getNodeName().equals("title")) {
-						urlTitleValue = getStringValue(urlNode, urlTitleValue);
+						urlTitleValue = getDecodedString(getStringValue(urlNode, urlTitleValue));
 					}
 				}
 				zcValue = new ZCRecordValue(zcField, value,urlTitleValue,urlLinkNameValue);
@@ -1451,7 +1452,6 @@ public class XMLParser {
 	}
 
 	public static ZCView parseForView(Document rootDocument, String appLinkName, String appOwner, String componentType, int month, int year) throws ZCException{		
-
 		NodeList nl = rootDocument.getChildNodes();
 
 		ZCView toReturn = null;
@@ -1483,7 +1483,7 @@ public class XMLParser {
 									}else if(errorlistchildNode.getNodeName().equals("message"))
 									{
 										hasErrorOcured = true;
-										errorMessage = getStringValue(errorlistchildNode,"");
+										errorMessage = getDecodedString(getStringValue(errorlistchildNode,""));
 
 									}
 								}
@@ -1504,10 +1504,10 @@ public class XMLParser {
 							Node viewNode = viewNodes.item(k);
 							if(viewNode.getNodeName().equals("View")) {
 								NamedNodeMap attrMap = viewNode.getAttributes();
-								String componentLinkName = attrMap.getNamedItem("LinkName").getNodeValue();//No I18N
+								String componentLinkName = getDecodedString(attrMap.getNamedItem("LinkName").getNodeValue());//No I18N
 
-								String componentName = getChildNodeValue(viewNode, "DisplayName"); //No I18N
-								String dateFormat = attrMap.getNamedItem("DateFormat").getNodeValue();//No I18N
+								String componentName = getDecodedString(getChildNodeValue(viewNode, "DisplayName")); //No I18N
+								String dateFormat = getDecodedString(attrMap.getNamedItem("DateFormat").getNodeValue());//No I18N
 								//String appOwner, String appLinkName, String componentName, String componentLinkName
 								toReturn = new ZCView(appOwner, appLinkName, componentType, componentName, componentLinkName);
 								toReturn.setDateFormat(dateFormat);
@@ -1516,7 +1516,7 @@ public class XMLParser {
 									Node viewChildNode = viewChildNodes.item(l);
 									if(viewChildNode.getNodeName().equals("BaseForm")) {
 										NamedNodeMap baseFormAttrMap = viewChildNode.getAttributes();
-										String baseFormLinkName = baseFormAttrMap.getNamedItem("linkname").getNodeValue(); //No I18N
+										String baseFormLinkName = getDecodedString(baseFormAttrMap.getNamedItem("linkname").getNodeValue()); //No I18N
 										toReturn.setBaseFormLinkName(baseFormLinkName);
 									} else if(viewChildNode.getNodeName().equals("customFilters")) {
 										NodeList customFilterNodeList = viewChildNode.getChildNodes();
@@ -1525,7 +1525,7 @@ public class XMLParser {
 											Node customFilterNode = customFilterNodeList.item(m);
 											NamedNodeMap customFilterAttrMap = customFilterNode.getAttributes();
 											long id = Long.parseLong(customFilterAttrMap.getNamedItem("Id").getNodeValue()); //No I18N											
-											String customFilterName = getChildNodeValue(customFilterNode, "DisplayName");//No I18N
+											String customFilterName = getDecodedString(getChildNodeValue(customFilterNode, "DisplayName"));//No I18N
 											ZCCustomFilter customFilter = new ZCCustomFilter(customFilterName, id);
 											customFilters.add(customFilter);
 										}
@@ -1536,8 +1536,8 @@ public class XMLParser {
 										for(int m=0; m<filterNodeList.getLength(); m++) {
 											Node filterNode = filterNodeList.item(m);
 											NamedNodeMap filterAttrMap = filterNode.getAttributes();
-											String FilterLinkName = filterAttrMap.getNamedItem("name").getNodeValue(); //No I18N
-											String filterName = getChildNodeValue(filterNode, "displayname"); //filterAttrMap.getNamedItem("displayname").getNodeValue(); //No I18N
+											String FilterLinkName = getDecodedString(filterAttrMap.getNamedItem("name").getNodeValue()); //No I18N
+											String filterName = getDecodedString(getChildNodeValue(filterNode, "displayname")); //filterAttrMap.getNamedItem("displayname").getNodeValue(); //No I18N
 											ZCFilter filter = new ZCFilter(FilterLinkName, filterName);
 											NodeList filterValuesList = filterNode.getChildNodes();
 											List<ZCFilterValue> filterValues = new ArrayList<ZCFilterValue>();
@@ -1545,12 +1545,12 @@ public class XMLParser {
 												Node filterValueNode = filterValuesList.item(n);
 												if(filterValueNode.getNodeName().equals("value")) {
 
-													String filterValue = getStringValue(filterValueNode, ""); //No I18N
+													String filterValue = getDecodedString(getStringValue(filterValueNode, "")); //No I18N
 													filterValue = filterValue.substring(filterValue.indexOf(":") + 1);
 													String displayValue = filterValue;
 													NamedNodeMap filterValAttrMap = filterValueNode.getAttributes();
 													if(filterValAttrMap.getLength()>0){
-														displayValue = filterValAttrMap.getNamedItem("display").getNodeValue();
+														displayValue = getDecodedString(filterValAttrMap.getNamedItem("display").getNodeValue());
 													}
 													filterValues.add(new ZCFilterValue(filterValue,displayValue));
 												}
@@ -1584,9 +1584,9 @@ public class XMLParser {
 										for(int m=0; m<actionList.getLength(); m++) {
 											Node actionNode = actionList.item(m);
 											NamedNodeMap actionAttrMap = actionNode.getAttributes();
-											String actionType = actionAttrMap.getNamedItem("type").getNodeValue(); //No I18N
-											String actionName = getChildNodeValue(actionNode, "name"); //actionAttrMap.getNamedItem("name").getNodeValue(); //No I18N
-											String headerAction = getChildNodeValue(actionNode, "isHeaderAction");
+											String actionType = getDecodedString(actionAttrMap.getNamedItem("type").getNodeValue()); //No I18N
+											String actionName = getDecodedString(getChildNodeValue(actionNode, "name")); //actionAttrMap.getNamedItem("name").getNodeValue(); //No I18N
+											String headerAction = getDecodedString(getChildNodeValue(actionNode, "isHeaderAction"));
 											Long actionId = Long.parseLong(actionAttrMap.getNamedItem("id").getNodeValue()); //No I18N
 											ZCCustomAction action = new ZCCustomAction(actionType, actionName, actionId);
 											if(actionType.equals("row")) {
@@ -1604,9 +1604,9 @@ public class XMLParser {
 										for(int m=0; m<fieldList.getLength(); m++) {
 											Node fieldNode = fieldList.item(m);
 											NamedNodeMap fieldAttrMap = fieldNode.getAttributes();
-											String displayName = getChildNodeValue(fieldNode, "DisplayName"); //fieldAttrMap.getNamedItem("DisplayName").getNodeValue(); //No I18N
-											String fieldName = fieldAttrMap.getNamedItem("BaseLabelName").getNodeValue(); //No I18N
-											String compType = fieldAttrMap.getNamedItem("ComponentType").getNodeValue(); //No I18N
+											String displayName = getDecodedString(getChildNodeValue(fieldNode, "DisplayName")); //fieldAttrMap.getNamedItem("DisplayName").getNodeValue(); //No I18N
+											String fieldName = getDecodedString(fieldAttrMap.getNamedItem("BaseLabelName").getNodeValue()); //No I18N
+											String compType = getDecodedString(fieldAttrMap.getNamedItem("ComponentType").getNodeValue()); //No I18N
 											FieldType fieldType = FieldType.getFieldType(compType);
 											int seqNo  = Integer.parseInt(fieldAttrMap.getNamedItem("SequenceNumber").getNodeValue()); //No I18N
 											ZCColumn column = new ZCColumn(fieldName, fieldType, displayName);
@@ -1697,6 +1697,14 @@ public class XMLParser {
 		{
 			ex.printStackTrace();
 			return null;
+		}
+	}
+	
+	private static String getDecodedString(String encodedString){
+		if(encodedString != null){
+			return Html.fromHtml(encodedString).toString();
+		}else{
+			return encodedString;
 		}
 	}
 }
