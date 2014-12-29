@@ -32,8 +32,10 @@ public class ZCForm extends ZCComponent{
 	private String openUrl = "";
 	private String openurlType = "";
 	private String openurlValue = "";
+	private List<ZCRule> rules = new ArrayList<ZCRule>();
 
 	private int formType = ZCForm.FORM_ALONE;
+
 
 	public static final int FORM_ALONE =1;
 	public static final int VIEW_ADD_FORM =2;
@@ -113,6 +115,15 @@ public class ZCForm extends ZCComponent{
 		return toReturn ;
 	}
 
+	void setRules(List<ZCRule> rules)
+	{
+		this.rules = rules;
+	}
+
+	public List<ZCRule> getRules()
+	{
+		return rules;
+	}
 
 	void addButtons(List<ZCButton> buttons) {
 		if(!buttonsAdded) {

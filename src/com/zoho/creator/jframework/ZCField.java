@@ -65,8 +65,10 @@ public class ZCField implements Comparable<ZCField>{
 	private String moduleType = "Leads";
 	private boolean isSubFormAddEntryHidden = false;
 	private boolean isSubFormDeleteEntryHidden = false;
-	private String ruleCondition = null;
-	private List<ZCTask> zcTasks = new ArrayList<ZCTask>();
+
+	
+	private List<ZCRule> fieldRules = new ArrayList<ZCRule>();
+
 	public static int IMAGE_LINK = 1;
 	public static int IMAGE_LOCAL = 2;
 	public static int IMAGE_BOTH = 3;
@@ -115,21 +117,17 @@ public class ZCField implements Comparable<ZCField>{
 	}
 
 
-	public String getRuleCondition()
+
+	public List<ZCRule> getFieldRules()
 	{
-		return ruleCondition;
+		return fieldRules;
+	}
+	
+	void setfieldRules(List<ZCRule> fieldRules)
+	{
+		this.fieldRules = fieldRules;
 	}
 
-	void setRuleCondition(String ruleCondition)
-	{
-		this.ruleCondition = ruleCondition;
-	}
-
-
-	public List<ZCTask> getZCTasks()
-	{
-		return zcTasks;
-	}
 	
 	public ZCRecordValue getPreviousRecordValue()
 	{
@@ -305,6 +303,21 @@ public class ZCField implements Comparable<ZCField>{
 
 	public void setRecordValue(ZCRecordValue recordValue) {
 		this.recordValue = recordValue;
+//		if(recordValue!=null)
+//		{
+//			ZCField tempField = recordValue.getField();
+//			FieldType ftype = tempField.getType();
+//			if(FieldType.isMultiChoiceField(ftype))
+//			{
+//				previousRecordValue = new ZCRecordValue(tempField, recordValue.getChoiceValues());	
+//			}else if(FieldType.isSingleChoiceField(ftype)){
+//				previousRecordValue = new ZCRecordValue(tempField, recordValue.getChoiceValue());
+//			}
+//			else if((!FieldType.isPhotoField(ftype))&&(ftype!=FieldType.SIGNATURE))
+//			{
+//				previousRecordValue = new ZCRecordValue(tempField, recordValue.getValue());
+//			}
+//		}
 	}
 
 	public boolean isLookup() {

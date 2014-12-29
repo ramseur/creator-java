@@ -91,189 +91,205 @@ public class JSONParser {
 	}
 
 
-	public static void executeRuleActions(ZCField zcField,HashMap<String,Object> valuesHashMap)
+//	public static void evaluateRuleActions(ZCField zcField,HashMap<String,Object> valuesHashMap)
+//	{
+//		{
+//			CriteriaExecutor cExec = new CriteriaExecutor();
+//
+//			boolean isConditionTrue = false;
+//			List<ZCRule> fieldRules =  zcField.getFieldRules();
+//			
+//			for(int i=0;i<fieldRules.size();i++)
+//			{
+//				ZCRule rule = fieldRules.get(i);
+//				String ruleCondition = rule.getCondition();
+//
+//				
+//				Set set = valuesHashMap.keySet();
+//				Iterator itrtr = set.iterator();
+//				while(itrtr.hasNext())
+//				{
+//					String key = (String) itrtr.next();
+//					
+//				}
+//
+//				if(ruleCondition!=null&&ruleCondition.length()>0)
+//				{
+//					try {
+//						isConditionTrue = cExec.evaluateCriteria(rule.getCondition(), valuesHashMap);
+//					} catch (Exception e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					
+//					executeRuleActions(rule.getZCTasks(), valuesHashMap,isConditionTrue,zcField.getBaseForm());
+//				}
+//			}
+//		} 
+//	}
+
+
+	public static void executeRuleActions(List<ZCTask> tasks,HashMap<String,Object> valuesHashMap,boolean isConditionTrue,ZCForm loadedForm)
 	{
-
-
+		for(int i=0;i<tasks.size();i++)
 		{
+			ZCTask task = tasks.get(i);
+			int taskType = task.getZCTaskType();
+			List<String> fieldNames = task.getFieldNames();
+			HashMap<String,String> setValuesHashMap = task.getSetValuesHashMap();
+			Set set = setValuesHashMap.keySet();
+			Iterator itrtr = set.iterator();
+			while(itrtr.hasNext())
+			{
+				String key = (String) itrtr.next();
 
-			CriteriaExecutor cExec = new CriteriaExecutor();
-
-			boolean isConditionTrue = false;
-			try {
-				isConditionTrue = cExec.evaluateCriteria(zcField.getRuleCondition(), valuesHashMap);
-			} catch (org.antlr.runtime.RecognitionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 
-
-
-			//formActivity.executeRuleActions(zcField,isConditionTrue);
-			List<ZCTask> tasks = zcField.getZCTasks();
-			for(int i=0;i<tasks.size();i++)
+			for(int j=0;j<fieldNames.size();j++)
 			{
-				ZCTask task = tasks.get(i);
-				int taskType = task.getZCTaskType();
-				List<String> fieldNames = task.getFieldNames();
-				HashMap<String,String> setValuesHashMap = task.getSetValuesHashMap();
-				Set set = setValuesHashMap.keySet();
-				Iterator itrtr = set.iterator();
-				while(itrtr.hasNext())
+				String fieldName = fieldNames.get(j);
+				ZCField zcfield = loadedForm.getField(fieldName);
+				zcfield.setRebuildRequired(true);
+
+				if(taskType==ZCTask.SET_FIELD_VALUE)
 				{
-					String key = (String) itrtr.next();
 
-				}
-
-				for(int j=0;j<fieldNames.size();j++)
-				{
-					String fieldName = fieldNames.get(j);
-					ZCForm loadedForm = zcField.getBaseForm();
-					ZCField zcfield = loadedForm.getField(fieldName);
-					zcfield.setRebuildRequired(true);
-
-					if(taskType==ZCTask.SET_FIELD_VALUE)
+					FieldType fType = zcfield.getType();
+					ZCRecordValue recValue = zcfield.getRecordValue();
+					ZCRecordValue previousValue = zcfield.getPreviousRecordValue();
+					if(FieldType.isChoiceField(fType))
 					{
 
-						FieldType fType = zcfield.getType();
-						ZCRecordValue recValue = zcfield.getRecordValue();
-						ZCRecordValue previousValue = zcfield.getPreviousRecordValue();
-						if(FieldType.isChoiceField(fType))
+						List<ZCChoice> zcChoices = recValue.getChoices();
+						for(int k=0;k<zcChoices.size();k++)
+						{
+							ZCChoice zcChoice = zcChoices.get(j);
+							if(setValuesHashMap.get(fieldName).equals(zcChoice.getKey()))
+							{
+								if(FieldType.isSingleChoiceField(fType))
+								{
+									if(isConditionTrue)
+									{
+										recValue.setChoiceValue(zcChoice);
+									}
+									else
+									{
+										recValue.setChoiceValue(previousValue.getChoiceValue());
+									}
+								}
+								else if(FieldType.isMultiChoiceField(fType))
+								{
+									List<ZCChoice> setValueZCChoices = new ArrayList<ZCChoice>();
+									setValueZCChoices.add(zcChoice);
+									if(isConditionTrue)
+									{
+										recValue.setChoiceValues(setValueZCChoices);
+									}
+									else
+									{
+										recValue.setChoiceValues(previousValue.getChoiceValues());
+									}
+								}
+								break;
+							}
+						}
+					}
+					else
+					{
+
+						if(isConditionTrue)
 						{
 
-							List<ZCChoice> zcChoices = recValue.getChoices();
-							for(int k=0;k<zcChoices.size();k++)
-							{
-								ZCChoice zcChoice = zcChoices.get(j);
-								if(setValuesHashMap.get(fieldName).equals(zcChoice.getKey()))
-								{
-									if(FieldType.isSingleChoiceField(fType))
-									{
-										if(isConditionTrue)
-										{
-											recValue.setChoiceValue(zcChoice);
-										}
-										else
-										{
-											recValue.setChoiceValue(previousValue.getChoiceValue());
-										}
-									}
-									else if(FieldType.isMultiChoiceField(fType))
-									{
-										List<ZCChoice> setValueZCChoices = new ArrayList<ZCChoice>();
-										setValueZCChoices.add(zcChoice);
-										if(isConditionTrue)
-										{
-											recValue.setChoiceValues(setValueZCChoices);
-										}
-										else
-										{
-											recValue.setChoiceValues(previousValue.getChoiceValues());
-										}
-									}
-									break;
-								}
-							}
+							recValue.setValue(setValuesHashMap.get(fieldName));
 						}
 						else
 						{
 
-							if(isConditionTrue)
-							{
-
-								recValue.setValue(setValuesHashMap.get(fieldName));
-							}
-							else
-							{
-
-								recValue.setValue(previousValue.getValue());
-							}
-						}
-					}
-					else if(taskType==ZCTask.HIDE_FIELDS)
-					{
-						if(isConditionTrue)
-						{
-							zcfield.setHidden(true);
-						}else
-						{
-							zcfield.setHidden(false);
-						}
-					}else if(taskType==ZCTask.DISABLE_FIELDS)
-					{
-						if(isConditionTrue)
-						{
-							zcfield.setDisabled(true);
-						}else
-						{
-							zcfield.setDisabled(false);
-						}
-					}
-					else if(taskType==ZCTask.ENABLE_FIELDS)
-					{
-						if(isConditionTrue)
-						{
-							zcfield.setDisabled(false);
-						}else
-						{
-							zcfield.setDisabled(true);
-						}
-					}
-					else if(taskType==ZCTask.SHOW_FIELDS)
-					{
-						if(isConditionTrue)
-						{
-							zcfield.setHidden(false);
-						}else
-						{
-							zcfield.setHidden(true); 
-						}
-					}
-					else if(taskType==ZCTask.HIDE_SUBFROM_ADD_ENTRY)
-					{
-						if(isConditionTrue)
-						{
-							zcfield.setSubFormAddEntryHidden(true);
-						}else
-						{
-							zcfield.setSubFormAddEntryHidden(false);
-						}
-					}
-					else if(taskType==ZCTask.SHOW_SUBFORM_ADD_ENTRY)
-					{
-						if(isConditionTrue)
-						{
-							zcfield.setSubFormAddEntryHidden(false);
-						}else
-						{
-							zcfield.setSubFormAddEntryHidden(true);
-						}
-					}
-					else if(taskType==ZCTask.HIDE_SUBFORM_DELETE_ENTRY)
-					{
-						if(isConditionTrue)
-						{
-							zcfield.setSubFormDeleteEntryHidden(true);
-						}else
-						{
-							zcfield.setSubFormDeleteEntryHidden(false);
-						}
-					}
-					else if(taskType==ZCTask.SHOW_SUBFORM_DELETE_ENTRY)
-					{
-						if(isConditionTrue)
-						{
-							zcfield.setSubFormDeleteEntryHidden(false);
-						}else
-						{
-							zcfield.setSubFormDeleteEntryHidden(true);
+							recValue.setValue(previousValue.getValue());
 						}
 					}
 				}
+				else if(taskType==ZCTask.HIDE_FIELDS)
+				{
+					if(isConditionTrue)
+					{
+						zcfield.setHidden(true);
+					}else
+					{
+						zcfield.setHidden(false);
+					}
+				}else if(taskType==ZCTask.DISABLE_FIELDS)
+				{
+					if(isConditionTrue)
+					{
+						zcfield.setDisabled(true);
+					}else
+					{
+						zcfield.setDisabled(false);
+					}
+				}
+				else if(taskType==ZCTask.ENABLE_FIELDS)
+				{
+					if(isConditionTrue)
+					{
+						zcfield.setDisabled(false);
+					}else
+					{
+						zcfield.setDisabled(true);
+					}
+				}
+				else if(taskType==ZCTask.SHOW_FIELDS)
+				{
+					if(isConditionTrue)
+					{
+						zcfield.setHidden(false);
+					}else
+					{
+						zcfield.setHidden(true); 
+					}
+				}
+				else if(taskType==ZCTask.HIDE_SUBFROM_ADD_ENTRY)
+				{
+					if(isConditionTrue)
+					{
+						zcfield.setSubFormAddEntryHidden(true);
+					}else
+					{
+						zcfield.setSubFormAddEntryHidden(false);
+					}
+				}
+				else if(taskType==ZCTask.SHOW_SUBFORM_ADD_ENTRY)
+				{
+					if(isConditionTrue)
+					{
+						zcfield.setSubFormAddEntryHidden(false);
+					}else
+					{
+						zcfield.setSubFormAddEntryHidden(true);
+					}
+				}
+				else if(taskType==ZCTask.HIDE_SUBFORM_DELETE_ENTRY)
+				{
+					if(isConditionTrue)
+					{
+						zcfield.setSubFormDeleteEntryHidden(true);
+					}else
+					{
+						zcfield.setSubFormDeleteEntryHidden(false);
+					}
+				}
+				else if(taskType==ZCTask.SHOW_SUBFORM_DELETE_ENTRY)
+				{
+					if(isConditionTrue)
+					{
+						zcfield.setSubFormDeleteEntryHidden(false);
+					}else
+					{
+						zcfield.setSubFormDeleteEntryHidden(true);
+					}
+				}
 			}
-
-
-		} 
+		}
 	}
 
 	static List<ZCRule> parseForRules(JSONArray rulesArray,List<ZCField> zcFields)
@@ -292,19 +308,18 @@ public class JSONParser {
 				if(rulesObj.has("CONDITION"))
 				{
 					condition = rulesObj.getString("CONDITION");
+					
 				}
 				if(rulesObj.has("CONDITION_FIELDS"))
 				{
 					JSONArray fieldNamesArray = (JSONArray)rulesObj.get("CONDITION_FIELDS");
 					for(int i=0;i<fieldNamesArray.length();i++)
 					{
-
 						for(int fieldSize = 0;fieldSize<zcFields.size();fieldSize++)
 						{
 							ZCField zcField = zcFields.get(fieldSize);
 							if(zcField.getFieldName().equals((String)fieldNamesArray.get(i)))
 							{
-								zcField.setRuleCondition(condition);
 								zcFieldswithRules.add(zcField);
 							}
 						}
@@ -362,12 +377,14 @@ public class JSONParser {
 							zcTask = new ZCTask(taskType,setValuesHashMap,fieldNames);
 						}
 						zcTasks.add(zcTask);
-						for(int j=0;j<zcFieldswithRules.size();j++){
-							zcFieldswithRules.get(j).getZCTasks().add(zcTask);
-						}
+
 					}
 				}
-				zcRules.add(new ZCRule(zcTasks, fieldNamesWithCriteria));
+				ZCRule rule = new ZCRule(zcTasks,fieldNamesWithCriteria,condition);
+				for(int j=0;j<zcFieldswithRules.size();j++){
+					zcFieldswithRules.get(j).getFieldRules().add(rule);
+				}
+				zcRules.add(rule);
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -1424,7 +1441,7 @@ public class JSONParser {
 				}
 			}
 			catch(ClassCastException e) {
-				
+
 				value = (String)jsonObj.get("fieldValue");
 			}
 		}
@@ -1532,7 +1549,7 @@ public class JSONParser {
 			} else if(type==ZCForm.TASK_CLEAR) {
 				recordValue.clearChoices();
 				recordValue.setLastReachedForChoices(true);
-				
+
 				if(recordValue.isAllowotherchoice()){
 					recordValue.setAllowotherchoice(false);
 				}
@@ -1548,11 +1565,11 @@ public class JSONParser {
 					if(choiceValues.size()>0)
 					{
 						ZCChoice selectedChoice = choiceValues.get(0);
-						
+
 						boolean isOtherChoice = true;
-						
+
 						List<ZCChoice> choices = recordValue.getChoices();
-						
+
 						if(choices != null && choices.size() > 0){
 							for(int i = 0; i < choices.size(); i++){
 								if(selectedChoice.getKey().equals(choices.get(i).getKey())){
@@ -1561,15 +1578,15 @@ public class JSONParser {
 									break;
 								}
 							}
-							
+
 							if(isOtherChoice && recordValue.isAllowotherchoice()){
 								recordValue.setChoiceValue(new ZCChoice(ZCRecordValue.allowOtherChoiceKey, "Other"));
 								recordValue.setOtherChoiceValue(selectedChoice.getValue());
 							}
-							
+
 						}
-						
-						
+
+
 					}
 				}
 			} 
@@ -1710,7 +1727,7 @@ public class JSONParser {
 				else
 				{
 					if(zcRecordValue.getField().getType().equals(FieldType.NOTES)){
-						if(value.contains("<img")){
+						if(value!=null && value.contains("<img")){
 							int indexOfImgTag = value.indexOf("<img");
 							int indexOfImgSrc = value.indexOf("src", indexOfImgTag);
 							int indexOfstartVal = value.indexOf("\"", indexOfImgSrc);
@@ -1747,13 +1764,13 @@ public class JSONParser {
 				return choice;
 			}
 		}
-		
+
 		if(recValue.isAllowotherchoice()){
 			ZCChoice choice = new ZCChoice(ZCRecordValue.allowOtherChoiceKey, "Other");
 			recValue.setOtherChoiceValue(zcChoice.getValue());
 			return choice;
 		}
-		
+
 		return null;
 	}
 
@@ -1908,6 +1925,7 @@ public class JSONParser {
 		String openurlValue = "";
 		List<ZCButton> buttons = new ArrayList<ZCButton>();
 		List<ZCField> fields = new ArrayList<ZCField>();
+		List<ZCRule> rules = new ArrayList<ZCRule>();
 		int code = 0;
 
 		ZCForm toReturn = null;
@@ -2015,7 +2033,7 @@ public class JSONParser {
 				if(responseObject.has("rules"))
 				{
 					JSONArray rulesArray = new JSONArray(responseObject.getString("rules"));
-					parseForRules(rulesArray,fields);
+					rules = parseForRules(rulesArray,fields);
 				}
 
 				if(responseObject.has("buttons")){
@@ -2061,6 +2079,7 @@ public class JSONParser {
 				// String appOwner, String appLinkName, String type, String componentName, String componentLinkName, int sequenceNumber, Long componentID, boolean hasAddOnLoad, boolean hasEditOnLoad, String successMessage, String tableName, int formLinkId
 				toReturn = new ZCForm(appOwner, appLinkName, componentName, componentLinkName, sequenceNumber,  hasAddOnLoad, hasEditOnLoad, successMessage, dateFormat, isStateLess,openurlType,openurlValue);
 				toReturn.addFields(fields);
+				toReturn.setRules(rules);
 				for(int i=0;i<fields.size();i++)
 				{
 					ZCField field = fields.get(i);
@@ -2073,12 +2092,12 @@ public class JSONParser {
 							ZCChoice crmChoice = field.getRecordValue().getChoiceValue();
 							if(crmChoice!=null)
 							{
-								
+
 								String crmValue = crmChoice.getValue();
-								
+
 								if(crmValue!=null&&crmValue.length()>0)
 								{
-									
+
 									field.setRecordValue(new ZCRecordValue(field,new ZCChoice(crmIdValue, crmValue)));
 								}
 							}
