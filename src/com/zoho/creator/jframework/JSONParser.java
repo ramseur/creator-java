@@ -2032,8 +2032,9 @@ public class JSONParser {
 
 				if(responseObject.has("rules"))
 				{
-					JSONArray rulesArray = new JSONArray(responseObject.getString("rules"));
-					rules = parseForRules(rulesArray,fields);
+					throw new ZCException(resourceString.getString("this_form_contains_rules_which_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
+					//JSONArray rulesArray = new JSONArray(responseObject.getString("rules"));
+					//rules = parseForRules(rulesArray,fields);
 				}
 
 				if(responseObject.has("buttons")){
