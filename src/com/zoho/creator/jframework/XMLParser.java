@@ -1277,8 +1277,6 @@ public class XMLParser {
 				zcGroup.addRecord(eventRecord);
 			}
 		}
-
-
 		zcView.sortRecordsForCalendar();
 
 
@@ -1429,15 +1427,19 @@ public class XMLParser {
 				for(int m=0;m<urlTagNodes.getLength();m++) {
 					Node urlNode = urlTagNodes.item(m);
 					if(urlNode.getNodeName().equals("linkname")) {
-						urlLinkNameValue = getDecodedString(getStringValue(urlNode, urlLinkNameValue));
+						urlLinkNameValue = getStringValue(urlNode, urlLinkNameValue);
 					} else if(urlNode.getNodeName().equals("url")) {
-						value = getDecodedString(getStringValue(urlNode, ""));
+						value = getStringValue(urlNode, "");
 					} else if(urlNode.getNodeName().equals("title")) {
-						urlTitleValue = getDecodedString(getStringValue(urlNode, urlTitleValue));
+						urlTitleValue = getStringValue(urlNode, urlTitleValue);
 					}
 				}
 				zcValue = new ZCRecordValue(zcField, value,urlTitleValue,urlLinkNameValue);
-			} else {
+			}else if(FieldType.RICH_TEXT.equals(zcField.getType()))
+			{
+				zcValue = new ZCRecordValue(zcField,getStringValue(valueNode, ""));
+			}
+			else {
 				zcValue = new ZCRecordValue(zcField, value);
 			}
 			if(zcView!=null)
