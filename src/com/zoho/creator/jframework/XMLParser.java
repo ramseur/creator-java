@@ -1149,7 +1149,7 @@ public class XMLParser {
 	}
 
 	private static void parseAndSetCalendarRecords(ZCView zcView, Node calendarNode) {
-		
+
 		zcView.setGrouped(true);
 		NodeList eventsList = calendarNode.getChildNodes();
 		int year = zcView.getRecordsMonthYear().getTwo()-1900;
@@ -1215,7 +1215,7 @@ public class XMLParser {
 					cureentmnthcalendar.add(cureentmnthcalendar.DAY_OF_MONTH, -6);
 					currentDate = cureentmnthcalendar.getTime();
 
-					
+
 					for(int j=0;j<42;j++)
 					{
 						if((currentDate.getDate()==startTime.getDate()&&currentDate.getMonth()==startTime.getMonth()&&currentDate.getYear()==startTime.getYear())||(currentDate.after(startTime)&&currentDate.before(endTime))||(currentDate.getDate()==endTime.getDate()&&currentDate.getMonth()==endTime.getMonth()&&currentDate.getYear()==endTime.getYear()))
@@ -1236,7 +1236,7 @@ public class XMLParser {
 				Date endTime = getDateValue(eventAttrMap.getNamedItem("end").getNodeValue(), dateFormat); //No I18N
 				record.setStartTime(startTime);
 				record.setEndTime(endTime);
-				
+
 				Calendar startCalendar = new GregorianCalendar();
 				startCalendar.setTime(startTime);
 				startCalendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -1264,7 +1264,7 @@ public class XMLParser {
 		List<ZCGroup> zcGroups = zcView.getGroups();
 		HashMap<Date, List<ZCRecord>> eventsMap = zcView.getEventRecordsMap();
 		SortedSet<Date> keys = new TreeSet<Date>(eventsMap.keySet());
-		
+
 		for (Date eventDate : keys) { 
 			List<ZCRecord> eventRecords = eventsMap.get(eventDate);
 			List<String> groupHeaderValues  = new ArrayList<String>();
@@ -1413,6 +1413,7 @@ public class XMLParser {
 			}
 
 			ZCRecordValue zcValue = null;
+			
 			if(FieldType.isMultiChoiceField(zcField.getType())) {
 
 				zcValue = new ZCRecordValue(zcField, selectedChoices);
@@ -1427,14 +1428,17 @@ public class XMLParser {
 				for(int m=0;m<urlTagNodes.getLength();m++) {
 					Node urlNode = urlTagNodes.item(m);
 					if(urlNode.getNodeName().equals("linkname")) {
+						
 						urlLinkNameValue = getStringValue(urlNode, urlLinkNameValue);
 					} else if(urlNode.getNodeName().equals("url")) {
+						
 						value = getStringValue(urlNode, "");
 					} else if(urlNode.getNodeName().equals("title")) {
+						
 						urlTitleValue = getStringValue(urlNode, urlTitleValue);
 					}
 				}
-				zcValue = new ZCRecordValue(zcField, value,urlTitleValue,urlLinkNameValue);
+				zcValue = new ZCRecordValue(zcField, getStringValue(valueNode, ""),urlTitleValue,urlLinkNameValue);
 			}else if(FieldType.RICH_TEXT.equals(zcField.getType()))
 			{
 				zcValue = new ZCRecordValue(zcField,getStringValue(valueNode, ""));
@@ -1701,7 +1705,7 @@ public class XMLParser {
 			return null;
 		}
 	}
-	
+
 	private static String getDecodedString(String encodedString){
 		if(encodedString != null){
 			return Html.fromHtml(encodedString).toString();
