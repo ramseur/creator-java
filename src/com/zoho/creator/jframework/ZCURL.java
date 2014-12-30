@@ -99,7 +99,6 @@ public class ZCURL {
 
 	static URLPair sectionMetaURL(String appLinkName, String appOwner) {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);
-		params.add(new BasicNameValuePair("isCrm", "true"));
 		return new URLPair(serverURL() + "/api/mobile/xml/" + appLinkName + "/sections/",params); //No I18N
 	}
 

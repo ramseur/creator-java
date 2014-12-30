@@ -24,8 +24,6 @@ public class JSONParser {
 	public static final int WORKSPACE_APPS = 3;
 	static List<JSONObject> onUserInputJsonObj = new ArrayList<JSONObject>();
 
-
-
 	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());
 
 	static ZCResponse parseAndCallFormEvents(String response, ZCForm currentShownForm,boolean doesOnUserInputRetriggered) throws ZCException
@@ -91,42 +89,42 @@ public class JSONParser {
 	}
 
 
-//	public static void evaluateRuleActions(ZCField zcField,HashMap<String,Object> valuesHashMap)
-//	{
-//		{
-//			CriteriaExecutor cExec = new CriteriaExecutor();
-//
-//			boolean isConditionTrue = false;
-//			List<ZCRule> fieldRules =  zcField.getFieldRules();
-//			
-//			for(int i=0;i<fieldRules.size();i++)
-//			{
-//				ZCRule rule = fieldRules.get(i);
-//				String ruleCondition = rule.getCondition();
-//
-//				
-//				Set set = valuesHashMap.keySet();
-//				Iterator itrtr = set.iterator();
-//				while(itrtr.hasNext())
-//				{
-//					String key = (String) itrtr.next();
-//					
-//				}
-//
-//				if(ruleCondition!=null&&ruleCondition.length()>0)
-//				{
-//					try {
-//						isConditionTrue = cExec.evaluateCriteria(rule.getCondition(), valuesHashMap);
-//					} catch (Exception e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					
-//					executeRuleActions(rule.getZCTasks(), valuesHashMap,isConditionTrue,zcField.getBaseForm());
-//				}
-//			}
-//		} 
-//	}
+	//	public static void evaluateRuleActions(ZCField zcField,HashMap<String,Object> valuesHashMap)
+	//	{
+	//		{
+	//			CriteriaExecutor cExec = new CriteriaExecutor();
+	//
+	//			boolean isConditionTrue = false;
+	//			List<ZCRule> fieldRules =  zcField.getFieldRules();
+	//			
+	//			for(int i=0;i<fieldRules.size();i++)
+	//			{
+	//				ZCRule rule = fieldRules.get(i);
+	//				String ruleCondition = rule.getCondition();
+	//
+	//				
+	//				Set set = valuesHashMap.keySet();
+	//				Iterator itrtr = set.iterator();
+	//				while(itrtr.hasNext())
+	//				{
+	//					String key = (String) itrtr.next();
+	//					
+	//				}
+	//
+	//				if(ruleCondition!=null&&ruleCondition.length()>0)
+	//				{
+	//					try {
+	//						isConditionTrue = cExec.evaluateCriteria(rule.getCondition(), valuesHashMap);
+	//					} catch (Exception e) {
+	//						// TODO Auto-generated catch block
+	//						e.printStackTrace();
+	//					}
+	//					
+	//					executeRuleActions(rule.getZCTasks(), valuesHashMap,isConditionTrue,zcField.getBaseForm());
+	//				}
+	//			}
+	//		} 
+	//	}
 
 
 	public static void executeRuleActions(List<ZCTask> tasks,HashMap<String,Object> valuesHashMap,boolean isConditionTrue,ZCForm loadedForm)
@@ -292,23 +290,28 @@ public class JSONParser {
 		}
 	}
 
-	static List<ZCRule> parseForRules(JSONArray rulesArray,List<ZCField> zcFields)
+	static List<ZCRule> parseForRules(JSONArray rulesArray,List<ZCField> zcFields) throws ZCException
 	{
 		List<ZCRule> zcRules = new ArrayList<ZCRule>();
-
+		if(rulesArray.length()>0)
+		{
+			throw new ZCException(resourceString.getString("this_form_contains_rules_which_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
+		}
 		try 
 		{
 			for(int count=0;count<rulesArray.length();count++)
 			{
+
 				JSONObject rulesObj = rulesArray.getJSONObject(count);
 				String condition = "";
 				List<String> fieldNamesWithCriteria = new ArrayList<String>();
 				List<ZCTask> zcTasks = new ArrayList<ZCTask>();
 				List<ZCField> zcFieldswithRules = new ArrayList<ZCField>();
+
 				if(rulesObj.has("CONDITION"))
 				{
 					condition = rulesObj.getString("CONDITION");
-					
+
 				}
 				if(rulesObj.has("CONDITION_FIELDS"))
 				{
@@ -1550,9 +1553,9 @@ public class JSONParser {
 				recordValue.clearChoices();
 				recordValue.setLastReachedForChoices(true);
 
-				if(recordValue.isAllowotherchoice()){
-					recordValue.setAllowotherchoice(false);
-				}
+				//				if(recordValue.isAllowotherchoice()){
+				//					recordValue.setAllowotherchoice(false);
+				//				}
 			} else if(type==ZCForm.TASK_ADDVALUE) {
 				recordValue.appendChoices(choiceValues);
 				recordValue.setLastReachedForChoices(true);
@@ -1566,8 +1569,8 @@ public class JSONParser {
 					{
 						ZCChoice selectedChoice = choiceValues.get(0);
 
-						boolean isOtherChoice = true;
-
+						//boolean isOtherChoice = true;
+						boolean isOtherChoice = false;
 						List<ZCChoice> choices = recordValue.getChoices();
 
 						if(choices != null && choices.size() > 0){
@@ -2032,9 +2035,9 @@ public class JSONParser {
 
 				if(responseObject.has("rules"))
 				{
-					throw new ZCException(resourceString.getString("this_form_contains_rules_which_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
-					//JSONArray rulesArray = new JSONArray(responseObject.getString("rules"));
-					//rules = parseForRules(rulesArray,fields);
+
+					JSONArray rulesArray = new JSONArray(responseObject.getString("rules"));
+					rules = parseForRules(rulesArray,fields);
 				}
 
 				if(responseObject.has("buttons")){
@@ -2233,7 +2236,7 @@ public class JSONParser {
 				isRequired = fieldObject.getBoolean("required");
 			}
 			if(fieldObject.has("allowotherchoice")){
-				allowOtherChoice = fieldObject.getBoolean("allowotherchoice");
+				//allowOtherChoice = fieldObject.getBoolean("allowotherchoice");
 			}
 			if(fieldObject.has("inputtype")){
 				imageType = fieldObject.getInt("inputtype");
@@ -2368,9 +2371,9 @@ public class JSONParser {
 					return null;
 				}
 			}
-			//			if(fieldType.equals(FieldType.EXTERNAL_FIELD) || fieldType.equals(FieldType.EXTERNAL_LINK)) {
-			//				throw new ZCException(resourceString.getString("this_form_contains_zoho_crm_field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED, "");
-			//			}
+			if(fieldType.equals(FieldType.EXTERNAL_FIELD) || fieldType.equals(FieldType.EXTERNAL_LINK)) {
+				throw new ZCException(resourceString.getString("this_form_contains_zoho_crm_field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED, "");
+			}
 
 			if(isParentSubForm && (FieldType.isPhotoField(fieldType)||FieldType.SIGNATURE==fieldType))
 			{
@@ -2382,9 +2385,6 @@ public class JSONParser {
 			{
 				fieldType = FieldType.EXTERNAL_FIELD;
 			}
-
-
-
 
 
 			zcField = new ZCField(fieldName, fieldType, displayName);
@@ -2652,7 +2652,8 @@ public class JSONParser {
 									JSONObject recordValueObject = recordValuesArray.getJSONObject(i);
 									String key = null;
 									String recordValue  = null;
-									boolean isOtherChocie = true;
+									//boolean isOtherChocie = true;
+									boolean isOtherChocie = false;
 									if(recordValueObject.has("key")){
 										key = recordValueObject.getString("key");
 									}
@@ -2695,7 +2696,8 @@ public class JSONParser {
 							if(FieldType.isChoiceField(zcField.getType())) {
 								String key = null;
 								String recordValue  = null;
-								boolean isOtherChoice = true;
+								//boolean isOtherChoice = true;
+								boolean isOtherChoice = false;
 
 								if(recordValueObject.has("key")){
 									key = recordValueObject.getString("key");
