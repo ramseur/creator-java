@@ -334,7 +334,7 @@ public class ZCRecordValue{
 		if(!isLastReachedForChoices) {
 			List<ZCChoice> moreChoices = ZOHOCreator.loadMoreChoices(this);
 			choices.addAll(moreChoices);
-			if(moreChoices.size()<50 && searchForChoices == null) {
+			if(moreChoices.size()<50) {
 				isLastReachedForChoices = true;
 			}
 			return moreChoices;
