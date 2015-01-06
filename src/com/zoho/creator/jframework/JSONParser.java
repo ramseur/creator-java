@@ -2405,13 +2405,13 @@ public class JSONParser {
 			{
 				if(fieldType.equals(FieldType.IMAGE))
 				{
-					throw new ZCException(resourceString.getString("field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
+					throw new ZCException(resourceString.getString("subform_field_with_image_field_iscurrently_not_supported"), ZCException.ERROR_OCCURED,"" );
 				}else if(fieldType.equals(FieldType.FILE_UPLOAD))
 				{
-					throw new ZCException(resourceString.getString("field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
+					throw new ZCException(resourceString.getString("subform_field_with_fileupload_field_iscurrently_not_supported"), ZCException.ERROR_OCCURED,"" );
 				}else if(fieldType.equals(FieldType.SIGNATURE))
 				{
-					throw new ZCException(resourceString.getString("field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
+					throw new ZCException(resourceString.getString("subform_field_with_signature_field_iscurrently_not_supported"), ZCException.ERROR_OCCURED,"" );
 				}
 				
 			}
