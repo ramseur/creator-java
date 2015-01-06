@@ -89,6 +89,7 @@ public class JSONParser {
 	}
 
 
+
 	//	public static void evaluateRuleActions(ZCField zcField,HashMap<String,Object> valuesHashMap)
 	//	{
 	//		{
@@ -125,6 +126,8 @@ public class JSONParser {
 	//			}
 	//		} 
 	//	}
+
+
 
 
 	public static void executeRuleActions(List<ZCTask> tasks,HashMap<String,Object> valuesHashMap,boolean isConditionTrue,ZCForm loadedForm)
@@ -410,24 +413,19 @@ public class JSONParser {
 					JSONObject usersObj = (JSONObject)resObj.get("users");
 					if(usersObj.has("user"))
 					{
-						JSONArray jarray = (JSONArray)usersObj.get("user");
-						for(int i=0;i<jarray.length();i++)
+						try
 						{
-							String name = "";
-							String email = "";
-							String id = "";
-							JSONObject jObj = jarray.getJSONObject(i);
-							if(jObj.has("content"))
+							JSONArray jarray = (JSONArray)usersObj.get("user");
+							for(int i=0;i<jarray.length();i++)
 							{
-								name =jObj.getString("content");
-							}if(jObj.has("email"))
-							{
-								email = jObj.getString("email");
-							}if(jObj.has("id"))
-							{
-								id = jObj.getString("id");
+								JSONObject jObj = jarray.getJSONObject(i);
+								parseUserModuleInternalObj(choices, jObj);
 							}
-							choices.add(new ZCChoice(id,name+"-"+email));
+						}
+						catch(ClassCastException e)
+						{
+							JSONObject jObj = (JSONObject)usersObj.get("user");
+							parseUserModuleInternalObj(choices, jObj);
 						}
 					}
 				}
@@ -513,6 +511,24 @@ public class JSONParser {
 		return choices;
 	}
 
+
+	static void parseUserModuleInternalObj(List<ZCChoice> choices,JSONObject jObj) throws JSONException
+	{
+		String name = "";
+		String email = "";
+		String id = "";
+		if(jObj.has("content"))
+		{
+			name =jObj.getString("content");
+		}if(jObj.has("email"))
+		{
+			email = jObj.getString("email");
+		}if(jObj.has("id"))
+		{
+			id = jObj.getString("id");
+		}
+		choices.add(new ZCChoice(id,name+"-"+email));
+	}
 	static List<ZCChoice> parseCrmLeadModule(List<ZCChoice> choices,JSONArray rowArray)
 	{
 		for(int i=0;i<rowArray.length();i++)
@@ -533,37 +549,44 @@ public class JSONParser {
 				}
 				if(rowArrayObj.has("FL"))
 				{
-					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
-					for(int j=0;j<flArray.length();j++)
+					try
 					{
-						JSONObject flArrayObj = (JSONObject)flArray.get(j);
-						ZCRecordValue recordValue = null;
-						if(flArrayObj.has("content"))
+						JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+						for(int j=0;j<flArray.length();j++)
 						{
-							if(flArrayObj.has("val"))
+							JSONObject flArrayObj = (JSONObject)flArray.get(j);
+							ZCRecordValue recordValue = null;
+							if(flArrayObj.has("content"))
 							{
-								if(flArrayObj.getString("val").equals("LEADID"))
+								if(flArrayObj.has("val"))
 								{
-									leadID = flArrayObj.getString("content");
-								}
-								else if(flArrayObj.getString("val").equals("First Name"))
-								{
-									frstName = flArrayObj.getString("content");
-								}
-								else if(flArrayObj.getString("val").equals("Last Name"))
-								{
-									lastName = flArrayObj.getString("content");
-								}
-								else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
-								{
-									recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
+									if(flArrayObj.getString("val").equals("LEADID"))
+									{
+										leadID = flArrayObj.getString("content");
+									}
+									else if(flArrayObj.getString("val").equals("First Name"))
+									{
+										frstName = flArrayObj.getString("content");
+									}
+									else if(flArrayObj.getString("val").equals("Last Name"))
+									{
+										lastName = flArrayObj.getString("content");
+									}
+									else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
+									{
+										recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
+									}
 								}
 							}
+							if(recordValue!=null)
+							{
+								recordValues.add(recordValue);
+							}
 						}
-						if(recordValue!=null)
-						{
-							recordValues.add(recordValue);
-						}
+					}
+					catch(ClassCastException e)
+					{
+						
 					}
 				}
 				if(frstName!=null)
@@ -1553,9 +1576,11 @@ public class JSONParser {
 				recordValue.clearChoices();
 				recordValue.setLastReachedForChoices(true);
 
-				//				if(recordValue.isAllowotherchoice()){
-				//					recordValue.setAllowotherchoice(false);
-				//				}
+
+				if(recordValue.isAllowotherchoice()){
+					recordValue.setAllowotherchoice(false);
+				}
+
 			} else if(type==ZCForm.TASK_ADDVALUE) {
 				recordValue.appendChoices(choiceValues);
 				recordValue.setLastReachedForChoices(true);
@@ -1568,9 +1593,8 @@ public class JSONParser {
 					if(choiceValues.size()>0)
 					{
 						ZCChoice selectedChoice = choiceValues.get(0);
+						boolean isOtherChoice = true;
 
-						//boolean isOtherChoice = true;
-						boolean isOtherChoice = false;
 						List<ZCChoice> choices = recordValue.getChoices();
 
 						if(choices != null && choices.size() > 0){
@@ -2376,9 +2400,20 @@ public class JSONParser {
 				throw new ZCException(resourceString.getString("this_form_contains_zoho_crm_field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED, "");
 			}
 
+
 			if(isParentSubForm && (FieldType.isPhotoField(fieldType)||FieldType.SIGNATURE==fieldType))
 			{
-				throw new ZCException(resourceString.getString("this_form_contains_subform_field_which_contains")+fieldType+" "+resourceString.getString("field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
+				if(fieldType.equals(FieldType.IMAGE))
+				{
+					throw new ZCException(resourceString.getString("field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
+				}else if(fieldType.equals(FieldType.FILE_UPLOAD))
+				{
+					throw new ZCException(resourceString.getString("field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
+				}else if(fieldType.equals(FieldType.SIGNATURE))
+				{
+					throw new ZCException(resourceString.getString("field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
+				}
+				
 			}
 
 
@@ -2386,7 +2421,6 @@ public class JSONParser {
 			{
 				fieldType = FieldType.EXTERNAL_FIELD;
 			}
-
 
 			zcField = new ZCField(fieldName, fieldType, displayName);
 

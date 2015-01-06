@@ -303,6 +303,7 @@ public class ZCField implements Comparable<ZCField>{
 
 	public void setRecordValue(ZCRecordValue recordValue) {
 		this.recordValue = recordValue;
+
 //		if(recordValue!=null)
 //		{
 //			ZCField tempField = recordValue.getField();
@@ -318,6 +319,7 @@ public class ZCField implements Comparable<ZCField>{
 //				previousRecordValue = new ZCRecordValue(tempField, recordValue.getValue());
 //			}
 //		}
+
 	}
 
 	public boolean isLookup() {

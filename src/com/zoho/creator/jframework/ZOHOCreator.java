@@ -956,7 +956,7 @@ public class ZOHOCreator {
 	}
 
 	public static ZCForm getFeedBackForm(String preFilledLogMessage,boolean isGeneralErrorOccured) {
-		ZCForm toReturn  = new ZCForm("zoho1", "support", "Feedback", "Feedback", 1, false, false, resourceString.getString("thank_you_for_your_feedback"), "dd-MMM-yyyy", false,"","");//No I18N
+		ZCForm toReturn  = new ZCForm("zoho1", "support", "Feedback", "Feedback", 1, false, false, resourceString.getString("thanks_for_taking_the_time_out_to_send_that"), "dd-MMM-yyyy", false,"","");//No I18N
 		ZCField editAccessField   = new ZCField("edit_access_field",FieldType.DROPDOWN,resourceString.getString("allow_edit_access_to_support"));
 		ZCField platformField = new ZCField("Platform", FieldType.DROPDOWN, "Platform");//No I18N
 		List<ZCChoice> choices = new ArrayList<ZCChoice>();
@@ -1593,8 +1593,8 @@ public class ZOHOCreator {
 		if(readResponseFromFileForAPI) {
 			return (getResponseString(getURLString(url, params)));
 		}
-		
 
+		
 
 		try
 		{
@@ -1616,7 +1616,7 @@ public class ZOHOCreator {
 				}
 			};
 			byte[] response = client.execute(request, handler);
-		
+			
 			return new String(response);
 		} catch(UnknownHostException uhe) {
 			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
@@ -1731,7 +1731,7 @@ public class ZOHOCreator {
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
-				
+					
 					return toReturn;
 				} catch (ParserConfigurationException e) {
 
@@ -1800,7 +1800,7 @@ public class ZOHOCreator {
 		}
 
 		String url = buff.toString();
-
+		
 		HttpPost httppost = new HttpPost(url);
 
 		if(bitMap!=null)
@@ -1853,7 +1853,7 @@ public class ZOHOCreator {
 		try {
 			ResponseHandler<String> responseHandler=new BasicResponseHandler();
 			String responseBody = httpclient.execute(httppost, responseHandler);
-
+			
 			//HttpResponse httpResponse = httpclient.execute(httppost);
 
 		} catch(UnknownHostException uhe) {
