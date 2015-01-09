@@ -27,7 +27,7 @@ public class ZCRecordValue{
 	private String fileName = null;
 	private boolean isAllowotherchoice = false;
 	private String otherChoiceValue = null;
-	
+
 	public static String allowOtherChoiceKey = "ALLOW_OTHER_CHOICES";
 
 
@@ -141,11 +141,11 @@ public class ZCRecordValue{
 				return "";
 			}
 			else{
-				
+
 				if(choiceValue.getKey().equals(ZCRecordValue.allowOtherChoiceKey)){
 					return otherChoiceValue;
 				}
-				
+
 				return choiceValue.getValue();
 			}
 		}else if(FieldType.URL==field.getType())
@@ -154,8 +154,8 @@ public class ZCRecordValue{
 		}
 		return value;
 	}
-	
-	
+
+
 
 	public ZCChoice getChoiceValue() {
 		if(!FieldType.isSingleChoiceField(field.getType())) {
@@ -229,8 +229,8 @@ public class ZCRecordValue{
 	public Object getFileValue() {
 		return fileValue;
 	}
-	
-	
+
+
 
 	public void setValue(String value) {
 		if(FieldType.isChoiceField(field.getType())) {
@@ -343,17 +343,17 @@ public class ZCRecordValue{
 	}
 
 
-	public void reloadChoices() throws ZCException {
+	public void reloadChoices() throws ZCException{
 		choices.clear();
 		isLastReachedForChoices = false;
 		loadMoreChoices();
 	}
 
-	public void setSearchForChoices(String searchForChoices) {
+	public void setSearchString(String searchForChoices) {
 		this.searchForChoices  = searchForChoices;
 	}
 
-	public String getSearchForChoices() {
+	public String getSearchString() {
 		return searchForChoices;
 	}
 
@@ -365,12 +365,12 @@ public class ZCRecordValue{
 		this.lookupLoadingStarted = lookupLoadingStarted;
 	}
 
-	
+
 	public void setFileName(String fileName)
 	{
 		this.fileName = fileName;
 	}
-	
+
 	public String getFileName()
 	{
 		return fileName;
@@ -389,21 +389,21 @@ public class ZCRecordValue{
 		}
 		return urlValueForSubmit;
 	}
-	
+
 	public void setAllowotherchoice(boolean allowotherchoice){
 		this.isAllowotherchoice = allowotherchoice;
 	}
-	
+
 	public boolean isAllowotherchoice(){
 		return isAllowotherchoice;
 	}
-	
+
 	public void setOtherChoiceValue(String otherChoiceValue){
 		this.otherChoiceValue = otherChoiceValue;
 	}
-	
+
 	public String getOtherChoiceValue() {
 		return otherChoiceValue;
 	}
-	
+
 }

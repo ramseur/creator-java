@@ -442,60 +442,255 @@ public class JSONParser {
 							JSONObject rowObj =(JSONObject)modObj.get(moduleType);
 							if(rowObj.has("row"))
 							{
-								JSONArray rowArray = (JSONArray)rowObj.get("row");
 								if(moduleType.equals("Leads"))
 								{
-									JSONParser.parseCrmLeadModule(choices,rowArray);
+									try
+									{
+										JSONArray rowArray = (JSONArray)rowObj.get("row");
+										System.out.println("leads size.."+rowArray.length());
+										for(int i=0;i<rowArray.length();i++)
+										{
+											JSONObject rowArrayObj = rowArray.getJSONObject(i);
+											parseCrmLeadModule(choices, rowArrayObj);
+										}
+									}
+									catch(ClassCastException e)
+									{
+										JSONObject jObj = (JSONObject)rowObj.get("row");
+										parseCrmLeadModule(choices, jObj);
+									}
 								}else if(moduleType.equals("Accounts"))
 								{
-									JSONParser.parseCrmAccountsModule(choices,rowArray);
+									try
+									{
+										JSONArray rowArray = (JSONArray)rowObj.get("row");
+										for(int i=0;i<rowArray.length();i++)
+										{
+											JSONObject rowArrayObj = rowArray.getJSONObject(i);
+											parseCrmAccountsModule(choices, rowArrayObj);
+										}
+									}
+									catch(ClassCastException e)
+									{
+										JSONObject jObj = (JSONObject)rowObj.get("row");
+										parseCrmAccountsModule(choices, jObj);
+									}
+
 								}
 								else if(moduleType.equals("Potentials"))
 								{
-									JSONParser.parseCrmPotentialsModule(choices,rowArray);
+									try
+									{
+										JSONArray rowArray = (JSONArray)rowObj.get("row");
+										for(int i=0;i<rowArray.length();i++)
+										{
+											JSONObject rowArrayObj = rowArray.getJSONObject(i);
+											parseCrmPotentialsModule(choices, rowArrayObj);
+										}
+									}
+									catch(ClassCastException e)
+									{
+										JSONObject jObj = (JSONObject)rowObj.get("row");
+										parseCrmPotentialsModule(choices, jObj);
+									}
+
 								}else if(moduleType.equals("Contacts"))
 								{
-									JSONParser.parseCrmContactsModule(choices,rowArray);
+									try
+									{
+										JSONArray rowArray = (JSONArray)rowObj.get("row");
+										for(int i=0;i<rowArray.length();i++)
+										{
+											JSONObject rowArrayObj = rowArray.getJSONObject(i);
+											parseCrmContactsModule(choices, rowArrayObj);
+										}
+									}
+									catch(ClassCastException e)
+									{
+										JSONObject jObj = (JSONObject)rowObj.get("row");
+										parseCrmContactsModule(choices, jObj);
+									}
+
 								}
 								else if(moduleType.equals("Campaigns"))
 								{
-									JSONParser.parseCrmCampaignsModule(choices,rowArray);
+									try
+									{
+										JSONArray rowArray = (JSONArray)rowObj.get("row");
+										for(int i=0;i<rowArray.length();i++)
+										{
+											JSONObject rowArrayObj = rowArray.getJSONObject(i);
+											parseCrmCampaignsModule(choices, rowArrayObj);
+										}
+									}
+									catch(ClassCastException e)
+									{
+										JSONObject jObj = (JSONObject)rowObj.get("row");
+										parseCrmCampaignsModule(choices, jObj);
+									}
+
 								}
 								else if(moduleType.equals("Cases"))
 								{
-									JSONParser.parseCrmCasesModule(choices,rowArray);
+									try
+									{
+										JSONArray rowArray = (JSONArray)rowObj.get("row");
+										for(int i=0;i<rowArray.length();i++)
+										{
+											JSONObject rowArrayObj = rowArray.getJSONObject(i);
+											parseCrmCasesModule(choices, rowArrayObj);
+										}
+									}
+									catch(ClassCastException e)
+									{
+										JSONObject jObj = (JSONObject)rowObj.get("row");
+										parseCrmCasesModule(choices, jObj);
+									}
+
 								}
 								else if(moduleType.equals("Solutions"))
 								{
-									JSONParser.parseCrmSolutionsModule(choices,rowArray);
+									try
+									{
+										JSONArray rowArray = (JSONArray)rowObj.get("row");
+										for(int i=0;i<rowArray.length();i++)
+										{
+											JSONObject rowArrayObj = rowArray.getJSONObject(i);
+											parseCrmSolutionsModule(choices, rowArrayObj);
+										}
+									}
+									catch(ClassCastException e)
+									{
+										JSONObject jObj = (JSONObject)rowObj.get("row");
+										parseCrmSolutionsModule(choices, jObj);
+									}
+
 								}
 								else if(moduleType.equals("Products"))
 								{
-									JSONParser.parseCrmProductsModule(choices,rowArray);
+									try
+									{
+										JSONArray rowArray = (JSONArray)rowObj.get("row");
+										for(int i=0;i<rowArray.length();i++)
+										{
+											JSONObject rowArrayObj = rowArray.getJSONObject(i);
+											parseCrmProductsModule(choices, rowArrayObj);
+										}
+									}
+									catch(ClassCastException e)
+									{
+										JSONObject jObj = (JSONObject)rowObj.get("row");
+										parseCrmProductsModule(choices, jObj);
+									}
+
 								}
 								else if(moduleType.equals("PriceBooks"))
 								{
-									JSONParser.parseCrmPriceBooksModule(choices,rowArray);
+									try
+									{
+										JSONArray rowArray = (JSONArray)rowObj.get("row");
+										for(int i=0;i<rowArray.length();i++)
+										{
+											JSONObject rowArrayObj = rowArray.getJSONObject(i);
+											parseCrmPriceBooksModule(choices, rowArrayObj);
+										}
+									}
+									catch(ClassCastException e)
+									{
+										JSONObject jObj = (JSONObject)rowObj.get("row");
+										parseCrmPriceBooksModule(choices, jObj);
+									}
+
 								}
 								else if(moduleType.equals("Quotes"))
 								{
-									JSONParser.parseCrmQuotesModule(choices,rowArray);
+									try
+									{
+										JSONArray rowArray = (JSONArray)rowObj.get("row");
+										for(int i=0;i<rowArray.length();i++)
+										{
+											JSONObject rowArrayObj = rowArray.getJSONObject(i);
+											parseCrmQuotesModule(choices, rowArrayObj);
+										}
+									}
+									catch(ClassCastException e)
+									{
+										JSONObject jObj = (JSONObject)rowObj.get("row");
+										parseCrmQuotesModule(choices, jObj);
+									}
+
 								}
 								else if(moduleType.equals("Vendors"))
 								{
-									JSONParser.parseCrmVendorsModule(choices,rowArray);
+									try
+									{
+										JSONArray rowArray = (JSONArray)rowObj.get("row");
+										for(int i=0;i<rowArray.length();i++)
+										{
+											JSONObject rowArrayObj = rowArray.getJSONObject(i);
+											parseCrmVendorsModule(choices, rowArrayObj);
+										}
+									}
+									catch(ClassCastException e)
+									{
+										JSONObject jObj = (JSONObject)rowObj.get("row");
+										parseCrmVendorsModule(choices, jObj);
+									}
+
 								}
 								else if(moduleType.equals("PurchaseOrders"))
 								{
-									JSONParser.parseCrmPurchaseOrdersModule(choices,rowArray);
+									try
+									{
+										JSONArray rowArray = (JSONArray)rowObj.get("row");
+										for(int i=0;i<rowArray.length();i++)
+										{
+											JSONObject rowArrayObj = rowArray.getJSONObject(i);
+											parseCrmPurchaseOrdersModule(choices, rowArrayObj);
+										}
+									}
+									catch(ClassCastException e)
+									{
+										JSONObject jObj = (JSONObject)rowObj.get("row");
+										parseCrmPurchaseOrdersModule(choices, jObj);
+									}
+
 								}
 								else if(moduleType.equals("SalesOrders"))
 								{
-									JSONParser.parseCrmSalesOrdersModule(choices,rowArray);
+									try
+									{
+										JSONArray rowArray = (JSONArray)rowObj.get("row");
+										for(int i=0;i<rowArray.length();i++)
+										{
+											JSONObject rowArrayObj = rowArray.getJSONObject(i);
+											parseCrmSalesOrdersModule(choices, rowArrayObj);
+										}
+									}
+									catch(ClassCastException e)
+									{
+										JSONObject jObj = (JSONObject)rowObj.get("row");
+										parseCrmSalesOrdersModule(choices, jObj);
+									}
+
 								}
 								else if(moduleType.equals("Invoices"))
 								{
-									JSONParser.parseCrmInvoicesModule(choices,rowArray);
+									try
+									{
+										JSONArray rowArray = (JSONArray)rowObj.get("row");
+										for(int i=0;i<rowArray.length();i++)
+										{
+											JSONObject rowArrayObj = rowArray.getJSONObject(i);
+											parseCrmInvoicesModule(choices, rowArrayObj);
+										}
+									}
+									catch(ClassCastException e)
+									{
+										JSONObject jObj = (JSONObject)rowObj.get("row");
+										parseCrmInvoicesModule(choices, jObj);
+									}
+
 								}
 							}
 						}
@@ -529,97 +724,24 @@ public class JSONParser {
 		}
 		choices.add(new ZCChoice(id,name+"-"+email));
 	}
-	static List<ZCChoice> parseCrmLeadModule(List<ZCChoice> choices,JSONArray rowArray)
+	static List<ZCChoice> parseCrmLeadModule(List<ZCChoice> choices,JSONObject rowArrayObj)
 	{
-		for(int i=0;i<rowArray.length();i++)
-		{
-			JSONObject rowArrayObj;
-			try {
-				rowArrayObj = (JSONObject)rowArray.get(i);
 
-				String leadID = "";
-				String frstName  = "";
-				String lastName = "";
-				String smCreatorId = "";
-				String modifiedById = "";
-				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
-				if(rowArrayObj.has("no"))
-				{
-					rowArrayObj.getInt("no");
-				}
-				if(rowArrayObj.has("FL"))
-				{
-					try
-					{
-						JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
-						for(int j=0;j<flArray.length();j++)
-						{
-							JSONObject flArrayObj = (JSONObject)flArray.get(j);
-							ZCRecordValue recordValue = null;
-							if(flArrayObj.has("content"))
-							{
-								if(flArrayObj.has("val"))
-								{
-									if(flArrayObj.getString("val").equals("LEADID"))
-									{
-										leadID = flArrayObj.getString("content");
-									}
-									else if(flArrayObj.getString("val").equals("First Name"))
-									{
-										frstName = flArrayObj.getString("content");
-									}
-									else if(flArrayObj.getString("val").equals("Last Name"))
-									{
-										lastName = flArrayObj.getString("content");
-									}
-									else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
-									{
-										recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
-									}
-								}
-							}
-							if(recordValue!=null)
-							{
-								recordValues.add(recordValue);
-							}
-						}
-					}
-					catch(ClassCastException e)
-					{
-						
-					}
-				}
-				if(frstName!=null)
-				{
-					choices.add(new ZCChoice(recordValues,Long.valueOf(leadID),leadID, frstName+" "+ lastName));
-				}else 
-				{
-					choices.add(new ZCChoice(recordValues,Long.valueOf(leadID),leadID,lastName));
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		try {
+
+			String leadID = "";
+			String frstName  = "";
+			String lastName = "";
+			String smCreatorId = "";
+			String modifiedById = "";
+			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+			if(rowArrayObj.has("no"))
+			{
+				rowArrayObj.getInt("no");
 			}
-		}
-		return choices;
-	}
-
-	static List<ZCChoice> parseCrmAccountsModule(List<ZCChoice> choices,JSONArray rowArray)
-	{
-		for(int i=0;i<rowArray.length();i++)
-		{
-			JSONObject rowArrayObj;
-			try {
-				rowArrayObj = (JSONObject)rowArray.get(i);
-
-				String accountId = "";
-				String accountName = "";
-				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
-				if(rowArrayObj.has("no"))
-				{
-					rowArrayObj.getInt("no");
-				}
-				if(rowArrayObj.has("FL"))
+			if(rowArrayObj.has("FL"))
+			{
+				try
 				{
 					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
 					for(int j=0;j<flArray.length();j++)
@@ -630,134 +752,10 @@ public class JSONParser {
 						{
 							if(flArrayObj.has("val"))
 							{
-								if(flArrayObj.getString("val").equals("ACCOUNTID"))
+								if(flArrayObj.getString("val").equals("LEADID"))
 								{
-									accountId = flArrayObj.getString("content");
+									leadID = flArrayObj.getString("content");
 								}
-								else if(flArrayObj.getString("val").equals("Account Name"))
-								{
-									accountName = flArrayObj.getString("content");
-									recordValue = new ZCRecordValue(new ZCField("Account Name",FieldType.SINGLE_LINE,"Account Name"),accountName );
-								}
-								else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
-								{
-									recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
-								}
-							}
-						}
-						if(recordValue!=null)
-						{
-							recordValues.add(recordValue);
-						}
-					}
-				}
-				if(accountName!=null)
-				{
-					choices.add(new ZCChoice(recordValues,Long.valueOf(accountId),accountId, accountName));
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return choices;
-	}
-
-
-	static List<ZCChoice> parseCrmPotentialsModule(List<ZCChoice> choices,JSONArray rowArray)
-	{
-		for(int i=0;i<rowArray.length();i++)
-		{
-			JSONObject rowArrayObj;
-			try {
-				rowArrayObj = (JSONObject)rowArray.get(i);
-				String potentialId = "";
-				String potentialName = "";
-				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
-				if(rowArrayObj.has("no"))
-				{
-					rowArrayObj.getInt("no");
-				}
-				if(rowArrayObj.has("FL"))
-				{
-					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
-					for(int j=0;j<flArray.length();j++)
-					{
-						JSONObject flArrayObj = (JSONObject)flArray.get(j);
-						ZCRecordValue recordValue = null;
-						if(flArrayObj.has("content"))
-						{
-							if(flArrayObj.has("val"))
-							{
-								if(flArrayObj.getString("val").equals("POTENTIALID"))
-								{
-									potentialId = flArrayObj.getString("content");
-								}else if(flArrayObj.getString("val").equals("Potential Name"))
-								{
-									potentialName = flArrayObj.getString("content");
-								}
-								else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY")))&&(!(flArrayObj.getString("val").equals("CONTACTID")))&&(!(flArrayObj.getString("val").equals("ACCOUNTID")))&&(!(flArrayObj.getString("val").equals("CAMPAIGNID"))))
-								{
-									recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
-								}
-							}
-						}
-						if(recordValue!=null)
-						{
-							recordValues.add(recordValue);
-						}
-					}
-				}
-
-
-				if(potentialName!=null)
-				{
-					choices.add(new ZCChoice(recordValues,Long.valueOf(potentialId),potentialId, potentialName));
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return choices;
-	}
-
-
-
-	static List<ZCChoice> parseCrmContactsModule(List<ZCChoice> choices,JSONArray rowArray)
-	{
-		for(int i=0;i<rowArray.length();i++)
-		{
-			JSONObject rowArrayObj;
-			try {
-				rowArrayObj = (JSONObject)rowArray.get(i);
-
-				String contactId = "";
-				String frstName  = "";
-				String lastName = "";
-
-
-				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
-				if(rowArrayObj.has("no"))
-				{
-					rowArrayObj.getInt("no");
-				}
-				if(rowArrayObj.has("FL"))
-				{
-					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
-					for(int j=0;j<flArray.length();j++)
-					{
-						JSONObject flArrayObj = (JSONObject)flArray.get(j);
-						ZCRecordValue recordValue = null;
-						if(flArrayObj.has("content"))
-						{
-							if(flArrayObj.has("val"))
-							{
-								if(flArrayObj.getString("val").equals("CONTACTID"))
-								{
-									contactId = flArrayObj.getString("content");
-								}
-
 								else if(flArrayObj.getString("val").equals("First Name"))
 								{
 									frstName = flArrayObj.getString("content");
@@ -766,136 +764,6 @@ public class JSONParser {
 								{
 									lastName = flArrayObj.getString("content");
 								}
-
-								else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY")))&&(!(flArrayObj.getString("val").equals("ACCOUNTID")))&&(!(flArrayObj.getString("val").equals("VENDORID"))))
-								{
-									recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
-								}
-							}
-						}
-						if(recordValue!=null)
-						{
-							recordValues.add(recordValue);
-						}
-					}
-				}
-
-				if(frstName!=null)
-				{
-
-					choices.add(new ZCChoice(recordValues,Long.valueOf(contactId),contactId, frstName+" "+ lastName));
-				}else 
-				{
-
-					choices.add(new ZCChoice(recordValues,Long.valueOf(contactId),contactId,lastName));
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return choices;
-	}
-
-
-	static List<ZCChoice> parseCrmCampaignsModule(List<ZCChoice> choices,JSONArray rowArray)
-	{
-		for(int i=0;i<rowArray.length();i++)
-		{
-			JSONObject rowArrayObj;
-			try {
-				rowArrayObj = (JSONObject)rowArray.get(i);
-				String campaignName = "";
-				String campaignId = "";
-				String smOwnerId = "";
-				String modifiedById = "";
-
-				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
-				if(rowArrayObj.has("no"))
-				{
-					rowArrayObj.getInt("no");
-				}
-				if(rowArrayObj.has("FL"))
-				{
-					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
-					for(int j=0;j<flArray.length();j++)
-					{
-						JSONObject flArrayObj = (JSONObject)flArray.get(j);
-						ZCRecordValue recordValue = null;
-						if(flArrayObj.has("content"))
-						{
-							if(flArrayObj.has("val"))
-							{
-								if(flArrayObj.getString("val").equals("CAMPAIGNID"))
-								{
-									campaignId = flArrayObj.getString("content");
-								}
-								else if(flArrayObj.getString("val").equals("Campaign Name"))
-								{
-									campaignName = flArrayObj.getString("content");
-									recordValue = new ZCRecordValue(new ZCField("Campaign Name",FieldType.SINGLE_LINE,"Campaign Name"), flArrayObj.getString("content"));
-								}
-								else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
-								{
-									recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
-								}
-
-							}
-						}
-						if(recordValue!=null)
-						{
-							recordValues.add(recordValue);
-						}
-					}
-				}
-				choices.add(new ZCChoice(recordValues,Long.valueOf(campaignId),campaignId,campaignName));
-
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return choices;
-	}
-
-	static List<ZCChoice> parseCrmCasesModule(List<ZCChoice> choices,JSONArray rowArray)
-	{
-		for(int i=0;i<rowArray.length();i++)
-		{
-			JSONObject rowArrayObj;
-			try {
-				rowArrayObj = (JSONObject)rowArray.get(i);
-				String subject = "";
-				String caseId = "";
-				String smOwnerId = "";
-				String smCreatorId = "";
-				String modifiedById = "";
-
-				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
-				if(rowArrayObj.has("no"))
-				{
-					rowArrayObj.getInt("no");
-				}
-				if(rowArrayObj.has("FL"))
-				{
-					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
-					for(int j=0;j<flArray.length();j++)
-					{
-						JSONObject flArrayObj = (JSONObject)flArray.get(j);
-						ZCRecordValue recordValue = null;
-						if(flArrayObj.has("content"))
-						{
-							if(flArrayObj.has("val"))
-							{
-								if(flArrayObj.getString("val").equals("CASEID"))
-								{
-									caseId = flArrayObj.getString("content");
-								}
-								else if(flArrayObj.getString("val").equals("Subject"))
-								{
-									subject = flArrayObj.getString("content");
-									recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));
-								}
 								else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
 								{
 									recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
@@ -908,523 +776,813 @@ public class JSONParser {
 						}
 					}
 				}
-				choices.add(new ZCChoice(recordValues,Long.valueOf(caseId),caseId,subject));
+				catch(ClassCastException e)
+				{
 
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				}
 			}
+			if(frstName!=null)
+			{
+				choices.add(new ZCChoice(recordValues,Long.valueOf(leadID),leadID, frstName+" "+ lastName));
+			}else 
+			{
+				choices.add(new ZCChoice(recordValues,Long.valueOf(leadID),leadID,lastName));
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return choices;
+	}
+
+	static List<ZCChoice> parseCrmAccountsModule(List<ZCChoice> choices,JSONObject rowArrayObj)
+	{
+		try {
+
+			String accountId = "";
+			String accountName = "";
+			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+			if(rowArrayObj.has("no"))
+			{
+				rowArrayObj.getInt("no");
+			}
+			if(rowArrayObj.has("FL"))
+			{
+				JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+				for(int j=0;j<flArray.length();j++)
+				{
+					JSONObject flArrayObj = (JSONObject)flArray.get(j);
+					ZCRecordValue recordValue = null;
+					if(flArrayObj.has("content"))
+					{
+						if(flArrayObj.has("val"))
+						{
+							if(flArrayObj.getString("val").equals("ACCOUNTID"))
+							{
+								accountId = flArrayObj.getString("content");
+							}
+							else if(flArrayObj.getString("val").equals("Account Name"))
+							{
+								accountName = flArrayObj.getString("content");
+								recordValue = new ZCRecordValue(new ZCField("Account Name",FieldType.SINGLE_LINE,"Account Name"),accountName );
+							}
+							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
+							{
+								recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
+							}
+						}
+					}
+					if(recordValue!=null)
+					{
+						recordValues.add(recordValue);
+					}
+				}
+			}
+			if(accountName!=null)
+			{
+				choices.add(new ZCChoice(recordValues,Long.valueOf(accountId),accountId, accountName));
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return choices;
+	}
+
+
+	static List<ZCChoice> parseCrmPotentialsModule(List<ZCChoice> choices,JSONObject rowArrayObj)
+	{
+
+		try {
+
+			String potentialId = "";
+			String potentialName = "";
+			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+			if(rowArrayObj.has("no"))
+			{
+				rowArrayObj.getInt("no");
+			}
+			if(rowArrayObj.has("FL"))
+			{
+				JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+				for(int j=0;j<flArray.length();j++)
+				{
+					JSONObject flArrayObj = (JSONObject)flArray.get(j);
+					ZCRecordValue recordValue = null;
+					if(flArrayObj.has("content"))
+					{
+						if(flArrayObj.has("val"))
+						{
+							if(flArrayObj.getString("val").equals("POTENTIALID"))
+							{
+								potentialId = flArrayObj.getString("content");
+							}else if(flArrayObj.getString("val").equals("Potential Name"))
+							{
+								potentialName = flArrayObj.getString("content");
+							}
+							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY")))&&(!(flArrayObj.getString("val").equals("CONTACTID")))&&(!(flArrayObj.getString("val").equals("ACCOUNTID")))&&(!(flArrayObj.getString("val").equals("CAMPAIGNID"))))
+							{
+								recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
+							}
+						}
+					}
+					if(recordValue!=null)
+					{
+						recordValues.add(recordValue);
+					}
+				}
+			}
+
+
+			if(potentialName!=null)
+			{
+				choices.add(new ZCChoice(recordValues,Long.valueOf(potentialId),potentialId, potentialName));
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return choices;
+	}
+
+
+
+	static List<ZCChoice> parseCrmContactsModule(List<ZCChoice> choices,JSONObject rowArrayObj)
+	{
+
+		try {
+
+
+			String contactId = "";
+			String frstName  = "";
+			String lastName = "";
+
+
+			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+			if(rowArrayObj.has("no"))
+			{
+				rowArrayObj.getInt("no");
+			}
+			if(rowArrayObj.has("FL"))
+			{
+				JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+				for(int j=0;j<flArray.length();j++)
+				{
+					JSONObject flArrayObj = (JSONObject)flArray.get(j);
+					ZCRecordValue recordValue = null;
+					if(flArrayObj.has("content"))
+					{
+						if(flArrayObj.has("val"))
+						{
+							if(flArrayObj.getString("val").equals("CONTACTID"))
+							{
+								contactId = flArrayObj.getString("content");
+							}
+
+							else if(flArrayObj.getString("val").equals("First Name"))
+							{
+								frstName = flArrayObj.getString("content");
+							}
+							else if(flArrayObj.getString("val").equals("Last Name"))
+							{
+								lastName = flArrayObj.getString("content");
+							}
+
+							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY")))&&(!(flArrayObj.getString("val").equals("ACCOUNTID")))&&(!(flArrayObj.getString("val").equals("VENDORID"))))
+							{
+								recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
+							}
+						}
+					}
+					if(recordValue!=null)
+					{
+						recordValues.add(recordValue);
+					}
+				}
+			}
+
+			if(frstName!=null)
+			{
+
+				choices.add(new ZCChoice(recordValues,Long.valueOf(contactId),contactId, frstName+" "+ lastName));
+			}else 
+			{
+
+				choices.add(new ZCChoice(recordValues,Long.valueOf(contactId),contactId,lastName));
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return choices;
+	}
+
+
+	static List<ZCChoice> parseCrmCampaignsModule(List<ZCChoice> choices,JSONObject rowArrayObj)
+	{
+
+		try {
+
+			String campaignName = "";
+			String campaignId = "";
+			String smOwnerId = "";
+			String modifiedById = "";
+
+			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+			if(rowArrayObj.has("no"))
+			{
+				rowArrayObj.getInt("no");
+			}
+			if(rowArrayObj.has("FL"))
+			{
+				JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+				for(int j=0;j<flArray.length();j++)
+				{
+					JSONObject flArrayObj = (JSONObject)flArray.get(j);
+					ZCRecordValue recordValue = null;
+					if(flArrayObj.has("content"))
+					{
+						if(flArrayObj.has("val"))
+						{
+							if(flArrayObj.getString("val").equals("CAMPAIGNID"))
+							{
+								campaignId = flArrayObj.getString("content");
+							}
+							else if(flArrayObj.getString("val").equals("Campaign Name"))
+							{
+								campaignName = flArrayObj.getString("content");
+								recordValue = new ZCRecordValue(new ZCField("Campaign Name",FieldType.SINGLE_LINE,"Campaign Name"), flArrayObj.getString("content"));
+							}
+							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
+							{
+								recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
+							}
+
+						}
+					}
+					if(recordValue!=null)
+					{
+						recordValues.add(recordValue);
+					}
+				}
+			}
+			choices.add(new ZCChoice(recordValues,Long.valueOf(campaignId),campaignId,campaignName));
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return choices;
+	}
+
+	static List<ZCChoice> parseCrmCasesModule(List<ZCChoice> choices,JSONObject rowArrayObj)
+	{
+
+		try {
+
+			String subject = "";
+			String caseId = "";
+			String smOwnerId = "";
+			String smCreatorId = "";
+			String modifiedById = "";
+
+			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+			if(rowArrayObj.has("no"))
+			{
+				rowArrayObj.getInt("no");
+			}
+			if(rowArrayObj.has("FL"))
+			{
+				JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+				for(int j=0;j<flArray.length();j++)
+				{
+					JSONObject flArrayObj = (JSONObject)flArray.get(j);
+					ZCRecordValue recordValue = null;
+					if(flArrayObj.has("content"))
+					{
+						if(flArrayObj.has("val"))
+						{
+							if(flArrayObj.getString("val").equals("CASEID"))
+							{
+								caseId = flArrayObj.getString("content");
+							}
+							else if(flArrayObj.getString("val").equals("Subject"))
+							{
+								subject = flArrayObj.getString("content");
+								recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));
+							}
+							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
+							{
+								recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
+							}
+						}
+					}
+					if(recordValue!=null)
+					{
+						recordValues.add(recordValue);
+					}
+				}
+			}
+			choices.add(new ZCChoice(recordValues,Long.valueOf(caseId),caseId,subject));
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return choices;
+	}
+
+
+	static List<ZCChoice> parseCrmSolutionsModule(List<ZCChoice> choices,JSONObject rowArrayObj)
+	{
+		try {
+
+			String solutionTitle = "";
+			String solutionNumber = "";
+			String solutionId = "";
+			String solutionOwner = "";
+			String smOwnerId = "";
+			String smCreatorId = "";
+			String modifiedById = "";
+
+			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+			if(rowArrayObj.has("no"))
+			{
+				rowArrayObj.getInt("no");
+			}
+			if(rowArrayObj.has("FL"))
+			{
+				JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+				for(int j=0;j<flArray.length();j++)
+				{
+					JSONObject flArrayObj = (JSONObject)flArray.get(j);
+					ZCRecordValue recordValue = null;
+					if(flArrayObj.has("content"))
+					{
+						if(flArrayObj.has("val"))
+						{
+							if(flArrayObj.getString("val").equals("SOLUTIONID"))
+							{
+								solutionId = flArrayObj.getString("content");
+							}
+							else if(flArrayObj.getString("val").equals("Solution Title"))
+							{
+								solutionTitle = flArrayObj.getString("content");
+								recordValue = new ZCRecordValue(new ZCField("Solution Title",FieldType.SINGLE_LINE,"Solution Title"), flArrayObj.getString("content"));
+							}
+							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
+							{
+								recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
+							}
+						}
+					}
+					if(recordValue!=null)
+					{
+						recordValues.add(recordValue);
+					}
+				}
+			}
+			choices.add(new ZCChoice(recordValues,Long.valueOf(solutionId),solutionId,solutionTitle));
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return choices;
+	}
+
+	static List<ZCChoice> parseCrmProductsModule(List<ZCChoice> choices,JSONObject rowArrayObj)
+	{
+
+		try {
+			String productId = "";
+			String productName = "";
+			String vendorId = "";
+
+			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+			if(rowArrayObj.has("no"))
+			{
+				rowArrayObj.getInt("no");
+			}
+			if(rowArrayObj.has("FL"))
+			{
+				JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+				for(int j=0;j<flArray.length();j++)
+				{
+					JSONObject flArrayObj = (JSONObject)flArray.get(j);
+					ZCRecordValue recordValue = null;
+					if(flArrayObj.has("content"))
+					{
+						if(flArrayObj.has("val"))
+						{
+							if(flArrayObj.getString("val").equals("PRODUCTID"))
+							{
+								productId = flArrayObj.getString("content");
+							}
+							else if(flArrayObj.getString("val").equals("Product Name"))
+							{
+								productName = flArrayObj.getString("content");
+								recordValue = new ZCRecordValue(new ZCField("Product Name",FieldType.SINGLE_LINE,"Product Name"), flArrayObj.getString("content"));
+							}
+
+							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY")))&&(!(flArrayObj.getString("val").equals("VENDORID"))))
+							{
+								recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
+							}
+
+
+
+						}
+					}
+					if(recordValue!=null)
+					{
+						recordValues.add(recordValue);
+					}
+				}
+			}
+			choices.add(new ZCChoice(recordValues,Long.valueOf(productId),productId,productName));
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return choices;
+	}
+
+	static List<ZCChoice> parseCrmPriceBooksModule(List<ZCChoice> choices,JSONObject rowArrayObj)
+	{
+
+		try {
+
+			String bookId = "";
+			String priceBookName = "";
+			String smOwnerId = "";
+			String smCreatorId = "";
+			String modifiedById = "";
+
+			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+			if(rowArrayObj.has("no"))
+			{
+				rowArrayObj.getInt("no");
+			}
+			if(rowArrayObj.has("FL"))
+			{
+				JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+				for(int j=0;j<flArray.length();j++)
+				{
+					JSONObject flArrayObj = (JSONObject)flArray.get(j);
+					ZCRecordValue recordValue = null;
+					if(flArrayObj.has("content"))
+					{
+						if(flArrayObj.has("val"))
+						{
+							if(flArrayObj.getString("val").equals("BOOKID"))
+							{
+								bookId = flArrayObj.getString("content");
+							}
+
+							else if(flArrayObj.getString("val").equals("Price Book Name"))
+							{
+								priceBookName = flArrayObj.getString("content");
+								recordValue = new ZCRecordValue(new ZCField("Price Book Name",FieldType.SINGLE_LINE,"Price Book Name"), flArrayObj.getString("content"));
+							}
+
+							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
+							{
+								recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
+							}
+
+						}
+					}
+					if(recordValue!=null)
+					{
+						recordValues.add(recordValue);
+					}
+				}
+			}
+			choices.add(new ZCChoice(recordValues,Long.valueOf(bookId),bookId,priceBookName));
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return choices;
+	}
+
+	static List<ZCChoice> parseCrmQuotesModule(List<ZCChoice> choices,JSONObject rowArrayObj)
+	{
+
+		try {
+
+			String quoteId = "";
+			String subject = "";
+			String quoteNum = "";
+			String potentialId = "";
+			String contatcsId = "";
+			String accountId = "";
+			String smOwnerId = "";
+			String smCreatorId = "";
+			String modifiedById = "";
+
+			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+			if(rowArrayObj.has("no"))
+			{
+				rowArrayObj.getInt("no");
+			}
+			if(rowArrayObj.has("FL"))
+			{
+				JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+				for(int j=0;j<flArray.length();j++)
+				{
+					JSONObject flArrayObj = (JSONObject)flArray.get(j);
+					ZCRecordValue recordValue = null;
+					if(flArrayObj.has("content"))
+					{
+						if(flArrayObj.has("val"))
+						{
+							if(flArrayObj.getString("val").equals("QUOTEID"))
+							{
+								quoteId = flArrayObj.getString("content");
+							}
+
+							else if(flArrayObj.getString("val").equals("Subject"))
+							{
+								subject = flArrayObj.getString("content");
+								recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));
+							}
+							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY")))&&(!(flArrayObj.getString("val").equals("ACCOUNTID")))&&(!(flArrayObj.getString("val").equals("CONTACTID")))&&(!(flArrayObj.getString("val").equals("POTENTIALID")))) 
+							{
+								recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
+							}
+						}
+					}
+					if(recordValue!=null)
+					{
+						recordValues.add(recordValue);
+					}
+				}
+			}
+			choices.add(new ZCChoice(recordValues,Long.valueOf(quoteId),quoteId,subject));
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return choices;
+	}
+
+	static List<ZCChoice> parseCrmVendorsModule(List<ZCChoice> choices,JSONObject rowArrayObj)
+	{
+		try {
+
+			String vendorId = "";
+			String vendorName = "";
+			String smOwnerId = "";
+			String smCreatorId = "";
+			String modifiedById = "";
+
+			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+			if(rowArrayObj.has("no"))
+			{
+				rowArrayObj.getInt("no");
+			}
+			if(rowArrayObj.has("FL"))
+			{
+				JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+				for(int j=0;j<flArray.length();j++)
+				{
+					JSONObject flArrayObj = (JSONObject)flArray.get(j);
+					ZCRecordValue recordValue = null;
+					if(flArrayObj.has("content"))
+					{
+						if(flArrayObj.has("val"))
+						{
+							if(flArrayObj.getString("val").equals("VENDORID"))
+							{
+								vendorId = flArrayObj.getString("content");
+							}
+
+							else if(flArrayObj.getString("val").equals("Vendor Name"))
+							{
+								vendorName = flArrayObj.getString("content");
+								recordValue = new ZCRecordValue(new ZCField("Vendor Name",FieldType.SINGLE_LINE,"Vendor Name"), flArrayObj.getString("content"));
+							}
+							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
+							{
+								recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
+							}
+						}
+					}
+					if(recordValue!=null)
+					{
+						recordValues.add(recordValue);
+					}
+				}
+			}
+			choices.add(new ZCChoice(recordValues,Long.valueOf(vendorId),vendorId,vendorName));
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return choices;
 	}
 
 
-	static List<ZCChoice> parseCrmSolutionsModule(List<ZCChoice> choices,JSONArray rowArray)
+	static List<ZCChoice> parseCrmPurchaseOrdersModule(List<ZCChoice> choices,JSONObject rowArrayObj)
 	{
-		for(int i=0;i<rowArray.length();i++)
-		{
-			JSONObject rowArrayObj;
-			try {
-				rowArrayObj = (JSONObject)rowArray.get(i);
-				String solutionTitle = "";
-				String solutionNumber = "";
-				String solutionId = "";
-				String solutionOwner = "";
-				String smOwnerId = "";
-				String smCreatorId = "";
-				String modifiedById = "";
 
-				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
-				if(rowArrayObj.has("no"))
+		try {
+
+			String purchaseOrderId = "";
+			String vendorId = "";
+			String contactId = "";
+			String subject = "";
+			String smOwnerId = "";
+			String smCreatorId = "";
+			String modifiedById = "";
+
+			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+			if(rowArrayObj.has("no"))
+			{
+				rowArrayObj.getInt("no");
+			}
+			if(rowArrayObj.has("FL"))
+			{
+				JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+				for(int j=0;j<flArray.length();j++)
 				{
-					rowArrayObj.getInt("no");
-				}
-				if(rowArrayObj.has("FL"))
-				{
-					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
-					for(int j=0;j<flArray.length();j++)
+					JSONObject flArrayObj = (JSONObject)flArray.get(j);
+					ZCRecordValue recordValue = null;
+					if(flArrayObj.has("content"))
 					{
-						JSONObject flArrayObj = (JSONObject)flArray.get(j);
-						ZCRecordValue recordValue = null;
-						if(flArrayObj.has("content"))
+						if(flArrayObj.has("val"))
 						{
-							if(flArrayObj.has("val"))
+							if(flArrayObj.getString("val").equals("PURCHASEORDERID"))
 							{
-								if(flArrayObj.getString("val").equals("SOLUTIONID"))
-								{
-									solutionId = flArrayObj.getString("content");
-								}
-								else if(flArrayObj.getString("val").equals("Solution Title"))
-								{
-									solutionTitle = flArrayObj.getString("content");
-									recordValue = new ZCRecordValue(new ZCField("Solution Title",FieldType.SINGLE_LINE,"Solution Title"), flArrayObj.getString("content"));
-								}
-								else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
-								{
-									recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
-								}
+								purchaseOrderId = flArrayObj.getString("content");
 							}
-						}
-						if(recordValue!=null)
-						{
-							recordValues.add(recordValue);
+							else if(flArrayObj.getString("val").equals("Subject"))
+							{
+								subject = flArrayObj.getString("content");
+								recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));
+							}
+							else if(flArrayObj.getString("val").equals("VENDORID"))
+							{
+								vendorId = flArrayObj.getString("content");
+							}
+							else if(flArrayObj.getString("val").equals("CONTACTID"))
+							{
+								contactId = flArrayObj.getString("content");
+							}
+							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY")))&&(!(flArrayObj.getString("val").equals("VENDORID")))&&(!(flArrayObj.getString("val").equals("CONTACTID"))))
+							{
+								recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
+							}
+
 						}
 					}
+					if(recordValue!=null)
+					{
+						recordValues.add(recordValue);
+					}
 				}
-				choices.add(new ZCChoice(recordValues,Long.valueOf(solutionId),solutionId,solutionTitle));
-
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
+			choices.add(new ZCChoice(recordValues,Long.valueOf(purchaseOrderId),purchaseOrderId,subject));
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
 		return choices;
 	}
 
-	static List<ZCChoice> parseCrmProductsModule(List<ZCChoice> choices,JSONArray rowArray)
+	static List<ZCChoice> parseCrmSalesOrdersModule(List<ZCChoice> choices,JSONObject rowArrayObj)
 	{
-		for(int i=0;i<rowArray.length();i++)
-		{
-			JSONObject rowArrayObj;
-			try {
-				rowArrayObj = (JSONObject)rowArray.get(i);
-				String productId = "";
-				String productName = "";
-				String vendorId = "";
 
-				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
-				if(rowArrayObj.has("no"))
+		try {
+			String salesOrderId = "";
+			String quoteId = "";
+			String contactId = "";
+			String subject = "";
+			String potentialId = "";
+			String accountId = "";
+			String smOwnerId = "";
+			String smCreatorId = "";
+			String modifiedById = "";
+
+			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+			if(rowArrayObj.has("no"))
+			{
+				rowArrayObj.getInt("no");
+			}
+			if(rowArrayObj.has("FL"))
+			{
+				JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+				for(int j=0;j<flArray.length();j++)
 				{
-					rowArrayObj.getInt("no");
-				}
-				if(rowArrayObj.has("FL"))
-				{
-					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
-					for(int j=0;j<flArray.length();j++)
+					JSONObject flArrayObj = (JSONObject)flArray.get(j);
+					ZCRecordValue recordValue = null;
+					if(flArrayObj.has("content"))
 					{
-						JSONObject flArrayObj = (JSONObject)flArray.get(j);
-						ZCRecordValue recordValue = null;
-						if(flArrayObj.has("content"))
+						if(flArrayObj.has("val"))
 						{
-							if(flArrayObj.has("val"))
+							if(flArrayObj.getString("val").equals("SALESORDERID"))
 							{
-								if(flArrayObj.getString("val").equals("PRODUCTID"))
-								{
-									productId = flArrayObj.getString("content");
-								}
-								else if(flArrayObj.getString("val").equals("Product Name"))
-								{
-									productName = flArrayObj.getString("content");
-									recordValue = new ZCRecordValue(new ZCField("Product Name",FieldType.SINGLE_LINE,"Product Name"), flArrayObj.getString("content"));
-								}
-
-								else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY")))&&(!(flArrayObj.getString("val").equals("VENDORID"))))
-								{
-									recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
-								}
-
-
-
+								salesOrderId = flArrayObj.getString("content");
+							}
+							else if(flArrayObj.getString("val").equals("Subject"))
+							{
+								subject = flArrayObj.getString("content");
+								recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));
+							}
+							else if(flArrayObj.getString("val").equals("ACCOUNTID"))
+							{
+								accountId = flArrayObj.getString("content");
+							}else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY")))&&(!(flArrayObj.getString("val").equals("ACCOUNTID")))&&(!(flArrayObj.getString("val").equals("CONTACTID")))&&(!(flArrayObj.getString("val").equals("QUOTEID")))&&(!(flArrayObj.getString("val").equals("POTENTIALID"))))
+							{
+								recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
 							}
 						}
-						if(recordValue!=null)
-						{
-							recordValues.add(recordValue);
-						}
 					}
-				}
-				choices.add(new ZCChoice(recordValues,Long.valueOf(productId),productId,productName));
-
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return choices;
-	}
-
-	static List<ZCChoice> parseCrmPriceBooksModule(List<ZCChoice> choices,JSONArray rowArray)
-	{
-		for(int i=0;i<rowArray.length();i++)
-		{
-			JSONObject rowArrayObj;
-			try {
-				rowArrayObj = (JSONObject)rowArray.get(i);
-				String bookId = "";
-				String priceBookName = "";
-				String smOwnerId = "";
-				String smCreatorId = "";
-				String modifiedById = "";
-
-				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
-				if(rowArrayObj.has("no"))
-				{
-					rowArrayObj.getInt("no");
-				}
-				if(rowArrayObj.has("FL"))
-				{
-					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
-					for(int j=0;j<flArray.length();j++)
+					if(recordValue!=null)
 					{
-						JSONObject flArrayObj = (JSONObject)flArray.get(j);
-						ZCRecordValue recordValue = null;
-						if(flArrayObj.has("content"))
-						{
-							if(flArrayObj.has("val"))
-							{
-								if(flArrayObj.getString("val").equals("BOOKID"))
-								{
-									bookId = flArrayObj.getString("content");
-								}
-
-								else if(flArrayObj.getString("val").equals("Price Book Name"))
-								{
-									priceBookName = flArrayObj.getString("content");
-									recordValue = new ZCRecordValue(new ZCField("Price Book Name",FieldType.SINGLE_LINE,"Price Book Name"), flArrayObj.getString("content"));
-								}
-
-								else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
-								{
-									recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
-								}
-
-							}
-						}
-						if(recordValue!=null)
-						{
-							recordValues.add(recordValue);
-						}
+						recordValues.add(recordValue);
 					}
 				}
-				choices.add(new ZCChoice(recordValues,Long.valueOf(bookId),bookId,priceBookName));
-
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
+			choices.add(new ZCChoice(recordValues,Long.valueOf(salesOrderId),salesOrderId,subject));
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return choices;
-	}
 
-	static List<ZCChoice> parseCrmQuotesModule(List<ZCChoice> choices,JSONArray rowArray)
-	{
-		for(int i=0;i<rowArray.length();i++)
-		{
-			JSONObject rowArrayObj;
-			try {
-				rowArrayObj = (JSONObject)rowArray.get(i);
-				String quoteId = "";
-				String subject = "";
-				String quoteNum = "";
-				String potentialId = "";
-				String contatcsId = "";
-				String accountId = "";
-				String smOwnerId = "";
-				String smCreatorId = "";
-				String modifiedById = "";
-
-				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
-				if(rowArrayObj.has("no"))
-				{
-					rowArrayObj.getInt("no");
-				}
-				if(rowArrayObj.has("FL"))
-				{
-					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
-					for(int j=0;j<flArray.length();j++)
-					{
-						JSONObject flArrayObj = (JSONObject)flArray.get(j);
-						ZCRecordValue recordValue = null;
-						if(flArrayObj.has("content"))
-						{
-							if(flArrayObj.has("val"))
-							{
-								if(flArrayObj.getString("val").equals("QUOTEID"))
-								{
-									quoteId = flArrayObj.getString("content");
-								}
-
-								else if(flArrayObj.getString("val").equals("Subject"))
-								{
-									subject = flArrayObj.getString("content");
-									recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));
-								}
-								else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY")))&&(!(flArrayObj.getString("val").equals("ACCOUNTID")))&&(!(flArrayObj.getString("val").equals("CONTACTID")))&&(!(flArrayObj.getString("val").equals("POTENTIALID")))) 
-								{
-									recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
-								}
-							}
-						}
-						if(recordValue!=null)
-						{
-							recordValues.add(recordValue);
-						}
-					}
-				}
-				choices.add(new ZCChoice(recordValues,Long.valueOf(quoteId),quoteId,subject));
-
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return choices;
-	}
-
-	static List<ZCChoice> parseCrmVendorsModule(List<ZCChoice> choices,JSONArray rowArray)
-	{
-		for(int i=0;i<rowArray.length();i++)
-		{
-			JSONObject rowArrayObj;
-			try {
-				rowArrayObj = (JSONObject)rowArray.get(i);
-				String vendorId = "";
-				String vendorName = "";
-				String smOwnerId = "";
-				String smCreatorId = "";
-				String modifiedById = "";
-
-				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
-				if(rowArrayObj.has("no"))
-				{
-					rowArrayObj.getInt("no");
-				}
-				if(rowArrayObj.has("FL"))
-				{
-					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
-					for(int j=0;j<flArray.length();j++)
-					{
-						JSONObject flArrayObj = (JSONObject)flArray.get(j);
-						ZCRecordValue recordValue = null;
-						if(flArrayObj.has("content"))
-						{
-							if(flArrayObj.has("val"))
-							{
-								if(flArrayObj.getString("val").equals("VENDORID"))
-								{
-									vendorId = flArrayObj.getString("content");
-								}
-
-								else if(flArrayObj.getString("val").equals("Vendor Name"))
-								{
-									vendorName = flArrayObj.getString("content");
-									recordValue = new ZCRecordValue(new ZCField("Vendor Name",FieldType.SINGLE_LINE,"Vendor Name"), flArrayObj.getString("content"));
-								}
-								else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
-								{
-									recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
-								}
-							}
-						}
-						if(recordValue!=null)
-						{
-							recordValues.add(recordValue);
-						}
-					}
-				}
-				choices.add(new ZCChoice(recordValues,Long.valueOf(vendorId),vendorId,vendorName));
-
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 		return choices;
 	}
 
 
-	static List<ZCChoice> parseCrmPurchaseOrdersModule(List<ZCChoice> choices,JSONArray rowArray)
+	static List<ZCChoice> parseCrmInvoicesModule(List<ZCChoice> choices,JSONObject rowArrayObj)
 	{
-		for(int i=0;i<rowArray.length();i++)
-		{
-			JSONObject rowArrayObj;
-			try {
-				rowArrayObj = (JSONObject)rowArray.get(i);
-				String purchaseOrderId = "";
-				String vendorId = "";
-				String contactId = "";
-				String subject = "";
-				String smOwnerId = "";
-				String smCreatorId = "";
-				String modifiedById = "";
 
-				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
-				if(rowArrayObj.has("no"))
+		try {
+
+			String invoiceId = "";
+			String subject = "";
+			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
+			if(rowArrayObj.has("no"))
+			{
+				rowArrayObj.getInt("no");
+			}
+			if(rowArrayObj.has("FL"))
+			{
+				JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
+				for(int j=0;j<flArray.length();j++)
 				{
-					rowArrayObj.getInt("no");
-				}
-				if(rowArrayObj.has("FL"))
-				{
-					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
-					for(int j=0;j<flArray.length();j++)
+					JSONObject flArrayObj = (JSONObject)flArray.get(j);
+					ZCRecordValue recordValue = null;
+					if(flArrayObj.has("content"))
 					{
-						JSONObject flArrayObj = (JSONObject)flArray.get(j);
-						ZCRecordValue recordValue = null;
-						if(flArrayObj.has("content"))
+						if(flArrayObj.has("val"))
 						{
-							if(flArrayObj.has("val"))
+							if(flArrayObj.getString("val").equals("INVOICEID"))
 							{
-								if(flArrayObj.getString("val").equals("PURCHASEORDERID"))
-								{
-									purchaseOrderId = flArrayObj.getString("content");
-								}
-								else if(flArrayObj.getString("val").equals("Subject"))
-								{
-									subject = flArrayObj.getString("content");
-									recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));
-								}
-								else if(flArrayObj.getString("val").equals("VENDORID"))
-								{
-									vendorId = flArrayObj.getString("content");
-								}
-								else if(flArrayObj.getString("val").equals("CONTACTID"))
-								{
-									contactId = flArrayObj.getString("content");
-								}
-								else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY")))&&(!(flArrayObj.getString("val").equals("VENDORID")))&&(!(flArrayObj.getString("val").equals("CONTACTID"))))
-								{
-									recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
-								}
-
+								invoiceId = flArrayObj.getString("content");
+							}
+							else if(flArrayObj.getString("val").equals("Subject"))
+							{
+								subject = flArrayObj.getString("content");
+								recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));
+							}
+							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY")))&&(!(flArrayObj.getString("val").equals("SALESORDERID")))&&(!(flArrayObj.getString("val").equals("CONTACTID")))&&(!(flArrayObj.getString("val").equals("QUOTEID")))&&(!(flArrayObj.getString("val").equals("POTENTIALID"))))
+							{
+								recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
 							}
 						}
-						if(recordValue!=null)
-						{
-							recordValues.add(recordValue);
-						}
 					}
-				}
-				choices.add(new ZCChoice(recordValues,Long.valueOf(purchaseOrderId),purchaseOrderId,subject));
-
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return choices;
-	}
-
-	static List<ZCChoice> parseCrmSalesOrdersModule(List<ZCChoice> choices,JSONArray rowArray)
-	{
-		for(int i=0;i<rowArray.length();i++)
-		{
-			JSONObject rowArrayObj;
-			try {
-				rowArrayObj = (JSONObject)rowArray.get(i);
-				String salesOrderId = "";
-				String quoteId = "";
-				String contactId = "";
-				String subject = "";
-				String potentialId = "";
-				String accountId = "";
-				String smOwnerId = "";
-				String smCreatorId = "";
-				String modifiedById = "";
-
-				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
-				if(rowArrayObj.has("no"))
-				{
-					rowArrayObj.getInt("no");
-				}
-				if(rowArrayObj.has("FL"))
-				{
-					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
-					for(int j=0;j<flArray.length();j++)
+					if(recordValue!=null)
 					{
-						JSONObject flArrayObj = (JSONObject)flArray.get(j);
-						ZCRecordValue recordValue = null;
-						if(flArrayObj.has("content"))
-						{
-							if(flArrayObj.has("val"))
-							{
-								if(flArrayObj.getString("val").equals("SALESORDERID"))
-								{
-									salesOrderId = flArrayObj.getString("content");
-								}
-								else if(flArrayObj.getString("val").equals("Subject"))
-								{
-									subject = flArrayObj.getString("content");
-									recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));
-								}
-								else if(flArrayObj.getString("val").equals("ACCOUNTID"))
-								{
-									accountId = flArrayObj.getString("content");
-								}else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY")))&&(!(flArrayObj.getString("val").equals("ACCOUNTID")))&&(!(flArrayObj.getString("val").equals("CONTACTID")))&&(!(flArrayObj.getString("val").equals("QUOTEID")))&&(!(flArrayObj.getString("val").equals("POTENTIALID"))))
-								{
-									recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
-								}
-							}
-						}
-						if(recordValue!=null)
-						{
-							recordValues.add(recordValue);
-						}
+						recordValues.add(recordValue);
 					}
 				}
-				choices.add(new ZCChoice(recordValues,Long.valueOf(salesOrderId),salesOrderId,subject));
-
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
+			choices.add(new ZCChoice(recordValues,Long.valueOf(invoiceId),invoiceId,subject));
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return choices;
-	}
 
-
-	static List<ZCChoice> parseCrmInvoicesModule(List<ZCChoice> choices,JSONArray rowArray)
-	{
-		for(int i=0;i<rowArray.length();i++)
-		{
-			JSONObject rowArrayObj;
-			try {
-				rowArrayObj = (JSONObject)rowArray.get(i);
-				String invoiceId = "";
-				String subject = "";
-				List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
-				if(rowArrayObj.has("no"))
-				{
-					rowArrayObj.getInt("no");
-				}
-				if(rowArrayObj.has("FL"))
-				{
-					JSONArray flArray = (JSONArray)rowArrayObj.get("FL");
-					for(int j=0;j<flArray.length();j++)
-					{
-						JSONObject flArrayObj = (JSONObject)flArray.get(j);
-						ZCRecordValue recordValue = null;
-						if(flArrayObj.has("content"))
-						{
-							if(flArrayObj.has("val"))
-							{
-								if(flArrayObj.getString("val").equals("INVOICEID"))
-								{
-									invoiceId = flArrayObj.getString("content");
-								}
-								else if(flArrayObj.getString("val").equals("Subject"))
-								{
-									subject = flArrayObj.getString("content");
-									recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));
-								}
-								else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY")))&&(!(flArrayObj.getString("val").equals("SALESORDERID")))&&(!(flArrayObj.getString("val").equals("CONTACTID")))&&(!(flArrayObj.getString("val").equals("QUOTEID")))&&(!(flArrayObj.getString("val").equals("POTENTIALID"))))
-								{
-									recordValue = new ZCRecordValue(new ZCField(flArrayObj.getString("val"),FieldType.SINGLE_LINE,flArrayObj.getString("val")), flArrayObj.getString("content"));
-								}
-							}
-						}
-						if(recordValue!=null)
-						{
-							recordValues.add(recordValue);
-						}
-					}
-				}
-				choices.add(new ZCChoice(recordValues,Long.valueOf(invoiceId),invoiceId,subject));
-
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 		return choices;
 	}
 
@@ -2403,27 +2561,20 @@ public class JSONParser {
 					return null;
 				}
 			}
-			if(fieldType.equals(FieldType.EXTERNAL_FIELD) || fieldType.equals(FieldType.EXTERNAL_LINK)) {
-				
-				throw new ZCException(resourceString.getString("this_form_contains_zoho_crm_field_which_is_currently_not_supported"), ZCException.ERROR_OCCURED, "");
-			}
 
-
-			if(isParentSubForm && (FieldType.isPhotoField(fieldType)||FieldType.SIGNATURE==fieldType))
-			{
-				if(fieldType.equals(FieldType.IMAGE))
-				{
-					throw new ZCException(resourceString.getString("subform_field_with_image_field_iscurrently_not_supported"), ZCException.ERROR_OCCURED,"" );
-				}else if(fieldType.equals(FieldType.FILE_UPLOAD))
-				{
-					throw new ZCException(resourceString.getString("subform_field_with_fileupload_field_iscurrently_not_supported"), ZCException.ERROR_OCCURED,"" );
-				}else if(fieldType.equals(FieldType.SIGNATURE))
-				{
-					throw new ZCException(resourceString.getString("subform_field_with_signature_field_iscurrently_not_supported"), ZCException.ERROR_OCCURED,"" );
-				}
-				
-			}
-
+			//			if(isParentSubForm && (FieldType.isPhotoField(fieldType)||FieldType.SIGNATURE==fieldType))
+			//			{
+			//				if(fieldType.equals(FieldType.IMAGE))
+			//				{
+			//					throw new ZCException(resourceString.getString("subform_field_with_image_field_iscurrently_not_supported"), ZCException.ERROR_OCCURED,"" );
+			//				}else if(fieldType.equals(FieldType.FILE_UPLOAD))
+			//				{
+			//					throw new ZCException(resourceString.getString("subform_field_with_fileupload_field_iscurrently_not_supported"), ZCException.ERROR_OCCURED,"" );
+			//				}else if(fieldType.equals(FieldType.SIGNATURE))
+			//				{
+			//					throw new ZCException(resourceString.getString("subform_field_with_signature_field_iscurrently_not_supported"), ZCException.ERROR_OCCURED,"" );
+			//				}	
+			//			}
 
 			if(externalFieldType==ExternalField.ZOHO_CRM)
 			{
@@ -2743,8 +2894,10 @@ public class JSONParser {
 
 							if(FieldType.isChoiceField(zcField.getType())) {
 								String key = null;
+
 								String choiceValue  = null;
 								boolean isOtherChoice = true;
+
 
 								if(recordValueObject.has("key")){
 									key = recordValueObject.getString("key");

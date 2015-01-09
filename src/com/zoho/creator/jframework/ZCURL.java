@@ -147,9 +147,6 @@ public class ZCURL {
 		return new URLPair(serverURL() + "/api/"+appOwner+"/json/" + appLinkName + "/view/"+ viewLinkName + "/record/" + recordLinkId + "/edit/", params);//No I18N
 	}
 
-
-
-
 	static URLPair formMetaURL(String appLinkName, String formLinkName, String appOwner, int formAccessType, List<NameValuePair> additionalParams) {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);
 		params.add(new BasicNameValuePair("metaData","complete"));//No I18N
@@ -180,7 +177,7 @@ public class ZCURL {
 		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName +"/"+urlValToAdd+"/"+lookupFieldName+ "/options/", params);//No I18N
 	}
 
-	static URLPair crmLookupChoices(int startIndex,String crmModuleType)
+	static URLPair crmLookupChoices(int startIndex,String crmModuleType,String searchString)
 	{
 		List<NameValuePair> params = getAuthtokenAsParam(new ArrayList<NameValuePair>());
 		params.add(new BasicNameValuePair("scope", "crmapi"));
@@ -200,14 +197,28 @@ public class ZCURL {
 			params.add(new BasicNameValuePair("appendRows", "true"));
 			params.add(new BasicNameValuePair("fromIndex", startIndex + ""));
 			params.add(new BasicNameValuePair("toIndex", (startIndex+50)+""));
+			if(searchString !=null && !(searchString.equals("")))
+			{
+				params.add(new BasicNameValuePair("searchWord",searchString));
+				if(ZOHOCreator.getCreatorURL().contains("localzoho"))
+				{
+					return new URLPair(ZOHOCreator.getPrefix() + "://" +"crm.localzoho.com"+"/crm/private/json/"+crmModuleType+"/getGSearchRecords",params);
+				}else
+				{
+					return new URLPair(ZOHOCreator.getPrefix() + "://" +"crm.zoho.com"+"/crm/private/json/"+crmModuleType+"/getGSearchRecords",params);
+				}
+			}else
+			{
+				if(ZOHOCreator.getCreatorURL().contains("localzoho"))
+				{
+					return new URLPair(ZOHOCreator.getPrefix() + "://" +"crm.localzoho.com"+"/crm/private/json/"+crmModuleType+"/getRecords",params);
+				}else
+				{
+					return new URLPair(ZOHOCreator.getPrefix() + "://" +"crm.zoho.com"+"/crm/private/json/"+crmModuleType+"/getRecords",params);
+				}
+			}
 		}
-		if(ZOHOCreator.getCreatorURL().contains("localzoho"))
-		{
-			return new URLPair(ZOHOCreator.getPrefix() + "://" +"crm.localzoho.com"+"/crm/private/json/"+crmModuleType+"/getRecords",params);
-		}else
-		{
-			return new URLPair(ZOHOCreator.getPrefix() + "://" +"crm.zoho.com"+"/crm/private/json/"+crmModuleType+"/getRecords",params);
-		}
+
 	}
 
 	static URLPair formOnLoad(String appLinkName, String formLinkName, String appOwner, List<NameValuePair> additionalParams,int formAccessType) {

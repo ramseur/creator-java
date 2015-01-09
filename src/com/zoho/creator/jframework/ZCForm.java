@@ -266,7 +266,10 @@ public class ZCForm extends ZCComponent{
 					buff.append("<field name='" + field.getFieldName() + "'>");//No I18N
 					buff.append("<value>");//No I18N
 					buff.append("<![CDATA[");//No I18N
-					if(recordValue.getChoiceValue() != null) {
+
+					if(recordValue.getChoiceValue() != null) 
+					{					
+
 						if(recordValue.getChoiceValue().getKey().equals(ZCRecordValue.allowOtherChoiceKey)){
 							buff.append(recordValue.getOtherChoiceValue());
 						}

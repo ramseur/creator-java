@@ -377,9 +377,7 @@ public class ZOHOCreator {
 		String response = ZOHOCreator.postURL(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair());
 		ZCForm zcForm = JSONParser.parseForForm(response, comp.getAppLinkName(), comp.getAppOwner(), comp.getQueryString(),false);
 		if(zcForm == null) {
-
 			throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, resourceString.getString("unable_to_get")+ getURLStringForException(formMetaURLPair.getUrl(), formMetaURLPair.getNvPair())); //No I18N
-
 		}
 		zcForm.setFormType(ZCForm.FORM_ALONE);
 		setCurrentForm(zcForm);
@@ -1203,7 +1201,7 @@ public class ZOHOCreator {
 		String subformComponent = null;
 		int formAccessType = 0;
 		int size = field.getRecordValue().getChoices().size();
-		String searchForChoices = field.getRecordValue().getSearchForChoices();
+		String searchForChoices = field.getRecordValue().getSearchString();
 
 		if(subFormField != null) {
 			baseForm = subFormField.getBaseForm();
@@ -1216,7 +1214,7 @@ public class ZOHOCreator {
 
 			String moduleType = field.getModuleType();
 
-			URLPair crmLookupChoicesUrl = ZCURL.crmLookupChoices(size,moduleType);
+			URLPair crmLookupChoicesUrl = ZCURL.crmLookupChoices(size,moduleType,searchForChoices);
 			String response = ZOHOCreator.postURL(crmLookupChoicesUrl.getUrl(),crmLookupChoicesUrl.getNvPair());
 			return JSONParser.parseCrmLookupChoices(response,zcRecordValue);
 		}else
@@ -1595,8 +1593,8 @@ public class ZOHOCreator {
 			return (getResponseString(getURLString(url, params)));
 		}
 
-		
 
+		
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1618,8 +1616,7 @@ public class ZOHOCreator {
 			};
 			
 			byte[] response = client.execute(request, handler);
-			
-			
+
 			return new String(response);
 		} catch(UnknownHostException uhe) {
 			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
@@ -1705,8 +1702,8 @@ public class ZOHOCreator {
 			return getResponseDocument(getURLString(url, params));
 		}
 
-		
 
+		
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
