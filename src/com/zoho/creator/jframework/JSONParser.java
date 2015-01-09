@@ -447,7 +447,7 @@ public class JSONParser {
 									try
 									{
 										JSONArray rowArray = (JSONArray)rowObj.get("row");
-										System.out.println("leads size.."+rowArray.length());
+										
 										for(int i=0;i<rowArray.length();i++)
 										{
 											JSONObject rowArrayObj = rowArray.getJSONObject(i);
