@@ -1590,6 +1590,7 @@ public class ZOHOCreator {
 	public static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
 
 
+		
 		if(readResponseFromFileForAPI) {
 			return (getResponseString(getURLString(url, params)));
 		}
@@ -1615,7 +1616,9 @@ public class ZOHOCreator {
 					}
 				}
 			};
+			
 			byte[] response = client.execute(request, handler);
+			
 			
 			return new String(response);
 		} catch(UnknownHostException uhe) {

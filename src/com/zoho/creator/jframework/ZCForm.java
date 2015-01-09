@@ -267,26 +267,23 @@ public class ZCForm extends ZCComponent{
 					buff.append("<value>");//No I18N
 					buff.append("<![CDATA[");//No I18N
 					if(recordValue.getChoiceValue() != null) {
-						
-						buff.append(recordValue.getChoiceValue().getKey());
-						
-//						if(recordValue.getChoiceValue().getKey().equals(ZCRecordValue.allowOtherChoiceKey)){
-//							buff.append(recordValue.getOtherChoiceValue());
-//						}
-//						else if(field.getExternalFieldType()==ExternalField.UNKNOWN)
-//						{
-//							buff.append(recordValue.getChoiceValue().getKey());
-//						}	
-//						else
-//						{
-//							if(field.getModuleType().equalsIgnoreCase("Users"))
-//							{
-//								buff.append(recordValue.getChoiceValue().getKey());
-//							}else
-//							{
-//								buff.append(recordValue.getChoiceValue().getValue());
-//							}
-//						}
+						if(recordValue.getChoiceValue().getKey().equals(ZCRecordValue.allowOtherChoiceKey)){
+							buff.append(recordValue.getOtherChoiceValue());
+						}
+						else if(field.getExternalFieldType()==ExternalField.UNKNOWN)
+						{
+							buff.append(recordValue.getChoiceValue().getKey());
+						}	
+						else
+						{
+							if(field.getModuleType().equalsIgnoreCase("Users"))
+							{
+								buff.append(recordValue.getChoiceValue().getKey());
+							}else
+							{
+								buff.append(recordValue.getChoiceValue().getValue());
+							}
+						}
 					}else
 					{
 						buff.append("");	
