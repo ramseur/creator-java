@@ -65,14 +65,11 @@ public class JSONParser {
 					onUserInputJsonObj.remove(i);
 					i--;
 				}
-
 			}
-
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		if(alertMessages.size() >0) {
 			currentShownForm.setAlertMessages(alertMessages);
 		}
@@ -84,11 +81,8 @@ public class JSONParser {
 		{
 			currentShownForm.setOpenUrl(openUrlString);
 		}
-
 		return toReturn;
 	}
-
-
 
 	//	public static void evaluateRuleActions(ZCField zcField,HashMap<String,Object> valuesHashMap)
 	//	{
@@ -143,7 +137,6 @@ public class JSONParser {
 			while(itrtr.hasNext())
 			{
 				String key = (String) itrtr.next();
-
 			}
 
 			for(int j=0;j<fieldNames.size();j++)
@@ -151,7 +144,6 @@ public class JSONParser {
 				String fieldName = fieldNames.get(j);
 				ZCField zcfield = loadedForm.getField(fieldName);
 				zcfield.setRebuildRequired(true);
-
 				if(taskType==ZCTask.SET_FIELD_VALUE)
 				{
 
@@ -1733,6 +1725,7 @@ public class JSONParser {
 			} else if(type==ZCForm.TASK_CLEAR) {
 				recordValue.clearChoices();
 				recordValue.setLastReachedForChoices(true);
+
 				
 				if(FieldType.isMultiChoiceField(field.getType())){
 					recordValue.setChoiceValues(new ArrayList<ZCChoice>());
@@ -1740,10 +1733,12 @@ public class JSONParser {
 					recordValue.setChoiceValue(null);
 				}
 
+
 				if(recordValue.isAllowotherchoice()){
 					recordValue.setAllowotherchoice(false);
 					recordValue.setOtherChoiceValue(null);
 				}
+
 
 			} else if(type==ZCForm.TASK_ADDVALUE) {
 				recordValue.appendChoices(choiceValues);
@@ -2295,7 +2290,6 @@ public class JSONParser {
 
 								if(crmValue!=null&&crmValue.length()>0)
 								{
-
 									field.setRecordValue(new ZCRecordValue(field,new ZCChoice(crmIdValue, crmValue)));
 								}
 							}

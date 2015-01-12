@@ -29,12 +29,25 @@ public class ZCURL {
 		}//No I18N
 		return params;
 	}
+	
 	private static List<NameValuePair> getDefaultParams() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		getAuthtokenAsParam(params);
 		params.add(new BasicNameValuePair("scope", "creatorapi"));//No I18N
 		return params;
 	}
+	
+	private static List<NameValuePair> getSharedByParamsWithOwner(String appOwner)
+	{
+		if(appOwner == null) {
+			throw new RuntimeException("App Owner Cannot be null"); //No I18N
+		}
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("sharedBy", appOwner));//No I18N
+		params.addAll(getDefaultParams());
+		return params;
+	}
+	
 
 	private static List<NameValuePair> getParamsWithOwnerAndXMLString(String appOwner, String xmlString) {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);
@@ -112,14 +125,14 @@ public class ZCURL {
 	}
 
 	static URLPair pivotViewURL(String appLinkName, String viewLinkName, String appOwner) {
-		List<NameValuePair> params = getParamsWithOwner(appOwner);
+		List<NameValuePair> params = getSharedByParamsWithOwner(appOwner);
 		params.add(new BasicNameValuePair("applinkname", appLinkName));//No I18N
 		params.add(new BasicNameValuePair("reportlinkname", viewLinkName));//No I18N
 		return new URLPair (serverURL() + "/getReportsUrl.do" , params);//No I18N
 	}
 
 	static URLPair htmlViewURL(String appLinkName, String viewLinkName, String appOwner, List<NameValuePair> additionalParams ) {
-		List<NameValuePair> params = getParamsWithOwner(appOwner);
+		List<NameValuePair> params = getSharedByParamsWithOwner(appOwner);
 		params.add(new BasicNameValuePair("appLinkName", appLinkName));//No I18N
 		params.add(new BasicNameValuePair("viewLinkName", viewLinkName));//No I18N
 		if(additionalParams != null) {
