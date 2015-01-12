@@ -1733,8 +1733,12 @@ public class JSONParser {
 			} else if(type==ZCForm.TASK_CLEAR) {
 				recordValue.clearChoices();
 				recordValue.setLastReachedForChoices(true);
-				recordValue.setChoiceValues(new ArrayList<ZCChoice>());
-				recordValue.setChoiceValue(null);
+				
+				if(FieldType.isMultiChoiceField(field.getType())){
+					recordValue.setChoiceValues(new ArrayList<ZCChoice>());
+				}else if(FieldType.isSingleChoiceField(field.getType())){
+					recordValue.setChoiceValue(null);
+				}
 
 				if(recordValue.isAllowotherchoice()){
 					recordValue.setAllowotherchoice(false);
