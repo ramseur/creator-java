@@ -447,7 +447,7 @@ public class JSONParser {
 									try
 									{
 										JSONArray rowArray = (JSONArray)rowObj.get("row");
-										
+
 										for(int i=0;i<rowArray.length();i++)
 										{
 											JSONObject rowArrayObj = rowArray.getJSONObject(i);
@@ -1735,7 +1735,7 @@ public class JSONParser {
 				recordValue.setLastReachedForChoices(true);
 				recordValue.setChoiceValues(new ArrayList<ZCChoice>());
 				recordValue.setChoiceValue(null);
-				
+
 				if(recordValue.isAllowotherchoice()){
 					recordValue.setAllowotherchoice(false);
 					recordValue.setOtherChoiceValue(null);
@@ -1797,7 +1797,7 @@ public class JSONParser {
 					recordValue.setChoiceValues(new ArrayList<ZCChoice>());
 				}
 			} else if(type==ZCForm.TASK_SETVALUE) {
-				
+
 				List<ZCChoice> choices = recordValue.getChoices();
 				choiceValues = new ArrayList<ZCChoice>();
 				for(int k=0; k<choices.size(); k++) {
@@ -2551,7 +2551,6 @@ public class JSONParser {
 
 				for(int i =0; i < subFormRecordsArray.length(); i++){
 					JSONObject subFormRecordObject = subFormRecordsArray.getJSONObject(i);
-
 					ZCRecord record = parseAndSetRecord(null, subFormRecordObject, subFormFields);
 					subFormEntries.add(record);
 				}
@@ -2562,28 +2561,33 @@ public class JSONParser {
 				}
 			}
 
-			//			if(isParentSubForm && (FieldType.isPhotoField(fieldType)||FieldType.SIGNATURE==fieldType))
-			//			{
-			//				if(fieldType.equals(FieldType.IMAGE))
-			//				{
-			//					throw new ZCException(resourceString.getString("subform_field_with_image_field_iscurrently_not_supported"), ZCException.ERROR_OCCURED,"" );
-			//				}else if(fieldType.equals(FieldType.FILE_UPLOAD))
-			//				{
-			//					throw new ZCException(resourceString.getString("subform_field_with_fileupload_field_iscurrently_not_supported"), ZCException.ERROR_OCCURED,"" );
-			//				}else if(fieldType.equals(FieldType.SIGNATURE))
-			//				{
-			//					throw new ZCException(resourceString.getString("subform_field_with_signature_field_iscurrently_not_supported"), ZCException.ERROR_OCCURED,"" );
-			//				}	
-			//			}
+			if(isParentSubForm && (FieldType.isPhotoField(fieldType)||FieldType.SIGNATURE==fieldType||FieldType.isUnSupportedField(fieldType)))
+			{
+				if(fieldType.equals(FieldType.IMAGE))
+				{
+					throw new ZCException(resourceString.getString("subform_field_with_image_field_iscurrently_not_supported"), ZCException.ERROR_OCCURED,"" );
+				}else if(fieldType.equals(FieldType.FILE_UPLOAD))
+				{
+					throw new ZCException(resourceString.getString("subform_field_with_fileupload_field_iscurrently_not_supported"), ZCException.ERROR_OCCURED,"" );
+				}else if(fieldType.equals(FieldType.SIGNATURE))
+				{
+					throw new ZCException(resourceString.getString("subform_field_with_signature_field_iscurrently_not_supported"), ZCException.ERROR_OCCURED,"" );
+				}else
+				{
+					throw new ZCException(resourceString.getString("subform_with_crm_field_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
+				}
+			}
 
 			if(externalFieldType==ExternalField.ZOHO_CRM)
 			{
 				fieldType = FieldType.EXTERNAL_FIELD;
 			}
 
+
 			zcField = new ZCField(fieldName, fieldType, displayName);
 
 			if(FieldType.isMultiChoiceField(fieldType)){
+				allowOtherChoice = false;
 				List<ZCChoice> selectedChoices = new ArrayList<ZCChoice>();
 				if(!isLookup){
 					if(initialChoiceValues.size()==1) 
@@ -2681,7 +2685,7 @@ public class JSONParser {
 					}
 					zcField.setRecordValue(new ZCRecordValue(zcField,toAdd));
 				}
-				
+
 			}
 
 			else
@@ -2861,9 +2865,9 @@ public class JSONParser {
 											break;
 										}
 									}
-//									if(isOtherChocie || zcField.getRecordValue().isAllowotherchoice()){
+									//									if(isOtherChocie || zcField.getRecordValue().isAllowotherchoice()){
 									if(isOtherChocie){
-//										zcField.getRecordValue().setAllowotherchoice(true);
+										//										zcField.getRecordValue().setAllowotherchoice(true);
 										ZCChoice otherChoice = new ZCChoice(ZCRecordValue.allowOtherChoiceKey,"Other");
 										if(!zcField.getRecordValue().isAllowotherchoice()){
 											choices.add(otherChoice);
@@ -2913,12 +2917,12 @@ public class JSONParser {
 										break;
 									}
 								}
-//								if(isOtherChoice || zcField.getRecordValue().isAllowotherchoice()){
+								//								if(isOtherChoice || zcField.getRecordValue().isAllowotherchoice()){
 								if(isOtherChoice){
-//									zcField.getRecordValue().setAllowotherchoice(true);
-									
+									//									zcField.getRecordValue().setAllowotherchoice(true);
+
 									ZCChoice otherChoice = new ZCChoice(ZCRecordValue.allowOtherChoiceKey,"Other");
-									
+
 									if(! zcField.getRecordValue().isAllowotherchoice()){
 										choices.add(otherChoice);
 										zcField.getRecordValue().addChoices(choices);
