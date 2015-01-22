@@ -37,7 +37,7 @@ public class ZCSection implements Parcelable{
 	public ZCSection(Parcel in) {
 		// TODO Auto-generated constructor stub
 		appLinkName = in.readString();
-		sectionName = in.readString();;
+		sectionName = in.readString();
 		appOwner = in.readString();
 		sectionLinkName = in.readString();
 		isHidden = in.readByte() != 0;

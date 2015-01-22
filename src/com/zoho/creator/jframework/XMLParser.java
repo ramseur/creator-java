@@ -36,7 +36,7 @@ import android.text.format.DateUtils;
 
 public class XMLParser {
 
-	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());
+	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());//No I18N
 
 	static String getStringValue(Node node, String defaultValue) {
 		if(node != null && node.getFirstChild() != null) {
@@ -266,7 +266,7 @@ public class XMLParser {
 							} else if(resultNodeChild.getNodeName().equals("evaluationDays")) {
 								remainingDays = getStringValue(resultNodeChild, "");	
 							}
-							ZOHOCreator.setUserProperty("evaluationDays", remainingDays);
+							ZOHOCreator.setUserProperty("evaluationDays", remainingDays);//No I18N
 						}
 					}
 				}
@@ -290,7 +290,7 @@ public class XMLParser {
 				for(int j=0; j<responseNodes.getLength(); j++) {
 					Node responseNodeChild = responseNodes.item(j);
 					if(responseNodeChild.getNodeName().equals("error")) {
-						throw new ZCException(getStringValue(responseNodeChild, "error"), ZCException.ERROR_OCCURED,"" );
+						throw new ZCException(getStringValue(responseNodeChild, "error"), ZCException.ERROR_OCCURED,"" );//No I18N
 					}
 					else if(responseNodeChild.getNodeName().equals("Sections")) {
 
@@ -370,7 +370,7 @@ public class XMLParser {
 					throw new ZCException(resourceString.getString("please_subscribe_to_professional_edition_and_get_access"), ZCException.LICENCE_ERROR); //No I18N
 				}
 			} else if(responseNode.getNodeName().equals("evaluationDays")) { //No I18N
-				ZOHOCreator.setUserProperty("evaluationDays", getStringValue(responseNode, ""));
+				ZOHOCreator.setUserProperty("evaluationDays", getStringValue(responseNode, ""));//No I18N
 			} 
 		}
 		return toReturn;		
@@ -640,7 +640,7 @@ public class XMLParser {
 		List<ZCField> subFormEditFields = new ArrayList<ZCField>();
 		List<ZCRecord> subFormEntries = new ArrayList<ZCRecord>();
 		ZCRecord defaultSubFormEntry = null;
-		Node fieldNode = resultNodeChild.getAttributes().getNamedItem("ishidden");
+		Node fieldNode = resultNodeChild.getAttributes().getNamedItem("ishidden");//No I18N
 		if(fieldNode!=null)
 		{
 			isHidden = Boolean.valueOf(fieldNode.getNodeValue());	
@@ -703,7 +703,7 @@ public class XMLParser {
 				}
 				else {
 					String key ="";
-					Node node = fieldPropetyNode.getAttributes().getNamedItem("value");
+					Node node = fieldPropetyNode.getAttributes().getNamedItem("value");//No I18N
 					if(node!=null)
 					{
 						key = node.getNodeValue();
@@ -1028,7 +1028,7 @@ public class XMLParser {
 		NodeList choiceNodes = fieldPropetyNode.getChildNodes();
 		for(int m=0; m<choiceNodes.getLength(); m++) {
 			Node choiceNode = choiceNodes.item(m);
-			String key = choiceNode.getAttributes().getNamedItem("value").getNodeValue();
+			String key = choiceNode.getAttributes().getNamedItem("value").getNodeValue();//No I18N
 			String value = getStringValue(choiceNode, "");
 			choices.add(new ZCChoice(key, value));
 		}
@@ -1180,11 +1180,11 @@ public class XMLParser {
 				zcView.setIsAllDay(isAllDay);
 
 
-				Node endNode = eventAttrMap.getNamedItem("end");
+				Node endNode = eventAttrMap.getNamedItem("end");//No I18N
 				Date endTime = null;
 				if(endNode!=null)
 				{
-					endTime = getDateValue(endNode.getNodeValue(), dateFormat); //No I18N
+					endTime = getDateValue(endNode.getNodeValue(), dateFormat);
 				}
 
 				int startDay = -1;
@@ -1374,7 +1374,7 @@ public class XMLParser {
 					for(int i=0;i<columnvalueList.getLength();i++)
 					{
 						Node columnvaluelistChildnode =  columnvalueList.item(i);
-						Node columnvaluelistvaluenode = columnvaluelistChildnode.getAttributes().getNamedItem("value");
+						Node columnvaluelistvaluenode = columnvaluelistChildnode.getAttributes().getNamedItem("value");//No I18N
 						if(columnvaluelistvaluenode!=null)
 						{
 							String key = getDecodedString(columnvaluelistvaluenode.getNodeValue());
@@ -1556,7 +1556,7 @@ public class XMLParser {
 													String displayValue = filterValue;
 													NamedNodeMap filterValAttrMap = filterValueNode.getAttributes();
 													if(filterValAttrMap.getLength()>0){
-														displayValue = getDecodedString(filterValAttrMap.getNamedItem("display").getNodeValue());
+														displayValue = getDecodedString(filterValAttrMap.getNamedItem("display").getNodeValue());//No I18N
 													}
 													filterValues.add(new ZCFilterValue(filterValue,displayValue));
 												}
@@ -1592,7 +1592,7 @@ public class XMLParser {
 											NamedNodeMap actionAttrMap = actionNode.getAttributes();
 											String actionType = getDecodedString(actionAttrMap.getNamedItem("type").getNodeValue()); //No I18N
 											String actionName = getDecodedString(getChildNodeValue(actionNode, "name")); //actionAttrMap.getNamedItem("name").getNodeValue(); //No I18N
-											String headerAction = getDecodedString(getChildNodeValue(actionNode, "isHeaderAction"));
+											String headerAction = getDecodedString(getChildNodeValue(actionNode, "isHeaderAction"));//No I18N
 											Long actionId = Long.parseLong(actionAttrMap.getNamedItem("id").getNodeValue()); //No I18N
 											ZCCustomAction action = new ZCCustomAction(actionType, actionName, actionId);
 											if(actionType.equals("row")) {
@@ -1649,7 +1649,7 @@ public class XMLParser {
 				for(int j=0; j<responseNodes.getLength(); j++) {
 					Node responseChildNode = responseNodes.item(j);
 					if(responseChildNode.getNodeName().equals("access_token")) {
-						accessToken = getChildNodeValue(responseChildNode, "access_token");
+						accessToken = getChildNodeValue(responseChildNode, "access_token");//No I18N
 					}
 				}
 			}

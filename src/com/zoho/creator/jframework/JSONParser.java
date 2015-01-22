@@ -1,3 +1,4 @@
+// $Id$
 package com.zoho.creator.jframework;
 
 import java.text.ParseException;
@@ -16,7 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.zoho.deluge.CriteriaExecutor;
+
 
 
 
@@ -28,7 +29,7 @@ public class JSONParser {
 	public static final int WORKSPACE_APPS = 3;
 	static List<JSONObject> onUserInputJsonObj = new ArrayList<JSONObject>();
 
-	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());
+	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());//No I18N
 
 	static ZCResponse parseAndCallFormEvents(String response, ZCForm currentShownForm,boolean doesOnUserInputRetriggered) throws ZCException
 	{
@@ -88,36 +89,36 @@ public class JSONParser {
 		return toReturn;
 	}
 
-		public static void evaluateRuleActions(ZCField zcField,HashMap<String,Object> valuesHashMap)
-		{
-			{
-				CriteriaExecutor cExec = new CriteriaExecutor();
-				boolean isConditionTrue = false;
-				List<ZCRule> fieldRules =  zcField.getFieldRules();
-				for(int i=0;i<fieldRules.size();i++)
-				{
-					ZCRule rule = fieldRules.get(i);
-					String ruleCondition = rule.getCondition();
-					Set set = valuesHashMap.keySet();
-					Iterator itrtr = set.iterator();
-					while(itrtr.hasNext())
-					{
-						String key = (String) itrtr.next();	
-					}
-	
-					if(ruleCondition!=null&&ruleCondition.length()>0)
-					{
-						try {
-							isConditionTrue = cExec.evaluateCriteria(rule.getCondition(), valuesHashMap);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}	
-						executeRuleActions(rule.getZCTasks(), valuesHashMap,isConditionTrue,zcField.getBaseForm());
-					}
-				}
-			} 
-		}
+//		public static void evaluateRuleActions(ZCField zcField,HashMap<String,Object> valuesHashMap)
+//		{
+//			{
+//				CriteriaExecutor cExec = new CriteriaExecutor();
+//				boolean isConditionTrue = false;
+//				List<ZCRule> fieldRules =  zcField.getFieldRules();
+//				for(int i=0;i<fieldRules.size();i++)
+//				{
+//					ZCRule rule = fieldRules.get(i);
+//					String ruleCondition = rule.getCondition();
+//					Set set = valuesHashMap.keySet();
+//					Iterator itrtr = set.iterator();
+//					while(itrtr.hasNext())
+//					{
+//						String key = (String) itrtr.next();	
+//					}
+//	
+//					if(ruleCondition!=null&&ruleCondition.length()>0)
+//					{
+//						try {
+//							isConditionTrue = cExec.evaluateCriteria(rule.getCondition(), valuesHashMap);
+//						} catch (Exception e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}	
+//						executeRuleActions(rule.getZCTasks(), valuesHashMap,isConditionTrue,zcField.getBaseForm());
+//					}
+//				}
+//			} 
+//		}
 
 
 
@@ -334,28 +335,28 @@ public class JSONParser {
 						JSONObject taskObj = (JSONObject) tasksArray.get(i);
 						if(taskObj.has("TASK_TYPE"))
 						{
-							taskType = taskObj.getInt("TASK_TYPE");
+							taskType = taskObj.getInt("TASK_TYPE");//No I18N
 						}
 						if(taskObj.has("TASK_CONFIG"))
 						{
-							JSONObject taskConfigObj = taskObj.getJSONObject("TASK_CONFIG");
+							JSONObject taskConfigObj = taskObj.getJSONObject("TASK_CONFIG");//No I18N
 							if(taskConfigObj.has("FIELDS"))
 							{
-								JSONArray fieldsArrayObj = taskConfigObj.getJSONArray("FIELDS"); 
+								JSONArray fieldsArrayObj = taskConfigObj.getJSONArray("FIELDS");//No I18N 
 
 								for(int j=0;j<fieldsArrayObj.length();j++)
 								{
 									fieldNames.add(fieldsArrayObj.getString(j));
 								}
 
-							}if(taskConfigObj.has("VALUES"))
+							}if(taskConfigObj.has("VALUES"))//No I18N
 							{
-								JSONObject valuesJsonObj = taskConfigObj.getJSONObject("VALUES");
+								JSONObject valuesJsonObj = taskConfigObj.getJSONObject("VALUES");//No I18N
 
 								for(int j=0;j<fieldNames.size();j++)
 								{
 									String fieldName = fieldNames.get(j);
-									if(valuesJsonObj.has(fieldName));
+									if(valuesJsonObj.has(fieldName))
 									{
 										setValuesHashMap.put(fieldName,valuesJsonObj.getString(fieldName));
 									}
@@ -705,12 +706,12 @@ public class JSONParser {
 		if(jObj.has("content"))
 		{
 			name =jObj.getString("content");
-		}if(jObj.has("email"))
+		}if(jObj.has("email"))//No I18N
 		{
 			email = jObj.getString("email");
-		}if(jObj.has("id"))
+		}if(jObj.has("id"))//No I18N
 		{
-			id = jObj.getString("id");
+			id = jObj.getString("id");//No I18N
 		}
 		choices.add(new ZCChoice(id,name+"-"+email));
 	}
@@ -727,7 +728,7 @@ public class JSONParser {
 			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
 			if(rowArrayObj.has("no"))
 			{
-				rowArrayObj.getInt("no");
+				rowArrayObj.getInt("no");//No I18N
 			}
 			if(rowArrayObj.has("FL"))
 			{
@@ -795,7 +796,7 @@ public class JSONParser {
 			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
 			if(rowArrayObj.has("no"))
 			{
-				rowArrayObj.getInt("no");
+				rowArrayObj.getInt("no");//No I18N
 			}
 			if(rowArrayObj.has("FL"))
 			{
@@ -815,7 +816,7 @@ public class JSONParser {
 							else if(flArrayObj.getString("val").equals("Account Name"))
 							{
 								accountName = flArrayObj.getString("content");
-								recordValue = new ZCRecordValue(new ZCField("Account Name",FieldType.SINGLE_LINE,"Account Name"),accountName );
+								recordValue = new ZCRecordValue(new ZCField("Account Name",FieldType.SINGLE_LINE,"Account Name"),accountName );//No I18N
 							}
 							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
 							{
@@ -852,7 +853,7 @@ public class JSONParser {
 			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
 			if(rowArrayObj.has("no"))
 			{
-				rowArrayObj.getInt("no");
+				rowArrayObj.getInt("no");//No I18N
 			}
 			if(rowArrayObj.has("FL"))
 			{
@@ -914,7 +915,7 @@ public class JSONParser {
 			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
 			if(rowArrayObj.has("no"))
 			{
-				rowArrayObj.getInt("no");
+				rowArrayObj.getInt("no");//No I18N
 			}
 			if(rowArrayObj.has("FL"))
 			{
@@ -985,7 +986,7 @@ public class JSONParser {
 			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
 			if(rowArrayObj.has("no"))
 			{
-				rowArrayObj.getInt("no");
+				rowArrayObj.getInt("no");//No I18N
 			}
 			if(rowArrayObj.has("FL"))
 			{
@@ -1005,7 +1006,7 @@ public class JSONParser {
 							else if(flArrayObj.getString("val").equals("Campaign Name"))
 							{
 								campaignName = flArrayObj.getString("content");
-								recordValue = new ZCRecordValue(new ZCField("Campaign Name",FieldType.SINGLE_LINE,"Campaign Name"), flArrayObj.getString("content"));
+								recordValue = new ZCRecordValue(new ZCField("Campaign Name",FieldType.SINGLE_LINE,"Campaign Name"), flArrayObj.getString("content"));//No I18N
 							}
 							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
 							{
@@ -1044,7 +1045,7 @@ public class JSONParser {
 			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
 			if(rowArrayObj.has("no"))
 			{
-				rowArrayObj.getInt("no");
+				rowArrayObj.getInt("no");//No I18N
 			}
 			if(rowArrayObj.has("FL"))
 			{
@@ -1064,7 +1065,7 @@ public class JSONParser {
 							else if(flArrayObj.getString("val").equals("Subject"))
 							{
 								subject = flArrayObj.getString("content");
-								recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));
+								recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));//No I18N
 							}
 							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
 							{
@@ -1104,7 +1105,7 @@ public class JSONParser {
 			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
 			if(rowArrayObj.has("no"))
 			{
-				rowArrayObj.getInt("no");
+				rowArrayObj.getInt("no");//No I18N
 			}
 			if(rowArrayObj.has("FL"))
 			{
@@ -1124,7 +1125,7 @@ public class JSONParser {
 							else if(flArrayObj.getString("val").equals("Solution Title"))
 							{
 								solutionTitle = flArrayObj.getString("content");
-								recordValue = new ZCRecordValue(new ZCField("Solution Title",FieldType.SINGLE_LINE,"Solution Title"), flArrayObj.getString("content"));
+								recordValue = new ZCRecordValue(new ZCField("Solution Title",FieldType.SINGLE_LINE,"Solution Title"), flArrayObj.getString("content"));//No I18N
 							}
 							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
 							{
@@ -1159,7 +1160,7 @@ public class JSONParser {
 			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
 			if(rowArrayObj.has("no"))
 			{
-				rowArrayObj.getInt("no");
+				rowArrayObj.getInt("no");//No I18N
 			}
 			if(rowArrayObj.has("FL"))
 			{
@@ -1179,7 +1180,7 @@ public class JSONParser {
 							else if(flArrayObj.getString("val").equals("Product Name"))
 							{
 								productName = flArrayObj.getString("content");
-								recordValue = new ZCRecordValue(new ZCField("Product Name",FieldType.SINGLE_LINE,"Product Name"), flArrayObj.getString("content"));
+								recordValue = new ZCRecordValue(new ZCField("Product Name",FieldType.SINGLE_LINE,"Product Name"), flArrayObj.getString("content"));//No I18N
 							}
 
 							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY")))&&(!(flArrayObj.getString("val").equals("VENDORID"))))
@@ -1221,7 +1222,7 @@ public class JSONParser {
 			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
 			if(rowArrayObj.has("no"))
 			{
-				rowArrayObj.getInt("no");
+				rowArrayObj.getInt("no");//No I18N
 			}
 			if(rowArrayObj.has("FL"))
 			{
@@ -1242,7 +1243,7 @@ public class JSONParser {
 							else if(flArrayObj.getString("val").equals("Price Book Name"))
 							{
 								priceBookName = flArrayObj.getString("content");
-								recordValue = new ZCRecordValue(new ZCField("Price Book Name",FieldType.SINGLE_LINE,"Price Book Name"), flArrayObj.getString("content"));
+								recordValue = new ZCRecordValue(new ZCField("Price Book Name",FieldType.SINGLE_LINE,"Price Book Name"), flArrayObj.getString("content"));//No I18N
 							}
 
 							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
@@ -1286,7 +1287,7 @@ public class JSONParser {
 			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
 			if(rowArrayObj.has("no"))
 			{
-				rowArrayObj.getInt("no");
+				rowArrayObj.getInt("no");//No I18N
 			}
 			if(rowArrayObj.has("FL"))
 			{
@@ -1307,7 +1308,7 @@ public class JSONParser {
 							else if(flArrayObj.getString("val").equals("Subject"))
 							{
 								subject = flArrayObj.getString("content");
-								recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));
+								recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));//No I18N
 							}
 							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY")))&&(!(flArrayObj.getString("val").equals("ACCOUNTID")))&&(!(flArrayObj.getString("val").equals("CONTACTID")))&&(!(flArrayObj.getString("val").equals("POTENTIALID")))) 
 							{
@@ -1343,7 +1344,7 @@ public class JSONParser {
 			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
 			if(rowArrayObj.has("no"))
 			{
-				rowArrayObj.getInt("no");
+				rowArrayObj.getInt("no");//No I18N
 			}
 			if(rowArrayObj.has("FL"))
 			{
@@ -1364,7 +1365,7 @@ public class JSONParser {
 							else if(flArrayObj.getString("val").equals("Vendor Name"))
 							{
 								vendorName = flArrayObj.getString("content");
-								recordValue = new ZCRecordValue(new ZCField("Vendor Name",FieldType.SINGLE_LINE,"Vendor Name"), flArrayObj.getString("content"));
+								recordValue = new ZCRecordValue(new ZCField("Vendor Name",FieldType.SINGLE_LINE,"Vendor Name"), flArrayObj.getString("content"));//No I18N
 							}
 							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY"))))
 							{
@@ -1404,7 +1405,7 @@ public class JSONParser {
 			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
 			if(rowArrayObj.has("no"))
 			{
-				rowArrayObj.getInt("no");
+				rowArrayObj.getInt("no");//No I18N
 			}
 			if(rowArrayObj.has("FL"))
 			{
@@ -1424,7 +1425,7 @@ public class JSONParser {
 							else if(flArrayObj.getString("val").equals("Subject"))
 							{
 								subject = flArrayObj.getString("content");
-								recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));
+								recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));//No I18N
 							}
 							else if(flArrayObj.getString("val").equals("VENDORID"))
 							{
@@ -1474,7 +1475,7 @@ public class JSONParser {
 			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
 			if(rowArrayObj.has("no"))
 			{
-				rowArrayObj.getInt("no");
+				rowArrayObj.getInt("no");//No I18N
 			}
 			if(rowArrayObj.has("FL"))
 			{
@@ -1494,7 +1495,7 @@ public class JSONParser {
 							else if(flArrayObj.getString("val").equals("Subject"))
 							{
 								subject = flArrayObj.getString("content");
-								recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));
+								recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));//No I18N
 							}
 							else if(flArrayObj.getString("val").equals("ACCOUNTID"))
 							{
@@ -1532,7 +1533,7 @@ public class JSONParser {
 			List<ZCRecordValue> recordValues = new ArrayList<ZCRecordValue>();
 			if(rowArrayObj.has("no"))
 			{
-				rowArrayObj.getInt("no");
+				rowArrayObj.getInt("no");//No I18N
 			}
 			if(rowArrayObj.has("FL"))
 			{
@@ -1552,7 +1553,7 @@ public class JSONParser {
 							else if(flArrayObj.getString("val").equals("Subject"))
 							{
 								subject = flArrayObj.getString("content");
-								recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));
+								recordValue = new ZCRecordValue(new ZCField("Subject",FieldType.SINGLE_LINE,"Subject"), flArrayObj.getString("content"));//No I18N
 							}
 							else if(!(flArrayObj.getString("val").equals("SMOWNERID"))&&(!(flArrayObj.getString("val").equals("SMCREATORID")))&&(!(flArrayObj.getString("val").equals("MODIFIEDBY")))&&(!(flArrayObj.getString("val").equals("SALESORDERID")))&&(!(flArrayObj.getString("val").equals("CONTACTID")))&&(!(flArrayObj.getString("val").equals("QUOTEID")))&&(!(flArrayObj.getString("val").equals("POTENTIALID"))))
 							{
@@ -1595,7 +1596,7 @@ public class JSONParser {
 
 		if(jsonObj.has("task"))
 		{
-			type = jsonObj.getInt("task");
+			type = jsonObj.getInt("task");//No I18N
 		}
 		if(jsonObj.has("formName"))
 		{
@@ -1764,7 +1765,7 @@ public class JSONParser {
 							}
 
 							if(isOtherChoice && recordValue.isAllowotherchoice()){
-								recordValue.setChoiceValue(new ZCChoice(ZCRecordValue.allowOtherChoiceKey, "Other"));
+								recordValue.setChoiceValue(new ZCChoice(ZCRecordValue.allowOtherChoiceKey, "Other"));//No I18N
 								recordValue.setOtherChoiceValue(selectedChoice.getValue());
 							}
 
@@ -1956,7 +1957,7 @@ public class JSONParser {
 		}
 
 		if(recValue.isAllowotherchoice()){
-			ZCChoice choice = new ZCChoice(ZCRecordValue.allowOtherChoiceKey, "Other");
+			ZCChoice choice = new ZCChoice(ZCRecordValue.allowOtherChoiceKey, "Other");//No I18N
 			recValue.setOtherChoiceValue(zcChoice.getValue());
 			return choice;
 		}
@@ -2068,7 +2069,7 @@ public class JSONParser {
 								if(applicationObj.has("created_time"))
 								{
 									String s =applicationObj.getString("created_time");
-									SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+									SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");//No I18N
 									try {
 										createdTime = simpleDateFormat.parse(s);
 									} catch (ParseException e) {
@@ -2090,7 +2091,7 @@ public class JSONParser {
 
 			if(jsonObject.has("license_enabled"))
 			{
-				licenceEnabled = jsonObject.getBoolean("license_enabled");			
+				licenceEnabled = jsonObject.getBoolean("license_enabled");//No I18N			
 			}
 
 		} catch (JSONException e) {
@@ -2125,10 +2126,10 @@ public class JSONParser {
 				JSONObject responseObject = new JSONObject(resultObject.getString("response"));
 				int sequenceNumber = -1;
 				if(responseObject.has("hasaddonload")){
-					hasAddOnLoad = responseObject.getBoolean("hasaddonload");
+					hasAddOnLoad = responseObject.getBoolean("hasaddonload");//No I18N
 				}
 				if(responseObject.has("haseditonload")){
-					hasEditOnLoad = responseObject.getBoolean("haseditonload");
+					hasEditOnLoad = responseObject.getBoolean("haseditonload");//No I18N
 				}
 				if(responseObject.has("captcha")) { 
 					throw new ZCException(resourceString.getString("captcha_enabled_forms_are_currently_not_supported"), ZCException.ERROR_OCCURED, "");
@@ -2140,7 +2141,7 @@ public class JSONParser {
 					successMessage = responseObject.getString("successmessage");
 				}
 				if(responseObject.has("type")){
-					int type = responseObject.getInt("type");
+					int type = responseObject.getInt("type");//No I18N
 					if(type == 2){
 						isStateLess = true;
 					}
@@ -2240,19 +2241,19 @@ public class JSONParser {
 							buttonLinkName = buttonObject.getString("labelname");
 						}
 						if(buttonObject.has("sequencenumber")){
-							buttonSequenceNumber = buttonObject.getInt("sequencenumber");
+							buttonSequenceNumber = buttonObject.getInt("sequencenumber");//No I18N
 						}
 						if(buttonObject.has("actiontype")){
-							actiontype = buttonObject.getInt("actiontype");
+							actiontype = buttonObject.getInt("actiontype");//No I18N
 						}
 						if(buttonObject.has("type")){
-							buttonType = ZCButtonType.getButtonType(buttonObject.getInt("type"));
+							buttonType = ZCButtonType.getButtonType(buttonObject.getInt("type"));//No I18N
 						}
 						if(buttonObject.has("displayname")){
 							buttonDisplayName = buttonObject.getString("displayname");
 						}
 						if(buttonObject.has("onclickexists")){
-							isOnClickExists = buttonObject.getBoolean("onclickexists");
+							isOnClickExists = buttonObject.getBoolean("onclickexists");//No I18N
 						}
 
 						ZCButton button = new ZCButton(buttonDisplayName, buttonLinkName, buttonType);
@@ -2275,7 +2276,7 @@ public class JSONParser {
 					ZCField field = fields.get(i);
 					FieldType fieldType = field.getType();
 					if((fieldType.equals(FieldType.EXTERNAL_FIELD)&&!(field.getModuleType().equalsIgnoreCase("users")))) {
-						ZCField idField = toReturn.getField(field.getFieldName()+"_ID");
+						ZCField idField = toReturn.getField(field.getFieldName()+"_ID");//No I18N
 						String crmIdValue = idField.getRecordValue().getValue();
 						if(crmIdValue!=null&&crmIdValue.length()>0)
 						{
@@ -2288,7 +2289,7 @@ public class JSONParser {
 									List<ZCChoice> choices = ZOHOCreator.getCRMRecordByID(field,crmIdValue);
 									if(choices.size()>0)
 									{
-										
+									
 										field.setRecordValue(new ZCRecordValue(field,choices.get(0)));
 									}else
 									{
@@ -2309,7 +2310,7 @@ public class JSONParser {
 				ZCException exception = null;
 				if(resultObject.has("code"))
 				{
-					code = resultObject.getInt("code");
+					code = resultObject.getInt("code");//No I18N
 				}
 				if(code == ZCException.LINK_NAME_CODE)
 				{
@@ -2392,7 +2393,7 @@ public class JSONParser {
 
 		try {
 			if(fieldObject.has("ishidden")){
-				isHidden = fieldObject.getBoolean("ishidden");
+				isHidden = fieldObject.getBoolean("ishidden");//No I18N
 			}
 			if(fieldObject.has("fieldname")){
 				fieldName = fieldObject.getString("fieldname");
@@ -2410,13 +2411,13 @@ public class JSONParser {
 
 			}
 			if(fieldObject.has("maxchar")){
-				maxChar = fieldObject.getInt("maxchar");
+				maxChar = fieldObject.getInt("maxchar");//No I18N
 			}
 			if(fieldObject.has("text")){
 				text = fieldObject.getString("text");
 			}
 			if(fieldObject.has("decimallength")){
-				decimalLength = fieldObject.getInt("decimallength");
+				decimalLength = fieldObject.getInt("decimallength");//No I18N
 			}
 			if(fieldObject.has("refform")){
 				refFormLinkName = fieldObject.getString("refform");
@@ -2425,62 +2426,62 @@ public class JSONParser {
 				refAppLinkName = fieldObject.getString("refapplication");
 			}
 			if(fieldObject.has("required")){
-				isRequired = fieldObject.getBoolean("required");
+				isRequired = fieldObject.getBoolean("required");//No I18N
 			}
 			if(fieldObject.has("allowotherchoice")){
-				allowOtherChoice = fieldObject.getBoolean("allowotherchoice");
+				allowOtherChoice = fieldObject.getBoolean("allowotherchoice");//No I18N
 			}
 			if(fieldObject.has("inputtype")){
-				imageType = fieldObject.getInt("inputtype");
+				imageType = fieldObject.getInt("inputtype");//No I18N
 			}
 			if(fieldObject.has("allownewentries")){
-				isNewEntriesAllowed = fieldObject.getBoolean("allownewentries");
+				isNewEntriesAllowed = fieldObject.getBoolean("allownewentries");//No I18N
 			}
 			if(fieldObject.has("type")){
-				int type = fieldObject.getInt("type");
+				int type = fieldObject.getInt("type");//No I18N
 				fieldType = FieldType.getFieldType(type);
 			}
 			if(fieldObject.has("islookupfield")){
-				isLookup = fieldObject.getBoolean("islookupfield");
+				isLookup = fieldObject.getBoolean("islookupfield");//No I18N
 			}
 			if(fieldObject.has("filter")){
-				isFilterApplied = fieldObject.getBoolean("filter");
+				isFilterApplied = fieldObject.getBoolean("filter");//No I18N
 			}
 			if(fieldObject.has("unique")){
-				isUnique = fieldObject.getBoolean("unique");
+				isUnique = fieldObject.getBoolean("unique");//No I18N
 			}
 			if(fieldObject.has("titlereq")){
-				urlTitleReq = fieldObject.getBoolean("titlereq");
+				urlTitleReq = fieldObject.getBoolean("titlereq");//No I18N
 			}
 			if(fieldObject.has("currencydisp")){
 				currencyType = fieldObject.getString("currencydisp");
 			}
 			if(fieldObject.has("linknamereq")){
-				urlLinkNameReq = fieldObject.getBoolean("linknamereq");
+				urlLinkNameReq = fieldObject.getBoolean("linknamereq");//No I18N
 			}
 			if(fieldObject.has("onchangeexists")){
-				hasOnUserInput = fieldObject.getBoolean("onchangeexists");
+				hasOnUserInput = fieldObject.getBoolean("onchangeexists");//No I18N
 			}
 			if(fieldObject.has("formulaexists")){
-				hasOnUserInputForFormula = fieldObject.getBoolean("formulaexists");
+				hasOnUserInputForFormula = fieldObject.getBoolean("formulaexists");//No I18N
 			}
 			if(fieldObject.has("dynamicpicklistexists")){
-				hasOnUserInputForFormula = fieldObject.getBoolean("dynamicpicklistexists");
+				hasOnUserInputForFormula = fieldObject.getBoolean("dynamicpicklistexists");//No I18N
 			}
 			if(fieldObject.has("defaultrows")){
-				defaultRows = fieldObject.getInt("defaultrows");
+				defaultRows = fieldObject.getInt("defaultrows");//No I18N
 			}
 			if(fieldObject.has("maximumrows")){
-				maximumRows = fieldObject.getInt("maximumrows");
+				maximumRows = fieldObject.getInt("maximumrows");//No I18N
 				if(maximumRows < 0){
 					maximumRows = 1000;
 				}
 			}
 			if(fieldObject.has("onaddrowexists")){
-				onAddRowExists = fieldObject.getBoolean("onaddrowexists");
+				onAddRowExists = fieldObject.getBoolean("onaddrowexists");//No I18N
 			}
 			if(fieldObject.has("ondeleterowexists")){
-				onDeleteRowExists = fieldObject.getBoolean("ondeleterowexists");
+				onDeleteRowExists = fieldObject.getBoolean("ondeleterowexists");//No I18N
 			}
 			if(fieldObject.has("initial")){
 				initialValue = fieldObject.getString("initial");
@@ -2670,7 +2671,7 @@ public class JSONParser {
 					if(allowOtherChoice && toAdd == null){
 						if(initValue!=null && initValue.length() > 0){
 							zcField.getRecordValue().setOtherChoiceValue(initValue);
-							zcField.getRecordValue().setChoiceValue(new ZCChoice(ZCRecordValue.allowOtherChoiceKey, "Other")); 
+							zcField.getRecordValue().setChoiceValue(new ZCChoice(ZCRecordValue.allowOtherChoiceKey, "Other"));//No I18N 
 						}
 					}
 
@@ -2709,7 +2710,7 @@ public class JSONParser {
 			}
 
 			if(allowOtherChoice){
-				ZCChoice zcOtherChoice = new ZCChoice(ZCRecordValue.allowOtherChoiceKey, "Other"); 
+				ZCChoice zcOtherChoice = new ZCChoice(ZCRecordValue.allowOtherChoiceKey, "Other");//No I18N 
 				choices.add(zcOtherChoice);
 			}
 
@@ -2811,7 +2812,7 @@ public class JSONParser {
 				String recordObjectKey = (String) recordObjectkeys.next();
 				String fieldName = "";
 				if(recordObjectKey.equals("ID")){
-					recordId = recordObject.getLong("ID");
+					recordId = recordObject.getLong("ID");//No I18N
 				}
 				else{
 					fieldName = recordObjectKey;
@@ -2870,7 +2871,7 @@ public class JSONParser {
 									//									if(isOtherChocie || zcField.getRecordValue().isAllowotherchoice()){
 									if(isOtherChocie){
 										//										zcField.getRecordValue().setAllowotherchoice(true);
-										ZCChoice otherChoice = new ZCChoice(ZCRecordValue.allowOtherChoiceKey,"Other");
+										ZCChoice otherChoice = new ZCChoice(ZCRecordValue.allowOtherChoiceKey,"Other");//No I18N
 										if(!zcField.getRecordValue().isAllowotherchoice()){
 											choices.add(otherChoice);
 											zcField.getRecordValue().addChoices(choices);
@@ -2923,7 +2924,7 @@ public class JSONParser {
 								if(isOtherChoice){
 									//									zcField.getRecordValue().setAllowotherchoice(true);
 
-									ZCChoice otherChoice = new ZCChoice(ZCRecordValue.allowOtherChoiceKey,"Other");
+									ZCChoice otherChoice = new ZCChoice(ZCRecordValue.allowOtherChoiceKey,"Other");//No I18N
 
 									if(! zcField.getRecordValue().isAllowotherchoice()){
 										choices.add(otherChoice);

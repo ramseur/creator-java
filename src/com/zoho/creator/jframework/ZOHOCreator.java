@@ -1,3 +1,4 @@
+// $Id$
 package com.zoho.creator.jframework;
 
 import java.io.BufferedReader;
@@ -86,7 +87,7 @@ public class ZOHOCreator {
 	private static ZCNavList navigationListForApps = null;
 	private static ZCForm subform = null;
 	private static String accountsURL = "accounts.zoho.com";//No I18N
-	private static String serviceName = "ZohoCreator";//No I18N1
+	private static String serviceName = "ZohoCreator";//No I18N
 	private static String authDescription = "ZohoCreator Android";//No I18N
 	private static String creatorURL = "creator.zoho.com";//No I18N
 	private static String prefix = "https";//No I18N
@@ -100,7 +101,7 @@ public class ZOHOCreator {
 	private static boolean isGettingUserDetails = false;
 
 
-	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());
+	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());//No I18N
 
 	private static boolean cacheResponse = true;
 	private static boolean readResponseFromFileForAPI = false;
@@ -203,8 +204,8 @@ public class ZOHOCreator {
 
 
 	static String getFilesDir() {
-		String str = ZOHOCreator.getUserProperty("FILES_DIR_PATH");
-		str = "/data/data/com.zoho.creator.a/files";
+		String str = ZOHOCreator.getUserProperty("FILES_DIR_PATH");//No I18N
+		str = "/data/data/com.zoho.creator.a/files";//No I18N
 		if(str == null){
 			str = "/";
 		}
@@ -398,7 +399,7 @@ public class ZOHOCreator {
 			params.add(new BasicNameValuePair("dateJsonObject", "{\"startDate\":{\"day\":" + startDateCal.get(Calendar.DAY_OF_MONTH) + ",\"month\":" + startDateCal.get(Calendar.MONTH) + ",\"year\":" + startDateCal.get(Calendar.YEAR) + ",\"hours\":"+ startDateCal.get(Calendar.HOUR_OF_DAY)  +",\"minutes\":"+ startDateCal.get(Calendar.MINUTE) +",\"seconds\":" + startDateCal.get(Calendar.SECOND) +"}," +  //No I18N
 					"\"endDate\":{\"day\":" +endDateCal.get(Calendar.DAY_OF_MONTH) + ",\"month\":" + endDateCal.get(Calendar.MONTH) + ",\"year\":" + endDateCal.get(Calendar.YEAR) + ",\"hours\":"+ endDateCal.get(Calendar.HOUR_OF_DAY)  +",\"minutes\":"+ endDateCal.get(Calendar.MINUTE) +",\"seconds\":" + endDateCal.get(Calendar.SECOND) + "}};"));//No I18N
 		}
-		params.add(new BasicNameValuePair("viewLinkName", currentView.getComponentLinkName()));
+		params.add(new BasicNameValuePair("viewLinkName", currentView.getComponentLinkName()));//No I18N
 		params.addAll(getQueryStringParams(currentView.getQueryString()));
 		ZCForm form = getForm(currentView.getAppLinkName(), formLinkName, currentView.getAppOwner(), ZCForm.VIEW_ADD_FORM, params);
 		setCurrentForm(form);
@@ -420,7 +421,7 @@ public class ZOHOCreator {
 				String[] fieldNameAndValueString = stringValues[p].split("=");
 				if(fieldNameAndValueString.length==2)
 				{
-					params.add(new BasicNameValuePair(fieldNameAndValueString[0],fieldNameAndValueString[1]));//No I18N
+					params.add(new BasicNameValuePair(fieldNameAndValueString[0],fieldNameAndValueString[1]));
 				}
 				else if(fieldNameAndValueString.length==1){
 					params.add(new BasicNameValuePair(fieldNameAndValueString[0],""));//No I18N
@@ -567,7 +568,7 @@ public class ZOHOCreator {
 		ZCForm form = ZOHOCreator.getCurrentForm();
 		if(form!=null)
 		{
-			params.add(new BasicNameValuePair("childFormAccessType", form.getFormType()+""));//NoI18N
+			params.add(new BasicNameValuePair("childFormAccessType", form.getFormType()+""));//No I18N
 		}
 		ZCView viewForAdd = baseForm.getViewForAdd();
 		ZCView viewForEdit = baseForm.getViewForEdit(); 
@@ -575,7 +576,7 @@ public class ZOHOCreator {
 		if(viewForAdd != null) {
 			params.add(new BasicNameValuePair("viewLinkName" , viewForAdd.getComponentLinkName()));//No I18N
 		} else if(viewForEdit != null) {
-			params.add(new BasicNameValuePair("viewLinkName" , viewForEdit.getComponentLinkName()));
+			params.add(new BasicNameValuePair("viewLinkName" , viewForEdit.getComponentLinkName()));//No I18N
 		} else if(zcForm.getViewForBulkEdit() != null) {
 			params.add(new BasicNameValuePair("viewLinkName" , zcForm.getViewForBulkEdit().getComponentLinkName()));//No I18N
 		} 
@@ -594,7 +595,7 @@ public class ZOHOCreator {
 				response = parseResponseDocumentForJSONString(urlPair, zcForm);
 			} else {
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
-				params.add(new BasicNameValuePair("zcRefValue", true+""));
+				params.add(new BasicNameValuePair("zcRefValue", true+""));//No I18N
 				params.add(new BasicNameValuePair("formAccessType", String.valueOf(zcForm.getFormType())));//No I18N
 				params.add(new BasicNameValuePair("errorLog" , "true"));//No I18N
 				if(zcForm.getViewForBulkEdit() != null || zcForm.getViewForEdit() != null) {
@@ -681,12 +682,12 @@ public class ZOHOCreator {
 		params.add(new BasicNameValuePair("recordId", recordId + ""));//No I18N
 		if(subFormFieldName!=null)
 		{
-			params.add(new BasicNameValuePair("subformFieldName", subFormFieldName));
-			params.add(new BasicNameValuePair("subformRecId",subFormRecId +""));
+			params.add(new BasicNameValuePair("subformFieldName", subFormFieldName));//No I18N
+			params.add(new BasicNameValuePair("subformRecId",subFormRecId +""));//No I18N
 		}
 		if(field.getType().equals(FieldType.SIGNATURE))
 		{
-			params.add(new BasicNameValuePair("isNativeMobileApp", "true"));
+			params.add(new BasicNameValuePair("isNativeMobileApp", "true"));//No I18N
 		}
 		ZCForm form = field.getBaseForm();
 		int formType = form.getFormType();
@@ -696,7 +697,7 @@ public class ZOHOCreator {
 		}
 		if(action == "update") {
 			if(getCurrentView()!=null && bitmap!=null) {
-				params.add(new BasicNameValuePair("operation","update"));
+				params.add(new BasicNameValuePair("operation","update"));//No I18N
 			}	
 		}
 
@@ -705,7 +706,7 @@ public class ZOHOCreator {
 			if(fileName==null||(fileName!=null&&fileName.equals("")))
 
 			{
-				fileName = "image" + System.currentTimeMillis()+".jpg";
+				fileName = "image" + System.currentTimeMillis()+".jpg";//No I18N
 			}
 			params.add(new BasicNameValuePair("filename", fileName));//No I18N
 			if(field.getType().equals(FieldType.FILE_UPLOAD))
@@ -955,15 +956,15 @@ public class ZOHOCreator {
 
 	public static ZCForm getFeedBackForm(String preFilledLogMessage,boolean isGeneralErrorOccured) {
 		ZCForm toReturn  = new ZCForm("zoho1", "support", "Feedback", "Feedback", 1, false, false, resourceString.getString("thanks_for_taking_the_time_out_to_send_that"), "dd-MMM-yyyy", false,"","");//No I18N
-		ZCField editAccessField   = new ZCField("edit_access_field",FieldType.DROPDOWN,resourceString.getString("allow_edit_access_to_support"));
+		ZCField editAccessField   = new ZCField("edit_access_field",FieldType.DROPDOWN,resourceString.getString("allow_edit_access_to_support"));//No I18N
 		ZCField platformField = new ZCField("Platform", FieldType.DROPDOWN, "Platform");//No I18N
 		List<ZCChoice> choices = new ArrayList<ZCChoice>();
 		//choices.add(new ZCChoice("iOS", "iOS"));//No I18N
-		ZCChoice choice = new ZCChoice("Android", "Android");
-		choices.add(choice);//No I18N
+		ZCChoice choice = new ZCChoice("Android", "Android");//No I18N
+		choices.add(choice);
 		ZCRecordValue recValue = new ZCRecordValue(platformField, choice);
 		recValue.addChoices(choices);
-		platformField.setRecordValue(recValue);//No I18N
+		platformField.setRecordValue(recValue);
 		platformField.setHidden(true);
 		platformField.setRebuildRequired(true);
 		editAccessField.setLookup(true); 
@@ -1021,7 +1022,7 @@ public class ZOHOCreator {
 					String currentApplictionOwner =ZOHOCreator.getCurrentApplication().getAppOwner();
 					if(currentApplictionOwner.equals(personalAppsOwner))
 					{
-						title = "[owner] " + title;
+						title = "[owner] " + title;//No I18N
 						zcChoice = new ZCChoice(ZOHOCreator.getCurrentApplication().getAppLinkName(),ZOHOCreator.getCurrentApplication().getAppName());
 
 					}
@@ -1198,7 +1199,7 @@ public class ZOHOCreator {
 		String response = ZOHOCreator.postURL(crmLookupChoicesUrl.getUrl(),crmLookupChoicesUrl.getNvPair());
 		return JSONParser.parseCrmLookupChoices(response,field.getRecordValue());
 	}
-	
+
 	static List<ZCChoice> loadMoreChoices(ZCRecordValue zcRecordValue) throws ZCException {
 		ZCField field = zcRecordValue.getField();
 		ZCField subFormField = field.getBaseForm().getBaseSubFormField();
@@ -1486,7 +1487,7 @@ public class ZOHOCreator {
 	}
 
 	static String getAuthTokenResponse(String uname, String password) throws ZCException {
-		URLPair loginURL = ZCURL.getAuthTokenURL(uname, password);//No I18N
+		URLPair loginURL = ZCURL.getAuthTokenURL(uname, password);
 		return ZOHOCreator.postURL(loginURL.getUrl(), loginURL.getNvPair());
 
 	}
@@ -1561,11 +1562,11 @@ public class ZOHOCreator {
 												Node childNode = childNodes.item(l);
 												if(childNode.getNodeName().equals("update"))
 												{
-													subFormRecordIds.add(Long.parseLong(childNode.getAttributes().getNamedItem("ID").getNodeValue()));
+													subFormRecordIds.add(Long.parseLong(childNode.getAttributes().getNamedItem("ID").getNodeValue()));//No I18N
 												}
 												else if(childNode.getNodeName().equals("add"))
 												{
-													subFormRecordIds.add(Long.parseLong(childNode.getAttributes().getNamedItem("ID").getNodeValue()));
+													subFormRecordIds.add(Long.parseLong(childNode.getAttributes().getNamedItem("ID").getNodeValue()));//No I18N
 												}
 											}
 											zcField.setSubFormRecordIds(subFormRecordIds);
@@ -1599,7 +1600,7 @@ public class ZOHOCreator {
 			return (getResponseString(getURLString(url, params)));
 		}
 
-		
+
 
 		try
 		{
@@ -1623,7 +1624,7 @@ public class ZOHOCreator {
 
 			byte[] response = client.execute(request, handler);
 
-			
+
 
 			return new String(response);
 		} catch(UnknownHostException uhe) {
@@ -1712,7 +1713,7 @@ public class ZOHOCreator {
 
 
 
-		
+
 
 		try
 		{
@@ -1728,8 +1729,8 @@ public class ZOHOCreator {
 				throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
 
 			}
-			
-			request.setHeader("Authorization", ZOHOCreator.getZohoUser().getAuthToken());
+
+			request.setHeader("Authorization", ZOHOCreator.getZohoUser().getAuthToken());//No I18N
 			HttpEntity entity = null;
 			try {
 				entity = client.execute(request).getEntity();
@@ -1739,14 +1740,19 @@ public class ZOHOCreator {
 			if(entity != null) {
 				InputStream is = null;
 				try {
-					
+					//System.out.println("before getting input");
 					is = entity.getContent();
-
+					//					System.out.println("after getting input");
+					//					BufferedReader in = new BufferedReader(new InputStreamReader(is));
+					//					String inputLine;
+					//					while ((inputLine = in.readLine()) != null)
+					//					    System.out.println("out......"+inputLine);
+					//					in.close();
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
 
-					
+
 
 					return toReturn;
 				} catch (ParserConfigurationException e) {
@@ -1775,15 +1781,15 @@ public class ZOHOCreator {
 
 		} catch(UnknownHostException uhe) {
 			uhe.printStackTrace();
-			
+
 			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
 		} catch(HttpHostConnectException uhe) {
 			uhe.printStackTrace();
-			
+
 			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
 		} catch (IOException e) {
 			e.printStackTrace();
-			
+
 			throw new ZCException(resourceString.getString("network_error"), ZCException.NETWORK_ERROR);//No I18N
 		}
 		throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getURLStringForException(url, params)); //No I18N
@@ -1849,7 +1855,9 @@ public class ZOHOCreator {
 						ByteArrayOutputStream bos = new ByteArrayOutputStream();
 						buf = new byte[size];
 						while ((len = is.read(buf, 0, size)) != -1)
+						{
 							bos.write(buf, 0, len);
+						}
 						byteArray = bos.toByteArray();
 
 					}
@@ -1987,7 +1995,7 @@ public class ZOHOCreator {
 			if(!file.exists()){
 				file.createNewFile();
 			}
-			PrintWriter writer = new PrintWriter(file, "UTF-8");
+			PrintWriter writer = new PrintWriter(file, "UTF-8");//No I18N
 			writer.println(content);
 			writer.close();
 		} catch (IOException e) {

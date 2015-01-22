@@ -51,7 +51,7 @@ public class ZCRecord implements Comparable<ZCRecord>{
 	
 	public String zcRecordAllPropertyValues()
 	{
-		return "eventdate.."+eventDate+"..eventtime.."+eventTitle+"..starttime.."+startTime+"..endtime.."+endTime;
+		return "eventdate.."+eventDate+"..eventtime.."+eventTitle+"..starttime.."+startTime+"..endtime.."+endTime;//No I18N
 	}
 
 	public List<ZCRecordValue> getValues() {

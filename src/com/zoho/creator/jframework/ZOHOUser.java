@@ -134,7 +134,7 @@ public class ZOHOUser implements Parcelable{
 								} else if(resultNodeChild.getNodeName().equals("FULL_NAME")) {
 									fullName = XMLParser.getStringValue(resultNodeChild, ""); //No I18N
 								} else if(resultNodeChild.getNodeName().equals("GENDER")) {
-									gender = XMLParser.getIntValue(resultNodeChild, 0); //No I18N
+									gender = XMLParser.getIntValue(resultNodeChild, 0);
 								} else if(resultNodeChild.getNodeName().equals("EMAIL_ID")) {
 									String eMailList = XMLParser.getStringValue(resultNodeChild, ""); //No I18N
 									String[] tokens = eMailList.split(",");
@@ -171,7 +171,7 @@ public class ZOHOUser implements Parcelable{
 		String cause = null;
 		String result = null;
 		try {
-			uname = java.net.URLEncoder.encode(uname, "UTF-8");
+			uname = java.net.URLEncoder.encode(uname, "UTF-8");//No I18N
 			password = java.net.URLEncoder.encode(password, "UTF-8");//No I18N
 			String response = ZOHOCreator.getAuthTokenResponse(uname, password);
 			try {
@@ -183,7 +183,7 @@ public class ZOHOUser implements Parcelable{
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} //No I18N
+		}
 
 		authToken = props.getProperty("AUTHTOKEN");
 		result = props.getProperty("RESULT");

@@ -1,10 +1,11 @@
+// $Id$
 package com.zoho.creator.jframework;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public enum ExternalField{
-	ZOHO_CRM ("ZOHOCRM") , SALES_FORCE ("SALEFORCE") , UNKNOWN("");
+	ZOHO_CRM ("ZOHOCRM") , SALES_FORCE ("SALEFORCE") , UNKNOWN("");//No I18N
 	private static Map<String, ExternalField> typeMap;
 
 	static {
@@ -51,35 +52,35 @@ public enum ExternalField{
 		switch(moduleType)
 		{
 		case 1:
-			return "Leads";
+			return "Leads";//No I18N
 		case 2:
-			return "Accounts";
+			return "Accounts";//No I18N
 		case 3:
-			return "Potentials";
+			return "Potentials";//No I18N
 		case 4:
-			return "Contacts";
+			return "Contacts";//No I18N
 		case 5:
-			return "Campaingns";
+			return "Campaingns";//No I18N
 		case 8:
-			return "Cases";
+			return "Cases";//No I18N
 		case 9:
-			return "Solutions";
+			return "Solutions";//No I18N
 		case 10:
-			return "Products";
+			return "Products";//No I18N
 		case 11:
-			return "PriceBooks";
+			return "PriceBooks";//No I18N
 		case 12:
-			return "Quotes";
+			return "Quotes";//No I18N
 		case 13:
-			return "Vendors";
+			return "Vendors";//No I18N
 		case 14:
-			return "Purchaes Orders";
+			return "Purchaes Orders";//No I18N
 		case 15:
-			return "Sales Orders";
+			return "Sales Orders";//No I18N
 		case 16:
-			return "Invoices";
+			return "Invoices";//No I18N
 		case 17:
-			return "Users";
+			return "Users";//No I18N
 
 		}
 		return null;

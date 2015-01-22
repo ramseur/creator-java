@@ -64,9 +64,9 @@ public enum FieldType{
 		case 21:
 			return "SUB FORM";//No I18N
 		case 22:
-			return "EXTERNAL FIELD";
+			return "EXTERNAL FIELD";//No I18N
 		case 23:
-			return "EXTERNAL LINK";
+			return "EXTERNAL LINK";//No I18N
 		case 4:
 			return "RICH TEXT";//No I18N
 		case 9:

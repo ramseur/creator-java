@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ZCField implements Comparable<ZCField>{
-	static final long serialVersionUID = 2l;
+
 	private String fieldName = null;
 	private FieldType type;
 	private String displayName = null;
@@ -62,16 +62,16 @@ public class ZCField implements Comparable<ZCField>{
 	private int subFormEntryPosition = -1;
 	private int imageType = IMAGE_BOTH;
 	private ExternalField externalFieldType = ExternalField.UNKNOWN;
-	private String moduleType = "Leads";
+	private String moduleType = "Leads";//No I18N
 	private boolean isSubFormAddEntryHidden = false;
 	private boolean isSubFormDeleteEntryHidden = false;
 
-	
+
 	private List<ZCRule> fieldRules = new ArrayList<ZCRule>();
 
-	public static int IMAGE_LINK = 1;
-	public static int IMAGE_LOCAL = 2;
-	public static int IMAGE_BOTH = 3;
+	public static final int IMAGE_LINK = 1;
+	public static final int IMAGE_LOCAL = 2;
+	public static final int IMAGE_BOTH = 3;
 
 	int baseFormFieldSize = 0;
 
@@ -122,13 +122,13 @@ public class ZCField implements Comparable<ZCField>{
 	{
 		return fieldRules;
 	}
-	
+
 	void setfieldRules(List<ZCRule> fieldRules)
 	{
 		this.fieldRules = fieldRules;
 	}
 
-	
+
 	public ZCRecordValue getPreviousRecordValue()
 	{
 		return previousRecordValue;
@@ -138,7 +138,7 @@ public class ZCField implements Comparable<ZCField>{
 	{
 		this.moduleType = moduleType;
 	}
-	
+
 	public String getModuleType()
 	{
 		return moduleType;
@@ -304,21 +304,21 @@ public class ZCField implements Comparable<ZCField>{
 	public void setRecordValue(ZCRecordValue recordValue) {
 		this.recordValue = recordValue;
 
-//		if(recordValue!=null)
-//		{
-//			ZCField tempField = recordValue.getField();
-//			FieldType ftype = tempField.getType();
-//			if(FieldType.isMultiChoiceField(ftype))
-//			{
-//				previousRecordValue = new ZCRecordValue(tempField, recordValue.getChoiceValues());	
-//			}else if(FieldType.isSingleChoiceField(ftype)){
-//				previousRecordValue = new ZCRecordValue(tempField, recordValue.getChoiceValue());
-//			}
-//			else if((!FieldType.isPhotoField(ftype))&&(ftype!=FieldType.SIGNATURE))
-//			{
-//				previousRecordValue = new ZCRecordValue(tempField, recordValue.getValue());
-//			}
-//		}
+		//		if(recordValue!=null)
+		//		{
+		//			ZCField tempField = recordValue.getField();
+		//			FieldType ftype = tempField.getType();
+		//			if(FieldType.isMultiChoiceField(ftype))
+		//			{
+		//				previousRecordValue = new ZCRecordValue(tempField, recordValue.getChoiceValues());	
+		//			}else if(FieldType.isSingleChoiceField(ftype)){
+		//				previousRecordValue = new ZCRecordValue(tempField, recordValue.getChoiceValue());
+		//			}
+		//			else if((!FieldType.isPhotoField(ftype))&&(ftype!=FieldType.SIGNATURE))
+		//			{
+		//				previousRecordValue = new ZCRecordValue(tempField, recordValue.getValue());
+		//			}
+		//		}
 
 	}
 
@@ -400,7 +400,7 @@ public class ZCField implements Comparable<ZCField>{
 							toRecordValue.setChoiceValues(fromRecordValue.getChoiceValues());
 						} else if(FieldType.isSingleChoiceField(fromRecordValueField.getType())) {
 							ZCChoice selectedChoice = fromRecordValue.getChoiceValue();
-						
+
 							if(selectedChoice != null && selectedChoice.getKey().equals(ZCRecordValue.allowOtherChoiceKey)){
 								toRecordValue.setOtherChoiceValue(fromRecordValue.getOtherChoiceValue());
 							}

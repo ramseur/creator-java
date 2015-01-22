@@ -1,5 +1,4 @@
 // $Id$
-
 package com.zoho.creator.jframework;
 
 import java.util.HashMap;
@@ -9,7 +8,7 @@ import java.util.ResourceBundle;
 
 public class ZCCondition {
 	
-	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());
+	private static ResourceBundle resourceString = ResourceBundle.getBundle("ResourceString", Locale.getDefault());//No I18N
 
 	public static final int EQUAL=18;
 	public static final int NOT_EQUAL=19;

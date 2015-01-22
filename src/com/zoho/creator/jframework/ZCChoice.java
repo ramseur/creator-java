@@ -50,4 +50,10 @@ public class ZCChoice extends ZCRecord{
         }
         return key.equals(((ZCChoice)toCheck).getKey());
 	}
+	
+	public int hashCode()
+	{
+		return 0;
+	}
+	
 }

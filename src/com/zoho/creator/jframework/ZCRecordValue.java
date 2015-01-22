@@ -28,7 +28,7 @@ public class ZCRecordValue{
 	private boolean isAllowotherchoice = false;
 	private String otherChoiceValue = null;
 
-	public static String allowOtherChoiceKey = "ALLOW_OTHER_CHOICES";
+	public static String allowOtherChoiceKey = "ALLOW_OTHER_CHOICES";//No I18N
 
 
 

@@ -408,7 +408,7 @@ public class ZCForm extends ZCComponent{
 	List<NameValuePair> getFieldParamValues() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		List<ZCField> fieldsToIterate = fields;
-		for(int i=0; i<fieldsToIterate.size(); i++) {//No I18N
+		for(int i=0; i<fieldsToIterate.size(); i++) {
 			ZCField field = fieldsToIterate.get(i);
 			ZCRecordValue recordValue = field.getRecordValue();
 			if(recordValue != null) 
@@ -421,7 +421,9 @@ public class ZCForm extends ZCComponent{
 						if(!values.get(0).equals(""))
 						{
 							for(int j=0;j<values.size();j++)
+							{
 								params.add(new BasicNameValuePair(field.getFieldName(), values.get(j).getKey()));
+							}
 						}
 					}
 				} 
@@ -464,13 +466,13 @@ public class ZCForm extends ZCComponent{
 			long recordId = subFormRecord.getRecordId();
 			if(recordId==-1l)
 			{
-				params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV(record::status)", "added"));
+				params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV(record::status)", "added"));//No I18N
 			}
 			else
 			{
-				params.add(new BasicNameValuePair("SF("+fieldName+").FD("+recordId+"_"+(i+1)+").SV(record::status)", "nochange"));
+				params.add(new BasicNameValuePair("SF("+fieldName+").FD("+recordId+"_"+(i+1)+").SV(record::status)", "nochange"));//No I18N
 				//SF(SubForm).FD(1553251000000441102_1).SV(ID):1553251000000441102
-				params.add(new BasicNameValuePair("SF("+fieldName+").FD("+recordId+"_"+(i+1)+").SV(ID)",recordId+""));
+				params.add(new BasicNameValuePair("SF("+fieldName+").FD("+recordId+"_"+(i+1)+").SV(ID)",recordId+""));//No I18N
 			}
 			for(int k=0; k<subFormRecordValues.size(); k++) {
 				ZCRecordValue subFormRecordValue = subFormRecordValues.get(k);
@@ -481,11 +483,11 @@ public class ZCForm extends ZCComponent{
 						//params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV("+subFormField.getFieldName()+")",subFormChoiceValues.get(l).getKey()));
 						if(recordId==-1l)
 						{
-							params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV("+subFormField.getFieldName()+")",subFormChoiceValues.get(l).getKey()));
+							params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV("+subFormField.getFieldName()+")",subFormChoiceValues.get(l).getKey()));//No I18N
 						}
 						else
 						{
-							params.add(new BasicNameValuePair("SF("+fieldName+").FD("+recordId+"_"+(i+1)+").SV("+subFormField.getFieldName()+")",subFormChoiceValues.get(l).getKey()));
+							params.add(new BasicNameValuePair("SF("+fieldName+").FD("+recordId+"_"+(i+1)+").SV("+subFormField.getFieldName()+")",subFormChoiceValues.get(l).getKey()));//No I18N
 						}
 
 					}
@@ -509,11 +511,11 @@ public class ZCForm extends ZCComponent{
 					//params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV("+subFormField.getFieldName()+")",value));
 					if(recordId==-1l)
 					{
-						params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV("+subFormField.getFieldName()+")",value));
+						params.add(new BasicNameValuePair("SF("+fieldName+").FD(t::row_"+(i+1)+").SV("+subFormField.getFieldName()+")",value));//No I18N
 					}
 					else
 					{
-						params.add(new BasicNameValuePair("SF("+fieldName+").FD("+recordId+"_"+(i+1)+").SV("+subFormField.getFieldName()+")",value));
+						params.add(new BasicNameValuePair("SF("+fieldName+").FD("+recordId+"_"+(i+1)+").SV("+subFormField.getFieldName()+")",value));//No I18N
 					}
 				}
 			}
