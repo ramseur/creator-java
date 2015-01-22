@@ -1192,8 +1192,14 @@ public class ZOHOCreator {
 	}
 
 
+	static List<ZCChoice> getCRMRecordByID(ZCField field,String recordId) throws ZCException
+	{
+		URLPair crmLookupChoicesUrl = ZCURL.crmLookupChoiceByID(field.getModuleType(),recordId);
+		String response = ZOHOCreator.postURL(crmLookupChoicesUrl.getUrl(),crmLookupChoicesUrl.getNvPair());
+		return JSONParser.parseCrmLookupChoices(response,field.getRecordValue());
+	}
+	
 	static List<ZCChoice> loadMoreChoices(ZCRecordValue zcRecordValue) throws ZCException {
-
 		ZCField field = zcRecordValue.getField();
 		ZCField subFormField = field.getBaseForm().getBaseSubFormField();
 		ZCForm baseForm = field.getBaseForm();
@@ -1588,16 +1594,13 @@ public class ZOHOCreator {
 	public static String postURL(final String url, final List<NameValuePair> params) throws ZCException {
 
 
-		
+
 		if(readResponseFromFileForAPI) {
 			return (getResponseString(getURLString(url, params)));
 		}
 
 		
 
-
-
-		
 		try
 		{
 			HttpClient client = new DefaultHttpClient();
@@ -1617,10 +1620,10 @@ public class ZOHOCreator {
 					}
 				}
 			};
-			
+
 			byte[] response = client.execute(request, handler);
 
-
+			
 
 			return new String(response);
 		} catch(UnknownHostException uhe) {
@@ -1725,6 +1728,8 @@ public class ZOHOCreator {
 				throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getTraceWithURL(e, url, params));//No I18N
 
 			}
+			
+			request.setHeader("Authorization", ZOHOCreator.getZohoUser().getAuthToken());
 			HttpEntity entity = null;
 			try {
 				entity = client.execute(request).getEntity();
@@ -1734,7 +1739,9 @@ public class ZOHOCreator {
 			if(entity != null) {
 				InputStream is = null;
 				try {
+					
 					is = entity.getContent();
+
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder builder = factory.newDocumentBuilder();
 					Document toReturn = builder.parse(is);
@@ -1767,11 +1774,16 @@ public class ZOHOCreator {
 			}
 
 		} catch(UnknownHostException uhe) {
+			uhe.printStackTrace();
+			
 			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
 		} catch(HttpHostConnectException uhe) {
+			uhe.printStackTrace();
+			
 			throw new ZCException(resourceString.getString("no_network_connection"), ZCException.NETWORK_ERROR);//No I18N
 		} catch (IOException e) {
-
+			e.printStackTrace();
+			
 			throw new ZCException(resourceString.getString("network_error"), ZCException.NETWORK_ERROR);//No I18N
 		}
 		throw new ZCException(resourceString.getString("an_error_has_occured"), ZCException.GENERAL_ERROR, getURLStringForException(url, params)); //No I18N
@@ -1809,7 +1821,7 @@ public class ZOHOCreator {
 		}
 
 		String url = buff.toString();
-		
+
 		HttpPost httppost = new HttpPost(url);
 
 		if(bitMap!=null)
@@ -1862,7 +1874,7 @@ public class ZOHOCreator {
 		try {
 			ResponseHandler<String> responseHandler=new BasicResponseHandler();
 			String responseBody = httpclient.execute(httppost, responseHandler);
-			
+
 			//HttpResponse httpResponse = httpclient.execute(httppost);
 
 		} catch(UnknownHostException uhe) {

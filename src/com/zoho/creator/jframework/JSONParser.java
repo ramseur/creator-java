@@ -16,6 +16,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.zoho.deluge.CriteriaExecutor;
+
+
+
 
 public class JSONParser {
 
@@ -84,42 +88,36 @@ public class JSONParser {
 		return toReturn;
 	}
 
-	//	public static void evaluateRuleActions(ZCField zcField,HashMap<String,Object> valuesHashMap)
-	//	{
-	//		{
-	//			CriteriaExecutor cExec = new CriteriaExecutor();
-	//
-	//			boolean isConditionTrue = false;
-	//			List<ZCRule> fieldRules =  zcField.getFieldRules();
-	//			
-	//			for(int i=0;i<fieldRules.size();i++)
-	//			{
-	//				ZCRule rule = fieldRules.get(i);
-	//				String ruleCondition = rule.getCondition();
-	//
-	//				
-	//				Set set = valuesHashMap.keySet();
-	//				Iterator itrtr = set.iterator();
-	//				while(itrtr.hasNext())
-	//				{
-	//					String key = (String) itrtr.next();
-	//					
-	//				}
-	//
-	//				if(ruleCondition!=null&&ruleCondition.length()>0)
-	//				{
-	//					try {
-	//						isConditionTrue = cExec.evaluateCriteria(rule.getCondition(), valuesHashMap);
-	//					} catch (Exception e) {
-	//						// TODO Auto-generated catch block
-	//						e.printStackTrace();
-	//					}
-	//					
-	//					executeRuleActions(rule.getZCTasks(), valuesHashMap,isConditionTrue,zcField.getBaseForm());
-	//				}
-	//			}
-	//		} 
-	//	}
+		public static void evaluateRuleActions(ZCField zcField,HashMap<String,Object> valuesHashMap)
+		{
+			{
+				CriteriaExecutor cExec = new CriteriaExecutor();
+				boolean isConditionTrue = false;
+				List<ZCRule> fieldRules =  zcField.getFieldRules();
+				for(int i=0;i<fieldRules.size();i++)
+				{
+					ZCRule rule = fieldRules.get(i);
+					String ruleCondition = rule.getCondition();
+					Set set = valuesHashMap.keySet();
+					Iterator itrtr = set.iterator();
+					while(itrtr.hasNext())
+					{
+						String key = (String) itrtr.next();	
+					}
+	
+					if(ruleCondition!=null&&ruleCondition.length()>0)
+					{
+						try {
+							isConditionTrue = cExec.evaluateCriteria(rule.getCondition(), valuesHashMap);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}	
+						executeRuleActions(rule.getZCTasks(), valuesHashMap,isConditionTrue,zcField.getBaseForm());
+					}
+				}
+			} 
+		}
 
 
 
@@ -288,10 +286,10 @@ public class JSONParser {
 	static List<ZCRule> parseForRules(JSONArray rulesArray,List<ZCField> zcFields) throws ZCException
 	{
 		List<ZCRule> zcRules = new ArrayList<ZCRule>();
-		if(rulesArray.length()>0)
-		{
-			throw new ZCException(resourceString.getString("this_form_contains_rules_which_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
-		}
+//		if(rulesArray.length()>0)
+//		{
+//			throw new ZCException(resourceString.getString("this_form_contains_rules_which_is_currently_not_supported"), ZCException.ERROR_OCCURED,"" );
+//		}
 		try 
 		{
 			for(int count=0;count<rulesArray.length();count++)
@@ -1726,7 +1724,7 @@ public class JSONParser {
 				recordValue.clearChoices();
 				recordValue.setLastReachedForChoices(true);
 
-				
+
 				if(FieldType.isMultiChoiceField(field.getType())){
 					recordValue.setChoiceValues(new ArrayList<ZCChoice>());
 				}else if(FieldType.isSingleChoiceField(field.getType())){
@@ -2224,7 +2222,6 @@ public class JSONParser {
 
 				if(responseObject.has("rules"))
 				{
-
 					JSONArray rulesArray = new JSONArray(responseObject.getString("rules"));
 					rules = parseForRules(rulesArray,fields);
 				}
@@ -2285,14 +2282,21 @@ public class JSONParser {
 							ZCChoice crmChoice = field.getRecordValue().getChoiceValue();
 							if(crmChoice!=null)
 							{
-
 								String crmValue = crmChoice.getValue();
-
 								if(crmValue!=null&&crmValue.length()>0)
 								{
-									field.setRecordValue(new ZCRecordValue(field,new ZCChoice(crmIdValue, crmValue)));
+									List<ZCChoice> choices = ZOHOCreator.getCRMRecordByID(field,crmIdValue);
+									if(choices.size()>0)
+									{
+										
+										field.setRecordValue(new ZCRecordValue(field,choices.get(0)));
+									}else
+									{
+										field.setRecordValue(new ZCRecordValue(field,new ZCChoice(crmIdValue, crmValue)));
+									}
 								}
 							}
+
 						}
 					}
 				}

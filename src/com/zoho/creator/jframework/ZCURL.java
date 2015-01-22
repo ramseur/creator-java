@@ -29,14 +29,14 @@ public class ZCURL {
 		}//No I18N
 		return params;
 	}
-	
+
 	private static List<NameValuePair> getDefaultParams() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		getAuthtokenAsParam(params);
 		params.add(new BasicNameValuePair("scope", "creatorapi"));//No I18N
 		return params;
 	}
-	
+
 	private static List<NameValuePair> getSharedByParamsWithOwner(String appOwner)
 	{
 		if(appOwner == null) {
@@ -47,7 +47,7 @@ public class ZCURL {
 		params.addAll(getDefaultParams());
 		return params;
 	}
-	
+
 
 	private static List<NameValuePair> getParamsWithOwnerAndXMLString(String appOwner, String xmlString) {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);
@@ -114,7 +114,7 @@ public class ZCURL {
 		List<NameValuePair> params = getParamsWithOwner(appOwner);
 
 		params.add(new BasicNameValuePair("isCrm", "true"));
-		//params.add(new BasicNameValuePair("isRules", "true"));
+		params.add(new BasicNameValuePair("isRules", "true"));
 
 		return new URLPair(serverURL() + "/api/mobile/xml/" + appLinkName + "/sections/",params); //No I18N
 	}
@@ -188,6 +188,20 @@ public class ZCURL {
 		String urlValToAdd = "lookup";
 		params.addAll(additionalParams);
 		return new URLPair(serverURL() + "/api/"+appOwner+"/xml/" + appLinkName + "/" +"form/"+ formLinkName +"/"+urlValToAdd+"/"+lookupFieldName+ "/options/", params);//No I18N
+	}
+
+	static URLPair crmLookupChoiceByID(String crmModuleType,String recordId)
+	{
+		List<NameValuePair> params = getAuthtokenAsParam(new ArrayList<NameValuePair>());
+		params.add(new BasicNameValuePair("scope", "crmapi"));
+		params.add(new BasicNameValuePair("id", recordId));
+		if(ZOHOCreator.getCreatorURL().contains("localzoho"))
+		{
+			return new URLPair(ZOHOCreator.getPrefix() + "://" +"crm.localzoho.com"+"/crm/private/json/"+crmModuleType+"/getRecordById",params);
+		}else
+		{
+			return new URLPair(ZOHOCreator.getPrefix() + "://" +"crm.zoho.com"+"/crm/private/json/"+crmModuleType+"/getRecordById",params);
+		}
 	}
 
 	static URLPair crmLookupChoices(int startIndex,String crmModuleType,String searchString)
